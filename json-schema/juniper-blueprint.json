@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/api-search/juniper/json-schema/juniper-blueprint.json",
+  "title": "Juniper Apstra Blueprint",
+  "description": "Schema representing a Juniper Apstra data center blueprint. A blueprint is the core abstraction in Apstra that defines the intended state of a data center fabric, including its topology, resource allocations, virtual networks, and policies.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique blueprint identifier"
+    },
+    "label": {
+      "type": "string",
+      "description": "Blueprint display name"
+    },
+    "design": {
+      "type": "string",
+      "enum": [
+        "two_stage_l3clos",
+        "freeform"
+      ],
+      "description": "Data center fabric design type"
+    },
+    "status": {
+      "type": "string",
+      "description": "Current blueprint operational status"
+    },
+    "version": {
+      "type": "integer",
+      "description": "Blueprint version number (incremented on deploy)"
+    },
+    "anomaly_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of intent-based analytics anomalies detected"
+    },
+    "build_errors_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of build errors preventing deployment"
+    },
+    "build_warnings_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of build warnings"
+    },
+    "topology": {
+      "type": "object",
+      "description": "Fabric topology definition",
+      "properties": {
+        "spine_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "leaf_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "superspine_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rack_count": {
+          "type": "integer"
+        }
+      }
+    },
+    "resource_allocations": {
+      "type": "object",
+      "description": "Resource pool assignments",
+      "properties": {
+        "asn_pool_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "ip_pool_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "vni_pool_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
+    },
+    "virtual_networks": {
+      "type": "array",
+      "description": "Virtual networks defined in the blueprint",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "label": {
+            "type": "string"
+          },
+          "vn_type": {
+            "type": "string",
+            "enum": ["vxlan", "vlan"]
+          },
+          "security_zone_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
+    },
+    "security_zones": {
+      "type": "array",
+      "description": "Routing zones (VRFs) in the blueprint",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "label": {
+            "type": "string"
+          },
+          "vrf_name": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "template_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Design template used to create this blueprint"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_modified_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_deployed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": ["id", "label", "design"]
+}

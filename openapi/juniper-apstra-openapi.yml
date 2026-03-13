@@ -1,0 +1,1285 @@
+openapi: 3.1.0
+info:
+  title: Juniper Apstra API
+  description: >-
+    Juniper Apstra is an intent-based networking platform for data center
+    automation. The Apstra API provides RESTful access to manage blueprints,
+    design elements, devices, connectivity templates, virtual networks,
+    and intent-based analytics. It supports multivendor environments and
+    enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/
+servers:
+  - url: https://{apstra_server}/api
+    description: Apstra Server
+    variables:
+      apstra_server:
+        default: apstra.example.com
+        description: Hostname or IP of the Apstra server
+security:
+  - authToken: []
+tags:
+  - name: Authentication
+    description: Login and token management
+  - name: Blueprints
+    description: Data center blueprint management
+  - name: Design
+    description: Design elements including rack types, templates, and logical devices
+  - name: Systems
+    description: Managed system agents and device management
+  - name: Resources
+    description: Resource pool management (ASN, IP, VNI pools)
+  - name: Virtual Networks
+    description: Virtual network and routing zone management
+  - name: Connectivity Templates
+    description: Connectivity template management
+  - name: Intent Checks
+    description: Intent-based analytics and anomaly detection
+  - name: Configlets
+    description: Configuration template management
+paths:
+  /aaa/login:
+    post:
+      operationId: login
+      summary: Authenticate user
+      description: >-
+        Authenticates a user and returns an authentication token. The token
+        must be included in subsequent requests as an AuthToken header.
+      tags:
+        - Authentication
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '201':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: Authentication token
+                  id:
+                    type: string
+                    format: uuid
+        '401':
+          description: Invalid credentials
+  /blueprints:
+    get:
+      operationId: listBlueprints
+      summary: List all blueprints
+      description: Returns a list of all data center blueprints.
+      tags:
+        - Blueprints
+      responses:
+        '200':
+          description: List of blueprints
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Blueprint'
+    post:
+      operationId: createBlueprint
+      summary: Create a blueprint
+      description: Creates a new data center blueprint from a template.
+      tags:
+        - Blueprints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - label
+                - design
+              properties:
+                label:
+                  type: string
+                design:
+                  type: string
+                  enum:
+                    - two_stage_l3clos
+                    - freeform
+                  description: Blueprint design type
+                init_type:
+                  type: string
+                  enum:
+                    - template_reference
+                  description: Initialization method
+                template_id:
+                  type: string
+                  format: uuid
+                  description: Reference to a design template
+      responses:
+        '201':
+          description: Blueprint created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Blueprint'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /blueprints/{blueprint_id}:
+    get:
+      operationId: getBlueprint
+      summary: Get blueprint details
+      description: Returns details for a specific blueprint including its status.
+      tags:
+        - Blueprints
+      parameters:
+        - $ref: '#/components/parameters/BlueprintId'
+      responses:
+        '200':
+          description: Blueprint details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Blueprint'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      operationId: updateBlueprint
+      summary: Update a blueprint
+      description: Updates an existing blueprint.
+      tags:
+        - Blueprints
+      parameters:
+        - $ref: '#/components/parameters/BlueprintId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                label:
+                  type: string
+      responses:
+        '200':
+          description: Blueprint updated
+    delete:
+      operationId: deleteBlueprint
+      summary: Delete a blueprint
+      description: Deletes a data center blueprint.
+      tags:
+        - Blueprints
+      parameters:
+        - $ref: '#/components/parameters/BlueprintId'
+      responses:
+        '204':
+          description: Blueprint deleted
+  /blueprints/{blueprint_id}/deploy:
+    put:
+      operationId: deployBlueprint
+      summary: Deploy blueprint
+      description: >-
+        Commits and deploys the current blueprint configuration to the
+        managed devices. This pushes the rendered configuration to the network.
+      tags:
+        - Blueprints
+      parameters:
+        - $ref: '#/components/parameters/BlueprintId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                version:
+                  type: integer
+                  description: Blueprint version to deploy
+                description:
+                  type: string
+                  description: Deployment description
+      responses:
+        '200':
+          description: Deployment initiated
+        '422':
+          description: Blueprint has anomalies and cannot be deployed
+  /blueprints/{blueprint_id}/nodes:
+    get:
+      operationId: listBlueprintNodes
+      summary: List blueprint nodes
+      description: >-
+        Returns nodes in the blueprint graph, including systems, interfaces,
+        and logical elements.
+      tags:
+        - Blueprints
+      parameters:
+        - $ref: '#/components/parameters/BlueprintId'
+        - name: node_type
+          in: query
+          description: Filter by node type
+          schema:
+            type: string
+            enum:
+              - system
+              - interface
+              - virtual_network
+              - security_zone
+              - redundancy_group
+      responses:
+        '200':
+          description: Blueprint nodes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  nodes:
+                    type: object
+                    additionalProperties:
+                      $ref: '#/components/schemas/BlueprintNode'
+  /blueprints/{blueprint_id}/security-zones:
+    get:
+      operationId: listSecurityZones
+      summary: List security zones (routing zones / VRFs)
+      description: Returns routing zones (VRFs) in the blueprint.
+      tags:
+        - Virtual Networks
+      parameters:
+        - $ref: '#/components/parameters/BlueprintId'
+      responses:
+        '200':
+          description: List of security zones
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SecurityZone'
+    post:
+      operationId: createSecurityZone
+      summary: Create security zone
+      description: Creates a new routing zone (VRF) in the blueprint.
+      tags:
+        - Virtual Networks
+      parameters:
+        - $ref: '#/components/parameters/BlueprintId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SecurityZone'
+      responses:
+        '201':
+          description: Security zone created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecurityZone'
+  /blueprints/{blueprint_id}/virtual-networks:
+    get:
+      operationId: listVirtualNetworks
+      summary: List virtual networks
+      description: Returns virtual networks configured in the blueprint.
+      tags:
+        - Virtual Networks
+      parameters:
+        - $ref: '#/components/parameters/BlueprintId'
+      responses:
+        '200':
+          description: List of virtual networks
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  virtual_networks:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/VirtualNetwork'
+    post:
+      operationId: createVirtualNetwork
+      summary: Create virtual network
+      description: Creates a new virtual network in the blueprint.
+      tags:
+        - Virtual Networks
+      parameters:
+        - $ref: '#/components/parameters/BlueprintId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VirtualNetwork'
+      responses:
+        '201':
+          description: Virtual network created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VirtualNetwork'
+  /blueprints/{blueprint_id}/connectivity-templates:
+    get:
+      operationId: listConnectivityTemplates
+      summary: List connectivity templates
+      description: Returns connectivity templates in the blueprint.
+      tags:
+        - Connectivity Templates
+      parameters:
+        - $ref: '#/components/parameters/BlueprintId'
+      responses:
+        '200':
+          description: List of connectivity templates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ConnectivityTemplate'
+  /blueprints/{blueprint_id}/anomalies:
+    get:
+      operationId: listBlueprintAnomalies
+      summary: List blueprint anomalies
+      description: >-
+        Returns anomalies detected in the blueprint by the Intent-Based
+        Analytics engine. Anomalies indicate deviations between intended
+        and actual network state.
+      tags:
+        - Intent Checks
+      parameters:
+        - $ref: '#/components/parameters/BlueprintId'
+      responses:
+        '200':
+          description: Blueprint anomalies
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Anomaly'
+                  count:
+                    type: integer
+  /blueprints/{blueprint_id}/iba/dashboards:
+    get:
+      operationId: listIbaDashboards
+      summary: List IBA dashboards
+      description: Returns Intent-Based Analytics dashboards for the blueprint.
+      tags:
+        - Intent Checks
+      parameters:
+        - $ref: '#/components/parameters/BlueprintId'
+      responses:
+        '200':
+          description: List of IBA dashboards
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/IbaDashboard'
+  /blueprints/{blueprint_id}/configlets:
+    get:
+      operationId: listBlueprintConfiglets
+      summary: List blueprint configlets
+      description: Returns configlets applied to the blueprint.
+      tags:
+        - Configlets
+      parameters:
+        - $ref: '#/components/parameters/BlueprintId'
+      responses:
+        '200':
+          description: List of configlets
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Configlet'
+  /design/rack-types:
+    get:
+      operationId: listRackTypes
+      summary: List rack types
+      description: Returns all rack type designs.
+      tags:
+        - Design
+      responses:
+        '200':
+          description: List of rack types
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RackType'
+    post:
+      operationId: createRackType
+      summary: Create rack type
+      description: Creates a new rack type design.
+      tags:
+        - Design
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RackType'
+      responses:
+        '201':
+          description: Rack type created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RackType'
+  /design/templates:
+    get:
+      operationId: listDesignTemplates
+      summary: List design templates
+      description: Returns all data center design templates.
+      tags:
+        - Design
+      responses:
+        '200':
+          description: List of design templates
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DesignTemplate'
+    post:
+      operationId: createDesignTemplate
+      summary: Create design template
+      description: Creates a new data center design template.
+      tags:
+        - Design
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DesignTemplate'
+      responses:
+        '201':
+          description: Template created
+  /design/logical-devices:
+    get:
+      operationId: listLogicalDevices
+      summary: List logical devices
+      description: Returns all logical device definitions.
+      tags:
+        - Design
+      responses:
+        '200':
+          description: List of logical devices
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LogicalDevice'
+  /design/interface-maps:
+    get:
+      operationId: listInterfaceMaps
+      summary: List interface maps
+      description: >-
+        Returns interface maps that map logical device ports to physical
+        device interfaces.
+      tags:
+        - Design
+      responses:
+        '200':
+          description: List of interface maps
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/InterfaceMap'
+  /design/configlets:
+    get:
+      operationId: listDesignConfiglets
+      summary: List design configlets
+      description: Returns all configlet templates.
+      tags:
+        - Configlets
+      responses:
+        '200':
+          description: List of configlets
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Configlet'
+    post:
+      operationId: createDesignConfiglet
+      summary: Create design configlet
+      description: Creates a new configlet template.
+      tags:
+        - Configlets
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Configlet'
+      responses:
+        '201':
+          description: Configlet created
+  /resources/asn-pools:
+    get:
+      operationId: listAsnPools
+      summary: List ASN pools
+      description: Returns all Autonomous System Number pools.
+      tags:
+        - Resources
+      responses:
+        '200':
+          description: List of ASN pools
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AsnPool'
+    post:
+      operationId: createAsnPool
+      summary: Create ASN pool
+      description: Creates a new ASN pool.
+      tags:
+        - Resources
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AsnPool'
+      responses:
+        '201':
+          description: ASN pool created
+  /resources/ip-pools:
+    get:
+      operationId: listIpPools
+      summary: List IP pools
+      description: Returns all IP address pools.
+      tags:
+        - Resources
+      responses:
+        '200':
+          description: List of IP pools
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/IpPool'
+    post:
+      operationId: createIpPool
+      summary: Create IP pool
+      description: Creates a new IP address pool.
+      tags:
+        - Resources
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IpPool'
+      responses:
+        '201':
+          description: IP pool created
+  /resources/vni-pools:
+    get:
+      operationId: listVniPools
+      summary: List VNI pools
+      description: Returns all VXLAN Network Identifier pools.
+      tags:
+        - Resources
+      responses:
+        '200':
+          description: List of VNI pools
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/VniPool'
+    post:
+      operationId: createVniPool
+      summary: Create VNI pool
+      description: Creates a new VNI pool.
+      tags:
+        - Resources
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VniPool'
+      responses:
+        '201':
+          description: VNI pool created
+  /system-agents:
+    get:
+      operationId: listSystemAgents
+      summary: List system agents
+      description: Returns all managed device agents.
+      tags:
+        - Systems
+      responses:
+        '200':
+          description: List of system agents
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SystemAgent'
+    post:
+      operationId: createSystemAgent
+      summary: Create system agent
+      description: Registers a new system agent for a managed device.
+      tags:
+        - Systems
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - agent_type
+                - management_ip
+              properties:
+                agent_type:
+                  type: string
+                  enum:
+                    - onbox
+                    - offbox
+                management_ip:
+                  type: string
+                label:
+                  type: string
+                username:
+                  type: string
+                password:
+                  type: string
+                platform:
+                  type: string
+      responses:
+        '201':
+          description: System agent created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemAgent'
+  /systems:
+    get:
+      operationId: listSystems
+      summary: List managed systems
+      description: Returns all managed systems (devices) known to Apstra.
+      tags:
+        - Systems
+      responses:
+        '200':
+          description: List of systems
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ManagedSystem'
+components:
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: >-
+        Authentication token obtained from the /aaa/login endpoint.
+        Include as AuthToken header in all requests.
+  parameters:
+    BlueprintId:
+      name: blueprint_id
+      in: path
+      required: true
+      description: Blueprint unique identifier
+      schema:
+        type: string
+        format: uuid
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      properties:
+        errors:
+          type: object
+          description: Error details
+    Blueprint:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        design:
+          type: string
+          enum:
+            - two_stage_l3clos
+            - freeform
+        status:
+          type: string
+          description: Current status of the blueprint
+        build_errors_count:
+          type: integer
+        build_warnings_count:
+          type: integer
+        anomaly_count:
+          type: integer
+        version:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        last_modified_at:
+          type: string
+          format: date-time
+    BlueprintNode:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        label:
+          type: string
+        role:
+          type: string
+        system_id:
+          type: string
+        system_type:
+          type: string
+        deploy_mode:
+          type: string
+    SecurityZone:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        vrf_name:
+          type: string
+        vlan_id:
+          type: integer
+        routing_policy_id:
+          type: string
+          format: uuid
+        sz_type:
+          type: string
+          enum:
+            - evpn
+            - vlan
+        rt_policy:
+          type: object
+          properties:
+            import_RTs:
+              type: array
+              items:
+                type: string
+            export_RTs:
+              type: array
+              items:
+                type: string
+    VirtualNetwork:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        vn_type:
+          type: string
+          enum:
+            - vxlan
+            - vlan
+        vn_id:
+          type: string
+        security_zone_id:
+          type: string
+          format: uuid
+        ipv4_subnet:
+          type: string
+        ipv4_gateway:
+          type: string
+        ipv6_subnet:
+          type: string
+        vlan_id:
+          type: integer
+        bound_to:
+          type: array
+          items:
+            type: object
+            properties:
+              system_id:
+                type: string
+              vlan_id:
+                type: integer
+              access_switches:
+                type: array
+                items:
+                  type: object
+    ConnectivityTemplate:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        subpolicies:
+          type: array
+          items:
+            type: object
+    Anomaly:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        severity:
+          type: string
+          enum:
+            - critical
+            - warning
+            - info
+        role:
+          type: string
+        anomaly_type:
+          type: string
+        expected:
+          type: string
+        actual:
+          type: string
+        identity:
+          type: object
+    IbaDashboard:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        description:
+          type: string
+        predefined_dashboard:
+          type: string
+        widget_grid:
+          type: array
+          items:
+            type: array
+            items:
+              type: string
+        updated_at:
+          type: string
+          format: date-time
+    RackType:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        description:
+          type: string
+        leaf_switches:
+          type: array
+          items:
+            type: object
+            properties:
+              label:
+                type: string
+              logical_device_id:
+                type: string
+                format: uuid
+              link_per_spine_count:
+                type: integer
+              link_per_spine_speed:
+                type: string
+        access_switches:
+          type: array
+          items:
+            type: object
+        generic_systems:
+          type: array
+          items:
+            type: object
+            properties:
+              label:
+                type: string
+              count:
+                type: integer
+              logical_device_id:
+                type: string
+                format: uuid
+    DesignTemplate:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        type:
+          type: string
+          enum:
+            - rack_based
+        spine:
+          type: object
+          properties:
+            count:
+              type: integer
+            logical_device_id:
+              type: string
+              format: uuid
+        rack_types:
+          type: array
+          items:
+            type: object
+            properties:
+              rack_type_id:
+                type: string
+                format: uuid
+              count:
+                type: integer
+        asn_allocation_policy:
+          type: object
+          properties:
+            spine_asn_scheme:
+              type: string
+              enum:
+                - distinct
+                - single
+        fabric_addressing_policy:
+          type: object
+          properties:
+            spine_leaf_links:
+              type: string
+              enum:
+                - ipv4
+                - ipv6
+                - ipv4_ipv6
+    LogicalDevice:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        panels:
+          type: array
+          items:
+            type: object
+            properties:
+              panel_layout:
+                type: object
+                properties:
+                  row_count:
+                    type: integer
+                  column_count:
+                    type: integer
+              port_indexing:
+                type: object
+              port_groups:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    count:
+                      type: integer
+                    speed:
+                      type: string
+                    roles:
+                      type: array
+                      items:
+                        type: string
+                        enum:
+                          - superspine
+                          - spine
+                          - leaf
+                          - peer
+                          - access
+                          - generic
+                          - unused
+    InterfaceMap:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        logical_device_id:
+          type: string
+          format: uuid
+        device_profile_id:
+          type: string
+          format: uuid
+        interfaces:
+          type: array
+          items:
+            type: object
+    Configlet:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        generators:
+          type: array
+          items:
+            type: object
+            properties:
+              config_style:
+                type: string
+                enum:
+                  - junos
+                  - eos
+                  - nxos
+                  - sonic
+              section:
+                type: string
+                enum:
+                  - system
+                  - interface
+                  - set_based_system
+                  - set_based_interface
+              template_text:
+                type: string
+    AsnPool:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        ranges:
+          type: array
+          items:
+            type: object
+            properties:
+              first:
+                type: integer
+              last:
+                type: integer
+        status:
+          type: string
+        used:
+          type: integer
+        total:
+          type: integer
+    IpPool:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        subnets:
+          type: array
+          items:
+            type: object
+            properties:
+              network:
+                type: string
+                description: CIDR notation
+              status:
+                type: string
+        status:
+          type: string
+        used:
+          type: integer
+        total:
+          type: integer
+    VniPool:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        ranges:
+          type: array
+          items:
+            type: object
+            properties:
+              first:
+                type: integer
+              last:
+                type: integer
+        status:
+          type: string
+        used:
+          type: integer
+        total:
+          type: integer
+    SystemAgent:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        agent_type:
+          type: string
+          enum:
+            - onbox
+            - offbox
+        management_ip:
+          type: string
+        platform:
+          type: string
+        state:
+          type: string
+          enum:
+            - active
+            - inactive
+            - error
+        operation_mode:
+          type: string
+        running:
+          type: boolean
+    ManagedSystem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        hostname:
+          type: string
+        system_id:
+          type: string
+        device_key:
+          type: string
+        status:
+          type: object
+          properties:
+            agent_alive:
+              type: boolean
+            config_deviation:
+              type: boolean
+            hostname:
+              type: string
+        facts:
+          type: object
+          properties:
+            os_family:
+              type: string
+            os_version:
+              type: string
+            vendor:
+              type: string
+            hw_model:
+              type: string
+            serial_number:
+              type: string
+            mgmt_ipaddr:
+              type: string

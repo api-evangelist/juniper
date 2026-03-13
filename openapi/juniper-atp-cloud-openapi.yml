@@ -1,0 +1,793 @@
+openapi: 3.1.0
+info:
+  title: Juniper Advanced Threat Prevention (ATP) Cloud API
+  description: >-
+    Juniper Advanced Threat Prevention (ATP) Cloud API provides access to
+    threat intelligence, malware analysis, and security event management.
+    The API enables querying threat feeds, submitting files for analysis,
+    retrieving detection verdicts, managing allow/block lists, and accessing
+    threat intelligence data for integration with SRX Series firewalls and
+    other security infrastructure.
+  version: 1.0.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/security/advanced-threat-prevention.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+externalDocs:
+  description: ATP Cloud Documentation
+  url: https://www.juniper.net/documentation/us/en/software/atp/
+servers:
+  - url: https://{atp_server}/api/v1
+    description: ATP Cloud Server
+    variables:
+      atp_server:
+        default: atp.juniper.net
+        description: ATP Cloud server hostname
+security:
+  - apiKey: []
+tags:
+  - name: Authentication
+    description: Authentication and session management
+  - name: Threat Intelligence
+    description: Threat feed and intelligence data
+  - name: File Analysis
+    description: Malware analysis and file submission
+  - name: Allowlists and Blocklists
+    description: Allowlist and blocklist management
+  - name: Enrolled Devices
+    description: Enrolled SRX device management
+  - name: Reports
+    description: Threat and activity reports
+  - name: Indicators of Compromise
+    description: IoC management and lookup
+paths:
+  /auth/login:
+    post:
+      operationId: login
+      summary: Authenticate
+      description: Authenticates a user and returns an API session token.
+      tags:
+        - Authentication
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                realm:
+                  type: string
+                  description: Authentication realm
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  expires:
+                    type: string
+                    format: date-time
+        '401':
+          description: Authentication failed
+  /threat-intelligence/feeds:
+    get:
+      operationId: listThreatFeeds
+      summary: List threat feeds
+      description: Returns available threat intelligence feeds and their status.
+      tags:
+        - Threat Intelligence
+      responses:
+        '200':
+          description: List of threat feeds
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  feeds:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ThreatFeed'
+  /threat-intelligence/ip-lookup:
+    get:
+      operationId: lookupIpReputation
+      summary: Look up IP reputation
+      description: Returns the threat reputation score and details for an IP address.
+      tags:
+        - Threat Intelligence
+      parameters:
+        - name: ip
+          in: query
+          required: true
+          description: IP address to look up
+          schema:
+            type: string
+      responses:
+        '200':
+          description: IP reputation data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IpReputation'
+  /threat-intelligence/url-lookup:
+    get:
+      operationId: lookupUrlReputation
+      summary: Look up URL reputation
+      description: Returns the threat reputation and category for a URL.
+      tags:
+        - Threat Intelligence
+      parameters:
+        - name: url
+          in: query
+          required: true
+          description: URL to look up
+          schema:
+            type: string
+      responses:
+        '200':
+          description: URL reputation data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UrlReputation'
+  /threat-intelligence/domain-lookup:
+    get:
+      operationId: lookupDomainReputation
+      summary: Look up domain reputation
+      description: Returns the threat reputation for a domain name.
+      tags:
+        - Threat Intelligence
+      parameters:
+        - name: domain
+          in: query
+          required: true
+          description: Domain name to look up
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Domain reputation data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainReputation'
+  /threat-intelligence/hash-lookup:
+    get:
+      operationId: lookupFileHash
+      summary: Look up file hash
+      description: Returns the malware analysis verdict for a file hash.
+      tags:
+        - Threat Intelligence
+      parameters:
+        - name: hash
+          in: query
+          required: true
+          description: File hash (MD5, SHA1, or SHA256)
+          schema:
+            type: string
+        - name: hash_type
+          in: query
+          description: Hash type
+          schema:
+            type: string
+            enum:
+              - md5
+              - sha1
+              - sha256
+      responses:
+        '200':
+          description: File hash verdict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileVerdict'
+  /file-analysis/submit:
+    post:
+      operationId: submitFile
+      summary: Submit file for analysis
+      description: Submits a file for malware analysis in the ATP Cloud sandbox.
+      tags:
+        - File Analysis
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: File to analyze
+                file_name:
+                  type: string
+                  description: Original filename
+                priority:
+                  type: string
+                  enum:
+                    - low
+                    - normal
+                    - high
+      responses:
+        '202':
+          description: File submitted for analysis
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  submission_id:
+                    type: string
+                  status:
+                    type: string
+                  sha256:
+                    type: string
+  /file-analysis/submissions/{submission_id}:
+    get:
+      operationId: getSubmissionStatus
+      summary: Get file analysis status
+      description: Returns the status and results of a file analysis submission.
+      tags:
+        - File Analysis
+      parameters:
+        - name: submission_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Submission status and results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalysisResult'
+  /file-analysis/submissions:
+    get:
+      operationId: listSubmissions
+      summary: List file submissions
+      description: Returns a list of file analysis submissions.
+      tags:
+        - File Analysis
+      parameters:
+        - name: status
+          in: query
+          description: Filter by analysis status
+          schema:
+            type: string
+            enum:
+              - pending
+              - in_progress
+              - completed
+        - name: start_date
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: end_date
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+      responses:
+        '200':
+          description: List of submissions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  submissions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AnalysisResult'
+                  total:
+                    type: integer
+  /lists/allowlist:
+    get:
+      operationId: getAllowlist
+      summary: Get allowlist entries
+      description: Returns all entries in the allowlist.
+      tags:
+        - Allowlists and Blocklists
+      responses:
+        '200':
+          description: Allowlist entries
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  entries:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ListEntry'
+    post:
+      operationId: addToAllowlist
+      summary: Add to allowlist
+      description: Adds an entry to the allowlist.
+      tags:
+        - Allowlists and Blocklists
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListEntry'
+      responses:
+        '201':
+          description: Entry added
+  /lists/blocklist:
+    get:
+      operationId: getBlocklist
+      summary: Get blocklist entries
+      description: Returns all entries in the blocklist.
+      tags:
+        - Allowlists and Blocklists
+      responses:
+        '200':
+          description: Blocklist entries
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  entries:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ListEntry'
+    post:
+      operationId: addToBlocklist
+      summary: Add to blocklist
+      description: Adds an entry to the blocklist.
+      tags:
+        - Allowlists and Blocklists
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListEntry'
+      responses:
+        '201':
+          description: Entry added
+  /enrolled-devices:
+    get:
+      operationId: listEnrolledDevices
+      summary: List enrolled devices
+      description: Returns all SRX devices enrolled with ATP Cloud.
+      tags:
+        - Enrolled Devices
+      responses:
+        '200':
+          description: List of enrolled devices
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  devices:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EnrolledDevice'
+  /enrolled-devices/{device_id}:
+    get:
+      operationId: getEnrolledDevice
+      summary: Get enrolled device details
+      description: Returns details for a specific enrolled device.
+      tags:
+        - Enrolled Devices
+      parameters:
+        - name: device_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Device details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrolledDevice'
+  /reports/threats:
+    get:
+      operationId: getThreatReport
+      summary: Get threat report
+      description: Returns a summary report of threats detected over a time period.
+      tags:
+        - Reports
+      parameters:
+        - name: start_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: end_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Threat report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThreatReport'
+  /ioc/indicators:
+    get:
+      operationId: listIndicators
+      summary: List indicators of compromise
+      description: Returns indicators of compromise detected in the environment.
+      tags:
+        - Indicators of Compromise
+      parameters:
+        - name: type
+          in: query
+          description: Filter by indicator type
+          schema:
+            type: string
+            enum:
+              - ip
+              - domain
+              - url
+              - hash
+              - email
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 100
+      responses:
+        '200':
+          description: List of indicators
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  indicators:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Indicator'
+                  total:
+                    type: integer
+components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-Auth-Token
+      description: API token obtained from the login endpoint
+  schemas:
+    ThreatFeed:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        enabled:
+          type: boolean
+        last_updated:
+          type: string
+          format: date-time
+        entry_count:
+          type: integer
+        feed_type:
+          type: string
+          enum:
+            - ip
+            - domain
+            - url
+            - hash
+    IpReputation:
+      type: object
+      properties:
+        ip:
+          type: string
+        threat_score:
+          type: integer
+          minimum: 0
+          maximum: 10
+          description: Threat score from 0 (clean) to 10 (malicious)
+        categories:
+          type: array
+          items:
+            type: string
+        country:
+          type: string
+        asn:
+          type: integer
+        last_seen:
+          type: string
+          format: date-time
+        feeds:
+          type: array
+          items:
+            type: string
+    UrlReputation:
+      type: object
+      properties:
+        url:
+          type: string
+        threat_score:
+          type: integer
+          minimum: 0
+          maximum: 10
+        categories:
+          type: array
+          items:
+            type: string
+        host:
+          type: string
+        last_seen:
+          type: string
+          format: date-time
+    DomainReputation:
+      type: object
+      properties:
+        domain:
+          type: string
+        threat_score:
+          type: integer
+          minimum: 0
+          maximum: 10
+        categories:
+          type: array
+          items:
+            type: string
+        registrar:
+          type: string
+        created_date:
+          type: string
+          format: date-time
+        last_seen:
+          type: string
+          format: date-time
+    FileVerdict:
+      type: object
+      properties:
+        sha256:
+          type: string
+        md5:
+          type: string
+        sha1:
+          type: string
+        verdict:
+          type: string
+          enum:
+            - clean
+            - malicious
+            - suspicious
+            - unknown
+        malware_family:
+          type: string
+        threat_score:
+          type: integer
+          minimum: 0
+          maximum: 10
+        first_seen:
+          type: string
+          format: date-time
+        last_seen:
+          type: string
+          format: date-time
+    AnalysisResult:
+      type: object
+      properties:
+        submission_id:
+          type: string
+        sha256:
+          type: string
+        file_name:
+          type: string
+        file_type:
+          type: string
+        file_size:
+          type: integer
+        status:
+          type: string
+          enum:
+            - pending
+            - in_progress
+            - completed
+            - failed
+        verdict:
+          type: string
+          enum:
+            - clean
+            - malicious
+            - suspicious
+            - unknown
+        threat_score:
+          type: integer
+          minimum: 0
+          maximum: 10
+        malware_info:
+          type: object
+          properties:
+            family:
+              type: string
+            type:
+              type: string
+              enum:
+                - trojan
+                - ransomware
+                - worm
+                - adware
+                - spyware
+                - backdoor
+                - rootkit
+                - other
+        analysis_details:
+          type: object
+          properties:
+            static_analysis:
+              type: object
+            dynamic_analysis:
+              type: object
+        submitted_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+    ListEntry:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+            - ip
+            - domain
+            - url
+            - hash
+        value:
+          type: string
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        created_by:
+          type: string
+    EnrolledDevice:
+      type: object
+      properties:
+        device_id:
+          type: string
+        hostname:
+          type: string
+        serial_number:
+          type: string
+        model:
+          type: string
+          description: Device model (e.g., SRX340, SRX4600)
+        os_version:
+          type: string
+        status:
+          type: string
+          enum:
+            - connected
+            - disconnected
+            - pending
+        last_seen:
+          type: string
+          format: date-time
+        enrolled_at:
+          type: string
+          format: date-time
+        license_type:
+          type: string
+    ThreatReport:
+      type: object
+      properties:
+        period:
+          type: object
+          properties:
+            start:
+              type: string
+              format: date-time
+            end:
+              type: string
+              format: date-time
+        summary:
+          type: object
+          properties:
+            total_threats:
+              type: integer
+            malware_detected:
+              type: integer
+            c2_connections_blocked:
+              type: integer
+            phishing_blocked:
+              type: integer
+        top_threats:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              category:
+                type: string
+              count:
+                type: integer
+              severity:
+                type: string
+        top_targeted_hosts:
+          type: array
+          items:
+            type: object
+            properties:
+              hostname:
+                type: string
+              ip:
+                type: string
+              threat_count:
+                type: integer
+    Indicator:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+            - ip
+            - domain
+            - url
+            - hash
+            - email
+        value:
+          type: string
+        threat_score:
+          type: integer
+          minimum: 0
+          maximum: 10
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+        source:
+          type: string
+        first_seen:
+          type: string
+          format: date-time
+        last_seen:
+          type: string
+          format: date-time
+        tags:
+          type: array
+          items:
+            type: string

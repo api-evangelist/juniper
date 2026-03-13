@@ -1,0 +1,204 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/api-search/juniper/json-schema/juniper-network-device.json",
+  "title": "Juniper Network Device",
+  "description": "Schema representing a Juniper network device across management platforms including Junos Space, Mist, and Apstra. Covers routers, switches, firewalls, access points, and SD-WAN edge devices.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the device"
+    },
+    "name": {
+      "type": "string",
+      "description": "Device hostname or display name"
+    },
+    "serial_number": {
+      "type": "string",
+      "description": "Device serial number"
+    },
+    "mac_address": {
+      "type": "string",
+      "pattern": "^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$",
+      "description": "MAC address of the device"
+    },
+    "model": {
+      "type": "string",
+      "description": "Device hardware model (e.g., SRX340, QFX5120, AP43, MX204)"
+    },
+    "device_family": {
+      "type": "string",
+      "enum": [
+        "SRX",
+        "MX",
+        "EX",
+        "QFX",
+        "PTX",
+        "ACX",
+        "NFX",
+        "AP",
+        "SSR"
+      ],
+      "description": "Juniper device product family"
+    },
+    "device_type": {
+      "type": "string",
+      "enum": [
+        "router",
+        "switch",
+        "firewall",
+        "access_point",
+        "gateway",
+        "wan_edge"
+      ],
+      "description": "Functional type of the device"
+    },
+    "os_version": {
+      "type": "string",
+      "description": "Operating system version (Junos, Mist firmware, etc.)"
+    },
+    "management_ip": {
+      "type": "string",
+      "format": "ipv4",
+      "description": "Management IP address"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "connected",
+        "disconnected",
+        "upgrading",
+        "restarting",
+        "provisioning",
+        "error"
+      ],
+      "description": "Current operational status"
+    },
+    "uptime": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Device uptime in seconds"
+    },
+    "location": {
+      "type": "object",
+      "description": "Physical location of the device",
+      "properties": {
+        "site_id": {
+          "type": "string",
+          "description": "Site or facility identifier"
+        },
+        "site_name": {
+          "type": "string",
+          "description": "Site or facility name"
+        },
+        "address": {
+          "type": "string",
+          "description": "Physical address"
+        },
+        "latitude": {
+          "type": "number",
+          "minimum": -90,
+          "maximum": 90
+        },
+        "longitude": {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180
+        },
+        "floor": {
+          "type": "string",
+          "description": "Building floor"
+        },
+        "rack": {
+          "type": "string",
+          "description": "Rack identifier"
+        }
+      }
+    },
+    "interfaces": {
+      "type": "array",
+      "description": "Network interfaces on the device",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Interface name (e.g., ge-0/0/0, xe-0/0/1)"
+          },
+          "admin_status": {
+            "type": "string",
+            "enum": ["up", "down"]
+          },
+          "oper_status": {
+            "type": "string",
+            "enum": ["up", "down"]
+          },
+          "speed": {
+            "type": "string",
+            "description": "Interface speed (e.g., 1G, 10G, 25G, 40G, 100G)"
+          },
+          "mtu": {
+            "type": "integer",
+            "description": "Maximum Transmission Unit"
+          },
+          "description": {
+            "type": "string"
+          },
+          "ip_addresses": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "IP address in CIDR notation"
+            }
+          },
+          "mac_address": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "configuration": {
+      "type": "object",
+      "description": "Device configuration metadata",
+      "properties": {
+        "last_committed": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "last_committed_by": {
+          "type": "string"
+        },
+        "sync_status": {
+          "type": "string",
+          "enum": [
+            "in_sync",
+            "out_of_sync",
+            "unknown"
+          ]
+        }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags or labels associated with the device"
+    },
+    "org_id": {
+      "type": "string",
+      "description": "Organization identifier"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when the device was registered"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of last update"
+    }
+  },
+  "required": ["id", "name", "device_type"]
+}

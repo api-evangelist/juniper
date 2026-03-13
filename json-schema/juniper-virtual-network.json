@@ -1,0 +1,173 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/api-search/juniper/json-schema/juniper-virtual-network.json",
+  "title": "Juniper Virtual Network",
+  "description": "Schema representing a virtual network across Juniper platforms including Contrail, Apstra, and Mist. Covers VXLAN overlays, VLANs, VRFs, and software-defined network segments.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the virtual network"
+    },
+    "name": {
+      "type": "string",
+      "description": "Virtual network name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable description"
+    },
+    "vn_type": {
+      "type": "string",
+      "enum": [
+        "vxlan",
+        "vlan",
+        "evpn",
+        "l3vpn"
+      ],
+      "description": "Virtual network encapsulation type"
+    },
+    "vlan_id": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4094,
+      "description": "VLAN identifier"
+    },
+    "vni": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 16777215,
+      "description": "VXLAN Network Identifier"
+    },
+    "subnets": {
+      "type": "array",
+      "description": "IP subnets associated with the virtual network",
+      "items": {
+        "type": "object",
+        "properties": {
+          "prefix": {
+            "type": "string",
+            "description": "IP prefix in CIDR notation (e.g., 10.0.1.0/24)"
+          },
+          "gateway": {
+            "type": "string",
+            "format": "ipv4",
+            "description": "Default gateway IP"
+          },
+          "dhcp_enabled": {
+            "type": "boolean",
+            "description": "Whether DHCP is enabled for this subnet"
+          },
+          "dns_servers": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "ipv4"
+            }
+          },
+          "address_family": {
+            "type": "string",
+            "enum": ["ipv4", "ipv6"]
+          }
+        },
+        "required": ["prefix"]
+      }
+    },
+    "routing_zone": {
+      "type": "object",
+      "description": "Associated routing zone (VRF)",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "vrf_name": {
+          "type": "string",
+          "description": "VRF name on network devices"
+        }
+      }
+    },
+    "forwarding_mode": {
+      "type": "string",
+      "enum": [
+        "l2",
+        "l3",
+        "l2_l3"
+      ],
+      "description": "Layer 2/3 forwarding mode"
+    },
+    "route_targets": {
+      "type": "object",
+      "description": "BGP route targets for the virtual network",
+      "properties": {
+        "import": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "export": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "bound_devices": {
+      "type": "array",
+      "description": "Devices where this virtual network is provisioned",
+      "items": {
+        "type": "object",
+        "properties": {
+          "device_id": {
+            "type": "string"
+          },
+          "device_name": {
+            "type": "string"
+          },
+          "interfaces": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "network_policy_refs": {
+      "type": "array",
+      "description": "References to applied network policies",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "tenant_id": {
+      "type": "string",
+      "description": "Tenant or project identifier"
+    },
+    "org_id": {
+      "type": "string",
+      "description": "Organization identifier"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": ["id", "name", "vn_type"]
+}

@@ -1,0 +1,720 @@
+openapi: 3.1.0
+info:
+  title: Junos Space Network Management Platform API
+  description: >-
+    Junos Space Network Management Platform provides a RESTful API for
+    centralized management of Juniper devices. The API supports device
+    discovery, configuration management, software image deployment, script
+    management, and audit logging. Resources are accessed via the /api/space
+    namespace with XML or JSON media types.
+  version: 23.1.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/documentation/product/us/en/junos-space-network-management-platform/
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+externalDocs:
+  description: Junos Space REST API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/junos-space/
+servers:
+  - url: https://{space_server}/api/space
+    description: Junos Space Server
+    variables:
+      space_server:
+        default: space.example.com
+        description: Hostname or IP of the Junos Space server
+security:
+  - basicAuth: []
+tags:
+  - name: Devices
+    description: Device discovery and management
+  - name: Configuration
+    description: Device configuration management
+  - name: Software Management
+    description: Software image management and deployment
+  - name: Scripts
+    description: Script bundle management and execution
+  - name: Users
+    description: User and role management
+  - name: Audit Logs
+    description: Audit trail and logging
+  - name: Tags
+    description: Tag-based device grouping
+  - name: Jobs
+    description: Asynchronous job management
+paths:
+  /device-management/devices:
+    get:
+      operationId: listDevices
+      summary: List managed devices
+      description: Returns all devices managed by Junos Space.
+      tags:
+        - Devices
+      parameters:
+        - name: filter
+          in: query
+          description: Filter expression for devices
+          schema:
+            type: string
+        - $ref: '#/components/parameters/PageStart'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: List of managed devices
+          content:
+            application/vnd.net.juniper.space.device-management.devices+json;version=2:
+              schema:
+                type: object
+                properties:
+                  devices:
+                    type: object
+                    properties:
+                      device:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Device'
+                      total:
+                        type: integer
+            application/json:
+              schema:
+                type: object
+                properties:
+                  devices:
+                    type: object
+                    properties:
+                      device:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Device'
+    post:
+      operationId: discoverDevice
+      summary: Discover a device
+      description: Initiates device discovery to add a new device to Junos Space management.
+      tags:
+        - Devices
+      requestBody:
+        required: true
+        content:
+          application/vnd.net.juniper.space.device-management.discover-devices+json;version=2:
+            schema:
+              type: object
+              required:
+                - systemDiscoveryRule
+              properties:
+                systemDiscoveryRule:
+                  type: object
+                  properties:
+                    ipAddressDiscoveryTarget:
+                      type: object
+                      properties:
+                        ipAddress:
+                          type: string
+                    usePing:
+                      type: boolean
+                    manageDiscoveredSystemsFlag:
+                      type: boolean
+                    sshCredential:
+                      type: object
+                      properties:
+                        userName:
+                          type: string
+                        password:
+                          type: string
+      responses:
+        '202':
+          description: Discovery job initiated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+  /device-management/devices/{device_id}:
+    get:
+      operationId: getDevice
+      summary: Get device details
+      description: Returns detailed information for a specific managed device.
+      tags:
+        - Devices
+      parameters:
+        - $ref: '#/components/parameters/DeviceId'
+      responses:
+        '200':
+          description: Device details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+        '404':
+          description: Device not found
+    delete:
+      operationId: deleteDevice
+      summary: Delete managed device
+      description: Removes a device from Junos Space management.
+      tags:
+        - Devices
+      parameters:
+        - $ref: '#/components/parameters/DeviceId'
+      responses:
+        '204':
+          description: Device deleted
+  /device-management/devices/{device_id}/configurations/raw:
+    get:
+      operationId: getDeviceConfiguration
+      summary: Get device configuration
+      description: Returns the current running configuration of a managed device.
+      tags:
+        - Configuration
+      parameters:
+        - $ref: '#/components/parameters/DeviceId'
+      responses:
+        '200':
+          description: Device configuration
+          content:
+            application/vnd.net.juniper.space.device-management.device-configuration+json:
+              schema:
+                type: object
+                properties:
+                  configuration:
+                    type: string
+                    description: Raw device configuration text
+  /config-file-management/config-files:
+    get:
+      operationId: listConfigFiles
+      summary: List configuration files
+      description: Returns all stored configuration file versions.
+      tags:
+        - Configuration
+      parameters:
+        - $ref: '#/components/parameters/PageStart'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: List of config files
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  configFiles:
+                    type: object
+                    properties:
+                      configFile:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ConfigFile'
+  /config-file-management/apply-configlet:
+    post:
+      operationId: applyConfiglet
+      summary: Apply configlet to devices
+      description: Applies a configuration template (configlet) to one or more devices.
+      tags:
+        - Configuration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                applyConfigletRequest:
+                  type: object
+                  properties:
+                    configletId:
+                      type: integer
+                    deviceIds:
+                      type: array
+                      items:
+                        type: integer
+      responses:
+        '202':
+          description: Configlet application job initiated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+  /software-management/packages:
+    get:
+      operationId: listSoftwarePackages
+      summary: List software packages
+      description: Returns all software packages (images) available in Junos Space.
+      tags:
+        - Software Management
+      responses:
+        '200':
+          description: List of software packages
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  packages:
+                    type: object
+                    properties:
+                      package:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/SoftwarePackage'
+  /software-management/packages/deploy:
+    post:
+      operationId: deploySoftware
+      summary: Deploy software to devices
+      description: Deploys a software package to one or more managed devices.
+      tags:
+        - Software Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                deployRequest:
+                  type: object
+                  properties:
+                    packageId:
+                      type: integer
+                    deviceIds:
+                      type: array
+                      items:
+                        type: integer
+                    reboot:
+                      type: boolean
+                    validate:
+                      type: boolean
+      responses:
+        '202':
+          description: Deployment job initiated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+  /script-management/scripts:
+    get:
+      operationId: listScripts
+      summary: List scripts
+      description: Returns all script bundles available in Junos Space.
+      tags:
+        - Scripts
+      responses:
+        '200':
+          description: List of scripts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  scripts:
+                    type: object
+                    properties:
+                      script:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Script'
+  /script-management/scripts/{script_id}/execute:
+    post:
+      operationId: executeScript
+      summary: Execute script on devices
+      description: Executes a script on one or more managed devices.
+      tags:
+        - Scripts
+      parameters:
+        - name: script_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                execRequest:
+                  type: object
+                  properties:
+                    deviceIds:
+                      type: array
+                      items:
+                        type: integer
+                    scriptParams:
+                      type: object
+                      additionalProperties:
+                        type: string
+      responses:
+        '202':
+          description: Script execution job initiated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+  /user-management/users:
+    get:
+      operationId: listUsers
+      summary: List users
+      description: Returns all users configured in Junos Space.
+      tags:
+        - Users
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: object
+                    properties:
+                      user:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/User'
+  /user-management/roles:
+    get:
+      operationId: listRoles
+      summary: List roles
+      description: Returns all roles available in Junos Space.
+      tags:
+        - Users
+      responses:
+        '200':
+          description: List of roles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  roles:
+                    type: object
+                    properties:
+                      role:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Role'
+  /tag-management/tags:
+    get:
+      operationId: listTags
+      summary: List tags
+      description: Returns all tags used for device grouping.
+      tags:
+        - Tags
+      responses:
+        '200':
+          description: List of tags
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tags:
+                    type: object
+                    properties:
+                      tag:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Tag'
+    post:
+      operationId: createTag
+      summary: Create a tag
+      description: Creates a new tag for device grouping.
+      tags:
+        - Tags
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+      responses:
+        '201':
+          description: Tag created
+  /audit-log/events:
+    get:
+      operationId: listAuditEvents
+      summary: List audit events
+      description: Returns audit log events for Junos Space operations.
+      tags:
+        - Audit Logs
+      parameters:
+        - name: startTime
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: endTime
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - $ref: '#/components/parameters/PageStart'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Audit events
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  auditEvents:
+                    type: object
+                    properties:
+                      auditEvent:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/AuditEvent'
+  /job-management/jobs:
+    get:
+      operationId: listJobs
+      summary: List jobs
+      description: Returns the list of asynchronous jobs.
+      tags:
+        - Jobs
+      parameters:
+        - name: state
+          in: query
+          description: Filter by job state
+          schema:
+            type: string
+            enum:
+              - INPROGRESS
+              - SUCCESS
+              - FAILURE
+              - CANCELLED
+        - $ref: '#/components/parameters/PageStart'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: List of jobs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  jobs:
+                    type: object
+                    properties:
+                      job:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Job'
+  /job-management/jobs/{job_id}:
+    get:
+      operationId: getJob
+      summary: Get job details
+      description: Returns details for a specific asynchronous job.
+      tags:
+        - Jobs
+      parameters:
+        - name: job_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Job details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic authentication with Junos Space user credentials
+  parameters:
+    DeviceId:
+      name: device_id
+      in: path
+      required: true
+      description: Device unique identifier
+      schema:
+        type: integer
+    PageStart:
+      name: paging.start
+      in: query
+      description: Starting index for pagination
+      schema:
+        type: integer
+        default: 0
+    PageSize:
+      name: paging.limit
+      in: query
+      description: Number of results per page
+      schema:
+        type: integer
+        default: 25
+  schemas:
+    Device:
+      type: object
+      properties:
+        '@key':
+          type: integer
+        deviceId:
+          type: integer
+        name:
+          type: string
+        ipAddr:
+          type: string
+        platform:
+          type: string
+          description: Device platform (e.g., SRX, MX, EX, QFX)
+        serialNumber:
+          type: string
+        osVersion:
+          type: string
+        connectionStatus:
+          type: string
+          enum:
+            - up
+            - down
+        managedStatus:
+          type: string
+          enum:
+            - In Sync
+            - Out Of Sync
+            - Space Changed
+            - Device Changed
+        deviceFamily:
+          type: string
+        lastRebootTime:
+          type: string
+          format: date-time
+    ConfigFile:
+      type: object
+      properties:
+        configFileId:
+          type: integer
+        deviceId:
+          type: integer
+        fileName:
+          type: string
+        configVersion:
+          type: integer
+        createdDate:
+          type: string
+          format: date-time
+    SoftwarePackage:
+      type: object
+      properties:
+        packageId:
+          type: integer
+        fileName:
+          type: string
+        platform:
+          type: string
+        version:
+          type: string
+        size:
+          type: integer
+          description: Package size in bytes
+        uploadDate:
+          type: string
+          format: date-time
+    Script:
+      type: object
+      properties:
+        scriptId:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        scriptType:
+          type: string
+          enum:
+            - op
+            - event
+            - commit
+            - snmp
+        language:
+          type: string
+          enum:
+            - slax
+            - xslt
+            - python
+    User:
+      type: object
+      properties:
+        userId:
+          type: integer
+        name:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        roles:
+          type: array
+          items:
+            type: string
+    Role:
+      type: object
+      properties:
+        roleId:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+    Tag:
+      type: object
+      properties:
+        tagId:
+          type: integer
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+            - public
+            - private
+        description:
+          type: string
+    AuditEvent:
+      type: object
+      properties:
+        eventId:
+          type: integer
+        userName:
+          type: string
+        taskName:
+          type: string
+        state:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        details:
+          type: string
+    Job:
+      type: object
+      properties:
+        jobId:
+          type: integer
+        name:
+          type: string
+        state:
+          type: string
+          enum:
+            - INPROGRESS
+            - SUCCESS
+            - FAILURE
+            - CANCELLED
+        percentComplete:
+          type: number
+        createdTime:
+          type: string
+          format: date-time
+        completedTime:
+          type: string
+          format: date-time
+        summary:
+          type: string

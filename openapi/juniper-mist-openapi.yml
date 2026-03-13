@@ -1,0 +1,1435 @@
+openapi: 3.1.0
+info:
+  title: Juniper Mist API
+  description: >-
+    Juniper Mist is a cloud-native, AI-driven networking platform that provides
+    APIs for managing wireless, wired, and SD-WAN infrastructure. The Mist API
+    enables full lifecycle management of sites, devices, WLANs, clients,
+    and analytics through a RESTful interface. It supports organization-level
+    and site-level management with token-based and OAuth2 authentication.
+  version: 1.0.0
+  contact:
+    name: Juniper Mist Support
+    url: https://www.juniper.net/us/en/products/mist-ai.html
+    email: support@mist.com
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+externalDocs:
+  description: Juniper Mist API Documentation
+  url: https://doc.mist-lab.fr/
+servers:
+  - url: https://api.mist.com/api/v1
+    description: Global Cloud (US)
+  - url: https://api.eu.mist.com/api/v1
+    description: EU Cloud
+  - url: https://api.gc1.mist.com/api/v1
+    description: GovCloud
+security:
+  - apiToken: []
+  - csrfToken: []
+tags:
+  - name: Self
+    description: Operations for the authenticated user account
+  - name: Organizations
+    description: Organization-level management
+  - name: Sites
+    description: Site-level management
+  - name: Devices
+    description: Device provisioning and management
+  - name: WLANs
+    description: Wireless LAN configuration
+  - name: Clients
+    description: Client session and statistics tracking
+  - name: Inventory
+    description: Device inventory management
+  - name: Insights
+    description: AI-driven analytics and insights
+  - name: Webhooks
+    description: Webhook configuration for event notifications
+  - name: Maps
+    description: Floorplan and map management
+  - name: RF Templates
+    description: Radio frequency templates
+  - name: WAN Edges
+    description: SD-WAN edge device management
+  - name: Site Groups
+    description: Logical grouping of sites
+paths:
+  /self:
+    get:
+      operationId: getSelf
+      summary: Get current user info
+      description: Returns information about the currently authenticated user.
+      tags:
+        - Self
+      responses:
+        '200':
+          description: Current user information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Admin'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /self/apitokens:
+    get:
+      operationId: listApiTokens
+      summary: List API tokens
+      description: Returns a list of API tokens for the authenticated user.
+      tags:
+        - Self
+      responses:
+        '200':
+          description: List of API tokens
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApiToken'
+    post:
+      operationId: createApiToken
+      summary: Create API token
+      description: Creates a new API token for the authenticated user.
+      tags:
+        - Self
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the API token
+                privileges:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Privilege'
+      responses:
+        '200':
+          description: API token created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiToken'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /orgs:
+    get:
+      operationId: listOrganizations
+      summary: List organizations
+      description: Returns a list of organizations accessible to the authenticated user.
+      tags:
+        - Organizations
+      responses:
+        '200':
+          description: List of organizations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Organization'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /orgs/{org_id}:
+    get:
+      operationId: getOrganization
+      summary: Get organization
+      description: Returns details for a specific organization.
+      tags:
+        - Organizations
+      parameters:
+        - $ref: '#/components/parameters/OrgId'
+      responses:
+        '200':
+          description: Organization details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      operationId: updateOrganization
+      summary: Update organization
+      description: Updates an existing organization.
+      tags:
+        - Organizations
+      parameters:
+        - $ref: '#/components/parameters/OrgId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Organization'
+      responses:
+        '200':
+          description: Organization updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /orgs/{org_id}/stats:
+    get:
+      operationId: getOrgStats
+      summary: Get organization statistics
+      description: Returns statistics for the organization including device counts and client counts.
+      tags:
+        - Organizations
+      parameters:
+        - $ref: '#/components/parameters/OrgId'
+      responses:
+        '200':
+          description: Organization statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrgStats'
+  /orgs/{org_id}/sites:
+    get:
+      operationId: listOrgSites
+      summary: List sites in organization
+      description: Returns a list of all sites belonging to the specified organization.
+      tags:
+        - Sites
+      parameters:
+        - $ref: '#/components/parameters/OrgId'
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: List of sites
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Site'
+    post:
+      operationId: createSite
+      summary: Create a site
+      description: Creates a new site within the specified organization.
+      tags:
+        - Sites
+      parameters:
+        - $ref: '#/components/parameters/OrgId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Site'
+      responses:
+        '200':
+          description: Site created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Site'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /orgs/{org_id}/inventory:
+    get:
+      operationId: getOrgInventory
+      summary: Get organization inventory
+      description: Returns the device inventory for the organization.
+      tags:
+        - Inventory
+      parameters:
+        - $ref: '#/components/parameters/OrgId'
+        - name: type
+          in: query
+          description: Filter by device type
+          schema:
+            type: string
+            enum:
+              - ap
+              - switch
+              - gateway
+        - name: unassigned
+          in: query
+          description: Filter for unassigned devices only
+          schema:
+            type: boolean
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Device inventory
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InventoryDevice'
+    post:
+      operationId: addDevicesToInventory
+      summary: Add devices to inventory
+      description: Adds devices to the organization inventory by claim code or serial number.
+      tags:
+        - Inventory
+      parameters:
+        - $ref: '#/components/parameters/OrgId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - op
+              properties:
+                op:
+                  type: string
+                  enum:
+                    - add
+                    - assign
+                    - unassign
+                    - delete
+                serials:
+                  type: array
+                  items:
+                    type: string
+                site_id:
+                  type: string
+                  format: uuid
+      responses:
+        '200':
+          description: Inventory operation successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  added:
+                    type: array
+                    items:
+                      type: string
+                  duplicated:
+                    type: array
+                    items:
+                      type: string
+                  error:
+                    type: array
+                    items:
+                      type: string
+  /orgs/{org_id}/sitegroups:
+    get:
+      operationId: listSiteGroups
+      summary: List site groups
+      description: Returns site groups for the organization.
+      tags:
+        - Site Groups
+      parameters:
+        - $ref: '#/components/parameters/OrgId'
+      responses:
+        '200':
+          description: List of site groups
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SiteGroup'
+    post:
+      operationId: createSiteGroup
+      summary: Create a site group
+      description: Creates a new site group within the organization.
+      tags:
+        - Site Groups
+      parameters:
+        - $ref: '#/components/parameters/OrgId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SiteGroup'
+      responses:
+        '200':
+          description: Site group created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteGroup'
+  /orgs/{org_id}/webhooks:
+    get:
+      operationId: listOrgWebhooks
+      summary: List organization webhooks
+      description: Returns webhooks configured at the organization level.
+      tags:
+        - Webhooks
+      parameters:
+        - $ref: '#/components/parameters/OrgId'
+      responses:
+        '200':
+          description: List of webhooks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Webhook'
+    post:
+      operationId: createOrgWebhook
+      summary: Create organization webhook
+      description: Creates a new webhook at the organization level.
+      tags:
+        - Webhooks
+      parameters:
+        - $ref: '#/components/parameters/OrgId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Webhook'
+      responses:
+        '200':
+          description: Webhook created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+  /sites/{site_id}:
+    get:
+      operationId: getSite
+      summary: Get site details
+      description: Returns details for a specific site.
+      tags:
+        - Sites
+      parameters:
+        - $ref: '#/components/parameters/SiteId'
+      responses:
+        '200':
+          description: Site details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Site'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      operationId: updateSite
+      summary: Update site
+      description: Updates an existing site.
+      tags:
+        - Sites
+      parameters:
+        - $ref: '#/components/parameters/SiteId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Site'
+      responses:
+        '200':
+          description: Site updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Site'
+    delete:
+      operationId: deleteSite
+      summary: Delete site
+      description: Deletes a site from the organization.
+      tags:
+        - Sites
+      parameters:
+        - $ref: '#/components/parameters/SiteId'
+      responses:
+        '200':
+          description: Site deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /sites/{site_id}/stats:
+    get:
+      operationId: getSiteStats
+      summary: Get site statistics
+      description: Returns statistics for a specific site.
+      tags:
+        - Sites
+      parameters:
+        - $ref: '#/components/parameters/SiteId'
+      responses:
+        '200':
+          description: Site statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteStats'
+  /sites/{site_id}/devices:
+    get:
+      operationId: listSiteDevices
+      summary: List site devices
+      description: Returns all devices assigned to the specified site.
+      tags:
+        - Devices
+      parameters:
+        - $ref: '#/components/parameters/SiteId'
+        - name: type
+          in: query
+          description: Filter by device type
+          schema:
+            type: string
+            enum:
+              - ap
+              - switch
+              - gateway
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: List of devices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Device'
+  /sites/{site_id}/devices/{device_id}:
+    get:
+      operationId: getSiteDevice
+      summary: Get device details
+      description: Returns details for a specific device at a site.
+      tags:
+        - Devices
+      parameters:
+        - $ref: '#/components/parameters/SiteId'
+        - $ref: '#/components/parameters/DeviceId'
+      responses:
+        '200':
+          description: Device details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+    put:
+      operationId: updateSiteDevice
+      summary: Update device
+      description: Updates configuration for a specific device.
+      tags:
+        - Devices
+      parameters:
+        - $ref: '#/components/parameters/SiteId'
+        - $ref: '#/components/parameters/DeviceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Device'
+      responses:
+        '200':
+          description: Device updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+    delete:
+      operationId: deleteSiteDevice
+      summary: Delete device
+      description: Removes a device from the site.
+      tags:
+        - Devices
+      parameters:
+        - $ref: '#/components/parameters/SiteId'
+        - $ref: '#/components/parameters/DeviceId'
+      responses:
+        '200':
+          description: Device deleted
+  /sites/{site_id}/devices/stats:
+    get:
+      operationId: listSiteDeviceStats
+      summary: List site device statistics
+      description: Returns statistics for all devices at a site.
+      tags:
+        - Devices
+      parameters:
+        - $ref: '#/components/parameters/SiteId'
+        - name: type
+          in: query
+          description: Filter by device type
+          schema:
+            type: string
+            enum:
+              - ap
+              - switch
+              - gateway
+      responses:
+        '200':
+          description: Device statistics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeviceStats'
+  /sites/{site_id}/wlans:
+    get:
+      operationId: listSiteWlans
+      summary: List WLANs
+      description: Returns all WLANs configured at the specified site.
+      tags:
+        - WLANs
+      parameters:
+        - $ref: '#/components/parameters/SiteId'
+      responses:
+        '200':
+          description: List of WLANs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Wlan'
+    post:
+      operationId: createSiteWlan
+      summary: Create WLAN
+      description: Creates a new WLAN at the specified site.
+      tags:
+        - WLANs
+      parameters:
+        - $ref: '#/components/parameters/SiteId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Wlan'
+      responses:
+        '200':
+          description: WLAN created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wlan'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /sites/{site_id}/wlans/{wlan_id}:
+    get:
+      operationId: getSiteWlan
+      summary: Get WLAN details
+      description: Returns details for a specific WLAN.
+      tags:
+        - WLANs
+      parameters:
+        - $ref: '#/components/parameters/SiteId'
+        - $ref: '#/components/parameters/WlanId'
+      responses:
+        '200':
+          description: WLAN details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wlan'
+    put:
+      operationId: updateSiteWlan
+      summary: Update WLAN
+      description: Updates an existing WLAN configuration.
+      tags:
+        - WLANs
+      parameters:
+        - $ref: '#/components/parameters/SiteId'
+        - $ref: '#/components/parameters/WlanId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Wlan'
+      responses:
+        '200':
+          description: WLAN updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wlan'
+    delete:
+      operationId: deleteSiteWlan
+      summary: Delete WLAN
+      description: Deletes a WLAN from the site.
+      tags:
+        - WLANs
+      parameters:
+        - $ref: '#/components/parameters/SiteId'
+        - $ref: '#/components/parameters/WlanId'
+      responses:
+        '200':
+          description: WLAN deleted
+  /sites/{site_id}/stats/clients:
+    get:
+      operationId: listSiteClientStats
+      summary: List client statistics
+      description: Returns wireless client statistics for the site.
+      tags:
+        - Clients
+      parameters:
+        - $ref: '#/components/parameters/SiteId'
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Client statistics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClientStats'
+  /sites/{site_id}/insights/stats:
+    get:
+      operationId: getSiteInsights
+      summary: Get site AI insights
+      description: >-
+        Returns AI-driven insights and analytics for the site, including
+        anomaly detection, Service Level Expectations (SLE), and recommendations.
+      tags:
+        - Insights
+      parameters:
+        - $ref: '#/components/parameters/SiteId'
+        - name: metric
+          in: query
+          description: Specific insight metric to retrieve
+          schema:
+            type: string
+            enum:
+              - time-to-connect
+              - throughput
+              - coverage
+              - capacity
+              - roaming
+      responses:
+        '200':
+          description: Site insights
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteInsights'
+  /sites/{site_id}/maps:
+    get:
+      operationId: listSiteMaps
+      summary: List site maps
+      description: Returns all maps (floorplans) configured for the site.
+      tags:
+        - Maps
+      parameters:
+        - $ref: '#/components/parameters/SiteId'
+      responses:
+        '200':
+          description: List of maps
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Map'
+    post:
+      operationId: createSiteMap
+      summary: Create site map
+      description: Creates a new map (floorplan) for the site.
+      tags:
+        - Maps
+      parameters:
+        - $ref: '#/components/parameters/SiteId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Map'
+      responses:
+        '200':
+          description: Map created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Map'
+  /sites/{site_id}/rftemplates:
+    get:
+      operationId: listSiteRfTemplates
+      summary: List RF templates
+      description: Returns RF templates available at the site.
+      tags:
+        - RF Templates
+      parameters:
+        - $ref: '#/components/parameters/SiteId'
+      responses:
+        '200':
+          description: List of RF templates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RfTemplate'
+  /orgs/{org_id}/wanedges:
+    get:
+      operationId: listOrgWanEdges
+      summary: List WAN edge devices
+      description: Returns SD-WAN edge devices for the organization.
+      tags:
+        - WAN Edges
+      parameters:
+        - $ref: '#/components/parameters/OrgId'
+      responses:
+        '200':
+          description: List of WAN edge devices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WanEdge'
+components:
+  securitySchemes:
+    apiToken:
+      type: http
+      scheme: bearer
+      description: >-
+        API token authentication. Obtain tokens from the Mist dashboard
+        under Organization > Settings > API Token, or via the /self/apitokens
+        endpoint. Pass as Authorization: Token <api-token>.
+    csrfToken:
+      type: apiKey
+      in: header
+      name: X-CSRFToken
+      description: CSRF token for session-based authentication.
+  parameters:
+    OrgId:
+      name: org_id
+      in: path
+      required: true
+      description: Organization unique identifier
+      schema:
+        type: string
+        format: uuid
+    SiteId:
+      name: site_id
+      in: path
+      required: true
+      description: Site unique identifier
+      schema:
+        type: string
+        format: uuid
+    DeviceId:
+      name: device_id
+      in: path
+      required: true
+      description: Device unique identifier
+      schema:
+        type: string
+        format: uuid
+    WlanId:
+      name: wlan_id
+      in: path
+      required: true
+      description: WLAN unique identifier
+      schema:
+        type: string
+        format: uuid
+    PageParam:
+      name: page
+      in: query
+      description: Page number for pagination
+      schema:
+        type: integer
+        default: 1
+    LimitParam:
+      name: limit
+      in: query
+      description: Number of results per page
+      schema:
+        type: integer
+        default: 100
+        maximum: 1000
+  responses:
+    BadRequest:
+      description: Bad request - invalid parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized - invalid or missing authentication
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Error message
+    Admin:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        first_name:
+          type: string
+        last_name:
+          type: string
+        phone:
+          type: string
+        privileges:
+          type: array
+          items:
+            $ref: '#/components/schemas/Privilege'
+        tags:
+          type: array
+          items:
+            type: string
+        created_time:
+          type: number
+          description: Unix timestamp
+        modified_time:
+          type: number
+          description: Unix timestamp
+    ApiToken:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        key:
+          type: string
+          description: The API token value (only returned on creation)
+        name:
+          type: string
+        privileges:
+          type: array
+          items:
+            $ref: '#/components/schemas/Privilege'
+        created_time:
+          type: number
+    Privilege:
+      type: object
+      properties:
+        scope:
+          type: string
+          enum:
+            - org
+            - site
+            - sitegroup
+        role:
+          type: string
+          enum:
+            - admin
+            - write
+            - read
+            - helpdesk
+        org_id:
+          type: string
+          format: uuid
+        site_id:
+          type: string
+          format: uuid
+        sitegroup_id:
+          type: string
+          format: uuid
+    Organization:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        orggroup_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        session_expiry:
+          type: integer
+          description: Session expiry in minutes
+        alarmtemplate_id:
+          type: string
+          format: uuid
+        created_time:
+          type: number
+        modified_time:
+          type: number
+    OrgStats:
+      type: object
+      properties:
+        num_sites:
+          type: integer
+        num_devices:
+          type: integer
+        num_devices_connected:
+          type: integer
+        num_devices_disconnected:
+          type: integer
+        num_clients:
+          type: integer
+    Site:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        address:
+          type: string
+        timezone:
+          type: string
+          description: Timezone name (e.g., America/Los_Angeles)
+        country_code:
+          type: string
+        latlng:
+          type: object
+          properties:
+            lat:
+              type: number
+            lng:
+              type: number
+        sitegroup_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        rftemplate_id:
+          type: string
+          format: uuid
+        created_time:
+          type: number
+        modified_time:
+          type: number
+    SiteStats:
+      type: object
+      properties:
+        num_ap:
+          type: integer
+        num_ap_connected:
+          type: integer
+        num_switch:
+          type: integer
+        num_gateway:
+          type: integer
+        num_clients:
+          type: integer
+    SiteGroup:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        site_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        created_time:
+          type: number
+        modified_time:
+          type: number
+    Device:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        site_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+            - ap
+            - switch
+            - gateway
+        model:
+          type: string
+        serial:
+          type: string
+        mac:
+          type: string
+          description: MAC address of the device
+        ip:
+          type: string
+          description: IP address of the device
+        map_id:
+          type: string
+          format: uuid
+        x:
+          type: number
+          description: X position on the map
+        y:
+          type: number
+          description: Y position on the map
+        height:
+          type: number
+          description: Height of the device placement
+        notes:
+          type: string
+        created_time:
+          type: number
+        modified_time:
+          type: number
+    DeviceStats:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        mac:
+          type: string
+        model:
+          type: string
+        status:
+          type: string
+          enum:
+            - connected
+            - disconnected
+            - upgrading
+            - restarting
+        uptime:
+          type: integer
+          description: Device uptime in seconds
+        last_seen:
+          type: number
+        num_clients:
+          type: integer
+        tx_bytes:
+          type: integer
+        rx_bytes:
+          type: integer
+        tx_pkts:
+          type: integer
+        rx_pkts:
+          type: integer
+    InventoryDevice:
+      type: object
+      properties:
+        mac:
+          type: string
+        serial:
+          type: string
+        model:
+          type: string
+        type:
+          type: string
+          enum:
+            - ap
+            - switch
+            - gateway
+        org_id:
+          type: string
+          format: uuid
+        site_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        connected:
+          type: boolean
+        created_time:
+          type: number
+        modified_time:
+          type: number
+    Wlan:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        site_id:
+          type: string
+          format: uuid
+        ssid:
+          type: string
+          description: SSID name
+        enabled:
+          type: boolean
+        hide_ssid:
+          type: boolean
+          description: Whether to hide the SSID from beacon frames
+        band:
+          type: string
+          enum:
+            - '24'
+            - '5'
+            - '6'
+            - both
+        auth:
+          type: object
+          description: Authentication settings
+          properties:
+            type:
+              type: string
+              enum:
+                - open
+                - psk
+                - eap
+                - wep
+                - psk-tkip
+                - psk-wpa2-tkip
+            psk:
+              type: string
+              description: Pre-shared key value
+        vlan_enabled:
+          type: boolean
+        vlan_id:
+          type: integer
+        apply_to:
+          type: string
+          enum:
+            - site
+            - wxtags
+            - aps
+        created_time:
+          type: number
+        modified_time:
+          type: number
+    ClientStats:
+      type: object
+      properties:
+        mac:
+          type: string
+        hostname:
+          type: string
+        ip:
+          type: string
+        ssid:
+          type: string
+        wlan_id:
+          type: string
+          format: uuid
+        ap_mac:
+          type: string
+        ap_id:
+          type: string
+          format: uuid
+        band:
+          type: string
+        channel:
+          type: integer
+        rssi:
+          type: number
+          description: Signal strength in dBm
+        snr:
+          type: number
+          description: Signal-to-noise ratio
+        tx_rate:
+          type: number
+          description: Transmit rate in Mbps
+        rx_rate:
+          type: number
+          description: Receive rate in Mbps
+        tx_bytes:
+          type: integer
+        rx_bytes:
+          type: integer
+        uptime:
+          type: integer
+    SiteInsights:
+      type: object
+      properties:
+        site_id:
+          type: string
+          format: uuid
+        metrics:
+          type: object
+          properties:
+            time_to_connect:
+              type: object
+              properties:
+                total:
+                  type: number
+                user_minutes:
+                  type: number
+            throughput:
+              type: object
+              properties:
+                download:
+                  type: number
+                upload:
+                  type: number
+            coverage:
+              type: object
+              properties:
+                avg_rssi:
+                  type: number
+    Map:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        site_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+            - image
+            - google
+        width:
+          type: number
+          description: Width in meters
+        height:
+          type: number
+          description: Height in meters
+        ppm:
+          type: number
+          description: Pixels per meter
+        url:
+          type: string
+          description: URL to the floorplan image
+        created_time:
+          type: number
+        modified_time:
+          type: number
+    RfTemplate:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        band_24:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            power:
+              type: integer
+            channels:
+              type: array
+              items:
+                type: integer
+        band_5:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            power:
+              type: integer
+            channels:
+              type: array
+              items:
+                type: integer
+        band_6:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            power:
+              type: integer
+            channels:
+              type: array
+              items:
+                type: integer
+    WanEdge:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        site_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        model:
+          type: string
+        serial:
+          type: string
+        connected:
+          type: boolean
+        version:
+          type: string
+    Webhook:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        site_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        url:
+          type: string
+          format: uri
+        enabled:
+          type: boolean
+        topics:
+          type: array
+          items:
+            type: string
+            enum:
+              - device-events
+              - alarms
+              - audits
+              - client-sessions
+              - device-updowns
+              - location
+        type:
+          type: string
+          enum:
+            - http-post
+            - splunk
+            - google-pubsub
+        secret:
+          type: string
+          description: Secret for webhook signature verification
+        created_time:
+          type: number
+        modified_time:
+          type: number

@@ -1,0 +1,934 @@
+openapi: 3.1.0
+info:
+  title: Juniper Contrail Networking API
+  description: >-
+    Juniper Contrail (now Cloud-Native Contrail Networking) provides an
+    SDN controller with a RESTful API for managing virtual networks, network
+    policies, security groups, and service chaining. The API server runs
+    on port 8082 and provides CRUD operations on networking objects. It
+    supports multi-tenancy through project-based resource isolation and
+    integrates with OpenStack, Kubernetes, and VMware orchestrators.
+  version: 5.1.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/documentation/product/us/en/contrail-networking/
+    email: support@juniper.net
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+externalDocs:
+  description: Contrail API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/contrail/
+servers:
+  - url: https://{contrail_controller}:8082
+    description: Contrail API Server
+    variables:
+      contrail_controller:
+        default: contrail.example.com
+        description: Hostname or IP of the Contrail controller
+security:
+  - keystoneAuth: []
+tags:
+  - name: Projects
+    description: Project (tenant) management
+  - name: Virtual Networks
+    description: Virtual network management
+  - name: Network Policies
+    description: Network policy management
+  - name: Security Groups
+    description: Security group and firewall rule management
+  - name: Network IPAM
+    description: IP Address Management
+  - name: Service Instances
+    description: Service chaining and service instances
+  - name: Floating IPs
+    description: Floating IP management
+  - name: Routing Instances
+    description: Routing instance management
+  - name: BGP Routers
+    description: BGP router management
+  - name: Analytics
+    description: Analytics and operational data
+paths:
+  /projects:
+    get:
+      operationId: listProjects
+      summary: List projects
+      description: Returns all projects (tenants) in the system.
+      tags:
+        - Projects
+      parameters:
+        - $ref: '#/components/parameters/ParentId'
+        - $ref: '#/components/parameters/DetailParam'
+      responses:
+        '200':
+          description: List of projects
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  projects:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ResourceRef'
+    post:
+      operationId: createProject
+      summary: Create a project
+      description: Creates a new project (tenant).
+      tags:
+        - Projects
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                project:
+                  $ref: '#/components/schemas/Project'
+      responses:
+        '200':
+          description: Project created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  project:
+                    $ref: '#/components/schemas/Project'
+  /project/{project_id}:
+    get:
+      operationId: getProject
+      summary: Get project details
+      description: Returns details of a specific project.
+      tags:
+        - Projects
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+      responses:
+        '200':
+          description: Project details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  project:
+                    $ref: '#/components/schemas/Project'
+    put:
+      operationId: updateProject
+      summary: Update project
+      description: Updates an existing project.
+      tags:
+        - Projects
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                project:
+                  $ref: '#/components/schemas/Project'
+      responses:
+        '200':
+          description: Project updated
+    delete:
+      operationId: deleteProject
+      summary: Delete project
+      description: Deletes a project.
+      tags:
+        - Projects
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+      responses:
+        '200':
+          description: Project deleted
+  /virtual-networks:
+    get:
+      operationId: listVirtualNetworks
+      summary: List virtual networks
+      description: Returns all virtual networks.
+      tags:
+        - Virtual Networks
+      parameters:
+        - $ref: '#/components/parameters/ParentId'
+        - $ref: '#/components/parameters/DetailParam'
+      responses:
+        '200':
+          description: List of virtual networks
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  virtual-networks:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ResourceRef'
+    post:
+      operationId: createVirtualNetwork
+      summary: Create virtual network
+      description: Creates a new virtual network.
+      tags:
+        - Virtual Networks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                virtual-network:
+                  $ref: '#/components/schemas/VirtualNetwork'
+      responses:
+        '200':
+          description: Virtual network created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  virtual-network:
+                    $ref: '#/components/schemas/VirtualNetwork'
+  /virtual-network/{vn_id}:
+    get:
+      operationId: getVirtualNetwork
+      summary: Get virtual network
+      description: Returns details of a specific virtual network.
+      tags:
+        - Virtual Networks
+      parameters:
+        - name: vn_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Virtual network details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  virtual-network:
+                    $ref: '#/components/schemas/VirtualNetwork'
+    put:
+      operationId: updateVirtualNetwork
+      summary: Update virtual network
+      description: Updates an existing virtual network.
+      tags:
+        - Virtual Networks
+      parameters:
+        - name: vn_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                virtual-network:
+                  $ref: '#/components/schemas/VirtualNetwork'
+      responses:
+        '200':
+          description: Virtual network updated
+    delete:
+      operationId: deleteVirtualNetwork
+      summary: Delete virtual network
+      description: Deletes a virtual network.
+      tags:
+        - Virtual Networks
+      parameters:
+        - name: vn_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Virtual network deleted
+  /network-policys:
+    get:
+      operationId: listNetworkPolicies
+      summary: List network policies
+      description: Returns all network policies.
+      tags:
+        - Network Policies
+      parameters:
+        - $ref: '#/components/parameters/ParentId'
+        - $ref: '#/components/parameters/DetailParam'
+      responses:
+        '200':
+          description: List of network policies
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  network-policys:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ResourceRef'
+    post:
+      operationId: createNetworkPolicy
+      summary: Create network policy
+      description: Creates a new network policy for controlling traffic between virtual networks.
+      tags:
+        - Network Policies
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                network-policy:
+                  $ref: '#/components/schemas/NetworkPolicy'
+      responses:
+        '200':
+          description: Network policy created
+  /security-groups:
+    get:
+      operationId: listSecurityGroups
+      summary: List security groups
+      description: Returns all security groups.
+      tags:
+        - Security Groups
+      parameters:
+        - $ref: '#/components/parameters/ParentId'
+        - $ref: '#/components/parameters/DetailParam'
+      responses:
+        '200':
+          description: List of security groups
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  security-groups:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ResourceRef'
+    post:
+      operationId: createSecurityGroup
+      summary: Create security group
+      description: Creates a new security group with access control rules.
+      tags:
+        - Security Groups
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                security-group:
+                  $ref: '#/components/schemas/SecurityGroup'
+      responses:
+        '200':
+          description: Security group created
+  /network-ipams:
+    get:
+      operationId: listNetworkIpams
+      summary: List network IPAMs
+      description: Returns all IP Address Management configurations.
+      tags:
+        - Network IPAM
+      parameters:
+        - $ref: '#/components/parameters/ParentId'
+        - $ref: '#/components/parameters/DetailParam'
+      responses:
+        '200':
+          description: List of network IPAMs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  network-ipams:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ResourceRef'
+    post:
+      operationId: createNetworkIpam
+      summary: Create network IPAM
+      description: Creates a new IP Address Management configuration.
+      tags:
+        - Network IPAM
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                network-ipam:
+                  $ref: '#/components/schemas/NetworkIpam'
+      responses:
+        '200':
+          description: Network IPAM created
+  /service-instances:
+    get:
+      operationId: listServiceInstances
+      summary: List service instances
+      description: Returns all service instances for service chaining.
+      tags:
+        - Service Instances
+      parameters:
+        - $ref: '#/components/parameters/ParentId'
+        - $ref: '#/components/parameters/DetailParam'
+      responses:
+        '200':
+          description: List of service instances
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  service-instances:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ResourceRef'
+    post:
+      operationId: createServiceInstance
+      summary: Create service instance
+      description: Creates a new service instance for network service chaining.
+      tags:
+        - Service Instances
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                service-instance:
+                  $ref: '#/components/schemas/ServiceInstance'
+      responses:
+        '200':
+          description: Service instance created
+  /floating-ip-pools:
+    get:
+      operationId: listFloatingIpPools
+      summary: List floating IP pools
+      description: Returns all floating IP pools.
+      tags:
+        - Floating IPs
+      responses:
+        '200':
+          description: List of floating IP pools
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  floating-ip-pools:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ResourceRef'
+  /floating-ips:
+    get:
+      operationId: listFloatingIps
+      summary: List floating IPs
+      description: Returns all floating IPs.
+      tags:
+        - Floating IPs
+      responses:
+        '200':
+          description: List of floating IPs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  floating-ips:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ResourceRef'
+  /routing-instances:
+    get:
+      operationId: listRoutingInstances
+      summary: List routing instances
+      description: Returns all routing instances.
+      tags:
+        - Routing Instances
+      parameters:
+        - $ref: '#/components/parameters/ParentId'
+      responses:
+        '200':
+          description: List of routing instances
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  routing-instances:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ResourceRef'
+  /bgp-routers:
+    get:
+      operationId: listBgpRouters
+      summary: List BGP routers
+      description: Returns all BGP router configurations.
+      tags:
+        - BGP Routers
+      responses:
+        '200':
+          description: List of BGP routers
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  bgp-routers:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ResourceRef'
+  /analytics/uves/virtual-networks:
+    get:
+      operationId: listVirtualNetworkAnalytics
+      summary: List virtual network analytics
+      description: Returns UVE (User Visible Entity) analytics for all virtual networks.
+      tags:
+        - Analytics
+      responses:
+        '200':
+          description: Virtual network analytics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    href:
+                      type: string
+  /analytics/uves/virtual-network/{vn_fqname}:
+    get:
+      operationId: getVirtualNetworkAnalytics
+      summary: Get virtual network analytics
+      description: Returns detailed analytics for a specific virtual network.
+      tags:
+        - Analytics
+      parameters:
+        - name: vn_fqname
+          in: path
+          required: true
+          description: Fully qualified name of the virtual network
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Virtual network analytics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VnUve'
+  /analytics/uves/vrouters:
+    get:
+      operationId: listVrouterAnalytics
+      summary: List vRouter analytics
+      description: Returns analytics for all vRouters (compute node agents).
+      tags:
+        - Analytics
+      responses:
+        '200':
+          description: vRouter analytics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    href:
+                      type: string
+components:
+  securitySchemes:
+    keystoneAuth:
+      type: http
+      scheme: bearer
+      description: >-
+        Keystone token authentication. Obtain a token from the Keystone
+        identity service and pass it as X-Auth-Token header.
+  parameters:
+    ProjectId:
+      name: project_id
+      in: path
+      required: true
+      description: Project UUID
+      schema:
+        type: string
+        format: uuid
+    ParentId:
+      name: parent_id
+      in: query
+      description: Filter by parent resource UUID
+      schema:
+        type: string
+        format: uuid
+    DetailParam:
+      name: detail
+      in: query
+      description: Return full object details instead of references
+      schema:
+        type: boolean
+        default: false
+  schemas:
+    ResourceRef:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        fq_name:
+          type: array
+          items:
+            type: string
+        href:
+          type: string
+          format: uri
+    Project:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        fq_name:
+          type: array
+          items:
+            type: string
+        display_name:
+          type: string
+        id_perms:
+          $ref: '#/components/schemas/IdPerms'
+        quota:
+          type: object
+          properties:
+            virtual_network:
+              type: integer
+            subnet:
+              type: integer
+            security_group:
+              type: integer
+            floating_ip:
+              type: integer
+    VirtualNetwork:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        fq_name:
+          type: array
+          items:
+            type: string
+        display_name:
+          type: string
+        parent_type:
+          type: string
+        id_perms:
+          $ref: '#/components/schemas/IdPerms'
+        network_ipam_refs:
+          type: array
+          items:
+            type: object
+            properties:
+              to:
+                type: array
+                items:
+                  type: string
+              attr:
+                type: object
+                properties:
+                  ipam_subnets:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        subnet:
+                          type: object
+                          properties:
+                            ip_prefix:
+                              type: string
+                            ip_prefix_len:
+                              type: integer
+                        default_gateway:
+                          type: string
+                        subnet_uuid:
+                          type: string
+                          format: uuid
+        network_policy_refs:
+          type: array
+          items:
+            type: object
+            properties:
+              to:
+                type: array
+                items:
+                  type: string
+              attr:
+                type: object
+                properties:
+                  sequence:
+                    type: object
+                    properties:
+                      major:
+                        type: integer
+                      minor:
+                        type: integer
+        virtual_network_properties:
+          type: object
+          properties:
+            forwarding_mode:
+              type: string
+              enum:
+                - default
+                - l2_l3
+                - l2
+                - l3
+            vxlan_network_identifier:
+              type: integer
+            rpf:
+              type: string
+              enum:
+                - enable
+                - disable
+    NetworkPolicy:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        fq_name:
+          type: array
+          items:
+            type: string
+        display_name:
+          type: string
+        network_policy_entries:
+          type: object
+          properties:
+            policy_rule:
+              type: array
+              items:
+                type: object
+                properties:
+                  direction:
+                    type: string
+                    enum:
+                      - '>'
+                      - '<>'
+                  protocol:
+                    type: string
+                  action_list:
+                    type: object
+                    properties:
+                      simple_action:
+                        type: string
+                        enum:
+                          - pass
+                          - deny
+                  src_addresses:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        virtual_network:
+                          type: string
+                  dst_addresses:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        virtual_network:
+                          type: string
+                  src_ports:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        start_port:
+                          type: integer
+                        end_port:
+                          type: integer
+                  dst_ports:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        start_port:
+                          type: integer
+                        end_port:
+                          type: integer
+    SecurityGroup:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        fq_name:
+          type: array
+          items:
+            type: string
+        display_name:
+          type: string
+        security_group_entries:
+          type: object
+          properties:
+            policy_rule:
+              type: array
+              items:
+                type: object
+                properties:
+                  direction:
+                    type: string
+                  protocol:
+                    type: string
+                  ethertype:
+                    type: string
+                    enum:
+                      - IPv4
+                      - IPv6
+                  src_addresses:
+                    type: array
+                    items:
+                      type: object
+                  dst_addresses:
+                    type: array
+                    items:
+                      type: object
+                  src_ports:
+                    type: array
+                    items:
+                      type: object
+                  dst_ports:
+                    type: array
+                    items:
+                      type: object
+    NetworkIpam:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        fq_name:
+          type: array
+          items:
+            type: string
+        display_name:
+          type: string
+        ipam_method:
+          type: string
+          enum:
+            - dhcp
+            - fixed
+        ipam_dns_method:
+          type: string
+          enum:
+            - default-dns-server
+            - virtual-dns-server
+            - tenant-dns-server
+            - none
+    ServiceInstance:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        fq_name:
+          type: array
+          items:
+            type: string
+        display_name:
+          type: string
+        service_instance_properties:
+          type: object
+          properties:
+            interface_list:
+              type: array
+              items:
+                type: object
+                properties:
+                  virtual_network:
+                    type: string
+            scale_out:
+              type: object
+              properties:
+                max_instances:
+                  type: integer
+            ha_mode:
+              type: string
+              enum:
+                - active-active
+                - active-standby
+        service_template_refs:
+          type: array
+          items:
+            type: object
+            properties:
+              to:
+                type: array
+                items:
+                  type: string
+    VnUve:
+      type: object
+      properties:
+        UveVirtualNetworkAgent:
+          type: object
+          properties:
+            in_tpkts:
+              type: integer
+            out_tpkts:
+              type: integer
+            in_bytes:
+              type: integer
+            out_bytes:
+              type: integer
+            virtualmachine_list:
+              type: array
+              items:
+                type: string
+            interface_list:
+              type: array
+              items:
+                type: string
+    IdPerms:
+      type: object
+      properties:
+        enable:
+          type: boolean
+        uuid:
+          type: object
+          properties:
+            uuid_mslong:
+              type: integer
+            uuid_lslong:
+              type: integer
+        created:
+          type: string
+          format: date-time
+        last_modified:
+          type: string
+          format: date-time
+        description:
+          type: string
+        user_visible:
+          type: boolean

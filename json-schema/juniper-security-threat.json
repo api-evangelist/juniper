@@ -1,0 +1,172 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/api-search/juniper/json-schema/juniper-security-threat.json",
+  "title": "Juniper Security Threat",
+  "description": "Schema representing a security threat or indicator of compromise as detected by Juniper ATP Cloud and SRX security platforms. Covers malware verdicts, IP/URL/domain reputation, and threat intelligence indicators.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the threat"
+    },
+    "indicator_type": {
+      "type": "string",
+      "enum": [
+        "ip",
+        "domain",
+        "url",
+        "file_hash",
+        "email",
+        "certificate"
+      ],
+      "description": "Type of threat indicator"
+    },
+    "indicator_value": {
+      "type": "string",
+      "description": "The actual indicator value (IP address, domain, URL, hash, etc.)"
+    },
+    "threat_score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 10,
+      "description": "Threat severity score from 0 (clean) to 10 (critical)"
+    },
+    "verdict": {
+      "type": "string",
+      "enum": [
+        "clean",
+        "suspicious",
+        "malicious",
+        "unknown"
+      ],
+      "description": "Analysis verdict"
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Confidence level of the assessment (0 to 1)"
+    },
+    "malware_info": {
+      "type": "object",
+      "description": "Malware classification details (for file-based threats)",
+      "properties": {
+        "family": {
+          "type": "string",
+          "description": "Malware family name"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "trojan",
+            "ransomware",
+            "worm",
+            "adware",
+            "spyware",
+            "backdoor",
+            "rootkit",
+            "cryptominer",
+            "downloader",
+            "exploit",
+            "other"
+          ]
+        },
+        "variant": {
+          "type": "string",
+          "description": "Specific malware variant"
+        }
+      }
+    },
+    "file_details": {
+      "type": "object",
+      "description": "File details for file-based threats",
+      "properties": {
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{64}$"
+        },
+        "sha1": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{40}$"
+        },
+        "md5": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{32}$"
+        },
+        "file_name": {
+          "type": "string"
+        },
+        "file_type": {
+          "type": "string"
+        },
+        "file_size": {
+          "type": "integer",
+          "description": "File size in bytes"
+        }
+      }
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Threat categories (e.g., command-and-control, phishing, malware-distribution)"
+    },
+    "sources": {
+      "type": "array",
+      "description": "Intelligence sources that identified the threat",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "feed_id": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "affected_devices": {
+      "type": "array",
+      "description": "Devices that detected or were affected by this threat",
+      "items": {
+        "type": "object",
+        "properties": {
+          "device_id": {
+            "type": "string"
+          },
+          "hostname": {
+            "type": "string"
+          },
+          "action_taken": {
+            "type": "string",
+            "enum": [
+              "blocked",
+              "allowed",
+              "quarantined",
+              "logged"
+            ]
+          }
+        }
+      }
+    },
+    "first_seen": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the threat was first observed"
+    },
+    "last_seen": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the threat was last observed"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": ["id", "indicator_type", "indicator_value", "verdict"]
+}

@@ -1,0 +1,676 @@
+openapi: 3.1.0
+info:
+  title: Junos REST API
+  description: >-
+    The Junos REST API provides a RESTful interface for configuring, monitoring,
+    and managing individual Junos devices. It translates HTTP requests into
+    Junos RPC calls and supports operations such as retrieving operational
+    data, modifying configuration, committing changes, and executing RPC
+    commands. The API is available on Junos devices with the rest-api service
+    enabled and uses the /rpc endpoint for RPC-style operations and the
+    /api endpoint for structured resource access.
+  version: 1.0.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/documentation/us/en/software/junos/rest-api/
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+externalDocs:
+  description: Junos REST API Guide
+  url: https://www.juniper.net/documentation/us/en/software/junos/rest-api/
+servers:
+  - url: https://{device_ip}:3443
+    description: Junos Device REST API (HTTPS)
+    variables:
+      device_ip:
+        default: 192.168.1.1
+        description: IP address of the Junos device
+  - url: http://{device_ip}:3000
+    description: Junos Device REST API (HTTP)
+    variables:
+      device_ip:
+        default: 192.168.1.1
+        description: IP address of the Junos device
+security:
+  - basicAuth: []
+tags:
+  - name: RPC
+    description: Execute Junos RPC commands
+  - name: Configuration
+    description: Device configuration operations
+  - name: Operational
+    description: Operational data retrieval
+paths:
+  /rpc/get-software-information:
+    get:
+      operationId: getSoftwareInformation
+      summary: Get software version information
+      description: Returns the Junos software version and related information.
+      tags:
+        - Operational
+      responses:
+        '200':
+          description: Software information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  software-information:
+                    type: object
+                    properties:
+                      host-name:
+                        type: string
+                      product-model:
+                        type: string
+                      product-name:
+                        type: string
+                      junos-version:
+                        type: string
+                      package-information:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            comment:
+                              type: string
+            application/xml:
+              schema:
+                type: string
+  /rpc/get-interface-information:
+    get:
+      operationId: getInterfaceInformation
+      summary: Get interface information
+      description: >-
+        Returns interface status and statistics. Equivalent to the Junos
+        CLI command 'show interfaces'.
+      tags:
+        - Operational
+      parameters:
+        - name: interface-name
+          in: query
+          description: Specific interface name (e.g., ge-0/0/0)
+          schema:
+            type: string
+        - name: terse
+          in: query
+          description: Show terse output
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Interface information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  interface-information:
+                    type: object
+                    properties:
+                      physical-interface:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/PhysicalInterface'
+  /rpc/get-route-information:
+    get:
+      operationId: getRouteInformation
+      summary: Get routing table information
+      description: >-
+        Returns routing table entries. Equivalent to the Junos CLI command
+        'show route'.
+      tags:
+        - Operational
+      parameters:
+        - name: destination
+          in: query
+          description: Specific route destination prefix
+          schema:
+            type: string
+        - name: table
+          in: query
+          description: Routing table name
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Route information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  route-information:
+                    type: object
+                    properties:
+                      route-table:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/RouteTable'
+  /rpc/get-bgp-neighbor-information:
+    get:
+      operationId: getBgpNeighborInformation
+      summary: Get BGP neighbor information
+      description: >-
+        Returns BGP session and neighbor information. Equivalent to the
+        Junos CLI command 'show bgp neighbor'.
+      tags:
+        - Operational
+      responses:
+        '200':
+          description: BGP neighbor information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  bgp-information:
+                    type: object
+                    properties:
+                      bgp-peer:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/BgpPeer'
+  /rpc/get-chassis-inventory:
+    get:
+      operationId: getChassisInventory
+      summary: Get chassis inventory
+      description: >-
+        Returns the hardware inventory of the device chassis. Equivalent to
+        the Junos CLI command 'show chassis hardware'.
+      tags:
+        - Operational
+      responses:
+        '200':
+          description: Chassis inventory
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  chassis-inventory:
+                    type: object
+                    properties:
+                      chassis:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          serial-number:
+                            type: string
+                          description:
+                            type: string
+                          chassis-module:
+                            type: array
+                            items:
+                              $ref: '#/components/schemas/ChassisModule'
+  /rpc/get-alarm-information:
+    get:
+      operationId: getAlarmInformation
+      summary: Get alarm information
+      description: >-
+        Returns current system and chassis alarms. Equivalent to the Junos
+        CLI command 'show chassis alarms'.
+      tags:
+        - Operational
+      responses:
+        '200':
+          description: Alarm information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  alarm-information:
+                    type: object
+                    properties:
+                      alarm-summary:
+                        type: object
+                        properties:
+                          active-alarm-count:
+                            type: integer
+                      alarm-detail:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Alarm'
+  /rpc/get-system-uptime-information:
+    get:
+      operationId: getSystemUptimeInformation
+      summary: Get system uptime
+      description: Returns system uptime and boot time information.
+      tags:
+        - Operational
+      responses:
+        '200':
+          description: System uptime information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  system-uptime-information:
+                    type: object
+                    properties:
+                      current-time:
+                        type: object
+                        properties:
+                          date-time:
+                            type: string
+                      system-booted-time:
+                        type: object
+                        properties:
+                          date-time:
+                            type: string
+                          time-length:
+                            type: string
+                      last-configured-time:
+                        type: object
+                        properties:
+                          date-time:
+                            type: string
+                          user:
+                            type: string
+  /rpc/get-lldp-neighbors-information:
+    get:
+      operationId: getLldpNeighborsInformation
+      summary: Get LLDP neighbor information
+      description: Returns LLDP neighbor discovery data.
+      tags:
+        - Operational
+      responses:
+        '200':
+          description: LLDP neighbors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  lldp-neighbors-information:
+                    type: object
+                    properties:
+                      lldp-neighbor-information:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/LldpNeighbor'
+  /api/get-config:
+    post:
+      operationId: getConfiguration
+      summary: Get device configuration
+      description: >-
+        Retrieves the device configuration. Supports retrieving specific
+        configuration hierarchies or the entire configuration.
+      tags:
+        - Configuration
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                format:
+                  type: string
+                  enum:
+                    - text
+                    - set
+                    - json
+                    - xml
+                  description: Configuration output format
+                filter:
+                  type: string
+                  description: XPath filter for specific configuration sections
+      responses:
+        '200':
+          description: Device configuration
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  configuration:
+                    type: object
+                    description: Configuration data
+            application/xml:
+              schema:
+                type: string
+  /api/edit-config:
+    post:
+      operationId: editConfiguration
+      summary: Edit device configuration
+      description: >-
+        Modifies the candidate configuration on the device. Changes must be
+        committed separately using the commit-configuration endpoint.
+      tags:
+        - Configuration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                config-format:
+                  type: string
+                  enum:
+                    - text
+                    - set
+                    - json
+                    - xml
+                config-data:
+                  type: string
+                  description: Configuration data to apply
+                operation:
+                  type: string
+                  enum:
+                    - merge
+                    - replace
+                    - delete
+                    - update
+      responses:
+        '200':
+          description: Configuration edit successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+        '400':
+          description: Invalid configuration
+  /rpc/commit-configuration:
+    post:
+      operationId: commitConfiguration
+      summary: Commit configuration
+      description: >-
+        Commits the candidate configuration to the active configuration.
+        Supports confirmed commits and commit comments.
+      tags:
+        - Configuration
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                confirmed:
+                  type: boolean
+                  description: Request a confirmed commit
+                confirm-timeout:
+                  type: integer
+                  description: Confirmed commit rollback timeout in minutes
+                comment:
+                  type: string
+                  description: Commit comment
+      responses:
+        '200':
+          description: Configuration committed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  commit-results:
+                    type: object
+        '400':
+          description: Commit failed (syntax or semantic errors)
+  /rpc/rollback-configuration:
+    post:
+      operationId: rollbackConfiguration
+      summary: Rollback configuration
+      description: Rolls back the configuration to a previous version.
+      tags:
+        - Configuration
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rollback:
+                  type: integer
+                  minimum: 0
+                  maximum: 49
+                  description: Rollback number (0 = current active, 1 = previous)
+      responses:
+        '200':
+          description: Configuration rolled back
+  /rpc/{rpc_command}:
+    post:
+      operationId: executeRpc
+      summary: Execute arbitrary RPC command
+      description: >-
+        Executes any valid Junos RPC command. The RPC command name is
+        derived from the CLI command by replacing spaces with hyphens
+        and prefixing with 'get-' for show commands.
+      tags:
+        - RPC
+      parameters:
+        - name: rpc_command
+          in: path
+          required: true
+          description: >-
+            RPC command name (e.g., get-interface-information,
+            get-route-engine-information)
+          schema:
+            type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              description: RPC parameters as key-value pairs
+              additionalProperties: true
+      responses:
+        '200':
+          description: RPC response
+          content:
+            application/json:
+              schema:
+                type: object
+                description: RPC response data
+            application/xml:
+              schema:
+                type: string
+        '400':
+          description: Invalid RPC command
+        '404':
+          description: Unknown RPC command
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic authentication with Junos device credentials
+  schemas:
+    PhysicalInterface:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Interface name (e.g., ge-0/0/0)
+        admin-status:
+          type: string
+          enum:
+            - up
+            - down
+        oper-status:
+          type: string
+          enum:
+            - up
+            - down
+        description:
+          type: string
+        mtu:
+          type: integer
+        speed:
+          type: string
+        if-type:
+          type: string
+        link-level-type:
+          type: string
+        traffic-statistics:
+          type: object
+          properties:
+            input-packets:
+              type: integer
+            output-packets:
+              type: integer
+            input-bytes:
+              type: integer
+            output-bytes:
+              type: integer
+        logical-interface:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              address-family:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    address-family-name:
+                      type: string
+                    interface-address:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          ifa-local:
+                            type: string
+                            description: IP address
+    RouteTable:
+      type: object
+      properties:
+        table-name:
+          type: string
+        destination-count:
+          type: integer
+        total-route-count:
+          type: integer
+        active-route-count:
+          type: integer
+        rt:
+          type: array
+          items:
+            type: object
+            properties:
+              rt-destination:
+                type: string
+              rt-entry:
+                type: object
+                properties:
+                  active-tag:
+                    type: string
+                  protocol-name:
+                    type: string
+                  preference:
+                    type: integer
+                  nh:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        to:
+                          type: string
+                        via:
+                          type: string
+                        nh-type:
+                          type: string
+    BgpPeer:
+      type: object
+      properties:
+        peer-address:
+          type: string
+        peer-as:
+          type: integer
+        local-address:
+          type: string
+        local-as:
+          type: integer
+        peer-state:
+          type: string
+          enum:
+            - Established
+            - Active
+            - Connect
+            - OpenSent
+            - OpenConfirm
+            - Idle
+        peer-type:
+          type: string
+          enum:
+            - Internal
+            - External
+        route-received:
+          type: integer
+        route-accepted:
+          type: integer
+        route-advertised:
+          type: integer
+        elapsed-time:
+          type: string
+    ChassisModule:
+      type: object
+      properties:
+        name:
+          type: string
+        version:
+          type: string
+        part-number:
+          type: string
+        serial-number:
+          type: string
+        description:
+          type: string
+        model-number:
+          type: string
+        chassis-sub-module:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              description:
+                type: string
+              serial-number:
+                type: string
+    Alarm:
+      type: object
+      properties:
+        alarm-time:
+          type: string
+          format: date-time
+        alarm-class:
+          type: string
+          enum:
+            - Major
+            - Minor
+        alarm-description:
+          type: string
+        alarm-type:
+          type: string
+    LldpNeighbor:
+      type: object
+      properties:
+        lldp-local-interface:
+          type: string
+        lldp-local-parent-interface-name:
+          type: string
+        lldp-remote-chassis-id:
+          type: string
+        lldp-remote-port-id:
+          type: string
+        lldp-remote-system-name:
+          type: string

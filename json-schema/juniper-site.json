@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/api-search/juniper/json-schema/juniper-site.json",
+  "title": "Juniper Site",
+  "description": "Schema representing a physical site or location managed by Juniper platforms such as Mist and Junos Space. A site is a logical grouping of network devices at a physical location such as a building, campus, or data center.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique site identifier"
+    },
+    "name": {
+      "type": "string",
+      "description": "Site name"
+    },
+    "org_id": {
+      "type": "string",
+      "description": "Organization this site belongs to"
+    },
+    "address": {
+      "type": "string",
+      "description": "Physical street address"
+    },
+    "city": {
+      "type": "string"
+    },
+    "state": {
+      "type": "string"
+    },
+    "country_code": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 2,
+      "description": "ISO 3166-1 alpha-2 country code"
+    },
+    "timezone": {
+      "type": "string",
+      "description": "IANA timezone name (e.g., America/Los_Angeles)"
+    },
+    "latlng": {
+      "type": "object",
+      "properties": {
+        "lat": {
+          "type": "number",
+          "minimum": -90,
+          "maximum": 90
+        },
+        "lng": {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180
+        }
+      },
+      "required": ["lat", "lng"]
+    },
+    "site_groups": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Site group identifiers this site belongs to"
+    },
+    "device_counts": {
+      "type": "object",
+      "description": "Count of devices by type at this site",
+      "properties": {
+        "access_points": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "switches": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "gateways": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "wan_edges": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "maps": {
+      "type": "array",
+      "description": "Floorplan maps associated with the site",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number",
+            "description": "Width in meters"
+          },
+          "height": {
+            "type": "number",
+            "description": "Height in meters"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to the floorplan image"
+          }
+        }
+      }
+    },
+    "rf_template_id": {
+      "type": "string",
+      "description": "Radio frequency template applied to this site"
+    },
+    "network_template_id": {
+      "type": "string",
+      "description": "Network template applied to this site"
+    },
+    "settings": {
+      "type": "object",
+      "description": "Site-specific settings",
+      "properties": {
+        "auto_upgrade": {
+          "type": "boolean",
+          "description": "Whether automatic firmware upgrades are enabled"
+        },
+        "rtsa": {
+          "type": "object",
+          "description": "Real-Time Status and Analytics settings",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": ["id", "name"]
+}
