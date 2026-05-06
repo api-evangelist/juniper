@@ -4,7 +4,12 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: Juniper Networks
 providerId: juniper
 created: '2026-05-04'
-modified: '2026-05-04'
+modified: '2026-05-05'
+reconciled: false
+notes: Juniper Networks does not publish a single canonical public rate-limit table.
+  The Mist API documentation references rate-limit headers and throttling but the
+  authoritative numbers are gated behind authenticated docs. Reconciliation blocked
+  pending publicly accessible rate-limit numbers per product.
 tags:
   - AI
   - Automation
@@ -14,114 +19,27 @@ tags:
   - SDN
   - Security
   - Rate Limiting
-  - Quotas
-  - Throttling
-description: Machine-readable rate limit definitions for the Juniper Networks API surface. Captures per-tier
-  quotas, burst behavior, response signaling, and recovery semantics. Defaults are scaffold values to
-  be replaced with published provider limits.
-headers:
-  limit: X-RateLimit-Limit
-  remaining: X-RateLimit-Remaining
-  reset: X-RateLimit-Reset
-  retryAfter: Retry-After
-  policy: RateLimit-Policy
+description: Rate-limit artifact for Juniper Networks product APIs (Mist, Apstra, Junos,
+  Paragon). Per-product limits exist but are documented inside authenticated product
+  documentation rather than on a public page.
+sources:
+  - https://api.mist.com/api/v1/docs/Home
+  - https://www.juniper.net/documentation/
 responseCodes:
   throttled: 429
-  quotaExceeded: 429
   serviceUnavailable: 503
 limits:
-  - tier: free
-    name: Free Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 10
-    burst: 20
-    timeFrame: minute
-    applies:
-      - Junos Space API
-      - Juniper Apstra API
-      - Junos PyEZ (Python API)
-      - Junos REST API
-      - Juniper Mist API
-      - Contrail Networking API
-      - Juniper ATP Cloud API
-      - JSNAPy API
-  - tier: free
-    name: Free Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 1000
-    timeFrame: month
-    applies:
-      - Junos Space API
-      - Juniper Apstra API
-      - Junos PyEZ (Python API)
-      - Junos REST API
-      - Juniper Mist API
-      - Contrail Networking API
-      - Juniper ATP Cloud API
-      - JSNAPy API
-  - tier: professional
-    name: Professional Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 100
-    burst: 200
-    timeFrame: minute
-    applies:
-      - Junos Space API
-      - Juniper Apstra API
-      - Junos PyEZ (Python API)
-      - Junos REST API
-      - Juniper Mist API
-      - Contrail Networking API
-      - Juniper ATP Cloud API
-      - JSNAPy API
-  - tier: professional
-    name: Professional Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 100000
-    timeFrame: month
-    applies:
-      - Junos Space API
-      - Juniper Apstra API
-      - Junos PyEZ (Python API)
-      - Junos REST API
-      - Juniper Mist API
-      - Contrail Networking API
-      - Juniper ATP Cloud API
-      - JSNAPy API
-  - tier: enterprise
-    name: Enterprise Negotiated Limit
-    scope: contract
-    metric: requests_per_minute
-    limit: 1000
-    burst: 5000
-    timeFrame: minute
-    applies:
-      - Junos Space API
-      - Juniper Apstra API
-      - Junos PyEZ (Python API)
-      - Junos REST API
-      - Juniper Mist API
-      - Contrail Networking API
-      - Juniper ATP Cloud API
-      - JSNAPy API
+  - name: Per-product API throttle
+    scope: api-token/org
+    metric: varies
+    limit: see authenticated product API documentation (Mist, Apstra, Junos Space)
 policies:
   - name: Backoff Strategy
-    description: Clients should implement exponential backoff with jitter, honoring the Retry-After header
-      when present.
-  - name: Burst Handling
-    description: Short bursts above the steady-state limit are tolerated up to the documented burst ceiling
-      before throttling engages.
-  - name: Quota Reset
-    description: Monthly quotas reset at the start of each calendar month in UTC. Per-minute and per-second
-      windows reset on a sliding-window basis.
-  - name: Fair Use
-    description: Even on uncapped enterprise tiers, sustained usage that materially impacts shared infrastructure
-      may be subject to fair-use throttling.
+    description: Clients should implement exponential backoff with jitter on 429 / 503 responses
+      and honor the Retry-After header when present.
+  - name: Per-Product Limits
+    description: Limits are scoped per product (Mist cloud, Apstra controller, Paragon)
+      and are typically expressed via X-RateLimit-* headers.
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
-    url: https://apievangelist.com
