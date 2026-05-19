@@ -1,0 +1,103 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Juniper Networks Juniper Contrail Networking API — Floating IPs
+  description: 'Juniper Networks Juniper Contrail Networking API — Floating IPs. 2 operations. Lead operation: Juniper Networks
+    List floating IP pools. Self-contained Naftiko capability covering one Juniper business surface.'
+  tags:
+  - Juniper
+  - Floating IPs
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    JUNIPER_API_KEY: JUNIPER_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: contrail-floating-ips
+    baseUri: https://{contrail_controller}:8082
+    description: Juniper Networks Juniper Contrail Networking API — Floating IPs business capability. Self-contained, no shared
+      references.
+    resources:
+    - name: floating-ip-pools
+      path: /floating-ip-pools
+      operations:
+      - name: listfloatingippools
+        method: GET
+        description: Juniper Networks List floating IP pools
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: floating-ips
+      path: /floating-ips
+      operations:
+      - name: listfloatingips
+        method: GET
+        description: Juniper Networks List floating IPs
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: bearer
+      token: '{{env.JUNIPER_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: contrail-floating-ips-rest
+    port: 8080
+    description: REST adapter for Juniper Networks Juniper Contrail Networking API — Floating IPs. One Spectral-compliant
+      resource per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/floating-ip-pools
+      name: floating-ip-pools
+      description: REST surface for floating-ip-pools.
+      operations:
+      - method: GET
+        name: listfloatingippools
+        description: Juniper Networks List floating IP pools
+        call: contrail-floating-ips.listfloatingippools
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/floating-ips
+      name: floating-ips
+      description: REST surface for floating-ips.
+      operations:
+      - method: GET
+        name: listfloatingips
+        description: Juniper Networks List floating IPs
+        call: contrail-floating-ips.listfloatingips
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: contrail-floating-ips-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Juniper Networks Juniper Contrail Networking API — Floating IPs. One tool per consumed operation,
+      routed inline through this capability's consumes block.
+    tools:
+    - name: juniper-networks-list-floating-ip
+      description: Juniper Networks List floating IP pools
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: contrail-floating-ips.listfloatingippools
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-list-floating-ips
+      description: Juniper Networks List floating IPs
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: contrail-floating-ips.listfloatingips
+      outputParameters:
+      - type: object
+        mapping: $.

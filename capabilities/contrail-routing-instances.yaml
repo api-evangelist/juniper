@@ -1,0 +1,71 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Juniper Networks Juniper Contrail Networking API — Routing Instances
+  description: 'Juniper Networks Juniper Contrail Networking API — Routing Instances. 1 operations. Lead operation: Juniper
+    Networks List routing instances. Self-contained Naftiko capability covering one Juniper business surface.'
+  tags:
+  - Juniper
+  - Routing Instances
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    JUNIPER_API_KEY: JUNIPER_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: contrail-routing-instances
+    baseUri: https://{contrail_controller}:8082
+    description: Juniper Networks Juniper Contrail Networking API — Routing Instances business capability. Self-contained,
+      no shared references.
+    resources:
+    - name: routing-instances
+      path: /routing-instances
+      operations:
+      - name: listroutinginstances
+        method: GET
+        description: Juniper Networks List routing instances
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: bearer
+      token: '{{env.JUNIPER_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: contrail-routing-instances-rest
+    port: 8080
+    description: REST adapter for Juniper Networks Juniper Contrail Networking API — Routing Instances. One Spectral-compliant
+      resource per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/routing-instances
+      name: routing-instances
+      description: REST surface for routing-instances.
+      operations:
+      - method: GET
+        name: listroutinginstances
+        description: Juniper Networks List routing instances
+        call: contrail-routing-instances.listroutinginstances
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: contrail-routing-instances-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Juniper Networks Juniper Contrail Networking API — Routing Instances. One tool per consumed
+      operation, routed inline through this capability's consumes block.
+    tools:
+    - name: juniper-networks-list-routing-instances
+      description: Juniper Networks List routing instances
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: contrail-routing-instances.listroutinginstances
+      outputParameters:
+      - type: object
+        mapping: $.

@@ -1,0 +1,104 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Juniper Networks Junos Space Network Management Platform API — Users
+  description: 'Juniper Networks Junos Space Network Management Platform API — Users. 2 operations. Lead operation: Juniper
+    Networks List roles. Self-contained Naftiko capability covering one Juniper business surface.'
+  tags:
+  - Juniper
+  - Users
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    JUNIPER_API_KEY: JUNIPER_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: junos-space-users
+    baseUri: https://{space_server}/api/space
+    description: Juniper Networks Junos Space Network Management Platform API — Users business capability. Self-contained,
+      no shared references.
+    resources:
+    - name: user-management-roles
+      path: /user-management/roles
+      operations:
+      - name: listroles
+        method: GET
+        description: Juniper Networks List roles
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: user-management-users
+      path: /user-management/users
+      operations:
+      - name: listusers
+        method: GET
+        description: Juniper Networks List users
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: basic
+      username: '{{env.JUNIPER_USER}}'
+      password: '{{env.JUNIPER_PASS}}'
+  exposes:
+  - type: rest
+    namespace: junos-space-users-rest
+    port: 8080
+    description: REST adapter for Juniper Networks Junos Space Network Management Platform API — Users. One Spectral-compliant
+      resource per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/user-management/roles
+      name: user-management-roles
+      description: REST surface for user-management-roles.
+      operations:
+      - method: GET
+        name: listroles
+        description: Juniper Networks List roles
+        call: junos-space-users.listroles
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/user-management/users
+      name: user-management-users
+      description: REST surface for user-management-users.
+      operations:
+      - method: GET
+        name: listusers
+        description: Juniper Networks List users
+        call: junos-space-users.listusers
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: junos-space-users-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Juniper Networks Junos Space Network Management Platform API — Users. One tool per consumed
+      operation, routed inline through this capability's consumes block.
+    tools:
+    - name: juniper-networks-list-roles
+      description: Juniper Networks List roles
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: junos-space-users.listroles
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-list-users
+      description: Juniper Networks List users
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: junos-space-users.listusers
+      outputParameters:
+      - type: object
+        mapping: $.

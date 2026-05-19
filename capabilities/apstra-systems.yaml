@@ -1,0 +1,139 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Juniper Networks Juniper Apstra API — Systems
+  description: 'Juniper Networks Juniper Apstra API — Systems. 3 operations. Lead operation: Juniper Networks List system
+    agents. Self-contained Naftiko capability covering one Juniper business surface.'
+  tags:
+  - Juniper
+  - Systems
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    JUNIPER_API_KEY: JUNIPER_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: apstra-systems
+    baseUri: https://{apstra_server}/api
+    description: Juniper Networks Juniper Apstra API — Systems business capability. Self-contained, no shared references.
+    resources:
+    - name: system-agents
+      path: /system-agents
+      operations:
+      - name: listsystemagents
+        method: GET
+        description: Juniper Networks List system agents
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createsystemagent
+        method: POST
+        description: Juniper Networks Create system agent
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: systems
+      path: /systems
+      operations:
+      - name: listsystems
+        method: GET
+        description: Juniper Networks List managed systems
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: apikey
+      key: AuthToken
+      value: '{{env.JUNIPER_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: apstra-systems-rest
+    port: 8080
+    description: REST adapter for Juniper Networks Juniper Apstra API — Systems. One Spectral-compliant resource per consumed
+      operation, prefixed with /v1.
+    resources:
+    - path: /v1/system-agents
+      name: system-agents
+      description: REST surface for system-agents.
+      operations:
+      - method: GET
+        name: listsystemagents
+        description: Juniper Networks List system agents
+        call: apstra-systems.listsystemagents
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createsystemagent
+        description: Juniper Networks Create system agent
+        call: apstra-systems.createsystemagent
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/systems
+      name: systems
+      description: REST surface for systems.
+      operations:
+      - method: GET
+        name: listsystems
+        description: Juniper Networks List managed systems
+        call: apstra-systems.listsystems
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: apstra-systems-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Juniper Networks Juniper Apstra API — Systems. One tool per consumed operation, routed inline
+      through this capability's consumes block.
+    tools:
+    - name: juniper-networks-list-system-agents
+      description: Juniper Networks List system agents
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apstra-systems.listsystemagents
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-create-system-agent
+      description: Juniper Networks Create system agent
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: apstra-systems.createsystemagent
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-list-managed-systems
+      description: Juniper Networks List managed systems
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apstra-systems.listsystems
+      outputParameters:
+      - type: object
+        mapping: $.

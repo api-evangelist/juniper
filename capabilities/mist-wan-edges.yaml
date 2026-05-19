@@ -1,0 +1,70 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Juniper Networks Juniper Mist API — WAN Edges
+  description: 'Juniper Networks Juniper Mist API — WAN Edges. 1 operations. Lead operation: Juniper Networks List WAN edge
+    devices. Self-contained Naftiko capability covering one Juniper business surface.'
+  tags:
+  - Juniper
+  - WAN Edges
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    JUNIPER_API_KEY: JUNIPER_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: mist-wan-edges
+    baseUri: https://api.mist.com/api/v1
+    description: Juniper Networks Juniper Mist API — WAN Edges business capability. Self-contained, no shared references.
+    resources:
+    - name: orgs-org_id-wanedges
+      path: /orgs/{org_id}/wanedges
+      operations:
+      - name: listorgwanedges
+        method: GET
+        description: Juniper Networks List WAN edge devices
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: bearer
+      token: '{{env.JUNIPER_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: mist-wan-edges-rest
+    port: 8080
+    description: REST adapter for Juniper Networks Juniper Mist API — WAN Edges. One Spectral-compliant resource per consumed
+      operation, prefixed with /v1.
+    resources:
+    - path: /v1/orgs/{org-id}/wanedges
+      name: orgs-org-id-wanedges
+      description: REST surface for orgs-org_id-wanedges.
+      operations:
+      - method: GET
+        name: listorgwanedges
+        description: Juniper Networks List WAN edge devices
+        call: mist-wan-edges.listorgwanedges
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: mist-wan-edges-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Juniper Networks Juniper Mist API — WAN Edges. One tool per consumed operation, routed inline
+      through this capability's consumes block.
+    tools:
+    - name: juniper-networks-list-wan-edge
+      description: Juniper Networks List WAN edge devices
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: mist-wan-edges.listorgwanedges
+      outputParameters:
+      - type: object
+        mapping: $.

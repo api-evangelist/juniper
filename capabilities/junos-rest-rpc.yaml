@@ -1,0 +1,88 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Juniper Networks Junos REST API — RPC
+  description: 'Juniper Networks Junos REST API — RPC. 1 operations. Lead operation: Juniper Networks Execute arbitrary RPC
+    command. Self-contained Naftiko capability covering one Juniper business surface.'
+  tags:
+  - Juniper
+  - RPC
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    JUNIPER_API_KEY: JUNIPER_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: junos-rest-rpc
+    baseUri: https://{device_ip}:3443
+    description: Juniper Networks Junos REST API — RPC business capability. Self-contained, no shared references.
+    resources:
+    - name: rpc-rpc_command
+      path: /rpc/{rpc_command}
+      operations:
+      - name: executerpc
+        method: POST
+        description: Juniper Networks Execute arbitrary RPC command
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: rpc_command
+          in: path
+          type: string
+          description: RPC command name (e.g., get-interface-information, get-route-engine-information)
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    authentication:
+      type: basic
+      username: '{{env.JUNIPER_USER}}'
+      password: '{{env.JUNIPER_PASS}}'
+  exposes:
+  - type: rest
+    namespace: junos-rest-rpc-rest
+    port: 8080
+    description: REST adapter for Juniper Networks Junos REST API — RPC. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/rpc/{rpc-command}
+      name: rpc-rpc-command
+      description: REST surface for rpc-rpc_command.
+      operations:
+      - method: POST
+        name: executerpc
+        description: Juniper Networks Execute arbitrary RPC command
+        call: junos-rest-rpc.executerpc
+        with:
+          rpc_command: rest.rpc_command
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: junos-rest-rpc-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Juniper Networks Junos REST API — RPC. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: juniper-networks-execute-arbitrary-rpc
+      description: Juniper Networks Execute arbitrary RPC command
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: junos-rest-rpc.executerpc
+      with:
+        rpc_command: tools.rpc_command
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

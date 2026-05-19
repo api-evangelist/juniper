@@ -1,0 +1,198 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Juniper Networks Juniper Contrail Networking API — Projects
+  description: 'Juniper Networks Juniper Contrail Networking API — Projects. 5 operations. Lead operation: Juniper Networks
+    Get project details. Self-contained Naftiko capability covering one Juniper business surface.'
+  tags:
+  - Juniper
+  - Projects
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    JUNIPER_API_KEY: JUNIPER_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: contrail-projects
+    baseUri: https://{contrail_controller}:8082
+    description: Juniper Networks Juniper Contrail Networking API — Projects business capability. Self-contained, no shared
+      references.
+    resources:
+    - name: project-project_id
+      path: /project/{project_id}
+      operations:
+      - name: getproject
+        method: GET
+        description: Juniper Networks Get project details
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: updateproject
+        method: PUT
+        description: Juniper Networks Update project
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: deleteproject
+        method: DELETE
+        description: Juniper Networks Delete project
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: projects
+      path: /projects
+      operations:
+      - name: listprojects
+        method: GET
+        description: Juniper Networks List projects
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createproject
+        method: POST
+        description: Juniper Networks Create a project
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.JUNIPER_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: contrail-projects-rest
+    port: 8080
+    description: REST adapter for Juniper Networks Juniper Contrail Networking API — Projects. One Spectral-compliant resource
+      per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/project/{project-id}
+      name: project-project-id
+      description: REST surface for project-project_id.
+      operations:
+      - method: GET
+        name: getproject
+        description: Juniper Networks Get project details
+        call: contrail-projects.getproject
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: updateproject
+        description: Juniper Networks Update project
+        call: contrail-projects.updateproject
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deleteproject
+        description: Juniper Networks Delete project
+        call: contrail-projects.deleteproject
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/projects
+      name: projects
+      description: REST surface for projects.
+      operations:
+      - method: GET
+        name: listprojects
+        description: Juniper Networks List projects
+        call: contrail-projects.listprojects
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createproject
+        description: Juniper Networks Create a project
+        call: contrail-projects.createproject
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: contrail-projects-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Juniper Networks Juniper Contrail Networking API — Projects. One tool per consumed operation,
+      routed inline through this capability's consumes block.
+    tools:
+    - name: juniper-networks-get-project-details
+      description: Juniper Networks Get project details
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: contrail-projects.getproject
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-update-project
+      description: Juniper Networks Update project
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: contrail-projects.updateproject
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-delete-project
+      description: Juniper Networks Delete project
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: contrail-projects.deleteproject
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-list-projects
+      description: Juniper Networks List projects
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: contrail-projects.listprojects
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-create-project
+      description: Juniper Networks Create a project
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: contrail-projects.createproject
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

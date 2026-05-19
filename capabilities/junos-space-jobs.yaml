@@ -1,0 +1,122 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Juniper Networks Junos Space Network Management Platform API — Jobs
+  description: 'Juniper Networks Junos Space Network Management Platform API — Jobs. 2 operations. Lead operation: Juniper
+    Networks List jobs. Self-contained Naftiko capability covering one Juniper business surface.'
+  tags:
+  - Juniper
+  - Jobs
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    JUNIPER_API_KEY: JUNIPER_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: junos-space-jobs
+    baseUri: https://{space_server}/api/space
+    description: Juniper Networks Junos Space Network Management Platform API — Jobs business capability. Self-contained,
+      no shared references.
+    resources:
+    - name: job-management-jobs
+      path: /job-management/jobs
+      operations:
+      - name: listjobs
+        method: GET
+        description: Juniper Networks List jobs
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: state
+          in: query
+          type: string
+          description: Filter by job state
+    - name: job-management-jobs-job_id
+      path: /job-management/jobs/{job_id}
+      operations:
+      - name: getjob
+        method: GET
+        description: Juniper Networks Get job details
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: job_id
+          in: path
+          type: integer
+          required: true
+    authentication:
+      type: basic
+      username: '{{env.JUNIPER_USER}}'
+      password: '{{env.JUNIPER_PASS}}'
+  exposes:
+  - type: rest
+    namespace: junos-space-jobs-rest
+    port: 8080
+    description: REST adapter for Juniper Networks Junos Space Network Management Platform API — Jobs. One Spectral-compliant
+      resource per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/job-management/jobs
+      name: job-management-jobs
+      description: REST surface for job-management-jobs.
+      operations:
+      - method: GET
+        name: listjobs
+        description: Juniper Networks List jobs
+        call: junos-space-jobs.listjobs
+        with:
+          state: rest.state
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/job-management/jobs/{job-id}
+      name: job-management-jobs-job-id
+      description: REST surface for job-management-jobs-job_id.
+      operations:
+      - method: GET
+        name: getjob
+        description: Juniper Networks Get job details
+        call: junos-space-jobs.getjob
+        with:
+          job_id: rest.job_id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: junos-space-jobs-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Juniper Networks Junos Space Network Management Platform API — Jobs. One tool per consumed
+      operation, routed inline through this capability's consumes block.
+    tools:
+    - name: juniper-networks-list-jobs
+      description: Juniper Networks List jobs
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: junos-space-jobs.listjobs
+      with:
+        state: tools.state
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-get-job-details
+      description: Juniper Networks Get job details
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: junos-space-jobs.getjob
+      with:
+        job_id: tools.job_id
+      outputParameters:
+      - type: object
+        mapping: $.

@@ -1,0 +1,248 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Juniper Networks Juniper Advanced Threat Prevention (ATP) Cloud API — Threat Intelligence
+  description: 'Juniper Networks Juniper Advanced Threat Prevention (ATP) Cloud API — Threat Intelligence. 5 operations. Lead
+    operation: Juniper Networks Look up domain reputation. Self-contained Naftiko capability covering one Juniper business
+    surface.'
+  tags:
+  - Juniper
+  - Threat Intelligence
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    JUNIPER_API_KEY: JUNIPER_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: atp-cloud-threat-intelligence
+    baseUri: https://{atp_server}/api/v1
+    description: Juniper Networks Juniper Advanced Threat Prevention (ATP) Cloud API — Threat Intelligence business capability.
+      Self-contained, no shared references.
+    resources:
+    - name: threat-intelligence-domain-lookup
+      path: /threat-intelligence/domain-lookup
+      operations:
+      - name: lookupdomainreputation
+        method: GET
+        description: Juniper Networks Look up domain reputation
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: domain
+          in: query
+          type: string
+          description: Domain name to look up
+          required: true
+    - name: threat-intelligence-feeds
+      path: /threat-intelligence/feeds
+      operations:
+      - name: listthreatfeeds
+        method: GET
+        description: Juniper Networks List threat feeds
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: threat-intelligence-hash-lookup
+      path: /threat-intelligence/hash-lookup
+      operations:
+      - name: lookupfilehash
+        method: GET
+        description: Juniper Networks Look up file hash
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: hash
+          in: query
+          type: string
+          description: File hash (MD5, SHA1, or SHA256)
+          required: true
+        - name: hash_type
+          in: query
+          type: string
+          description: Hash type
+    - name: threat-intelligence-ip-lookup
+      path: /threat-intelligence/ip-lookup
+      operations:
+      - name: lookupipreputation
+        method: GET
+        description: Juniper Networks Look up IP reputation
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: ip
+          in: query
+          type: string
+          description: IP address to look up
+          required: true
+    - name: threat-intelligence-url-lookup
+      path: /threat-intelligence/url-lookup
+      operations:
+      - name: lookupurlreputation
+        method: GET
+        description: Juniper Networks Look up URL reputation
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: url
+          in: query
+          type: string
+          description: URL to look up
+          required: true
+    authentication:
+      type: apikey
+      key: X-Auth-Token
+      value: '{{env.JUNIPER_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: atp-cloud-threat-intelligence-rest
+    port: 8080
+    description: REST adapter for Juniper Networks Juniper Advanced Threat Prevention (ATP) Cloud API — Threat Intelligence.
+      One Spectral-compliant resource per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/threat-intelligence/domain-lookup
+      name: threat-intelligence-domain-lookup
+      description: REST surface for threat-intelligence-domain-lookup.
+      operations:
+      - method: GET
+        name: lookupdomainreputation
+        description: Juniper Networks Look up domain reputation
+        call: atp-cloud-threat-intelligence.lookupdomainreputation
+        with:
+          domain: rest.domain
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/threat-intelligence/feeds
+      name: threat-intelligence-feeds
+      description: REST surface for threat-intelligence-feeds.
+      operations:
+      - method: GET
+        name: listthreatfeeds
+        description: Juniper Networks List threat feeds
+        call: atp-cloud-threat-intelligence.listthreatfeeds
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/threat-intelligence/hash-lookup
+      name: threat-intelligence-hash-lookup
+      description: REST surface for threat-intelligence-hash-lookup.
+      operations:
+      - method: GET
+        name: lookupfilehash
+        description: Juniper Networks Look up file hash
+        call: atp-cloud-threat-intelligence.lookupfilehash
+        with:
+          hash: rest.hash
+          hash_type: rest.hash_type
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/threat-intelligence/ip-lookup
+      name: threat-intelligence-ip-lookup
+      description: REST surface for threat-intelligence-ip-lookup.
+      operations:
+      - method: GET
+        name: lookupipreputation
+        description: Juniper Networks Look up IP reputation
+        call: atp-cloud-threat-intelligence.lookupipreputation
+        with:
+          ip: rest.ip
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/threat-intelligence/url-lookup
+      name: threat-intelligence-url-lookup
+      description: REST surface for threat-intelligence-url-lookup.
+      operations:
+      - method: GET
+        name: lookupurlreputation
+        description: Juniper Networks Look up URL reputation
+        call: atp-cloud-threat-intelligence.lookupurlreputation
+        with:
+          url: rest.url
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: atp-cloud-threat-intelligence-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Juniper Networks Juniper Advanced Threat Prevention (ATP) Cloud API — Threat Intelligence.
+      One tool per consumed operation, routed inline through this capability's consumes block.
+    tools:
+    - name: juniper-networks-look-up-domain
+      description: Juniper Networks Look up domain reputation
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: atp-cloud-threat-intelligence.lookupdomainreputation
+      with:
+        domain: tools.domain
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-list-threat-feeds
+      description: Juniper Networks List threat feeds
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: atp-cloud-threat-intelligence.listthreatfeeds
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-look-up-file
+      description: Juniper Networks Look up file hash
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: atp-cloud-threat-intelligence.lookupfilehash
+      with:
+        hash: tools.hash
+        hash_type: tools.hash_type
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-look-up-ip
+      description: Juniper Networks Look up IP reputation
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: atp-cloud-threat-intelligence.lookupipreputation
+      with:
+        ip: tools.ip
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-look-up-url
+      description: Juniper Networks Look up URL reputation
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: atp-cloud-threat-intelligence.lookupurlreputation
+      with:
+        url: tools.url
+      outputParameters:
+      - type: object
+        mapping: $.

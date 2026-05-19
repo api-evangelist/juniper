@@ -1,0 +1,120 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Juniper Networks Junos Space Network Management Platform API — Scripts
+  description: 'Juniper Networks Junos Space Network Management Platform API — Scripts. 2 operations. Lead operation: Juniper
+    Networks List scripts. Self-contained Naftiko capability covering one Juniper business surface.'
+  tags:
+  - Juniper
+  - Scripts
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    JUNIPER_API_KEY: JUNIPER_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: junos-space-scripts
+    baseUri: https://{space_server}/api/space
+    description: Juniper Networks Junos Space Network Management Platform API — Scripts business capability. Self-contained,
+      no shared references.
+    resources:
+    - name: script-management-scripts
+      path: /script-management/scripts
+      operations:
+      - name: listscripts
+        method: GET
+        description: Juniper Networks List scripts
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: script-management-scripts-script_id-execute
+      path: /script-management/scripts/{script_id}/execute
+      operations:
+      - name: executescript
+        method: POST
+        description: Juniper Networks Execute script on devices
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: script_id
+          in: path
+          type: integer
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: basic
+      username: '{{env.JUNIPER_USER}}'
+      password: '{{env.JUNIPER_PASS}}'
+  exposes:
+  - type: rest
+    namespace: junos-space-scripts-rest
+    port: 8080
+    description: REST adapter for Juniper Networks Junos Space Network Management Platform API — Scripts. One Spectral-compliant
+      resource per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/script-management/scripts
+      name: script-management-scripts
+      description: REST surface for script-management-scripts.
+      operations:
+      - method: GET
+        name: listscripts
+        description: Juniper Networks List scripts
+        call: junos-space-scripts.listscripts
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/script-management/scripts/{script-id}/execute
+      name: script-management-scripts-script-id-execute
+      description: REST surface for script-management-scripts-script_id-execute.
+      operations:
+      - method: POST
+        name: executescript
+        description: Juniper Networks Execute script on devices
+        call: junos-space-scripts.executescript
+        with:
+          script_id: rest.script_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: junos-space-scripts-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Juniper Networks Junos Space Network Management Platform API — Scripts. One tool per consumed
+      operation, routed inline through this capability's consumes block.
+    tools:
+    - name: juniper-networks-list-scripts
+      description: Juniper Networks List scripts
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: junos-space-scripts.listscripts
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-execute-script-devices
+      description: Juniper Networks Execute script on devices
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: junos-space-scripts.executescript
+      with:
+        script_id: tools.script_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

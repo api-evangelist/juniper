@@ -1,0 +1,241 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Juniper Networks Juniper Apstra API — Resources
+  description: 'Juniper Networks Juniper Apstra API — Resources. 6 operations. Lead operation: Juniper Networks List ASN pools.
+    Self-contained Naftiko capability covering one Juniper business surface.'
+  tags:
+  - Juniper
+  - Resources
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    JUNIPER_API_KEY: JUNIPER_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: apstra-resources
+    baseUri: https://{apstra_server}/api
+    description: Juniper Networks Juniper Apstra API — Resources business capability. Self-contained, no shared references.
+    resources:
+    - name: resources-asn-pools
+      path: /resources/asn-pools
+      operations:
+      - name: listasnpools
+        method: GET
+        description: Juniper Networks List ASN pools
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createasnpool
+        method: POST
+        description: Juniper Networks Create ASN pool
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: resources-ip-pools
+      path: /resources/ip-pools
+      operations:
+      - name: listippools
+        method: GET
+        description: Juniper Networks List IP pools
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createippool
+        method: POST
+        description: Juniper Networks Create IP pool
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: resources-vni-pools
+      path: /resources/vni-pools
+      operations:
+      - name: listvnipools
+        method: GET
+        description: Juniper Networks List VNI pools
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createvnipool
+        method: POST
+        description: Juniper Networks Create VNI pool
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: apikey
+      key: AuthToken
+      value: '{{env.JUNIPER_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: apstra-resources-rest
+    port: 8080
+    description: REST adapter for Juniper Networks Juniper Apstra API — Resources. One Spectral-compliant resource per consumed
+      operation, prefixed with /v1.
+    resources:
+    - path: /v1/resources/asn-pools
+      name: resources-asn-pools
+      description: REST surface for resources-asn-pools.
+      operations:
+      - method: GET
+        name: listasnpools
+        description: Juniper Networks List ASN pools
+        call: apstra-resources.listasnpools
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createasnpool
+        description: Juniper Networks Create ASN pool
+        call: apstra-resources.createasnpool
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/resources/ip-pools
+      name: resources-ip-pools
+      description: REST surface for resources-ip-pools.
+      operations:
+      - method: GET
+        name: listippools
+        description: Juniper Networks List IP pools
+        call: apstra-resources.listippools
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createippool
+        description: Juniper Networks Create IP pool
+        call: apstra-resources.createippool
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/resources/vni-pools
+      name: resources-vni-pools
+      description: REST surface for resources-vni-pools.
+      operations:
+      - method: GET
+        name: listvnipools
+        description: Juniper Networks List VNI pools
+        call: apstra-resources.listvnipools
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createvnipool
+        description: Juniper Networks Create VNI pool
+        call: apstra-resources.createvnipool
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: apstra-resources-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Juniper Networks Juniper Apstra API — Resources. One tool per consumed operation, routed
+      inline through this capability's consumes block.
+    tools:
+    - name: juniper-networks-list-asn-pools
+      description: Juniper Networks List ASN pools
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apstra-resources.listasnpools
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-create-asn-pool
+      description: Juniper Networks Create ASN pool
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: apstra-resources.createasnpool
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-list-ip-pools
+      description: Juniper Networks List IP pools
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apstra-resources.listippools
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-create-ip-pool
+      description: Juniper Networks Create IP pool
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: apstra-resources.createippool
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-list-vni-pools
+      description: Juniper Networks List VNI pools
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apstra-resources.listvnipools
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-create-vni-pool
+      description: Juniper Networks Create VNI pool
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: apstra-resources.createvnipool
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

@@ -1,0 +1,146 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Juniper Networks Junos Space Network Management Platform API — Configuration
+  description: 'Juniper Networks Junos Space Network Management Platform API — Configuration. 3 operations. Lead operation:
+    Juniper Networks Apply configlet to devices. Self-contained Naftiko capability covering one Juniper business surface.'
+  tags:
+  - Juniper
+  - Configuration
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    JUNIPER_API_KEY: JUNIPER_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: junos-space-configuration
+    baseUri: https://{space_server}/api/space
+    description: Juniper Networks Junos Space Network Management Platform API — Configuration business capability. Self-contained,
+      no shared references.
+    resources:
+    - name: config-file-management-apply-configlet
+      path: /config-file-management/apply-configlet
+      operations:
+      - name: applyconfiglet
+        method: POST
+        description: Juniper Networks Apply configlet to devices
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: config-file-management-config-files
+      path: /config-file-management/config-files
+      operations:
+      - name: listconfigfiles
+        method: GET
+        description: Juniper Networks List configuration files
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: device-management-devices-device_id-configurations-raw
+      path: /device-management/devices/{device_id}/configurations/raw
+      operations:
+      - name: getdeviceconfiguration
+        method: GET
+        description: Juniper Networks Get device configuration
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: basic
+      username: '{{env.JUNIPER_USER}}'
+      password: '{{env.JUNIPER_PASS}}'
+  exposes:
+  - type: rest
+    namespace: junos-space-configuration-rest
+    port: 8080
+    description: REST adapter for Juniper Networks Junos Space Network Management Platform API — Configuration. One Spectral-compliant
+      resource per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/config-file-management/apply-configlet
+      name: config-file-management-apply-configlet
+      description: REST surface for config-file-management-apply-configlet.
+      operations:
+      - method: POST
+        name: applyconfiglet
+        description: Juniper Networks Apply configlet to devices
+        call: junos-space-configuration.applyconfiglet
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/config-file-management/config-files
+      name: config-file-management-config-files
+      description: REST surface for config-file-management-config-files.
+      operations:
+      - method: GET
+        name: listconfigfiles
+        description: Juniper Networks List configuration files
+        call: junos-space-configuration.listconfigfiles
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/device-management/devices/{device-id}/configurations/raw
+      name: device-management-devices-device-id-configurations-raw
+      description: REST surface for device-management-devices-device_id-configurations-raw.
+      operations:
+      - method: GET
+        name: getdeviceconfiguration
+        description: Juniper Networks Get device configuration
+        call: junos-space-configuration.getdeviceconfiguration
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: junos-space-configuration-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Juniper Networks Junos Space Network Management Platform API — Configuration. One tool per
+      consumed operation, routed inline through this capability's consumes block.
+    tools:
+    - name: juniper-networks-apply-configlet-devices
+      description: Juniper Networks Apply configlet to devices
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: junos-space-configuration.applyconfiglet
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-list-configuration-files
+      description: Juniper Networks List configuration files
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: junos-space-configuration.listconfigfiles
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-get-device-configuration
+      description: Juniper Networks Get device configuration
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: junos-space-configuration.getdeviceconfiguration
+      outputParameters:
+      - type: object
+        mapping: $.

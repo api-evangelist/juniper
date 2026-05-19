@@ -1,0 +1,139 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Juniper Networks Juniper Apstra API — Configlets
+  description: 'Juniper Networks Juniper Apstra API — Configlets. 3 operations. Lead operation: Juniper Networks List blueprint
+    configlets. Self-contained Naftiko capability covering one Juniper business surface.'
+  tags:
+  - Juniper
+  - Configlets
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    JUNIPER_API_KEY: JUNIPER_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: apstra-configlets
+    baseUri: https://{apstra_server}/api
+    description: Juniper Networks Juniper Apstra API — Configlets business capability. Self-contained, no shared references.
+    resources:
+    - name: blueprints-blueprint_id-configlets
+      path: /blueprints/{blueprint_id}/configlets
+      operations:
+      - name: listblueprintconfiglets
+        method: GET
+        description: Juniper Networks List blueprint configlets
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: design-configlets
+      path: /design/configlets
+      operations:
+      - name: listdesignconfiglets
+        method: GET
+        description: Juniper Networks List design configlets
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createdesignconfiglet
+        method: POST
+        description: Juniper Networks Create design configlet
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: apikey
+      key: AuthToken
+      value: '{{env.JUNIPER_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: apstra-configlets-rest
+    port: 8080
+    description: REST adapter for Juniper Networks Juniper Apstra API — Configlets. One Spectral-compliant resource per consumed
+      operation, prefixed with /v1.
+    resources:
+    - path: /v1/blueprints/{blueprint-id}/configlets
+      name: blueprints-blueprint-id-configlets
+      description: REST surface for blueprints-blueprint_id-configlets.
+      operations:
+      - method: GET
+        name: listblueprintconfiglets
+        description: Juniper Networks List blueprint configlets
+        call: apstra-configlets.listblueprintconfiglets
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/design/configlets
+      name: design-configlets
+      description: REST surface for design-configlets.
+      operations:
+      - method: GET
+        name: listdesignconfiglets
+        description: Juniper Networks List design configlets
+        call: apstra-configlets.listdesignconfiglets
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createdesignconfiglet
+        description: Juniper Networks Create design configlet
+        call: apstra-configlets.createdesignconfiglet
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: apstra-configlets-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Juniper Networks Juniper Apstra API — Configlets. One tool per consumed operation, routed
+      inline through this capability's consumes block.
+    tools:
+    - name: juniper-networks-list-blueprint-configlets
+      description: Juniper Networks List blueprint configlets
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apstra-configlets.listblueprintconfiglets
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-list-design-configlets
+      description: Juniper Networks List design configlets
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: apstra-configlets.listdesignconfiglets
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-create-design-configlet
+      description: Juniper Networks Create design configlet
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: apstra-configlets.createdesignconfiglet
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

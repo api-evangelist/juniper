@@ -1,0 +1,325 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Juniper Networks Junos REST API — Operational
+  description: 'Juniper Networks Junos REST API — Operational. 8 operations. Lead operation: Juniper Networks Get alarm information.
+    Self-contained Naftiko capability covering one Juniper business surface.'
+  tags:
+  - Juniper
+  - Operational
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    JUNIPER_API_KEY: JUNIPER_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: junos-rest-operational
+    baseUri: https://{device_ip}:3443
+    description: Juniper Networks Junos REST API — Operational business capability. Self-contained, no shared references.
+    resources:
+    - name: rpc-get-alarm-information
+      path: /rpc/get-alarm-information
+      operations:
+      - name: getalarminformation
+        method: GET
+        description: Juniper Networks Get alarm information
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: rpc-get-bgp-neighbor-information
+      path: /rpc/get-bgp-neighbor-information
+      operations:
+      - name: getbgpneighborinformation
+        method: GET
+        description: Juniper Networks Get BGP neighbor information
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: rpc-get-chassis-inventory
+      path: /rpc/get-chassis-inventory
+      operations:
+      - name: getchassisinventory
+        method: GET
+        description: Juniper Networks Get chassis inventory
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: rpc-get-interface-information
+      path: /rpc/get-interface-information
+      operations:
+      - name: getinterfaceinformation
+        method: GET
+        description: Juniper Networks Get interface information
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: interface-name
+          in: query
+          type: string
+          description: Specific interface name (e.g., ge-0/0/0)
+        - name: terse
+          in: query
+          type: boolean
+          description: Show terse output
+    - name: rpc-get-lldp-neighbors-information
+      path: /rpc/get-lldp-neighbors-information
+      operations:
+      - name: getlldpneighborsinformation
+        method: GET
+        description: Juniper Networks Get LLDP neighbor information
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: rpc-get-route-information
+      path: /rpc/get-route-information
+      operations:
+      - name: getrouteinformation
+        method: GET
+        description: Juniper Networks Get routing table information
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: destination
+          in: query
+          type: string
+          description: Specific route destination prefix
+        - name: table
+          in: query
+          type: string
+          description: Routing table name
+    - name: rpc-get-software-information
+      path: /rpc/get-software-information
+      operations:
+      - name: getsoftwareinformation
+        method: GET
+        description: Juniper Networks Get software version information
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: rpc-get-system-uptime-information
+      path: /rpc/get-system-uptime-information
+      operations:
+      - name: getsystemuptimeinformation
+        method: GET
+        description: Juniper Networks Get system uptime
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: basic
+      username: '{{env.JUNIPER_USER}}'
+      password: '{{env.JUNIPER_PASS}}'
+  exposes:
+  - type: rest
+    namespace: junos-rest-operational-rest
+    port: 8080
+    description: REST adapter for Juniper Networks Junos REST API — Operational. One Spectral-compliant resource per consumed
+      operation, prefixed with /v1.
+    resources:
+    - path: /v1/rpc/get-alarm-information
+      name: rpc-get-alarm-information
+      description: REST surface for rpc-get-alarm-information.
+      operations:
+      - method: GET
+        name: getalarminformation
+        description: Juniper Networks Get alarm information
+        call: junos-rest-operational.getalarminformation
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/rpc/get-bgp-neighbor-information
+      name: rpc-get-bgp-neighbor-information
+      description: REST surface for rpc-get-bgp-neighbor-information.
+      operations:
+      - method: GET
+        name: getbgpneighborinformation
+        description: Juniper Networks Get BGP neighbor information
+        call: junos-rest-operational.getbgpneighborinformation
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/rpc/get-chassis-inventory
+      name: rpc-get-chassis-inventory
+      description: REST surface for rpc-get-chassis-inventory.
+      operations:
+      - method: GET
+        name: getchassisinventory
+        description: Juniper Networks Get chassis inventory
+        call: junos-rest-operational.getchassisinventory
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/rpc/get-interface-information
+      name: rpc-get-interface-information
+      description: REST surface for rpc-get-interface-information.
+      operations:
+      - method: GET
+        name: getinterfaceinformation
+        description: Juniper Networks Get interface information
+        call: junos-rest-operational.getinterfaceinformation
+        with:
+          interface-name: rest.interface-name
+          terse: rest.terse
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/rpc/get-lldp-neighbors-information
+      name: rpc-get-lldp-neighbors-information
+      description: REST surface for rpc-get-lldp-neighbors-information.
+      operations:
+      - method: GET
+        name: getlldpneighborsinformation
+        description: Juniper Networks Get LLDP neighbor information
+        call: junos-rest-operational.getlldpneighborsinformation
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/rpc/get-route-information
+      name: rpc-get-route-information
+      description: REST surface for rpc-get-route-information.
+      operations:
+      - method: GET
+        name: getrouteinformation
+        description: Juniper Networks Get routing table information
+        call: junos-rest-operational.getrouteinformation
+        with:
+          destination: rest.destination
+          table: rest.table
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/rpc/get-software-information
+      name: rpc-get-software-information
+      description: REST surface for rpc-get-software-information.
+      operations:
+      - method: GET
+        name: getsoftwareinformation
+        description: Juniper Networks Get software version information
+        call: junos-rest-operational.getsoftwareinformation
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/rpc/get-system-uptime-information
+      name: rpc-get-system-uptime-information
+      description: REST surface for rpc-get-system-uptime-information.
+      operations:
+      - method: GET
+        name: getsystemuptimeinformation
+        description: Juniper Networks Get system uptime
+        call: junos-rest-operational.getsystemuptimeinformation
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: junos-rest-operational-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Juniper Networks Junos REST API — Operational. One tool per consumed operation, routed inline
+      through this capability's consumes block.
+    tools:
+    - name: juniper-networks-get-alarm-information
+      description: Juniper Networks Get alarm information
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: junos-rest-operational.getalarminformation
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-get-bgp-neighbor
+      description: Juniper Networks Get BGP neighbor information
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: junos-rest-operational.getbgpneighborinformation
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-get-chassis-inventory
+      description: Juniper Networks Get chassis inventory
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: junos-rest-operational.getchassisinventory
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-get-interface-information
+      description: Juniper Networks Get interface information
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: junos-rest-operational.getinterfaceinformation
+      with:
+        interface-name: tools.interface-name
+        terse: tools.terse
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-get-lldp-neighbor
+      description: Juniper Networks Get LLDP neighbor information
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: junos-rest-operational.getlldpneighborsinformation
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-get-routing-table
+      description: Juniper Networks Get routing table information
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: junos-rest-operational.getrouteinformation
+      with:
+        destination: tools.destination
+        table: tools.table
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-get-software-version
+      description: Juniper Networks Get software version information
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: junos-rest-operational.getsoftwareinformation
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-get-system-uptime
+      description: Juniper Networks Get system uptime
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: junos-rest-operational.getsystemuptimeinformation
+      outputParameters:
+      - type: object
+        mapping: $.

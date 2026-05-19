@@ -1,0 +1,70 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Juniper Networks Juniper Mist API — Clients
+  description: 'Juniper Networks Juniper Mist API — Clients. 1 operations. Lead operation: Juniper Networks List client statistics.
+    Self-contained Naftiko capability covering one Juniper business surface.'
+  tags:
+  - Juniper
+  - Clients
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    JUNIPER_API_KEY: JUNIPER_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: mist-clients
+    baseUri: https://api.mist.com/api/v1
+    description: Juniper Networks Juniper Mist API — Clients business capability. Self-contained, no shared references.
+    resources:
+    - name: sites-site_id-stats-clients
+      path: /sites/{site_id}/stats/clients
+      operations:
+      - name: listsiteclientstats
+        method: GET
+        description: Juniper Networks List client statistics
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: bearer
+      token: '{{env.JUNIPER_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: mist-clients-rest
+    port: 8080
+    description: REST adapter for Juniper Networks Juniper Mist API — Clients. One Spectral-compliant resource per consumed
+      operation, prefixed with /v1.
+    resources:
+    - path: /v1/sites/{site-id}/stats/clients
+      name: sites-site-id-stats-clients
+      description: REST surface for sites-site_id-stats-clients.
+      operations:
+      - method: GET
+        name: listsiteclientstats
+        description: Juniper Networks List client statistics
+        call: mist-clients.listsiteclientstats
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: mist-clients-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Juniper Networks Juniper Mist API — Clients. One tool per consumed operation, routed inline
+      through this capability's consumes block.
+    tools:
+    - name: juniper-networks-list-client-statistics
+      description: Juniper Networks List client statistics
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: mist-clients.listsiteclientstats
+      outputParameters:
+      - type: object
+        mapping: $.

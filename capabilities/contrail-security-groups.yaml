@@ -1,0 +1,106 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Juniper Networks Juniper Contrail Networking API — Security Groups
+  description: 'Juniper Networks Juniper Contrail Networking API — Security Groups. 2 operations. Lead operation: Juniper
+    Networks List security groups. Self-contained Naftiko capability covering one Juniper business surface.'
+  tags:
+  - Juniper
+  - Security Groups
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    JUNIPER_API_KEY: JUNIPER_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: contrail-security-groups
+    baseUri: https://{contrail_controller}:8082
+    description: Juniper Networks Juniper Contrail Networking API — Security Groups business capability. Self-contained, no
+      shared references.
+    resources:
+    - name: security-groups
+      path: /security-groups
+      operations:
+      - name: listsecuritygroups
+        method: GET
+        description: Juniper Networks List security groups
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createsecuritygroup
+        method: POST
+        description: Juniper Networks Create security group
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.JUNIPER_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: contrail-security-groups-rest
+    port: 8080
+    description: REST adapter for Juniper Networks Juniper Contrail Networking API — Security Groups. One Spectral-compliant
+      resource per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/security-groups
+      name: security-groups
+      description: REST surface for security-groups.
+      operations:
+      - method: GET
+        name: listsecuritygroups
+        description: Juniper Networks List security groups
+        call: contrail-security-groups.listsecuritygroups
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createsecuritygroup
+        description: Juniper Networks Create security group
+        call: contrail-security-groups.createsecuritygroup
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: contrail-security-groups-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Juniper Networks Juniper Contrail Networking API — Security Groups. One tool per consumed
+      operation, routed inline through this capability's consumes block.
+    tools:
+    - name: juniper-networks-list-security-groups
+      description: Juniper Networks List security groups
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: contrail-security-groups.listsecuritygroups
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-create-security-group
+      description: Juniper Networks Create security group
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: contrail-security-groups.createsecuritygroup
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

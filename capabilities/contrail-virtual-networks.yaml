@@ -1,0 +1,222 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Juniper Networks Juniper Contrail Networking API — Virtual Networks
+  description: 'Juniper Networks Juniper Contrail Networking API — Virtual Networks. 5 operations. Lead operation: Juniper
+    Networks Get virtual network. Self-contained Naftiko capability covering one Juniper business surface.'
+  tags:
+  - Juniper
+  - Virtual Networks
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    JUNIPER_API_KEY: JUNIPER_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: contrail-virtual-networks
+    baseUri: https://{contrail_controller}:8082
+    description: Juniper Networks Juniper Contrail Networking API — Virtual Networks business capability. Self-contained,
+      no shared references.
+    resources:
+    - name: virtual-network-vn_id
+      path: /virtual-network/{vn_id}
+      operations:
+      - name: getvirtualnetwork
+        method: GET
+        description: Juniper Networks Get virtual network
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: vn_id
+          in: path
+          type: string
+          required: true
+      - name: updatevirtualnetwork
+        method: PUT
+        description: Juniper Networks Update virtual network
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: vn_id
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: deletevirtualnetwork
+        method: DELETE
+        description: Juniper Networks Delete virtual network
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: vn_id
+          in: path
+          type: string
+          required: true
+    - name: virtual-networks
+      path: /virtual-networks
+      operations:
+      - name: listvirtualnetworks
+        method: GET
+        description: Juniper Networks List virtual networks
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createvirtualnetwork
+        method: POST
+        description: Juniper Networks Create virtual network
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.JUNIPER_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: contrail-virtual-networks-rest
+    port: 8080
+    description: REST adapter for Juniper Networks Juniper Contrail Networking API — Virtual Networks. One Spectral-compliant
+      resource per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/virtual-network/{vn-id}
+      name: virtual-network-vn-id
+      description: REST surface for virtual-network-vn_id.
+      operations:
+      - method: GET
+        name: getvirtualnetwork
+        description: Juniper Networks Get virtual network
+        call: contrail-virtual-networks.getvirtualnetwork
+        with:
+          vn_id: rest.vn_id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: updatevirtualnetwork
+        description: Juniper Networks Update virtual network
+        call: contrail-virtual-networks.updatevirtualnetwork
+        with:
+          vn_id: rest.vn_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deletevirtualnetwork
+        description: Juniper Networks Delete virtual network
+        call: contrail-virtual-networks.deletevirtualnetwork
+        with:
+          vn_id: rest.vn_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/virtual-networks
+      name: virtual-networks
+      description: REST surface for virtual-networks.
+      operations:
+      - method: GET
+        name: listvirtualnetworks
+        description: Juniper Networks List virtual networks
+        call: contrail-virtual-networks.listvirtualnetworks
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createvirtualnetwork
+        description: Juniper Networks Create virtual network
+        call: contrail-virtual-networks.createvirtualnetwork
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: contrail-virtual-networks-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Juniper Networks Juniper Contrail Networking API — Virtual Networks. One tool per consumed
+      operation, routed inline through this capability's consumes block.
+    tools:
+    - name: juniper-networks-get-virtual-network
+      description: Juniper Networks Get virtual network
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: contrail-virtual-networks.getvirtualnetwork
+      with:
+        vn_id: tools.vn_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-update-virtual-network
+      description: Juniper Networks Update virtual network
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: contrail-virtual-networks.updatevirtualnetwork
+      with:
+        vn_id: tools.vn_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-delete-virtual-network
+      description: Juniper Networks Delete virtual network
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: contrail-virtual-networks.deletevirtualnetwork
+      with:
+        vn_id: tools.vn_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-list-virtual-networks
+      description: Juniper Networks List virtual networks
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: contrail-virtual-networks.listvirtualnetworks
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-create-virtual-network
+      description: Juniper Networks Create virtual network
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: contrail-virtual-networks.createvirtualnetwork
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

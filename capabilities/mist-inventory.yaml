@@ -1,0 +1,120 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Juniper Networks Juniper Mist API — Inventory
+  description: 'Juniper Networks Juniper Mist API — Inventory. 2 operations. Lead operation: Juniper Networks Get organization
+    inventory. Self-contained Naftiko capability covering one Juniper business surface.'
+  tags:
+  - Juniper
+  - Inventory
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    JUNIPER_API_KEY: JUNIPER_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: mist-inventory
+    baseUri: https://api.mist.com/api/v1
+    description: Juniper Networks Juniper Mist API — Inventory business capability. Self-contained, no shared references.
+    resources:
+    - name: orgs-org_id-inventory
+      path: /orgs/{org_id}/inventory
+      operations:
+      - name: getorginventory
+        method: GET
+        description: Juniper Networks Get organization inventory
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: type
+          in: query
+          type: string
+          description: Filter by device type
+        - name: unassigned
+          in: query
+          type: boolean
+          description: Filter for unassigned devices only
+      - name: adddevicestoinventory
+        method: POST
+        description: Juniper Networks Add devices to inventory
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.JUNIPER_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: mist-inventory-rest
+    port: 8080
+    description: REST adapter for Juniper Networks Juniper Mist API — Inventory. One Spectral-compliant resource per consumed
+      operation, prefixed with /v1.
+    resources:
+    - path: /v1/orgs/{org-id}/inventory
+      name: orgs-org-id-inventory
+      description: REST surface for orgs-org_id-inventory.
+      operations:
+      - method: GET
+        name: getorginventory
+        description: Juniper Networks Get organization inventory
+        call: mist-inventory.getorginventory
+        with:
+          type: rest.type
+          unassigned: rest.unassigned
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: adddevicestoinventory
+        description: Juniper Networks Add devices to inventory
+        call: mist-inventory.adddevicestoinventory
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: mist-inventory-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Juniper Networks Juniper Mist API — Inventory. One tool per consumed operation, routed inline
+      through this capability's consumes block.
+    tools:
+    - name: juniper-networks-get-organization-inventory
+      description: Juniper Networks Get organization inventory
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: mist-inventory.getorginventory
+      with:
+        type: tools.type
+        unassigned: tools.unassigned
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-add-devices-inventory
+      description: Juniper Networks Add devices to inventory
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: mist-inventory.adddevicestoinventory
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

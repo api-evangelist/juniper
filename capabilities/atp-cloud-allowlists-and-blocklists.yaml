@@ -1,0 +1,176 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Juniper Networks Juniper Advanced Threat Prevention (ATP) Cloud API — Allowlists and Blocklists
+  description: 'Juniper Networks Juniper Advanced Threat Prevention (ATP) Cloud API — Allowlists and Blocklists. 4 operations.
+    Lead operation: Juniper Networks Get allowlist entries. Self-contained Naftiko capability covering one Juniper business
+    surface.'
+  tags:
+  - Juniper
+  - Allowlists and Blocklists
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    JUNIPER_API_KEY: JUNIPER_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: atp-cloud-allowlists-and-blocklists
+    baseUri: https://{atp_server}/api/v1
+    description: Juniper Networks Juniper Advanced Threat Prevention (ATP) Cloud API — Allowlists and Blocklists business
+      capability. Self-contained, no shared references.
+    resources:
+    - name: lists-allowlist
+      path: /lists/allowlist
+      operations:
+      - name: getallowlist
+        method: GET
+        description: Juniper Networks Get allowlist entries
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: addtoallowlist
+        method: POST
+        description: Juniper Networks Add to allowlist
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: lists-blocklist
+      path: /lists/blocklist
+      operations:
+      - name: getblocklist
+        method: GET
+        description: Juniper Networks Get blocklist entries
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: addtoblocklist
+        method: POST
+        description: Juniper Networks Add to blocklist
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: apikey
+      key: X-Auth-Token
+      value: '{{env.JUNIPER_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: atp-cloud-allowlists-and-blocklists-rest
+    port: 8080
+    description: REST adapter for Juniper Networks Juniper Advanced Threat Prevention (ATP) Cloud API — Allowlists and Blocklists.
+      One Spectral-compliant resource per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/lists/allowlist
+      name: lists-allowlist
+      description: REST surface for lists-allowlist.
+      operations:
+      - method: GET
+        name: getallowlist
+        description: Juniper Networks Get allowlist entries
+        call: atp-cloud-allowlists-and-blocklists.getallowlist
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: addtoallowlist
+        description: Juniper Networks Add to allowlist
+        call: atp-cloud-allowlists-and-blocklists.addtoallowlist
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/lists/blocklist
+      name: lists-blocklist
+      description: REST surface for lists-blocklist.
+      operations:
+      - method: GET
+        name: getblocklist
+        description: Juniper Networks Get blocklist entries
+        call: atp-cloud-allowlists-and-blocklists.getblocklist
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: addtoblocklist
+        description: Juniper Networks Add to blocklist
+        call: atp-cloud-allowlists-and-blocklists.addtoblocklist
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: atp-cloud-allowlists-and-blocklists-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Juniper Networks Juniper Advanced Threat Prevention (ATP) Cloud API — Allowlists and Blocklists.
+      One tool per consumed operation, routed inline through this capability's consumes block.
+    tools:
+    - name: juniper-networks-get-allowlist-entries
+      description: Juniper Networks Get allowlist entries
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: atp-cloud-allowlists-and-blocklists.getallowlist
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-add-allowlist
+      description: Juniper Networks Add to allowlist
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: atp-cloud-allowlists-and-blocklists.addtoallowlist
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-get-blocklist-entries
+      description: Juniper Networks Get blocklist entries
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: atp-cloud-allowlists-and-blocklists.getblocklist
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: juniper-networks-add-blocklist
+      description: Juniper Networks Add to blocklist
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: atp-cloud-allowlists-and-blocklists.addtoblocklist
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
