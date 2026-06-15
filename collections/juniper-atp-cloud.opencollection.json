@@ -1,0 +1,393 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Juniper Networks Juniper Advanced Threat Prevention (ATP) Cloud API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "X-Auth-Token",
+      "value": "{{X-Auth-Token}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Authentication",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Juniper Networks Authenticate",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{atp_server}/api/v1/auth/login",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Authenticates a user and returns an API session token."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Threat Intelligence",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Juniper Networks List threat feeds",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{atp_server}/api/v1/threat-intelligence/feeds"
+          },
+          "docs": "Returns available threat intelligence feeds and their status."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Look up IP reputation",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{atp_server}/api/v1/threat-intelligence/ip-lookup",
+            "params": [
+              {
+                "name": "ip",
+                "value": "",
+                "type": "query",
+                "description": "IP address to look up"
+              }
+            ]
+          },
+          "docs": "Returns the threat reputation score and details for an IP address."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Look up URL reputation",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{atp_server}/api/v1/threat-intelligence/url-lookup",
+            "params": [
+              {
+                "name": "url",
+                "value": "",
+                "type": "query",
+                "description": "URL to look up"
+              }
+            ]
+          },
+          "docs": "Returns the threat reputation and category for a URL."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Look up domain reputation",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{atp_server}/api/v1/threat-intelligence/domain-lookup",
+            "params": [
+              {
+                "name": "domain",
+                "value": "",
+                "type": "query",
+                "description": "Domain name to look up"
+              }
+            ]
+          },
+          "docs": "Returns the threat reputation for a domain name."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Look up file hash",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{atp_server}/api/v1/threat-intelligence/hash-lookup",
+            "params": [
+              {
+                "name": "hash",
+                "value": "",
+                "type": "query",
+                "description": "File hash (MD5, SHA1, or SHA256)"
+              },
+              {
+                "name": "hash_type",
+                "value": "",
+                "type": "query",
+                "description": "Hash type"
+              }
+            ]
+          },
+          "docs": "Returns the malware analysis verdict for a file hash."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "File Analysis",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Juniper Networks Submit file for analysis",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{atp_server}/api/v1/file-analysis/submit",
+            "body": {
+              "type": "multipart-form",
+              "data": [
+                {
+                  "name": "file",
+                  "type": "text",
+                  "value": ""
+                },
+                {
+                  "name": "file_name",
+                  "type": "text",
+                  "value": ""
+                },
+                {
+                  "name": "priority",
+                  "type": "text",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "docs": "Submits a file for malware analysis in the ATP Cloud sandbox."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Get file analysis status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{atp_server}/api/v1/file-analysis/submissions/:submission_id",
+            "params": [
+              {
+                "name": "submission_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Returns the status and results of a file analysis submission."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks List file submissions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{atp_server}/api/v1/file-analysis/submissions",
+            "params": [
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Filter by analysis status"
+              },
+              {
+                "name": "start_date",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "end_date",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Returns a list of file analysis submissions."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Allowlists and Blocklists",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Juniper Networks Get allowlist entries",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{atp_server}/api/v1/lists/allowlist"
+          },
+          "docs": "Returns all entries in the allowlist."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Add to allowlist",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{atp_server}/api/v1/lists/allowlist",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Adds an entry to the allowlist."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Get blocklist entries",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{atp_server}/api/v1/lists/blocklist"
+          },
+          "docs": "Returns all entries in the blocklist."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Add to blocklist",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{atp_server}/api/v1/lists/blocklist",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Adds an entry to the blocklist."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Enrolled Devices",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Juniper Networks List enrolled devices",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{atp_server}/api/v1/enrolled-devices"
+          },
+          "docs": "Returns all SRX devices enrolled with ATP Cloud."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Get enrolled device details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{atp_server}/api/v1/enrolled-devices/:device_id",
+            "params": [
+              {
+                "name": "device_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Returns details for a specific enrolled device."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Reports",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Juniper Networks Get threat report",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{atp_server}/api/v1/reports/threats",
+            "params": [
+              {
+                "name": "start_date",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "end_date",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Returns a summary report of threats detected over a time period."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Indicators of Compromise",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Juniper Networks List indicators of compromise",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{atp_server}/api/v1/ioc/indicators",
+            "params": [
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "Filter by indicator type"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Returns indicators of compromise detected in the environment."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

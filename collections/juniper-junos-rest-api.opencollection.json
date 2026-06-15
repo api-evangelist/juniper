@@ -1,0 +1,240 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Juniper Networks Junos REST API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "basic",
+      "username": "{{username}}",
+      "password": "{{password}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Operational",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Juniper Networks Get software version information",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{device_ip}:3443/rpc/get-software-information"
+          },
+          "docs": "Returns the Junos software version and related information."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Get interface information",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{device_ip}:3443/rpc/get-interface-information",
+            "params": [
+              {
+                "name": "interface-name",
+                "value": "",
+                "type": "query",
+                "description": "Specific interface name (e.g., ge-0/0/0)"
+              },
+              {
+                "name": "terse",
+                "value": "",
+                "type": "query",
+                "description": "Show terse output"
+              }
+            ]
+          },
+          "docs": "Returns interface status and statistics. Equivalent to the Junos CLI command 'show interfaces'."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Get routing table information",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{device_ip}:3443/rpc/get-route-information",
+            "params": [
+              {
+                "name": "destination",
+                "value": "",
+                "type": "query",
+                "description": "Specific route destination prefix"
+              },
+              {
+                "name": "table",
+                "value": "",
+                "type": "query",
+                "description": "Routing table name"
+              }
+            ]
+          },
+          "docs": "Returns routing table entries. Equivalent to the Junos CLI command 'show route'."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Get BGP neighbor information",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{device_ip}:3443/rpc/get-bgp-neighbor-information"
+          },
+          "docs": "Returns BGP session and neighbor information. Equivalent to the Junos CLI command 'show bgp neighbor'."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Get chassis inventory",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{device_ip}:3443/rpc/get-chassis-inventory"
+          },
+          "docs": "Returns the hardware inventory of the device chassis. Equivalent to the Junos CLI command 'show chassis hardware'."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Get alarm information",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{device_ip}:3443/rpc/get-alarm-information"
+          },
+          "docs": "Returns current system and chassis alarms. Equivalent to the Junos CLI command 'show chassis alarms'."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Get system uptime",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{device_ip}:3443/rpc/get-system-uptime-information"
+          },
+          "docs": "Returns system uptime and boot time information."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Get LLDP neighbor information",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{device_ip}:3443/rpc/get-lldp-neighbors-information"
+          },
+          "docs": "Returns LLDP neighbor discovery data."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Configuration",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Juniper Networks Get device configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{device_ip}:3443/api/get-config",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieves the device configuration. Supports retrieving specific configuration hierarchies or the entire configuration."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Edit device configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{device_ip}:3443/api/edit-config",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Modifies the candidate configuration on the device. Changes must be committed separately using the commit-configuration endpoint."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Commit configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{device_ip}:3443/rpc/commit-configuration",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Commits the candidate configuration to the active configuration. Supports confirmed commits and commit comments."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Rollback configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{device_ip}:3443/rpc/rollback-configuration",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Rolls back the configuration to a previous version."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "RPC",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Juniper Networks Execute arbitrary RPC command",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{device_ip}:3443/rpc/:rpc_command",
+            "params": [
+              {
+                "name": "rpc_command",
+                "value": "",
+                "type": "path",
+                "description": "RPC command name (e.g., get-interface-information, get-route-engine-information)"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Executes any valid Junos RPC command. The RPC command name is derived from the CLI command by replacing spaces with hyphens and prefixing with 'get-' for show commands."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

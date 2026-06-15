@@ -1,0 +1,615 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Juniper Networks Juniper Apstra API",
+    "version": "4.2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "AuthToken",
+      "value": "{{AuthToken}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Authentication",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Juniper Networks Authenticate user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{apstra_server}/api/aaa/login",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Authenticates a user and returns an authentication token. The token must be included in subsequent requests as an AuthToken header."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Blueprints",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Juniper Networks List all blueprints",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{apstra_server}/api/blueprints"
+          },
+          "docs": "Returns a list of all data center blueprints."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Create a blueprint",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{apstra_server}/api/blueprints",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new data center blueprint from a template."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Get blueprint details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{apstra_server}/api/blueprints/:blueprint_id",
+            "params": [
+              {
+                "name": "blueprint_id",
+                "value": "",
+                "type": "path",
+                "description": "Blueprint unique identifier"
+              }
+            ]
+          },
+          "docs": "Returns details for a specific blueprint including its status."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Update a blueprint",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://{apstra_server}/api/blueprints/:blueprint_id",
+            "params": [
+              {
+                "name": "blueprint_id",
+                "value": "",
+                "type": "path",
+                "description": "Blueprint unique identifier"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates an existing blueprint."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Delete a blueprint",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://{apstra_server}/api/blueprints/:blueprint_id",
+            "params": [
+              {
+                "name": "blueprint_id",
+                "value": "",
+                "type": "path",
+                "description": "Blueprint unique identifier"
+              }
+            ]
+          },
+          "docs": "Deletes a data center blueprint."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Deploy blueprint",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://{apstra_server}/api/blueprints/:blueprint_id/deploy",
+            "params": [
+              {
+                "name": "blueprint_id",
+                "value": "",
+                "type": "path",
+                "description": "Blueprint unique identifier"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Commits and deploys the current blueprint configuration to the managed devices. This pushes the rendered configuration to the network."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks List blueprint nodes",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{apstra_server}/api/blueprints/:blueprint_id/nodes",
+            "params": [
+              {
+                "name": "blueprint_id",
+                "value": "",
+                "type": "path",
+                "description": "Blueprint unique identifier"
+              },
+              {
+                "name": "node_type",
+                "value": "",
+                "type": "query",
+                "description": "Filter by node type"
+              }
+            ]
+          },
+          "docs": "Returns nodes in the blueprint graph, including systems, interfaces, and logical elements."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Virtual Networks",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Juniper Networks List security zones (routing zones / VRFs)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{apstra_server}/api/blueprints/:blueprint_id/security-zones",
+            "params": [
+              {
+                "name": "blueprint_id",
+                "value": "",
+                "type": "path",
+                "description": "Blueprint unique identifier"
+              }
+            ]
+          },
+          "docs": "Returns routing zones (VRFs) in the blueprint."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Create security zone",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{apstra_server}/api/blueprints/:blueprint_id/security-zones",
+            "params": [
+              {
+                "name": "blueprint_id",
+                "value": "",
+                "type": "path",
+                "description": "Blueprint unique identifier"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new routing zone (VRF) in the blueprint."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks List virtual networks",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{apstra_server}/api/blueprints/:blueprint_id/virtual-networks",
+            "params": [
+              {
+                "name": "blueprint_id",
+                "value": "",
+                "type": "path",
+                "description": "Blueprint unique identifier"
+              }
+            ]
+          },
+          "docs": "Returns virtual networks configured in the blueprint."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Create virtual network",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{apstra_server}/api/blueprints/:blueprint_id/virtual-networks",
+            "params": [
+              {
+                "name": "blueprint_id",
+                "value": "",
+                "type": "path",
+                "description": "Blueprint unique identifier"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new virtual network in the blueprint."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Connectivity Templates",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Juniper Networks List connectivity templates",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{apstra_server}/api/blueprints/:blueprint_id/connectivity-templates",
+            "params": [
+              {
+                "name": "blueprint_id",
+                "value": "",
+                "type": "path",
+                "description": "Blueprint unique identifier"
+              }
+            ]
+          },
+          "docs": "Returns connectivity templates in the blueprint."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Intent Checks",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Juniper Networks List blueprint anomalies",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{apstra_server}/api/blueprints/:blueprint_id/anomalies",
+            "params": [
+              {
+                "name": "blueprint_id",
+                "value": "",
+                "type": "path",
+                "description": "Blueprint unique identifier"
+              }
+            ]
+          },
+          "docs": "Returns anomalies detected in the blueprint by the Intent-Based Analytics engine. Anomalies indicate deviations between intended and actual network state."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks List IBA dashboards",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{apstra_server}/api/blueprints/:blueprint_id/iba/dashboards",
+            "params": [
+              {
+                "name": "blueprint_id",
+                "value": "",
+                "type": "path",
+                "description": "Blueprint unique identifier"
+              }
+            ]
+          },
+          "docs": "Returns Intent-Based Analytics dashboards for the blueprint."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Configlets",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Juniper Networks List blueprint configlets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{apstra_server}/api/blueprints/:blueprint_id/configlets",
+            "params": [
+              {
+                "name": "blueprint_id",
+                "value": "",
+                "type": "path",
+                "description": "Blueprint unique identifier"
+              }
+            ]
+          },
+          "docs": "Returns configlets applied to the blueprint."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks List design configlets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{apstra_server}/api/design/configlets"
+          },
+          "docs": "Returns all configlet templates."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Create design configlet",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{apstra_server}/api/design/configlets",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new configlet template."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Design",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Juniper Networks List rack types",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{apstra_server}/api/design/rack-types"
+          },
+          "docs": "Returns all rack type designs."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Create rack type",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{apstra_server}/api/design/rack-types",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new rack type design."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks List design templates",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{apstra_server}/api/design/templates"
+          },
+          "docs": "Returns all data center design templates."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Create design template",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{apstra_server}/api/design/templates",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new data center design template."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks List logical devices",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{apstra_server}/api/design/logical-devices"
+          },
+          "docs": "Returns all logical device definitions."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks List interface maps",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{apstra_server}/api/design/interface-maps"
+          },
+          "docs": "Returns interface maps that map logical device ports to physical device interfaces."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Resources",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Juniper Networks List ASN pools",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{apstra_server}/api/resources/asn-pools"
+          },
+          "docs": "Returns all Autonomous System Number pools."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Create ASN pool",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{apstra_server}/api/resources/asn-pools",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new ASN pool."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks List IP pools",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{apstra_server}/api/resources/ip-pools"
+          },
+          "docs": "Returns all IP address pools."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Create IP pool",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{apstra_server}/api/resources/ip-pools",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new IP address pool."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks List VNI pools",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{apstra_server}/api/resources/vni-pools"
+          },
+          "docs": "Returns all VXLAN Network Identifier pools."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Create VNI pool",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{apstra_server}/api/resources/vni-pools",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new VNI pool."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Systems",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Juniper Networks List system agents",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{apstra_server}/api/system-agents"
+          },
+          "docs": "Returns all managed device agents."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks Create system agent",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{apstra_server}/api/system-agents",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Registers a new system agent for a managed device."
+        },
+        {
+          "info": {
+            "name": "Juniper Networks List managed systems",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{apstra_server}/api/systems"
+          },
+          "docs": "Returns all managed systems (devices) known to Apstra."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
