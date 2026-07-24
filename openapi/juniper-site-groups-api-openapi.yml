@@ -1,0 +1,105 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Site Groups API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: Site Groups
+  description: Logical grouping of sites
+paths:
+  /orgs/{org_id}/sitegroups:
+    get:
+      operationId: listSiteGroups
+      summary: Juniper Networks List site groups
+      description: Returns site groups for the organization.
+      tags:
+      - Site Groups
+      parameters:
+      - $ref: '#/components/parameters/OrgId'
+      responses:
+        '200':
+          description: List of site groups
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SiteGroup'
+    post:
+      operationId: createSiteGroup
+      summary: Juniper Networks Create a site group
+      description: Creates a new site group within the organization.
+      tags:
+      - Site Groups
+      parameters:
+      - $ref: '#/components/parameters/OrgId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SiteGroup'
+      responses:
+        '200':
+          description: Site group created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteGroup'
+components:
+  schemas:
+    SiteGroup:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        site_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        created_time:
+          type: number
+        modified_time:
+          type: number
+  parameters:
+    OrgId:
+      name: org_id
+      in: path
+      required: true
+      description: Organization unique identifier
+      schema:
+        type: string
+        format: uuid
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

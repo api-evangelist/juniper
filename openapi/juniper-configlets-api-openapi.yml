@@ -1,0 +1,130 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Configlets API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: Configlets
+  description: Configuration template management
+paths:
+  /blueprints/{blueprint_id}/configlets:
+    get:
+      operationId: listBlueprintConfiglets
+      summary: Juniper Networks List blueprint configlets
+      description: Returns configlets applied to the blueprint.
+      tags:
+      - Configlets
+      parameters:
+      - $ref: '#/components/parameters/BlueprintId'
+      responses:
+        '200':
+          description: List of configlets
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Configlet'
+  /design/configlets:
+    get:
+      operationId: listDesignConfiglets
+      summary: Juniper Networks List design configlets
+      description: Returns all configlet templates.
+      tags:
+      - Configlets
+      responses:
+        '200':
+          description: List of configlets
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Configlet'
+    post:
+      operationId: createDesignConfiglet
+      summary: Juniper Networks Create design configlet
+      description: Creates a new configlet template.
+      tags:
+      - Configlets
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Configlet'
+      responses:
+        '201':
+          description: Configlet created
+components:
+  parameters:
+    BlueprintId:
+      name: blueprint_id
+      in: path
+      required: true
+      description: Blueprint unique identifier
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    Configlet:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        generators:
+          type: array
+          items:
+            type: object
+            properties:
+              config_style:
+                type: string
+                enum:
+                - junos
+                - eos
+                - nxos
+                - sonic
+              section:
+                type: string
+                enum:
+                - system
+                - interface
+                - set_based_system
+                - set_based_interface
+              template_text:
+                type: string
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

@@ -1,0 +1,101 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Insights API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: Insights
+  description: AI-driven analytics and insights
+paths:
+  /sites/{site_id}/insights/stats:
+    get:
+      operationId: getSiteInsights
+      summary: Juniper Networks Get site AI insights
+      description: Returns AI-driven insights and analytics for the site, including anomaly detection, Service Level Expectations (SLE), and recommendations.
+      tags:
+      - Insights
+      parameters:
+      - $ref: '#/components/parameters/SiteId'
+      - name: metric
+        in: query
+        description: Specific insight metric to retrieve
+        schema:
+          type: string
+          enum:
+          - time-to-connect
+          - throughput
+          - coverage
+          - capacity
+          - roaming
+      responses:
+        '200':
+          description: Site insights
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteInsights'
+components:
+  parameters:
+    SiteId:
+      name: site_id
+      in: path
+      required: true
+      description: Site unique identifier
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    SiteInsights:
+      type: object
+      properties:
+        site_id:
+          type: string
+          format: uuid
+        metrics:
+          type: object
+          properties:
+            time_to_connect:
+              type: object
+              properties:
+                total:
+                  type: number
+                user_minutes:
+                  type: number
+            throughput:
+              type: object
+              properties:
+                download:
+                  type: number
+                upload:
+                  type: number
+            coverage:
+              type: object
+              properties:
+                avg_rssi:
+                  type: number
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

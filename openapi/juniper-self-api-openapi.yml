@@ -1,0 +1,190 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Self API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: Self
+  description: Operations for the authenticated user account
+paths:
+  /self:
+    get:
+      operationId: getSelf
+      summary: Juniper Networks Get current user info
+      description: Returns information about the currently authenticated user.
+      tags:
+      - Self
+      responses:
+        '200':
+          description: Current user information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Admin'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /self/apitokens:
+    get:
+      operationId: listApiTokens
+      summary: Juniper Networks List API tokens
+      description: Returns a list of API tokens for the authenticated user.
+      tags:
+      - Self
+      responses:
+        '200':
+          description: List of API tokens
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApiToken'
+    post:
+      operationId: createApiToken
+      summary: Juniper Networks Create API token
+      description: Creates a new API token for the authenticated user.
+      tags:
+      - Self
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the API token
+                privileges:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Privilege'
+      responses:
+        '200':
+          description: API token created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiToken'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+components:
+  schemas:
+    ApiToken:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        key:
+          type: string
+          description: The API token value (only returned on creation)
+        name:
+          type: string
+        privileges:
+          type: array
+          items:
+            $ref: '#/components/schemas/Privilege'
+        created_time:
+          type: number
+    Admin:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        first_name:
+          type: string
+        last_name:
+          type: string
+        phone:
+          type: string
+        privileges:
+          type: array
+          items:
+            $ref: '#/components/schemas/Privilege'
+        tags:
+          type: array
+          items:
+            type: string
+        created_time:
+          type: number
+          description: Unix timestamp
+        modified_time:
+          type: number
+          description: Unix timestamp
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Error message
+    Privilege:
+      type: object
+      properties:
+        scope:
+          type: string
+          enum:
+          - org
+          - site
+          - sitegroup
+        role:
+          type: string
+          enum:
+          - admin
+          - write
+          - read
+          - helpdesk
+        org_id:
+          type: string
+          format: uuid
+        site_id:
+          type: string
+          format: uuid
+        sitegroup_id:
+          type: string
+          format: uuid
+  responses:
+    Unauthorized:
+      description: Unauthorized - invalid or missing authentication
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad request - invalid parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

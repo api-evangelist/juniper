@@ -1,0 +1,135 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Intent Checks API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: Intent Checks
+  description: Intent-based analytics and anomaly detection
+paths:
+  /blueprints/{blueprint_id}/anomalies:
+    get:
+      operationId: listBlueprintAnomalies
+      summary: Juniper Networks List blueprint anomalies
+      description: Returns anomalies detected in the blueprint by the Intent-Based Analytics engine. Anomalies indicate deviations between intended and actual network state.
+      tags:
+      - Intent Checks
+      parameters:
+      - $ref: '#/components/parameters/BlueprintId'
+      responses:
+        '200':
+          description: Blueprint anomalies
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Anomaly'
+                  count:
+                    type: integer
+  /blueprints/{blueprint_id}/iba/dashboards:
+    get:
+      operationId: listIbaDashboards
+      summary: Juniper Networks List IBA dashboards
+      description: Returns Intent-Based Analytics dashboards for the blueprint.
+      tags:
+      - Intent Checks
+      parameters:
+      - $ref: '#/components/parameters/BlueprintId'
+      responses:
+        '200':
+          description: List of IBA dashboards
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/IbaDashboard'
+components:
+  parameters:
+    BlueprintId:
+      name: blueprint_id
+      in: path
+      required: true
+      description: Blueprint unique identifier
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    Anomaly:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        severity:
+          type: string
+          enum:
+          - critical
+          - warning
+          - info
+        role:
+          type: string
+        anomaly_type:
+          type: string
+        expected:
+          type: string
+        actual:
+          type: string
+        identity:
+          type: object
+    IbaDashboard:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        description:
+          type: string
+        predefined_dashboard:
+          type: string
+        widget_grid:
+          type: array
+          items:
+            type: array
+            items:
+              type: string
+        updated_at:
+          type: string
+          format: date-time
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

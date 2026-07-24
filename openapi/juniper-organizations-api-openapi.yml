@@ -1,0 +1,182 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Organizations API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: Organizations
+  description: Organization-level management
+paths:
+  /orgs:
+    get:
+      operationId: listOrganizations
+      summary: Juniper Networks List organizations
+      description: Returns a list of organizations accessible to the authenticated user.
+      tags:
+      - Organizations
+      responses:
+        '200':
+          description: List of organizations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Organization'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /orgs/{org_id}:
+    get:
+      operationId: getOrganization
+      summary: Juniper Networks Get organization
+      description: Returns details for a specific organization.
+      tags:
+      - Organizations
+      parameters:
+      - $ref: '#/components/parameters/OrgId'
+      responses:
+        '200':
+          description: Organization details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      operationId: updateOrganization
+      summary: Juniper Networks Update organization
+      description: Updates an existing organization.
+      tags:
+      - Organizations
+      parameters:
+      - $ref: '#/components/parameters/OrgId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Organization'
+      responses:
+        '200':
+          description: Organization updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /orgs/{org_id}/stats:
+    get:
+      operationId: getOrgStats
+      summary: Juniper Networks Get organization statistics
+      description: Returns statistics for the organization including device counts and client counts.
+      tags:
+      - Organizations
+      parameters:
+      - $ref: '#/components/parameters/OrgId'
+      responses:
+        '200':
+          description: Organization statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrgStats'
+components:
+  responses:
+    Unauthorized:
+      description: Unauthorized - invalid or missing authentication
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad request - invalid parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    OrgId:
+      name: org_id
+      in: path
+      required: true
+      description: Organization unique identifier
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Error message
+    OrgStats:
+      type: object
+      properties:
+        num_sites:
+          type: integer
+        num_devices:
+          type: integer
+        num_devices_connected:
+          type: integer
+        num_devices_disconnected:
+          type: integer
+        num_clients:
+          type: integer
+    Organization:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        orggroup_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        session_expiry:
+          type: integer
+          description: Session expiry in minutes
+        alarmtemplate_id:
+          type: string
+          format: uuid
+        created_time:
+          type: number
+        modified_time:
+          type: number
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

@@ -1,0 +1,216 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists WLANs API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: WLANs
+  description: Wireless LAN configuration
+paths:
+  /sites/{site_id}/wlans:
+    get:
+      operationId: listSiteWlans
+      summary: Juniper Networks List WLANs
+      description: Returns all WLANs configured at the specified site.
+      tags:
+      - WLANs
+      parameters:
+      - $ref: '#/components/parameters/SiteId'
+      responses:
+        '200':
+          description: List of WLANs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Wlan'
+    post:
+      operationId: createSiteWlan
+      summary: Juniper Networks Create WLAN
+      description: Creates a new WLAN at the specified site.
+      tags:
+      - WLANs
+      parameters:
+      - $ref: '#/components/parameters/SiteId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Wlan'
+      responses:
+        '200':
+          description: WLAN created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wlan'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /sites/{site_id}/wlans/{wlan_id}:
+    get:
+      operationId: getSiteWlan
+      summary: Juniper Networks Get WLAN details
+      description: Returns details for a specific WLAN.
+      tags:
+      - WLANs
+      parameters:
+      - $ref: '#/components/parameters/SiteId'
+      - $ref: '#/components/parameters/WlanId'
+      responses:
+        '200':
+          description: WLAN details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wlan'
+    put:
+      operationId: updateSiteWlan
+      summary: Juniper Networks Update WLAN
+      description: Updates an existing WLAN configuration.
+      tags:
+      - WLANs
+      parameters:
+      - $ref: '#/components/parameters/SiteId'
+      - $ref: '#/components/parameters/WlanId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Wlan'
+      responses:
+        '200':
+          description: WLAN updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wlan'
+    delete:
+      operationId: deleteSiteWlan
+      summary: Juniper Networks Delete WLAN
+      description: Deletes a WLAN from the site.
+      tags:
+      - WLANs
+      parameters:
+      - $ref: '#/components/parameters/SiteId'
+      - $ref: '#/components/parameters/WlanId'
+      responses:
+        '200':
+          description: WLAN deleted
+components:
+  schemas:
+    Wlan:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        site_id:
+          type: string
+          format: uuid
+        ssid:
+          type: string
+          description: SSID name
+        enabled:
+          type: boolean
+        hide_ssid:
+          type: boolean
+          description: Whether to hide the SSID from beacon frames
+        band:
+          type: string
+          enum:
+          - '24'
+          - '5'
+          - '6'
+          - both
+        auth:
+          type: object
+          description: Authentication settings
+          properties:
+            type:
+              type: string
+              enum:
+              - open
+              - psk
+              - eap
+              - wep
+              - psk-tkip
+              - psk-wpa2-tkip
+            psk:
+              type: string
+              description: Pre-shared key value
+        vlan_enabled:
+          type: boolean
+        vlan_id:
+          type: integer
+        apply_to:
+          type: string
+          enum:
+          - site
+          - wxtags
+          - aps
+        created_time:
+          type: number
+        modified_time:
+          type: number
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Error message
+  parameters:
+    SiteId:
+      name: site_id
+      in: path
+      required: true
+      description: Site unique identifier
+      schema:
+        type: string
+        format: uuid
+    WlanId:
+      name: wlan_id
+      in: path
+      required: true
+      description: WLAN unique identifier
+      schema:
+        type: string
+        format: uuid
+  responses:
+    BadRequest:
+      description: Bad request - invalid parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

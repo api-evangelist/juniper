@@ -1,0 +1,87 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Tag Management API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: Tag Management
+paths:
+  /tag-management/tags:
+    get:
+      operationId: listTags
+      summary: Juniper Networks List tags
+      description: Returns all tags used for device grouping.
+      tags:
+      - Tag Management
+      responses:
+        '200':
+          description: List of tags
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tags:
+                    type: object
+                    properties:
+                      tag:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Tag'
+    post:
+      operationId: createTag
+      summary: Juniper Networks Create a tag
+      description: Creates a new tag for device grouping.
+      tags:
+      - Tag Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+      responses:
+        '201':
+          description: Tag created
+components:
+  schemas:
+    Tag:
+      type: object
+      properties:
+        tagId:
+          type: integer
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+          - public
+          - private
+        description:
+          type: string
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

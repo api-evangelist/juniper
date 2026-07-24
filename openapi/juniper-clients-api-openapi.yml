@@ -1,0 +1,122 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Clients API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: Clients
+  description: Client session and statistics tracking
+paths:
+  /sites/{site_id}/stats/clients:
+    get:
+      operationId: listSiteClientStats
+      summary: Juniper Networks List client statistics
+      description: Returns wireless client statistics for the site.
+      tags:
+      - Clients
+      parameters:
+      - $ref: '#/components/parameters/SiteId'
+      - $ref: '#/components/parameters/PageParam'
+      - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Client statistics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClientStats'
+components:
+  parameters:
+    SiteId:
+      name: site_id
+      in: path
+      required: true
+      description: Site unique identifier
+      schema:
+        type: string
+        format: uuid
+    LimitParam:
+      name: limit
+      in: query
+      description: Number of results per page
+      schema:
+        type: integer
+        default: 100
+        maximum: 1000
+    PageParam:
+      name: page
+      in: query
+      description: Page number for pagination
+      schema:
+        type: integer
+        default: 1
+  schemas:
+    ClientStats:
+      type: object
+      properties:
+        mac:
+          type: string
+        hostname:
+          type: string
+        ip:
+          type: string
+        ssid:
+          type: string
+        wlan_id:
+          type: string
+          format: uuid
+        ap_mac:
+          type: string
+        ap_id:
+          type: string
+          format: uuid
+        band:
+          type: string
+        channel:
+          type: integer
+        rssi:
+          type: number
+          description: Signal strength in dBm
+        snr:
+          type: number
+          description: Signal-to-noise ratio
+        tx_rate:
+          type: number
+          description: Transmit rate in Mbps
+        rx_rate:
+          type: number
+          description: Receive rate in Mbps
+        tx_bytes:
+          type: integer
+        rx_bytes:
+          type: integer
+        uptime:
+          type: integer
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

@@ -1,0 +1,126 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: Allowlists and Blocklists
+  description: Allowlist and blocklist management
+paths:
+  /lists/allowlist:
+    get:
+      operationId: getAllowlist
+      summary: Juniper Networks Get allowlist entries
+      description: Returns all entries in the allowlist.
+      tags:
+      - Allowlists and Blocklists
+      responses:
+        '200':
+          description: Allowlist entries
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  entries:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ListEntry'
+    post:
+      operationId: addToAllowlist
+      summary: Juniper Networks Add to allowlist
+      description: Adds an entry to the allowlist.
+      tags:
+      - Allowlists and Blocklists
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListEntry'
+      responses:
+        '201':
+          description: Entry added
+  /lists/blocklist:
+    get:
+      operationId: getBlocklist
+      summary: Juniper Networks Get blocklist entries
+      description: Returns all entries in the blocklist.
+      tags:
+      - Allowlists and Blocklists
+      responses:
+        '200':
+          description: Blocklist entries
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  entries:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ListEntry'
+    post:
+      operationId: addToBlocklist
+      summary: Juniper Networks Add to blocklist
+      description: Adds an entry to the blocklist.
+      tags:
+      - Allowlists and Blocklists
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListEntry'
+      responses:
+        '201':
+          description: Entry added
+components:
+  schemas:
+    ListEntry:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+          - ip
+          - domain
+          - url
+          - hash
+        value:
+          type: string
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        created_by:
+          type: string
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

@@ -1,0 +1,108 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists RF Templates API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: RF Templates
+  description: Radio frequency templates
+paths:
+  /sites/{site_id}/rftemplates:
+    get:
+      operationId: listSiteRfTemplates
+      summary: Juniper Networks List RF templates
+      description: Returns RF templates available at the site.
+      tags:
+      - RF Templates
+      parameters:
+      - $ref: '#/components/parameters/SiteId'
+      responses:
+        '200':
+          description: List of RF templates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RfTemplate'
+components:
+  parameters:
+    SiteId:
+      name: site_id
+      in: path
+      required: true
+      description: Site unique identifier
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    RfTemplate:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        band_24:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            power:
+              type: integer
+            channels:
+              type: array
+              items:
+                type: integer
+        band_5:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            power:
+              type: integer
+            channels:
+              type: array
+              items:
+                type: integer
+        band_6:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            power:
+              type: integer
+            channels:
+              type: array
+              items:
+                type: integer
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

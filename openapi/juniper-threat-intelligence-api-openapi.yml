@@ -1,0 +1,264 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Threat Intelligence API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: Threat Intelligence
+  description: Threat feed and intelligence data
+paths:
+  /threat-intelligence/feeds:
+    get:
+      operationId: listThreatFeeds
+      summary: Juniper Networks List threat feeds
+      description: Returns available threat intelligence feeds and their status.
+      tags:
+      - Threat Intelligence
+      responses:
+        '200':
+          description: List of threat feeds
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  feeds:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ThreatFeed'
+  /threat-intelligence/ip-lookup:
+    get:
+      operationId: lookupIpReputation
+      summary: Juniper Networks Look up IP reputation
+      description: Returns the threat reputation score and details for an IP address.
+      tags:
+      - Threat Intelligence
+      parameters:
+      - name: ip
+        in: query
+        required: true
+        description: IP address to look up
+        schema:
+          type: string
+      responses:
+        '200':
+          description: IP reputation data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IpReputation'
+  /threat-intelligence/url-lookup:
+    get:
+      operationId: lookupUrlReputation
+      summary: Juniper Networks Look up URL reputation
+      description: Returns the threat reputation and category for a URL.
+      tags:
+      - Threat Intelligence
+      parameters:
+      - name: url
+        in: query
+        required: true
+        description: URL to look up
+        schema:
+          type: string
+      responses:
+        '200':
+          description: URL reputation data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UrlReputation'
+  /threat-intelligence/domain-lookup:
+    get:
+      operationId: lookupDomainReputation
+      summary: Juniper Networks Look up domain reputation
+      description: Returns the threat reputation for a domain name.
+      tags:
+      - Threat Intelligence
+      parameters:
+      - name: domain
+        in: query
+        required: true
+        description: Domain name to look up
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Domain reputation data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainReputation'
+  /threat-intelligence/hash-lookup:
+    get:
+      operationId: lookupFileHash
+      summary: Juniper Networks Look up file hash
+      description: Returns the malware analysis verdict for a file hash.
+      tags:
+      - Threat Intelligence
+      parameters:
+      - name: hash
+        in: query
+        required: true
+        description: File hash (MD5, SHA1, or SHA256)
+        schema:
+          type: string
+      - name: hash_type
+        in: query
+        description: Hash type
+        schema:
+          type: string
+          enum:
+          - md5
+          - sha1
+          - sha256
+      responses:
+        '200':
+          description: File hash verdict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileVerdict'
+components:
+  schemas:
+    ThreatFeed:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        enabled:
+          type: boolean
+        last_updated:
+          type: string
+          format: date-time
+        entry_count:
+          type: integer
+        feed_type:
+          type: string
+          enum:
+          - ip
+          - domain
+          - url
+          - hash
+    IpReputation:
+      type: object
+      properties:
+        ip:
+          type: string
+        threat_score:
+          type: integer
+          minimum: 0
+          maximum: 10
+          description: Threat score from 0 (clean) to 10 (malicious)
+        categories:
+          type: array
+          items:
+            type: string
+        country:
+          type: string
+        asn:
+          type: integer
+        last_seen:
+          type: string
+          format: date-time
+        feeds:
+          type: array
+          items:
+            type: string
+    DomainReputation:
+      type: object
+      properties:
+        domain:
+          type: string
+        threat_score:
+          type: integer
+          minimum: 0
+          maximum: 10
+        categories:
+          type: array
+          items:
+            type: string
+        registrar:
+          type: string
+        created_date:
+          type: string
+          format: date-time
+        last_seen:
+          type: string
+          format: date-time
+    FileVerdict:
+      type: object
+      properties:
+        sha256:
+          type: string
+        md5:
+          type: string
+        sha1:
+          type: string
+        verdict:
+          type: string
+          enum:
+          - clean
+          - malicious
+          - suspicious
+          - unknown
+        malware_family:
+          type: string
+        threat_score:
+          type: integer
+          minimum: 0
+          maximum: 10
+        first_seen:
+          type: string
+          format: date-time
+        last_seen:
+          type: string
+          format: date-time
+    UrlReputation:
+      type: object
+      properties:
+        url:
+          type: string
+        threat_score:
+          type: integer
+          minimum: 0
+          maximum: 10
+        categories:
+          type: array
+          items:
+            type: string
+        host:
+          type: string
+        last_seen:
+          type: string
+          format: date-time
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

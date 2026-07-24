@@ -1,0 +1,128 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Webhooks API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: Webhooks
+  description: Webhook configuration for event notifications
+paths:
+  /orgs/{org_id}/webhooks:
+    get:
+      operationId: listOrgWebhooks
+      summary: Juniper Networks List organization webhooks
+      description: Returns webhooks configured at the organization level.
+      tags:
+      - Webhooks
+      parameters:
+      - $ref: '#/components/parameters/OrgId'
+      responses:
+        '200':
+          description: List of webhooks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Webhook'
+    post:
+      operationId: createOrgWebhook
+      summary: Juniper Networks Create organization webhook
+      description: Creates a new webhook at the organization level.
+      tags:
+      - Webhooks
+      parameters:
+      - $ref: '#/components/parameters/OrgId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Webhook'
+      responses:
+        '200':
+          description: Webhook created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+components:
+  parameters:
+    OrgId:
+      name: org_id
+      in: path
+      required: true
+      description: Organization unique identifier
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    Webhook:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        site_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        url:
+          type: string
+          format: uri
+        enabled:
+          type: boolean
+        topics:
+          type: array
+          items:
+            type: string
+            enum:
+            - device-events
+            - alarms
+            - audits
+            - client-sessions
+            - device-updowns
+            - location
+        type:
+          type: string
+          enum:
+          - http-post
+          - splunk
+          - google-pubsub
+        secret:
+          type: string
+          description: Secret for webhook signature verification
+        created_time:
+          type: number
+        modified_time:
+          type: number
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

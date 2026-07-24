@@ -1,0 +1,206 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists File Analysis API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: File Analysis
+  description: Malware analysis and file submission
+paths:
+  /file-analysis/submit:
+    post:
+      operationId: submitFile
+      summary: Juniper Networks Submit file for analysis
+      description: Submits a file for malware analysis in the ATP Cloud sandbox.
+      tags:
+      - File Analysis
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+              - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: File to analyze
+                file_name:
+                  type: string
+                  description: Original filename
+                priority:
+                  type: string
+                  enum:
+                  - low
+                  - normal
+                  - high
+      responses:
+        '202':
+          description: File submitted for analysis
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  submission_id:
+                    type: string
+                  status:
+                    type: string
+                  sha256:
+                    type: string
+  /file-analysis/submissions/{submission_id}:
+    get:
+      operationId: getSubmissionStatus
+      summary: Juniper Networks Get file analysis status
+      description: Returns the status and results of a file analysis submission.
+      tags:
+      - File Analysis
+      parameters:
+      - name: submission_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Submission status and results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalysisResult'
+  /file-analysis/submissions:
+    get:
+      operationId: listSubmissions
+      summary: Juniper Networks List file submissions
+      description: Returns a list of file analysis submissions.
+      tags:
+      - File Analysis
+      parameters:
+      - name: status
+        in: query
+        description: Filter by analysis status
+        schema:
+          type: string
+          enum:
+          - pending
+          - in_progress
+          - completed
+      - name: start_date
+        in: query
+        schema:
+          type: string
+          format: date-time
+      - name: end_date
+        in: query
+        schema:
+          type: string
+          format: date-time
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 50
+      responses:
+        '200':
+          description: List of submissions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  submissions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AnalysisResult'
+                  total:
+                    type: integer
+components:
+  schemas:
+    AnalysisResult:
+      type: object
+      properties:
+        submission_id:
+          type: string
+        sha256:
+          type: string
+        file_name:
+          type: string
+        file_type:
+          type: string
+        file_size:
+          type: integer
+        status:
+          type: string
+          enum:
+          - pending
+          - in_progress
+          - completed
+          - failed
+        verdict:
+          type: string
+          enum:
+          - clean
+          - malicious
+          - suspicious
+          - unknown
+        threat_score:
+          type: integer
+          minimum: 0
+          maximum: 10
+        malware_info:
+          type: object
+          properties:
+            family:
+              type: string
+            type:
+              type: string
+              enum:
+              - trojan
+              - ransomware
+              - worm
+              - adware
+              - spyware
+              - backdoor
+              - rootkit
+              - other
+        analysis_details:
+          type: object
+          properties:
+            static_analysis:
+              type: object
+            dynamic_analysis:
+              type: object
+        submitted_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

@@ -1,0 +1,131 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Jobs API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: Jobs
+  description: Asynchronous job management
+paths:
+  /job-management/jobs:
+    get:
+      operationId: listJobs
+      summary: Juniper Networks List jobs
+      description: Returns the list of asynchronous jobs.
+      tags:
+      - Jobs
+      parameters:
+      - name: state
+        in: query
+        description: Filter by job state
+        schema:
+          type: string
+          enum:
+          - INPROGRESS
+          - SUCCESS
+          - FAILURE
+          - CANCELLED
+      - $ref: '#/components/parameters/PageStart'
+      - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: List of jobs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  jobs:
+                    type: object
+                    properties:
+                      job:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Job'
+  /job-management/jobs/{job_id}:
+    get:
+      operationId: getJob
+      summary: Juniper Networks Get job details
+      description: Returns details for a specific asynchronous job.
+      tags:
+      - Jobs
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Job details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+components:
+  schemas:
+    Job:
+      type: object
+      properties:
+        jobId:
+          type: integer
+        name:
+          type: string
+        state:
+          type: string
+          enum:
+          - INPROGRESS
+          - SUCCESS
+          - FAILURE
+          - CANCELLED
+        percentComplete:
+          type: number
+        createdTime:
+          type: string
+          format: date-time
+        completedTime:
+          type: string
+          format: date-time
+        summary:
+          type: string
+  parameters:
+    PageSize:
+      name: paging.limit
+      in: query
+      description: Number of results per page
+      schema:
+        type: integer
+        default: 25
+    PageStart:
+      name: paging.start
+      in: query
+      description: Starting index for pagination
+      schema:
+        type: integer
+        default: 0
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

@@ -1,0 +1,449 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Devices API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: Devices
+  description: Device discovery and management
+paths:
+  /device-management/devices:
+    get:
+      operationId: listDevices
+      summary: Juniper Networks List managed devices
+      description: Returns all devices managed by Junos Space.
+      tags:
+      - Devices
+      parameters:
+      - name: filter
+        in: query
+        description: Filter expression for devices
+        schema:
+          type: string
+      - $ref: '#/components/parameters/PageStart'
+      - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: List of managed devices
+          content:
+            application/vnd.net.juniper.space.device-management.devices+json;version=2:
+              schema:
+                type: object
+                properties:
+                  devices:
+                    type: object
+                    properties:
+                      device:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Device'
+                      total:
+                        type: integer
+            application/json:
+              schema:
+                type: object
+                properties:
+                  devices:
+                    type: object
+                    properties:
+                      device:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Device'
+    post:
+      operationId: discoverDevice
+      summary: Juniper Networks Discover a device
+      description: Initiates device discovery to add a new device to Junos Space management.
+      tags:
+      - Devices
+      requestBody:
+        required: true
+        content:
+          application/vnd.net.juniper.space.device-management.discover-devices+json;version=2:
+            schema:
+              type: object
+              required:
+              - systemDiscoveryRule
+              properties:
+                systemDiscoveryRule:
+                  type: object
+                  properties:
+                    ipAddressDiscoveryTarget:
+                      type: object
+                      properties:
+                        ipAddress:
+                          type: string
+                    usePing:
+                      type: boolean
+                    manageDiscoveredSystemsFlag:
+                      type: boolean
+                    sshCredential:
+                      type: object
+                      properties:
+                        userName:
+                          type: string
+                        password:
+                          type: string
+      responses:
+        '202':
+          description: Discovery job initiated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+  /device-management/devices/{device_id}:
+    get:
+      operationId: getDevice
+      summary: Juniper Networks Get device details
+      description: Returns detailed information for a specific managed device.
+      tags:
+      - Devices
+      parameters:
+      - $ref: '#/components/parameters/DeviceId'
+      responses:
+        '200':
+          description: Device details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+        '404':
+          description: Device not found
+    delete:
+      operationId: deleteDevice
+      summary: Juniper Networks Delete managed device
+      description: Removes a device from Junos Space management.
+      tags:
+      - Devices
+      parameters:
+      - $ref: '#/components/parameters/DeviceId'
+      responses:
+        '204':
+          description: Device deleted
+  /sites/{site_id}/devices:
+    get:
+      operationId: listSiteDevices
+      summary: Juniper Networks List site devices
+      description: Returns all devices assigned to the specified site.
+      tags:
+      - Devices
+      parameters:
+      - $ref: '#/components/parameters/SiteId'
+      - name: type
+        in: query
+        description: Filter by device type
+        schema:
+          type: string
+          enum:
+          - ap
+          - switch
+          - gateway
+      - $ref: '#/components/parameters/PageParam'
+      - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: List of devices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Device_2'
+  /sites/{site_id}/devices/{device_id}:
+    get:
+      operationId: getSiteDevice
+      summary: Juniper Networks Get device details
+      description: Returns details for a specific device at a site.
+      tags:
+      - Devices
+      parameters:
+      - $ref: '#/components/parameters/SiteId'
+      - $ref: '#/components/parameters/DeviceId_2'
+      responses:
+        '200':
+          description: Device details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device_2'
+    put:
+      operationId: updateSiteDevice
+      summary: Juniper Networks Update device
+      description: Updates configuration for a specific device.
+      tags:
+      - Devices
+      parameters:
+      - $ref: '#/components/parameters/SiteId'
+      - $ref: '#/components/parameters/DeviceId_2'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Device_2'
+      responses:
+        '200':
+          description: Device updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device_2'
+    delete:
+      operationId: deleteSiteDevice
+      summary: Juniper Networks Delete device
+      description: Removes a device from the site.
+      tags:
+      - Devices
+      parameters:
+      - $ref: '#/components/parameters/SiteId'
+      - $ref: '#/components/parameters/DeviceId_2'
+      responses:
+        '200':
+          description: Device deleted
+  /sites/{site_id}/devices/stats:
+    get:
+      operationId: listSiteDeviceStats
+      summary: Juniper Networks List site device statistics
+      description: Returns statistics for all devices at a site.
+      tags:
+      - Devices
+      parameters:
+      - $ref: '#/components/parameters/SiteId'
+      - name: type
+        in: query
+        description: Filter by device type
+        schema:
+          type: string
+          enum:
+          - ap
+          - switch
+          - gateway
+      responses:
+        '200':
+          description: Device statistics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeviceStats'
+components:
+  schemas:
+    Device:
+      type: object
+      properties:
+        '@key':
+          type: integer
+        deviceId:
+          type: integer
+        name:
+          type: string
+        ipAddr:
+          type: string
+        platform:
+          type: string
+          description: Device platform (e.g., SRX, MX, EX, QFX)
+        serialNumber:
+          type: string
+        osVersion:
+          type: string
+        connectionStatus:
+          type: string
+          enum:
+          - up
+          - down
+        managedStatus:
+          type: string
+          enum:
+          - In Sync
+          - Out Of Sync
+          - Space Changed
+          - Device Changed
+        deviceFamily:
+          type: string
+        lastRebootTime:
+          type: string
+          format: date-time
+    DeviceStats:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        mac:
+          type: string
+        model:
+          type: string
+        status:
+          type: string
+          enum:
+          - connected
+          - disconnected
+          - upgrading
+          - restarting
+        uptime:
+          type: integer
+          description: Device uptime in seconds
+        last_seen:
+          type: number
+        num_clients:
+          type: integer
+        tx_bytes:
+          type: integer
+        rx_bytes:
+          type: integer
+        tx_pkts:
+          type: integer
+        rx_pkts:
+          type: integer
+    Device_2:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        site_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+          - ap
+          - switch
+          - gateway
+        model:
+          type: string
+        serial:
+          type: string
+        mac:
+          type: string
+          description: MAC address of the device
+        ip:
+          type: string
+          description: IP address of the device
+        map_id:
+          type: string
+          format: uuid
+        x:
+          type: number
+          description: X position on the map
+        y:
+          type: number
+          description: Y position on the map
+        height:
+          type: number
+          description: Height of the device placement
+        notes:
+          type: string
+        created_time:
+          type: number
+        modified_time:
+          type: number
+    Job:
+      type: object
+      properties:
+        jobId:
+          type: integer
+        name:
+          type: string
+        state:
+          type: string
+          enum:
+          - INPROGRESS
+          - SUCCESS
+          - FAILURE
+          - CANCELLED
+        percentComplete:
+          type: number
+        createdTime:
+          type: string
+          format: date-time
+        completedTime:
+          type: string
+          format: date-time
+        summary:
+          type: string
+  parameters:
+    DeviceId:
+      name: device_id
+      in: path
+      required: true
+      description: Device unique identifier
+      schema:
+        type: integer
+    SiteId:
+      name: site_id
+      in: path
+      required: true
+      description: Site unique identifier
+      schema:
+        type: string
+        format: uuid
+    PageSize:
+      name: paging.limit
+      in: query
+      description: Number of results per page
+      schema:
+        type: integer
+        default: 25
+    PageStart:
+      name: paging.start
+      in: query
+      description: Starting index for pagination
+      schema:
+        type: integer
+        default: 0
+    DeviceId_2:
+      name: device_id
+      in: path
+      required: true
+      description: Device unique identifier
+      schema:
+        type: string
+        format: uuid
+    LimitParam:
+      name: limit
+      in: query
+      description: Number of results per page
+      schema:
+        type: integer
+        default: 100
+        maximum: 1000
+    PageParam:
+      name: page
+      in: query
+      description: Page number for pagination
+      schema:
+        type: integer
+        default: 1
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

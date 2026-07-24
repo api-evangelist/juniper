@@ -1,0 +1,175 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Inventory API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: Inventory
+  description: Device inventory management
+paths:
+  /orgs/{org_id}/inventory:
+    get:
+      operationId: getOrgInventory
+      summary: Juniper Networks Get organization inventory
+      description: Returns the device inventory for the organization.
+      tags:
+      - Inventory
+      parameters:
+      - $ref: '#/components/parameters/OrgId'
+      - name: type
+        in: query
+        description: Filter by device type
+        schema:
+          type: string
+          enum:
+          - ap
+          - switch
+          - gateway
+      - name: unassigned
+        in: query
+        description: Filter for unassigned devices only
+        schema:
+          type: boolean
+      - $ref: '#/components/parameters/PageParam'
+      - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Device inventory
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InventoryDevice'
+    post:
+      operationId: addDevicesToInventory
+      summary: Juniper Networks Add devices to inventory
+      description: Adds devices to the organization inventory by claim code or serial number.
+      tags:
+      - Inventory
+      parameters:
+      - $ref: '#/components/parameters/OrgId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - op
+              properties:
+                op:
+                  type: string
+                  enum:
+                  - add
+                  - assign
+                  - unassign
+                  - delete
+                serials:
+                  type: array
+                  items:
+                    type: string
+                site_id:
+                  type: string
+                  format: uuid
+      responses:
+        '200':
+          description: Inventory operation successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  added:
+                    type: array
+                    items:
+                      type: string
+                  duplicated:
+                    type: array
+                    items:
+                      type: string
+                  error:
+                    type: array
+                    items:
+                      type: string
+components:
+  parameters:
+    OrgId:
+      name: org_id
+      in: path
+      required: true
+      description: Organization unique identifier
+      schema:
+        type: string
+        format: uuid
+    PageParam:
+      name: page
+      in: query
+      description: Page number for pagination
+      schema:
+        type: integer
+        default: 1
+    LimitParam:
+      name: limit
+      in: query
+      description: Number of results per page
+      schema:
+        type: integer
+        default: 100
+        maximum: 1000
+  schemas:
+    InventoryDevice:
+      type: object
+      properties:
+        mac:
+          type: string
+        serial:
+          type: string
+        model:
+          type: string
+        type:
+          type: string
+          enum:
+          - ap
+          - switch
+          - gateway
+        org_id:
+          type: string
+          format: uuid
+        site_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        connected:
+          type: boolean
+        created_time:
+          type: number
+        modified_time:
+          type: number
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

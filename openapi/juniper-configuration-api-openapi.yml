@@ -1,0 +1,311 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Configuration API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: Configuration
+  description: Device configuration operations
+paths:
+  /api/get-config:
+    post:
+      operationId: getConfiguration
+      summary: Juniper Networks Get device configuration
+      description: Retrieves the device configuration. Supports retrieving specific configuration hierarchies or the entire configuration.
+      tags:
+      - Configuration
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                format:
+                  type: string
+                  enum:
+                  - text
+                  - set
+                  - json
+                  - xml
+                  description: Configuration output format
+                filter:
+                  type: string
+                  description: XPath filter for specific configuration sections
+      responses:
+        '200':
+          description: Device configuration
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  configuration:
+                    type: object
+                    description: Configuration data
+            application/xml:
+              schema:
+                type: string
+  /api/edit-config:
+    post:
+      operationId: editConfiguration
+      summary: Juniper Networks Edit device configuration
+      description: Modifies the candidate configuration on the device. Changes must be committed separately using the commit-configuration endpoint.
+      tags:
+      - Configuration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                config-format:
+                  type: string
+                  enum:
+                  - text
+                  - set
+                  - json
+                  - xml
+                config-data:
+                  type: string
+                  description: Configuration data to apply
+                operation:
+                  type: string
+                  enum:
+                  - merge
+                  - replace
+                  - delete
+                  - update
+      responses:
+        '200':
+          description: Configuration edit successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+        '400':
+          description: Invalid configuration
+  /rpc/commit-configuration:
+    post:
+      operationId: commitConfiguration
+      summary: Juniper Networks Commit configuration
+      description: Commits the candidate configuration to the active configuration. Supports confirmed commits and commit comments.
+      tags:
+      - Configuration
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                confirmed:
+                  type: boolean
+                  description: Request a confirmed commit
+                confirm-timeout:
+                  type: integer
+                  description: Confirmed commit rollback timeout in minutes
+                comment:
+                  type: string
+                  description: Commit comment
+      responses:
+        '200':
+          description: Configuration committed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  commit-results:
+                    type: object
+        '400':
+          description: Commit failed (syntax or semantic errors)
+  /rpc/rollback-configuration:
+    post:
+      operationId: rollbackConfiguration
+      summary: Juniper Networks Rollback configuration
+      description: Rolls back the configuration to a previous version.
+      tags:
+      - Configuration
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rollback:
+                  type: integer
+                  minimum: 0
+                  maximum: 49
+                  description: Rollback number (0 = current active, 1 = previous)
+      responses:
+        '200':
+          description: Configuration rolled back
+  /device-management/devices/{device_id}/configurations/raw:
+    get:
+      operationId: getDeviceConfiguration
+      summary: Juniper Networks Get device configuration
+      description: Returns the current running configuration of a managed device.
+      tags:
+      - Configuration
+      parameters:
+      - $ref: '#/components/parameters/DeviceId'
+      responses:
+        '200':
+          description: Device configuration
+          content:
+            application/vnd.net.juniper.space.device-management.device-configuration+json:
+              schema:
+                type: object
+                properties:
+                  configuration:
+                    type: string
+                    description: Raw device configuration text
+  /config-file-management/config-files:
+    get:
+      operationId: listConfigFiles
+      summary: Juniper Networks List configuration files
+      description: Returns all stored configuration file versions.
+      tags:
+      - Configuration
+      parameters:
+      - $ref: '#/components/parameters/PageStart'
+      - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: List of config files
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  configFiles:
+                    type: object
+                    properties:
+                      configFile:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ConfigFile'
+  /config-file-management/apply-configlet:
+    post:
+      operationId: applyConfiglet
+      summary: Juniper Networks Apply configlet to devices
+      description: Applies a configuration template (configlet) to one or more devices.
+      tags:
+      - Configuration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                applyConfigletRequest:
+                  type: object
+                  properties:
+                    configletId:
+                      type: integer
+                    deviceIds:
+                      type: array
+                      items:
+                        type: integer
+      responses:
+        '202':
+          description: Configlet application job initiated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+components:
+  parameters:
+    DeviceId:
+      name: device_id
+      in: path
+      required: true
+      description: Device unique identifier
+      schema:
+        type: integer
+    PageSize:
+      name: paging.limit
+      in: query
+      description: Number of results per page
+      schema:
+        type: integer
+        default: 25
+    PageStart:
+      name: paging.start
+      in: query
+      description: Starting index for pagination
+      schema:
+        type: integer
+        default: 0
+  schemas:
+    ConfigFile:
+      type: object
+      properties:
+        configFileId:
+          type: integer
+        deviceId:
+          type: integer
+        fileName:
+          type: string
+        configVersion:
+          type: integer
+        createdDate:
+          type: string
+          format: date-time
+    Job:
+      type: object
+      properties:
+        jobId:
+          type: integer
+        name:
+          type: string
+        state:
+          type: string
+          enum:
+          - INPROGRESS
+          - SUCCESS
+          - FAILURE
+          - CANCELLED
+        percentComplete:
+          type: number
+        createdTime:
+          type: string
+          format: date-time
+        completedTime:
+          type: string
+          format: date-time
+        summary:
+          type: string
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

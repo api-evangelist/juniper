@@ -1,0 +1,111 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Reports API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: Reports
+  description: Threat and activity reports
+paths:
+  /reports/threats:
+    get:
+      operationId: getThreatReport
+      summary: Juniper Networks Get threat report
+      description: Returns a summary report of threats detected over a time period.
+      tags:
+      - Reports
+      parameters:
+      - name: start_date
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date-time
+      - name: end_date
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date-time
+      responses:
+        '200':
+          description: Threat report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThreatReport'
+components:
+  schemas:
+    ThreatReport:
+      type: object
+      properties:
+        period:
+          type: object
+          properties:
+            start:
+              type: string
+              format: date-time
+            end:
+              type: string
+              format: date-time
+        summary:
+          type: object
+          properties:
+            total_threats:
+              type: integer
+            malware_detected:
+              type: integer
+            c2_connections_blocked:
+              type: integer
+            phishing_blocked:
+              type: integer
+        top_threats:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              category:
+                type: string
+              count:
+                type: integer
+              severity:
+                type: string
+        top_targeted_hosts:
+          type: array
+          items:
+            type: object
+            properties:
+              hostname:
+                type: string
+              ip:
+                type: string
+              threat_count:
+                type: integer
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

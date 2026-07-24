@@ -1,0 +1,104 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Enrolled Devices API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: Enrolled Devices
+  description: Enrolled SRX device management
+paths:
+  /enrolled-devices:
+    get:
+      operationId: listEnrolledDevices
+      summary: Juniper Networks List enrolled devices
+      description: Returns all SRX devices enrolled with ATP Cloud.
+      tags:
+      - Enrolled Devices
+      responses:
+        '200':
+          description: List of enrolled devices
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  devices:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EnrolledDevice'
+  /enrolled-devices/{device_id}:
+    get:
+      operationId: getEnrolledDevice
+      summary: Juniper Networks Get enrolled device details
+      description: Returns details for a specific enrolled device.
+      tags:
+      - Enrolled Devices
+      parameters:
+      - name: device_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Device details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrolledDevice'
+components:
+  schemas:
+    EnrolledDevice:
+      type: object
+      properties:
+        device_id:
+          type: string
+        hostname:
+          type: string
+        serial_number:
+          type: string
+        model:
+          type: string
+          description: Device model (e.g., SRX340, SRX4600)
+        os_version:
+          type: string
+        status:
+          type: string
+          enum:
+          - connected
+          - disconnected
+          - pending
+        last_seen:
+          type: string
+          format: date-time
+        enrolled_at:
+          type: string
+          format: date-time
+        license_type:
+          type: string
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

@@ -1,0 +1,172 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Network Policies API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: Network Policies
+  description: Network policy management
+paths:
+  /network-policys:
+    get:
+      operationId: listNetworkPolicies
+      summary: Juniper Networks List network policies
+      description: Returns all network policies.
+      tags:
+      - Network Policies
+      parameters:
+      - $ref: '#/components/parameters/ParentId'
+      - $ref: '#/components/parameters/DetailParam'
+      responses:
+        '200':
+          description: List of network policies
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  network-policys:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ResourceRef'
+    post:
+      operationId: createNetworkPolicy
+      summary: Juniper Networks Create network policy
+      description: Creates a new network policy for controlling traffic between virtual networks.
+      tags:
+      - Network Policies
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                network-policy:
+                  $ref: '#/components/schemas/NetworkPolicy'
+      responses:
+        '200':
+          description: Network policy created
+components:
+  parameters:
+    DetailParam:
+      name: detail
+      in: query
+      description: Return full object details instead of references
+      schema:
+        type: boolean
+        default: false
+    ParentId:
+      name: parent_id
+      in: query
+      description: Filter by parent resource UUID
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    ResourceRef:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        fq_name:
+          type: array
+          items:
+            type: string
+        href:
+          type: string
+          format: uri
+    NetworkPolicy:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        fq_name:
+          type: array
+          items:
+            type: string
+        display_name:
+          type: string
+        network_policy_entries:
+          type: object
+          properties:
+            policy_rule:
+              type: array
+              items:
+                type: object
+                properties:
+                  direction:
+                    type: string
+                    enum:
+                    - '>'
+                    - <>
+                  protocol:
+                    type: string
+                  action_list:
+                    type: object
+                    properties:
+                      simple_action:
+                        type: string
+                        enum:
+                        - pass
+                        - deny
+                  src_addresses:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        virtual_network:
+                          type: string
+                  dst_addresses:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        virtual_network:
+                          type: string
+                  src_ports:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        start_port:
+                          type: integer
+                        end_port:
+                          type: integer
+                  dst_ports:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        start_port:
+                          type: integer
+                        end_port:
+                          type: integer
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

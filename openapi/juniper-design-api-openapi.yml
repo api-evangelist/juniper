@@ -1,0 +1,295 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Design API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: Design
+  description: Design elements including rack types, templates, and logical devices
+paths:
+  /design/rack-types:
+    get:
+      operationId: listRackTypes
+      summary: Juniper Networks List rack types
+      description: Returns all rack type designs.
+      tags:
+      - Design
+      responses:
+        '200':
+          description: List of rack types
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RackType'
+    post:
+      operationId: createRackType
+      summary: Juniper Networks Create rack type
+      description: Creates a new rack type design.
+      tags:
+      - Design
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RackType'
+      responses:
+        '201':
+          description: Rack type created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RackType'
+  /design/templates:
+    get:
+      operationId: listDesignTemplates
+      summary: Juniper Networks List design templates
+      description: Returns all data center design templates.
+      tags:
+      - Design
+      responses:
+        '200':
+          description: List of design templates
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DesignTemplate'
+    post:
+      operationId: createDesignTemplate
+      summary: Juniper Networks Create design template
+      description: Creates a new data center design template.
+      tags:
+      - Design
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DesignTemplate'
+      responses:
+        '201':
+          description: Template created
+  /design/logical-devices:
+    get:
+      operationId: listLogicalDevices
+      summary: Juniper Networks List logical devices
+      description: Returns all logical device definitions.
+      tags:
+      - Design
+      responses:
+        '200':
+          description: List of logical devices
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LogicalDevice'
+  /design/interface-maps:
+    get:
+      operationId: listInterfaceMaps
+      summary: Juniper Networks List interface maps
+      description: Returns interface maps that map logical device ports to physical device interfaces.
+      tags:
+      - Design
+      responses:
+        '200':
+          description: List of interface maps
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/InterfaceMap'
+components:
+  schemas:
+    LogicalDevice:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        panels:
+          type: array
+          items:
+            type: object
+            properties:
+              panel_layout:
+                type: object
+                properties:
+                  row_count:
+                    type: integer
+                  column_count:
+                    type: integer
+              port_indexing:
+                type: object
+              port_groups:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    count:
+                      type: integer
+                    speed:
+                      type: string
+                    roles:
+                      type: array
+                      items:
+                        type: string
+                        enum:
+                        - superspine
+                        - spine
+                        - leaf
+                        - peer
+                        - access
+                        - generic
+                        - unused
+    RackType:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        description:
+          type: string
+        leaf_switches:
+          type: array
+          items:
+            type: object
+            properties:
+              label:
+                type: string
+              logical_device_id:
+                type: string
+                format: uuid
+              link_per_spine_count:
+                type: integer
+              link_per_spine_speed:
+                type: string
+        access_switches:
+          type: array
+          items:
+            type: object
+        generic_systems:
+          type: array
+          items:
+            type: object
+            properties:
+              label:
+                type: string
+              count:
+                type: integer
+              logical_device_id:
+                type: string
+                format: uuid
+    DesignTemplate:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        type:
+          type: string
+          enum:
+          - rack_based
+        spine:
+          type: object
+          properties:
+            count:
+              type: integer
+            logical_device_id:
+              type: string
+              format: uuid
+        rack_types:
+          type: array
+          items:
+            type: object
+            properties:
+              rack_type_id:
+                type: string
+                format: uuid
+              count:
+                type: integer
+        asn_allocation_policy:
+          type: object
+          properties:
+            spine_asn_scheme:
+              type: string
+              enum:
+              - distinct
+              - single
+        fabric_addressing_policy:
+          type: object
+          properties:
+            spine_leaf_links:
+              type: string
+              enum:
+              - ipv4
+              - ipv6
+              - ipv4_ipv6
+    InterfaceMap:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        logical_device_id:
+          type: string
+          format: uuid
+        device_profile_id:
+          type: string
+          format: uuid
+        interfaces:
+          type: array
+          items:
+            type: object
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

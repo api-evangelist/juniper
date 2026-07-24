@@ -1,0 +1,249 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Sites API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: Sites
+  description: Site-level management
+paths:
+  /orgs/{org_id}/sites:
+    get:
+      operationId: listOrgSites
+      summary: Juniper Networks List sites in organization
+      description: Returns a list of all sites belonging to the specified organization.
+      tags:
+      - Sites
+      parameters:
+      - $ref: '#/components/parameters/OrgId'
+      - $ref: '#/components/parameters/PageParam'
+      - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: List of sites
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Site'
+    post:
+      operationId: createSite
+      summary: Juniper Networks Create a site
+      description: Creates a new site within the specified organization.
+      tags:
+      - Sites
+      parameters:
+      - $ref: '#/components/parameters/OrgId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Site'
+      responses:
+        '200':
+          description: Site created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Site'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /sites/{site_id}:
+    get:
+      operationId: getSite
+      summary: Juniper Networks Get site details
+      description: Returns details for a specific site.
+      tags:
+      - Sites
+      parameters:
+      - $ref: '#/components/parameters/SiteId'
+      responses:
+        '200':
+          description: Site details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Site'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      operationId: updateSite
+      summary: Juniper Networks Update site
+      description: Updates an existing site.
+      tags:
+      - Sites
+      parameters:
+      - $ref: '#/components/parameters/SiteId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Site'
+      responses:
+        '200':
+          description: Site updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Site'
+    delete:
+      operationId: deleteSite
+      summary: Juniper Networks Delete site
+      description: Deletes a site from the organization.
+      tags:
+      - Sites
+      parameters:
+      - $ref: '#/components/parameters/SiteId'
+      responses:
+        '200':
+          description: Site deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /sites/{site_id}/stats:
+    get:
+      operationId: getSiteStats
+      summary: Juniper Networks Get site statistics
+      description: Returns statistics for a specific site.
+      tags:
+      - Sites
+      parameters:
+      - $ref: '#/components/parameters/SiteId'
+      responses:
+        '200':
+          description: Site statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteStats'
+components:
+  parameters:
+    SiteId:
+      name: site_id
+      in: path
+      required: true
+      description: Site unique identifier
+      schema:
+        type: string
+        format: uuid
+    OrgId:
+      name: org_id
+      in: path
+      required: true
+      description: Organization unique identifier
+      schema:
+        type: string
+        format: uuid
+    LimitParam:
+      name: limit
+      in: query
+      description: Number of results per page
+      schema:
+        type: integer
+        default: 100
+        maximum: 1000
+    PageParam:
+      name: page
+      in: query
+      description: Page number for pagination
+      schema:
+        type: integer
+        default: 1
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad request - invalid parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Error message
+    Site:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        address:
+          type: string
+        timezone:
+          type: string
+          description: Timezone name (e.g., America/Los_Angeles)
+        country_code:
+          type: string
+        latlng:
+          type: object
+          properties:
+            lat:
+              type: number
+            lng:
+              type: number
+        sitegroup_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        rftemplate_id:
+          type: string
+          format: uuid
+        created_time:
+          type: number
+        modified_time:
+          type: number
+    SiteStats:
+      type: object
+      properties:
+        num_ap:
+          type: integer
+        num_ap_connected:
+          type: integer
+        num_switch:
+          type: integer
+        num_gateway:
+          type: integer
+        num_clients:
+          type: integer
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

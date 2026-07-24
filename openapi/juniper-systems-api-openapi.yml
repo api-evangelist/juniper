@@ -1,0 +1,178 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Systems API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: Systems
+  description: Managed system agents and device management
+paths:
+  /system-agents:
+    get:
+      operationId: listSystemAgents
+      summary: Juniper Networks List system agents
+      description: Returns all managed device agents.
+      tags:
+      - Systems
+      responses:
+        '200':
+          description: List of system agents
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SystemAgent'
+    post:
+      operationId: createSystemAgent
+      summary: Juniper Networks Create system agent
+      description: Registers a new system agent for a managed device.
+      tags:
+      - Systems
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - agent_type
+              - management_ip
+              properties:
+                agent_type:
+                  type: string
+                  enum:
+                  - onbox
+                  - offbox
+                management_ip:
+                  type: string
+                label:
+                  type: string
+                username:
+                  type: string
+                password:
+                  type: string
+                platform:
+                  type: string
+      responses:
+        '201':
+          description: System agent created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemAgent'
+  /systems:
+    get:
+      operationId: listSystems
+      summary: Juniper Networks List managed systems
+      description: Returns all managed systems (devices) known to Apstra.
+      tags:
+      - Systems
+      responses:
+        '200':
+          description: List of systems
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ManagedSystem'
+components:
+  schemas:
+    ManagedSystem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        hostname:
+          type: string
+        system_id:
+          type: string
+        device_key:
+          type: string
+        status:
+          type: object
+          properties:
+            agent_alive:
+              type: boolean
+            config_deviation:
+              type: boolean
+            hostname:
+              type: string
+        facts:
+          type: object
+          properties:
+            os_family:
+              type: string
+            os_version:
+              type: string
+            vendor:
+              type: string
+            hw_model:
+              type: string
+            serial_number:
+              type: string
+            mgmt_ipaddr:
+              type: string
+    SystemAgent:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        agent_type:
+          type: string
+          enum:
+          - onbox
+          - offbox
+        management_ip:
+          type: string
+        platform:
+          type: string
+        state:
+          type: string
+          enum:
+          - active
+          - inactive
+          - error
+        operation_mode:
+          type: string
+        running:
+          type: boolean
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

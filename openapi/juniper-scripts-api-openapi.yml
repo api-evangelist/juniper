@@ -1,0 +1,143 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Scripts API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: Scripts
+  description: Script bundle management and execution
+paths:
+  /script-management/scripts:
+    get:
+      operationId: listScripts
+      summary: Juniper Networks List scripts
+      description: Returns all script bundles available in Junos Space.
+      tags:
+      - Scripts
+      responses:
+        '200':
+          description: List of scripts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  scripts:
+                    type: object
+                    properties:
+                      script:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Script'
+  /script-management/scripts/{script_id}/execute:
+    post:
+      operationId: executeScript
+      summary: Juniper Networks Execute script on devices
+      description: Executes a script on one or more managed devices.
+      tags:
+      - Scripts
+      parameters:
+      - name: script_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                execRequest:
+                  type: object
+                  properties:
+                    deviceIds:
+                      type: array
+                      items:
+                        type: integer
+                    scriptParams:
+                      type: object
+                      additionalProperties:
+                        type: string
+      responses:
+        '202':
+          description: Script execution job initiated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+components:
+  schemas:
+    Job:
+      type: object
+      properties:
+        jobId:
+          type: integer
+        name:
+          type: string
+        state:
+          type: string
+          enum:
+          - INPROGRESS
+          - SUCCESS
+          - FAILURE
+          - CANCELLED
+        percentComplete:
+          type: number
+        createdTime:
+          type: string
+          format: date-time
+        completedTime:
+          type: string
+          format: date-time
+        summary:
+          type: string
+    Script:
+      type: object
+      properties:
+        scriptId:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        scriptType:
+          type: string
+          enum:
+          - op
+          - event
+          - commit
+          - snmp
+        language:
+          type: string
+          enum:
+          - slax
+          - xslt
+          - python
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

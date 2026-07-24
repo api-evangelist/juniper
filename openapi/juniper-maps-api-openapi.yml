@@ -1,0 +1,117 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Maps API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: Maps
+  description: Floorplan and map management
+paths:
+  /sites/{site_id}/maps:
+    get:
+      operationId: listSiteMaps
+      summary: Juniper Networks List site maps
+      description: Returns all maps (floorplans) configured for the site.
+      tags:
+      - Maps
+      parameters:
+      - $ref: '#/components/parameters/SiteId'
+      responses:
+        '200':
+          description: List of maps
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Map'
+    post:
+      operationId: createSiteMap
+      summary: Juniper Networks Create site map
+      description: Creates a new map (floorplan) for the site.
+      tags:
+      - Maps
+      parameters:
+      - $ref: '#/components/parameters/SiteId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Map'
+      responses:
+        '200':
+          description: Map created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Map'
+components:
+  parameters:
+    SiteId:
+      name: site_id
+      in: path
+      required: true
+      description: Site unique identifier
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    Map:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        site_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+          - image
+          - google
+        width:
+          type: number
+          description: Width in meters
+        height:
+          type: number
+          description: Height in meters
+        ppm:
+          type: number
+          description: Pixels per meter
+        url:
+          type: string
+          description: URL to the floorplan image
+        created_time:
+          type: number
+        modified_time:
+          type: number
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

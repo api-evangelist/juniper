@@ -1,0 +1,134 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Software Management API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: Software Management
+  description: Software image management and deployment
+paths:
+  /software-management/packages:
+    get:
+      operationId: listSoftwarePackages
+      summary: Juniper Networks List software packages
+      description: Returns all software packages (images) available in Junos Space.
+      tags:
+      - Software Management
+      responses:
+        '200':
+          description: List of software packages
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  packages:
+                    type: object
+                    properties:
+                      package:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/SoftwarePackage'
+  /software-management/packages/deploy:
+    post:
+      operationId: deploySoftware
+      summary: Juniper Networks Deploy software to devices
+      description: Deploys a software package to one or more managed devices.
+      tags:
+      - Software Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                deployRequest:
+                  type: object
+                  properties:
+                    packageId:
+                      type: integer
+                    deviceIds:
+                      type: array
+                      items:
+                        type: integer
+                    reboot:
+                      type: boolean
+                    validate:
+                      type: boolean
+      responses:
+        '202':
+          description: Deployment job initiated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+components:
+  schemas:
+    Job:
+      type: object
+      properties:
+        jobId:
+          type: integer
+        name:
+          type: string
+        state:
+          type: string
+          enum:
+          - INPROGRESS
+          - SUCCESS
+          - FAILURE
+          - CANCELLED
+        percentComplete:
+          type: number
+        createdTime:
+          type: string
+          format: date-time
+        completedTime:
+          type: string
+          format: date-time
+        summary:
+          type: string
+    SoftwarePackage:
+      type: object
+      properties:
+        packageId:
+          type: integer
+        fileName:
+          type: string
+        platform:
+          type: string
+        version:
+          type: string
+        size:
+          type: integer
+          description: Package size in bytes
+        uploadDate:
+          type: string
+          format: date-time
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

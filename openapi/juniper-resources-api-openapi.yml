@@ -1,0 +1,209 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Resources API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: Resources
+  description: Resource pool management (ASN, IP, VNI pools)
+paths:
+  /resources/asn-pools:
+    get:
+      operationId: listAsnPools
+      summary: Juniper Networks List ASN pools
+      description: Returns all Autonomous System Number pools.
+      tags:
+      - Resources
+      responses:
+        '200':
+          description: List of ASN pools
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AsnPool'
+    post:
+      operationId: createAsnPool
+      summary: Juniper Networks Create ASN pool
+      description: Creates a new ASN pool.
+      tags:
+      - Resources
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AsnPool'
+      responses:
+        '201':
+          description: ASN pool created
+  /resources/ip-pools:
+    get:
+      operationId: listIpPools
+      summary: Juniper Networks List IP pools
+      description: Returns all IP address pools.
+      tags:
+      - Resources
+      responses:
+        '200':
+          description: List of IP pools
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/IpPool'
+    post:
+      operationId: createIpPool
+      summary: Juniper Networks Create IP pool
+      description: Creates a new IP address pool.
+      tags:
+      - Resources
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IpPool'
+      responses:
+        '201':
+          description: IP pool created
+  /resources/vni-pools:
+    get:
+      operationId: listVniPools
+      summary: Juniper Networks List VNI pools
+      description: Returns all VXLAN Network Identifier pools.
+      tags:
+      - Resources
+      responses:
+        '200':
+          description: List of VNI pools
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/VniPool'
+    post:
+      operationId: createVniPool
+      summary: Juniper Networks Create VNI pool
+      description: Creates a new VNI pool.
+      tags:
+      - Resources
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VniPool'
+      responses:
+        '201':
+          description: VNI pool created
+components:
+  schemas:
+    IpPool:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        subnets:
+          type: array
+          items:
+            type: object
+            properties:
+              network:
+                type: string
+                description: CIDR notation
+              status:
+                type: string
+        status:
+          type: string
+        used:
+          type: integer
+        total:
+          type: integer
+    VniPool:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        ranges:
+          type: array
+          items:
+            type: object
+            properties:
+              first:
+                type: integer
+              last:
+                type: integer
+        status:
+          type: string
+        used:
+          type: integer
+        total:
+          type: integer
+    AsnPool:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        ranges:
+          type: array
+          items:
+            type: object
+            properties:
+              first:
+                type: integer
+              last:
+                type: integer
+        status:
+          type: string
+        used:
+          type: integer
+        total:
+          type: integer
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

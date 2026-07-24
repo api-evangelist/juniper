@@ -1,0 +1,73 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists RPC API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: RPC
+  description: Execute Junos RPC commands
+paths:
+  /rpc/{rpc_command}:
+    post:
+      operationId: executeRpc
+      summary: Juniper Networks Execute arbitrary RPC command
+      description: Executes any valid Junos RPC command. The RPC command name is derived from the CLI command by replacing spaces with hyphens and prefixing with 'get-' for show commands.
+      tags:
+      - RPC
+      parameters:
+      - name: rpc_command
+        in: path
+        required: true
+        description: RPC command name (e.g., get-interface-information, get-route-engine-information)
+        schema:
+          type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              description: RPC parameters as key-value pairs
+              additionalProperties: true
+      responses:
+        '200':
+          description: RPC response
+          content:
+            application/json:
+              schema:
+                type: object
+                description: RPC response data
+            application/xml:
+              schema:
+                type: string
+        '400':
+          description: Invalid RPC command
+        '404':
+          description: Unknown RPC command
+components:
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

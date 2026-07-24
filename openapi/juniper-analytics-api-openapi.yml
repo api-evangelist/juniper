@@ -1,0 +1,122 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Analytics API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: Analytics
+  description: Analytics and operational data
+paths:
+  /analytics/uves/virtual-networks:
+    get:
+      operationId: listVirtualNetworkAnalytics
+      summary: Juniper Networks List virtual network analytics
+      description: Returns UVE (User Visible Entity) analytics for all virtual networks.
+      tags:
+      - Analytics
+      responses:
+        '200':
+          description: Virtual network analytics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    href:
+                      type: string
+  /analytics/uves/virtual-network/{vn_fqname}:
+    get:
+      operationId: getVirtualNetworkAnalytics
+      summary: Juniper Networks Get virtual network analytics
+      description: Returns detailed analytics for a specific virtual network.
+      tags:
+      - Analytics
+      parameters:
+      - name: vn_fqname
+        in: path
+        required: true
+        description: Fully qualified name of the virtual network
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Virtual network analytics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VnUve'
+  /analytics/uves/vrouters:
+    get:
+      operationId: listVrouterAnalytics
+      summary: Juniper Networks List vRouter analytics
+      description: Returns analytics for all vRouters (compute node agents).
+      tags:
+      - Analytics
+      responses:
+        '200':
+          description: vRouter analytics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    href:
+                      type: string
+components:
+  schemas:
+    VnUve:
+      type: object
+      properties:
+        UveVirtualNetworkAgent:
+          type: object
+          properties:
+            in_tpkts:
+              type: integer
+            out_tpkts:
+              type: integer
+            in_bytes:
+              type: integer
+            out_bytes:
+              type: integer
+            virtualmachine_list:
+              type: array
+              items:
+                type: string
+            interface_list:
+              type: array
+              items:
+                type: string
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/

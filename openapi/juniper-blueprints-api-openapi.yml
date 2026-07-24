@@ -1,0 +1,281 @@
+openapi: 3.1.0
+info:
+  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Blueprints API
+  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
+  version: 4.2.0
+  contact:
+    name: Juniper Support
+    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    email: support@juniper.net
+  license:
+    name: Proprietary
+    url: https://www.juniper.net/us/en/legal-notices.html
+  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+servers:
+- url: https://{apstra_server}/api
+  description: Apstra Server
+  variables:
+    apstra_server:
+      default: apstra.example.com
+      description: Hostname or IP of the Apstra server
+security:
+- authToken: []
+tags:
+- name: Blueprints
+  description: Data center blueprint management
+paths:
+  /blueprints:
+    get:
+      operationId: listBlueprints
+      summary: Juniper Networks List all blueprints
+      description: Returns a list of all data center blueprints.
+      tags:
+      - Blueprints
+      responses:
+        '200':
+          description: List of blueprints
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Blueprint'
+    post:
+      operationId: createBlueprint
+      summary: Juniper Networks Create a blueprint
+      description: Creates a new data center blueprint from a template.
+      tags:
+      - Blueprints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - label
+              - design
+              properties:
+                label:
+                  type: string
+                design:
+                  type: string
+                  enum:
+                  - two_stage_l3clos
+                  - freeform
+                  description: Blueprint design type
+                init_type:
+                  type: string
+                  enum:
+                  - template_reference
+                  description: Initialization method
+                template_id:
+                  type: string
+                  format: uuid
+                  description: Reference to a design template
+      responses:
+        '201':
+          description: Blueprint created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Blueprint'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /blueprints/{blueprint_id}:
+    get:
+      operationId: getBlueprint
+      summary: Juniper Networks Get blueprint details
+      description: Returns details for a specific blueprint including its status.
+      tags:
+      - Blueprints
+      parameters:
+      - $ref: '#/components/parameters/BlueprintId'
+      responses:
+        '200':
+          description: Blueprint details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Blueprint'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      operationId: updateBlueprint
+      summary: Juniper Networks Update a blueprint
+      description: Updates an existing blueprint.
+      tags:
+      - Blueprints
+      parameters:
+      - $ref: '#/components/parameters/BlueprintId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                label:
+                  type: string
+      responses:
+        '200':
+          description: Blueprint updated
+    delete:
+      operationId: deleteBlueprint
+      summary: Juniper Networks Delete a blueprint
+      description: Deletes a data center blueprint.
+      tags:
+      - Blueprints
+      parameters:
+      - $ref: '#/components/parameters/BlueprintId'
+      responses:
+        '204':
+          description: Blueprint deleted
+  /blueprints/{blueprint_id}/deploy:
+    put:
+      operationId: deployBlueprint
+      summary: Juniper Networks Deploy blueprint
+      description: Commits and deploys the current blueprint configuration to the managed devices. This pushes the rendered configuration to the network.
+      tags:
+      - Blueprints
+      parameters:
+      - $ref: '#/components/parameters/BlueprintId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                version:
+                  type: integer
+                  description: Blueprint version to deploy
+                description:
+                  type: string
+                  description: Deployment description
+      responses:
+        '200':
+          description: Deployment initiated
+        '422':
+          description: Blueprint has anomalies and cannot be deployed
+  /blueprints/{blueprint_id}/nodes:
+    get:
+      operationId: listBlueprintNodes
+      summary: Juniper Networks List blueprint nodes
+      description: Returns nodes in the blueprint graph, including systems, interfaces, and logical elements.
+      tags:
+      - Blueprints
+      parameters:
+      - $ref: '#/components/parameters/BlueprintId'
+      - name: node_type
+        in: query
+        description: Filter by node type
+        schema:
+          type: string
+          enum:
+          - system
+          - interface
+          - virtual_network
+          - security_zone
+          - redundancy_group
+      responses:
+        '200':
+          description: Blueprint nodes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  nodes:
+                    type: object
+                    additionalProperties:
+                      $ref: '#/components/schemas/BlueprintNode'
+components:
+  parameters:
+    BlueprintId:
+      name: blueprint_id
+      in: path
+      required: true
+      description: Blueprint unique identifier
+      schema:
+        type: string
+        format: uuid
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Blueprint:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        design:
+          type: string
+          enum:
+          - two_stage_l3clos
+          - freeform
+        status:
+          type: string
+          description: Current status of the blueprint
+        build_errors_count:
+          type: integer
+        build_warnings_count:
+          type: integer
+        anomaly_count:
+          type: integer
+        version:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        last_modified_at:
+          type: string
+          format: date-time
+    Error:
+      type: object
+      properties:
+        errors:
+          type: object
+          description: Error details
+    BlueprintNode:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        label:
+          type: string
+        role:
+          type: string
+        system_id:
+          type: string
+        system_type:
+          type: string
+        deploy_mode:
+          type: string
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: AuthToken
+      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+externalDocs:
+  description: Apstra API Documentation
+  url: https://www.juniper.net/documentation/us/en/software/apstra/
