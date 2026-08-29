@@ -1,25 +1,32 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Configuration API
-  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
-  version: 4.2.0
-  contact:
-    name: Juniper Support
-    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
-    email: support@juniper.net
+  title: Juniper Configuration API
   license:
     name: Proprietary
     url: https://www.juniper.net/us/en/legal-notices.html
-  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+  version: '1.0'
+  description: 'Operations tagged Configuration across 2 of this provider''s published API definitions: juniper-junos-rest-api-openapi.yml, juniper-junos-space-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
-- url: https://{apstra_server}/api
-  description: Apstra Server
+- url: https://{device_ip}:3443
+  description: Junos Device REST API (HTTPS)
   variables:
-    apstra_server:
-      default: apstra.example.com
-      description: Hostname or IP of the Apstra server
+    device_ip:
+      default: 192.168.1.1
+      description: IP address of the Junos device
+- url: http://{device_ip}:3000
+  description: Junos Device REST API (HTTP)
+  variables:
+    device_ip:
+      default: 192.168.1.1
+      description: IP address of the Junos device
+- url: https://{space_server}/api/space
+  description: Junos Space Server
+  variables:
+    space_server:
+      default: space.example.com
+      description: Hostname or IP of the Junos Space server
 security:
-- authToken: []
+- basicAuth: []
 tags:
 - name: Configuration
   description: Device configuration operations
@@ -63,6 +70,19 @@ paths:
             application/xml:
               schema:
                 type: string
+    servers:
+    - url: https://{device_ip}:3443
+      description: Junos Device REST API (HTTPS)
+      variables:
+        device_ip:
+          default: 192.168.1.1
+          description: IP address of the Junos device
+    - url: http://{device_ip}:3000
+      description: Junos Device REST API (HTTP)
+      variables:
+        device_ip:
+          default: 192.168.1.1
+          description: IP address of the Junos device
   /api/edit-config:
     post:
       operationId: editConfiguration
@@ -106,6 +126,19 @@ paths:
                     type: string
         '400':
           description: Invalid configuration
+    servers:
+    - url: https://{device_ip}:3443
+      description: Junos Device REST API (HTTPS)
+      variables:
+        device_ip:
+          default: 192.168.1.1
+          description: IP address of the Junos device
+    - url: http://{device_ip}:3000
+      description: Junos Device REST API (HTTP)
+      variables:
+        device_ip:
+          default: 192.168.1.1
+          description: IP address of the Junos device
   /rpc/commit-configuration:
     post:
       operationId: commitConfiguration
@@ -141,6 +174,19 @@ paths:
                     type: object
         '400':
           description: Commit failed (syntax or semantic errors)
+    servers:
+    - url: https://{device_ip}:3443
+      description: Junos Device REST API (HTTPS)
+      variables:
+        device_ip:
+          default: 192.168.1.1
+          description: IP address of the Junos device
+    - url: http://{device_ip}:3000
+      description: Junos Device REST API (HTTP)
+      variables:
+        device_ip:
+          default: 192.168.1.1
+          description: IP address of the Junos device
   /rpc/rollback-configuration:
     post:
       operationId: rollbackConfiguration
@@ -163,6 +209,19 @@ paths:
       responses:
         '200':
           description: Configuration rolled back
+    servers:
+    - url: https://{device_ip}:3443
+      description: Junos Device REST API (HTTPS)
+      variables:
+        device_ip:
+          default: 192.168.1.1
+          description: IP address of the Junos device
+    - url: http://{device_ip}:3000
+      description: Junos Device REST API (HTTP)
+      variables:
+        device_ip:
+          default: 192.168.1.1
+          description: IP address of the Junos device
   /device-management/devices/{device_id}/configurations/raw:
     get:
       operationId: getDeviceConfiguration
@@ -183,6 +242,13 @@ paths:
                   configuration:
                     type: string
                     description: Raw device configuration text
+    servers:
+    - url: https://{space_server}/api/space
+      description: Junos Space Server
+      variables:
+        space_server:
+          default: space.example.com
+          description: Hostname or IP of the Junos Space server
   /config-file-management/config-files:
     get:
       operationId: listConfigFiles
@@ -208,6 +274,13 @@ paths:
                         type: array
                         items:
                           $ref: '#/components/schemas/ConfigFile'
+    servers:
+    - url: https://{space_server}/api/space
+      description: Junos Space Server
+      variables:
+        space_server:
+          default: space.example.com
+          description: Hostname or IP of the Junos Space server
   /config-file-management/apply-configlet:
     post:
       operationId: applyConfiglet
@@ -238,22 +311,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Job'
+    servers:
+    - url: https://{space_server}/api/space
+      description: Junos Space Server
+      variables:
+        space_server:
+          default: space.example.com
+          description: Hostname or IP of the Junos Space server
 components:
   parameters:
-    DeviceId:
-      name: device_id
-      in: path
-      required: true
-      description: Device unique identifier
-      schema:
-        type: integer
-    PageSize:
-      name: paging.limit
-      in: query
-      description: Number of results per page
-      schema:
-        type: integer
-        default: 25
     PageStart:
       name: paging.start
       in: query
@@ -261,6 +327,20 @@ components:
       schema:
         type: integer
         default: 0
+    PageSize:
+      name: paging.limit
+      in: query
+      description: Number of results per page
+      schema:
+        type: integer
+        default: 25
+    DeviceId:
+      name: device_id
+      in: path
+      required: true
+      description: Device unique identifier
+      schema:
+        type: integer
   schemas:
     ConfigFile:
       type: object
@@ -301,11 +381,10 @@ components:
         summary:
           type: string
   securitySchemes:
-    authToken:
-      type: apiKey
-      in: header
-      name: AuthToken
-      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
-externalDocs:
-  description: Apstra API Documentation
-  url: https://www.juniper.net/documentation/us/en/software/apstra/
+    basicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic authentication with Junos device credentials
+x-refined-from:
+- juniper-junos-rest-api-openapi.yml
+- juniper-junos-space-openapi.yml

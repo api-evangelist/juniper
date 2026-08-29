@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Blueprints API
+  title: Juniper Networks Juniper Apstra Blueprints API
   description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
   version: 4.2.0
   contact:
@@ -194,29 +194,30 @@ paths:
                     additionalProperties:
                       $ref: '#/components/schemas/BlueprintNode'
 components:
-  parameters:
-    BlueprintId:
-      name: blueprint_id
-      in: path
-      required: true
-      description: Blueprint unique identifier
-      schema:
-        type: string
-        format: uuid
-  responses:
-    NotFound:
-      description: Resource not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
+    BlueprintNode:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        label:
+          type: string
+        role:
+          type: string
+        system_id:
+          type: string
+        system_type:
+          type: string
+        deploy_mode:
+          type: string
+    Error:
+      type: object
+      properties:
+        errors:
+          type: object
+          description: Error details
     Blueprint:
       type: object
       properties:
@@ -247,29 +248,28 @@ components:
         last_modified_at:
           type: string
           format: date-time
-    Error:
-      type: object
-      properties:
-        errors:
-          type: object
-          description: Error details
-    BlueprintNode:
-      type: object
-      properties:
-        id:
-          type: string
-        type:
-          type: string
-        label:
-          type: string
-        role:
-          type: string
-        system_id:
-          type: string
-        system_type:
-          type: string
-        deploy_mode:
-          type: string
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    BlueprintId:
+      name: blueprint_id
+      in: path
+      required: true
+      description: Blueprint unique identifier
+      schema:
+        type: string
+        format: uuid
   securitySchemes:
     authToken:
       type: apiKey

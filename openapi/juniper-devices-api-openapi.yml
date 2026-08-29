@@ -1,25 +1,24 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Devices API
-  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
-  version: 4.2.0
-  contact:
-    name: Juniper Support
-    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
-    email: support@juniper.net
+  title: Juniper Devices API
   license:
     name: Proprietary
     url: https://www.juniper.net/us/en/legal-notices.html
-  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+  version: '1.0'
+  description: 'Operations tagged Devices across 2 of this provider''s published API definitions: juniper-junos-space-openapi.yml, juniper-mist-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
-- url: https://{apstra_server}/api
-  description: Apstra Server
+- url: https://{space_server}/api/space
+  description: Junos Space Server
   variables:
-    apstra_server:
-      default: apstra.example.com
-      description: Hostname or IP of the Apstra server
-security:
-- authToken: []
+    space_server:
+      default: space.example.com
+      description: Hostname or IP of the Junos Space server
+- url: https://api.mist.com/api/v1
+  description: Global Cloud (US)
+- url: https://api.eu.mist.com/api/v1
+  description: EU Cloud
+- url: https://api.gc1.mist.com/api/v1
+  description: GovCloud
 tags:
 - name: Devices
   description: Device discovery and management
@@ -67,6 +66,8 @@ paths:
                         type: array
                         items:
                           $ref: '#/components/schemas/Device'
+      security:
+      - basicAuth: []
     post:
       operationId: discoverDevice
       summary: Juniper Networks Discover a device
@@ -108,6 +109,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Job'
+      security:
+      - basicAuth: []
+    servers:
+    - url: https://{space_server}/api/space
+      description: Junos Space Server
+      variables:
+        space_server:
+          default: space.example.com
+          description: Hostname or IP of the Junos Space server
   /device-management/devices/{device_id}:
     get:
       operationId: getDevice
@@ -126,6 +136,8 @@ paths:
                 $ref: '#/components/schemas/Device'
         '404':
           description: Device not found
+      security:
+      - basicAuth: []
     delete:
       operationId: deleteDevice
       summary: Juniper Networks Delete managed device
@@ -137,6 +149,15 @@ paths:
       responses:
         '204':
           description: Device deleted
+      security:
+      - basicAuth: []
+    servers:
+    - url: https://{space_server}/api/space
+      description: Junos Space Server
+      variables:
+        space_server:
+          default: space.example.com
+          description: Hostname or IP of the Junos Space server
   /sites/{site_id}/devices:
     get:
       operationId: listSiteDevices
@@ -166,6 +187,16 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Device_2'
+      security:
+      - apiToken: []
+      - csrfToken: []
+    servers:
+    - url: https://api.mist.com/api/v1
+      description: Global Cloud (US)
+    - url: https://api.eu.mist.com/api/v1
+      description: EU Cloud
+    - url: https://api.gc1.mist.com/api/v1
+      description: GovCloud
   /sites/{site_id}/devices/{device_id}:
     get:
       operationId: getSiteDevice
@@ -183,6 +214,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Device_2'
+      security:
+      - apiToken: []
+      - csrfToken: []
     put:
       operationId: updateSiteDevice
       summary: Juniper Networks Update device
@@ -205,6 +239,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Device_2'
+      security:
+      - apiToken: []
+      - csrfToken: []
     delete:
       operationId: deleteSiteDevice
       summary: Juniper Networks Delete device
@@ -217,6 +254,16 @@ paths:
       responses:
         '200':
           description: Device deleted
+      security:
+      - apiToken: []
+      - csrfToken: []
+    servers:
+    - url: https://api.mist.com/api/v1
+      description: Global Cloud (US)
+    - url: https://api.eu.mist.com/api/v1
+      description: EU Cloud
+    - url: https://api.gc1.mist.com/api/v1
+      description: GovCloud
   /sites/{site_id}/devices/stats:
     get:
       operationId: listSiteDeviceStats
@@ -244,7 +291,70 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/DeviceStats'
+      security:
+      - apiToken: []
+      - csrfToken: []
+    servers:
+    - url: https://api.mist.com/api/v1
+      description: Global Cloud (US)
+    - url: https://api.eu.mist.com/api/v1
+      description: EU Cloud
+    - url: https://api.gc1.mist.com/api/v1
+      description: GovCloud
 components:
+  parameters:
+    PageStart:
+      name: paging.start
+      in: query
+      description: Starting index for pagination
+      schema:
+        type: integer
+        default: 0
+    PageSize:
+      name: paging.limit
+      in: query
+      description: Number of results per page
+      schema:
+        type: integer
+        default: 25
+    DeviceId:
+      name: device_id
+      in: path
+      required: true
+      description: Device unique identifier
+      schema:
+        type: integer
+    PageParam:
+      name: page
+      in: query
+      description: Page number for pagination
+      schema:
+        type: integer
+        default: 1
+    LimitParam:
+      name: limit
+      in: query
+      description: Number of results per page
+      schema:
+        type: integer
+        default: 100
+        maximum: 1000
+    SiteId:
+      name: site_id
+      in: path
+      required: true
+      description: Site unique identifier
+      schema:
+        type: string
+        format: uuid
+    DeviceId_2:
+      name: device_id
+      in: path
+      required: true
+      description: Device unique identifier
+      schema:
+        type: string
+        format: uuid
   schemas:
     Device:
       type: object
@@ -281,38 +391,30 @@ components:
         lastRebootTime:
           type: string
           format: date-time
-    DeviceStats:
+    Job:
       type: object
       properties:
-        id:
+        jobId:
+          type: integer
+        name:
           type: string
-          format: uuid
-        mac:
-          type: string
-        model:
-          type: string
-        status:
+        state:
           type: string
           enum:
-          - connected
-          - disconnected
-          - upgrading
-          - restarting
-        uptime:
-          type: integer
-          description: Device uptime in seconds
-        last_seen:
+          - INPROGRESS
+          - SUCCESS
+          - FAILURE
+          - CANCELLED
+        percentComplete:
           type: number
-        num_clients:
-          type: integer
-        tx_bytes:
-          type: integer
-        rx_bytes:
-          type: integer
-        tx_pkts:
-          type: integer
-        rx_pkts:
-          type: integer
+        createdTime:
+          type: string
+          format: date-time
+        completedTime:
+          type: string
+          format: date-time
+        summary:
+          type: string
     Device_2:
       type: object
       properties:
@@ -361,89 +463,52 @@ components:
           type: number
         modified_time:
           type: number
-    Job:
+    DeviceStats:
       type: object
       properties:
-        jobId:
-          type: integer
-        name:
+        id:
           type: string
-        state:
+          format: uuid
+        mac:
+          type: string
+        model:
+          type: string
+        status:
           type: string
           enum:
-          - INPROGRESS
-          - SUCCESS
-          - FAILURE
-          - CANCELLED
-        percentComplete:
+          - connected
+          - disconnected
+          - upgrading
+          - restarting
+        uptime:
+          type: integer
+          description: Device uptime in seconds
+        last_seen:
           type: number
-        createdTime:
-          type: string
-          format: date-time
-        completedTime:
-          type: string
-          format: date-time
-        summary:
-          type: string
-  parameters:
-    DeviceId:
-      name: device_id
-      in: path
-      required: true
-      description: Device unique identifier
-      schema:
-        type: integer
-    SiteId:
-      name: site_id
-      in: path
-      required: true
-      description: Site unique identifier
-      schema:
-        type: string
-        format: uuid
-    PageSize:
-      name: paging.limit
-      in: query
-      description: Number of results per page
-      schema:
-        type: integer
-        default: 25
-    PageStart:
-      name: paging.start
-      in: query
-      description: Starting index for pagination
-      schema:
-        type: integer
-        default: 0
-    DeviceId_2:
-      name: device_id
-      in: path
-      required: true
-      description: Device unique identifier
-      schema:
-        type: string
-        format: uuid
-    LimitParam:
-      name: limit
-      in: query
-      description: Number of results per page
-      schema:
-        type: integer
-        default: 100
-        maximum: 1000
-    PageParam:
-      name: page
-      in: query
-      description: Page number for pagination
-      schema:
-        type: integer
-        default: 1
+        num_clients:
+          type: integer
+        tx_bytes:
+          type: integer
+        rx_bytes:
+          type: integer
+        tx_pkts:
+          type: integer
+        rx_pkts:
+          type: integer
   securitySchemes:
-    authToken:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic authentication with Junos Space user credentials
+    apiToken:
+      type: http
+      scheme: bearer
+      description: 'API token authentication. Obtain tokens from the Mist dashboard under Organization > Settings > API Token, or via the /self/apitokens endpoint. Pass as Authorization: Token <api-token>.'
+    csrfToken:
       type: apiKey
       in: header
-      name: AuthToken
-      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
-externalDocs:
-  description: Apstra API Documentation
-  url: https://www.juniper.net/documentation/us/en/software/apstra/
+      name: X-CSRFToken
+      description: CSRF token for session-based authentication.
+x-refined-from:
+- juniper-junos-space-openapi.yml
+- juniper-mist-openapi.yml

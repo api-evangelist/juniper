@@ -1,25 +1,30 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Operational API
-  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
-  version: 4.2.0
+  title: Juniper Networks Junos REST Operational API
+  description: The Junos REST API provides a RESTful interface for configuring, monitoring, and managing individual Junos devices. It translates HTTP requests into Junos RPC calls and supports operations such as retrieving operational data, modifying configuration, committing changes, and executing RPC commands. The API is available on Junos devices with the rest-api service enabled and uses the /rpc endpoint for RPC-style operations and the /api endpoint for structured resource access.
+  version: 1.0.0
   contact:
     name: Juniper Support
-    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
+    url: https://www.juniper.net/documentation/us/en/software/junos/rest-api/
     email: support@juniper.net
   license:
     name: Proprietary
     url: https://www.juniper.net/us/en/legal-notices.html
-  termsOfService: https://www.juniper.net/us/en/legal-notices.html
 servers:
-- url: https://{apstra_server}/api
-  description: Apstra Server
+- url: https://{device_ip}:3443
+  description: Junos Device REST API (HTTPS)
   variables:
-    apstra_server:
-      default: apstra.example.com
-      description: Hostname or IP of the Apstra server
+    device_ip:
+      default: 192.168.1.1
+      description: IP address of the Junos device
+- url: http://{device_ip}:3000
+  description: Junos Device REST API (HTTP)
+  variables:
+    device_ip:
+      default: 192.168.1.1
+      description: IP address of the Junos device
 security:
-- authToken: []
+- basicAuth: []
 tags:
 - name: Operational
   description: Operational data retrieval
@@ -269,6 +274,105 @@ paths:
                           $ref: '#/components/schemas/LldpNeighbor'
 components:
   schemas:
+    BgpPeer:
+      type: object
+      properties:
+        peer-address:
+          type: string
+        peer-as:
+          type: integer
+        local-address:
+          type: string
+        local-as:
+          type: integer
+        peer-state:
+          type: string
+          enum:
+          - Established
+          - Active
+          - Connect
+          - OpenSent
+          - OpenConfirm
+          - Idle
+        peer-type:
+          type: string
+          enum:
+          - Internal
+          - External
+        route-received:
+          type: integer
+        route-accepted:
+          type: integer
+        route-advertised:
+          type: integer
+        elapsed-time:
+          type: string
+    LldpNeighbor:
+      type: object
+      properties:
+        lldp-local-interface:
+          type: string
+        lldp-local-parent-interface-name:
+          type: string
+        lldp-remote-chassis-id:
+          type: string
+        lldp-remote-port-id:
+          type: string
+        lldp-remote-system-name:
+          type: string
+    RouteTable:
+      type: object
+      properties:
+        table-name:
+          type: string
+        destination-count:
+          type: integer
+        total-route-count:
+          type: integer
+        active-route-count:
+          type: integer
+        rt:
+          type: array
+          items:
+            type: object
+            properties:
+              rt-destination:
+                type: string
+              rt-entry:
+                type: object
+                properties:
+                  active-tag:
+                    type: string
+                  protocol-name:
+                    type: string
+                  preference:
+                    type: integer
+                  nh:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        to:
+                          type: string
+                        via:
+                          type: string
+                        nh-type:
+                          type: string
+    Alarm:
+      type: object
+      properties:
+        alarm-time:
+          type: string
+          format: date-time
+        alarm-class:
+          type: string
+          enum:
+          - Major
+          - Minor
+        alarm-description:
+          type: string
+        alarm-type:
+          type: string
     PhysicalInterface:
       type: object
       properties:
@@ -354,111 +458,11 @@ components:
                 type: string
               serial-number:
                 type: string
-    LldpNeighbor:
-      type: object
-      properties:
-        lldp-local-interface:
-          type: string
-        lldp-local-parent-interface-name:
-          type: string
-        lldp-remote-chassis-id:
-          type: string
-        lldp-remote-port-id:
-          type: string
-        lldp-remote-system-name:
-          type: string
-    Alarm:
-      type: object
-      properties:
-        alarm-time:
-          type: string
-          format: date-time
-        alarm-class:
-          type: string
-          enum:
-          - Major
-          - Minor
-        alarm-description:
-          type: string
-        alarm-type:
-          type: string
-    RouteTable:
-      type: object
-      properties:
-        table-name:
-          type: string
-        destination-count:
-          type: integer
-        total-route-count:
-          type: integer
-        active-route-count:
-          type: integer
-        rt:
-          type: array
-          items:
-            type: object
-            properties:
-              rt-destination:
-                type: string
-              rt-entry:
-                type: object
-                properties:
-                  active-tag:
-                    type: string
-                  protocol-name:
-                    type: string
-                  preference:
-                    type: integer
-                  nh:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        to:
-                          type: string
-                        via:
-                          type: string
-                        nh-type:
-                          type: string
-    BgpPeer:
-      type: object
-      properties:
-        peer-address:
-          type: string
-        peer-as:
-          type: integer
-        local-address:
-          type: string
-        local-as:
-          type: integer
-        peer-state:
-          type: string
-          enum:
-          - Established
-          - Active
-          - Connect
-          - OpenSent
-          - OpenConfirm
-          - Idle
-        peer-type:
-          type: string
-          enum:
-          - Internal
-          - External
-        route-received:
-          type: integer
-        route-accepted:
-          type: integer
-        route-advertised:
-          type: integer
-        elapsed-time:
-          type: string
   securitySchemes:
-    authToken:
-      type: apiKey
-      in: header
-      name: AuthToken
-      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+    basicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic authentication with Junos device credentials
 externalDocs:
-  description: Apstra API Documentation
-  url: https://www.juniper.net/documentation/us/en/software/apstra/
+  description: Junos REST API Guide
+  url: https://www.juniper.net/documentation/us/en/software/junos/rest-api/

@@ -1,16 +1,8 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Juniper Networks Juniper Apstra Allowlists and Blocklists Virtual Networks API
-  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
-  version: 4.2.0
-  contact:
-    name: Juniper Support
-    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
-    email: support@juniper.net
-  license:
-    name: Proprietary
-    url: https://www.juniper.net/us/en/legal-notices.html
-  termsOfService: https://www.juniper.net/us/en/legal-notices.html
+  title: Juniper Virtual Networks API
+  version: '1.0'
+  description: 'Operations tagged Virtual Networks across 2 of this provider''s published API definitions: juniper-apstra-openapi.yml, juniper-contrail-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://{apstra_server}/api
   description: Apstra Server
@@ -18,8 +10,12 @@ servers:
     apstra_server:
       default: apstra.example.com
       description: Hostname or IP of the Apstra server
-security:
-- authToken: []
+- url: https://{contrail_controller}:8082
+  description: Contrail API Server
+  variables:
+    contrail_controller:
+      default: contrail.example.com
+      description: Hostname or IP of the Contrail controller
 tags:
 - name: Virtual Networks
   description: Virtual network and routing zone management
@@ -45,6 +41,8 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/SecurityZone'
+      security:
+      - authToken: []
     post:
       operationId: createSecurityZone
       summary: Juniper Networks Create security zone
@@ -66,6 +64,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SecurityZone'
+      security:
+      - authToken: []
+    servers:
+    - url: https://{apstra_server}/api
+      description: Apstra Server
+      variables:
+        apstra_server:
+          default: apstra.example.com
+          description: Hostname or IP of the Apstra server
   /blueprints/{blueprint_id}/virtual-networks:
     get:
       operationId: listVirtualNetworks
@@ -87,6 +94,8 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/VirtualNetwork'
+      security:
+      - authToken: []
     post:
       operationId: createVirtualNetwork
       summary: Juniper Networks Create virtual network
@@ -108,6 +117,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/VirtualNetwork'
+      security:
+      - authToken: []
+    servers:
+    - url: https://{apstra_server}/api
+      description: Apstra Server
+      variables:
+        apstra_server:
+          default: apstra.example.com
+          description: Hostname or IP of the Apstra server
   /virtual-networks:
     get:
       operationId: listVirtualNetworks
@@ -130,6 +148,8 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/ResourceRef'
+      security:
+      - keystoneAuth: []
     post:
       operationId: createVirtualNetwork
       summary: Juniper Networks Create virtual network
@@ -155,6 +175,15 @@ paths:
                 properties:
                   virtual-network:
                     $ref: '#/components/schemas/VirtualNetwork_2'
+      security:
+      - keystoneAuth: []
+    servers:
+    - url: https://{contrail_controller}:8082
+      description: Contrail API Server
+      variables:
+        contrail_controller:
+          default: contrail.example.com
+          description: Hostname or IP of the Contrail controller
   /virtual-network/{vn_id}:
     get:
       operationId: getVirtualNetwork
@@ -179,6 +208,8 @@ paths:
                 properties:
                   virtual-network:
                     $ref: '#/components/schemas/VirtualNetwork_2'
+      security:
+      - keystoneAuth: []
     put:
       operationId: updateVirtualNetwork
       summary: Juniper Networks Update virtual network
@@ -204,6 +235,8 @@ paths:
       responses:
         '200':
           description: Virtual network updated
+      security:
+      - keystoneAuth: []
     delete:
       operationId: deleteVirtualNetwork
       summary: Juniper Networks Delete virtual network
@@ -220,8 +253,87 @@ paths:
       responses:
         '200':
           description: Virtual network deleted
+      security:
+      - keystoneAuth: []
+    servers:
+    - url: https://{contrail_controller}:8082
+      description: Contrail API Server
+      variables:
+        contrail_controller:
+          default: contrail.example.com
+          description: Hostname or IP of the Contrail controller
 components:
   schemas:
+    VirtualNetwork:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        vn_type:
+          type: string
+          enum:
+          - vxlan
+          - vlan
+        vn_id:
+          type: string
+        security_zone_id:
+          type: string
+          format: uuid
+        ipv4_subnet:
+          type: string
+        ipv4_gateway:
+          type: string
+        ipv6_subnet:
+          type: string
+        vlan_id:
+          type: integer
+        bound_to:
+          type: array
+          items:
+            type: object
+            properties:
+              system_id:
+                type: string
+              vlan_id:
+                type: integer
+              access_switches:
+                type: array
+                items:
+                  type: object
+    SecurityZone:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        vrf_name:
+          type: string
+        vlan_id:
+          type: integer
+        routing_policy_id:
+          type: string
+          format: uuid
+        sz_type:
+          type: string
+          enum:
+          - evpn
+          - vlan
+        rt_policy:
+          type: object
+          properties:
+            import_RTs:
+              type: array
+              items:
+                type: string
+            export_RTs:
+              type: array
+              items:
+                type: string
     VirtualNetwork_2:
       type: object
       properties:
@@ -303,76 +415,6 @@ components:
               enum:
               - enable
               - disable
-    VirtualNetwork:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        label:
-          type: string
-        vn_type:
-          type: string
-          enum:
-          - vxlan
-          - vlan
-        vn_id:
-          type: string
-        security_zone_id:
-          type: string
-          format: uuid
-        ipv4_subnet:
-          type: string
-        ipv4_gateway:
-          type: string
-        ipv6_subnet:
-          type: string
-        vlan_id:
-          type: integer
-        bound_to:
-          type: array
-          items:
-            type: object
-            properties:
-              system_id:
-                type: string
-              vlan_id:
-                type: integer
-              access_switches:
-                type: array
-                items:
-                  type: object
-    SecurityZone:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        label:
-          type: string
-        vrf_name:
-          type: string
-        vlan_id:
-          type: integer
-        routing_policy_id:
-          type: string
-          format: uuid
-        sz_type:
-          type: string
-          enum:
-          - evpn
-          - vlan
-        rt_policy:
-          type: object
-          properties:
-            import_RTs:
-              type: array
-              items:
-                type: string
-            export_RTs:
-              type: array
-              items:
-                type: string
     ResourceRef:
       type: object
       properties:
@@ -409,13 +451,6 @@ components:
         user_visible:
           type: boolean
   parameters:
-    DetailParam:
-      name: detail
-      in: query
-      description: Return full object details instead of references
-      schema:
-        type: boolean
-        default: false
     BlueprintId:
       name: blueprint_id
       in: path
@@ -424,6 +459,13 @@ components:
       schema:
         type: string
         format: uuid
+    DetailParam:
+      name: detail
+      in: query
+      description: Return full object details instead of references
+      schema:
+        type: boolean
+        default: false
     ParentId:
       name: parent_id
       in: query
@@ -437,6 +479,10 @@ components:
       in: header
       name: AuthToken
       description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
-externalDocs:
-  description: Apstra API Documentation
-  url: https://www.juniper.net/documentation/us/en/software/apstra/
+    keystoneAuth:
+      type: http
+      scheme: bearer
+      description: Keystone token authentication. Obtain a token from the Keystone identity service and pass it as X-Auth-Token header.
+x-refined-from:
+- juniper-apstra-openapi.yml
+- juniper-contrail-openapi.yml

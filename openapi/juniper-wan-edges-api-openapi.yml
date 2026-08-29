@@ -1,25 +1,26 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Juniper Networks Juniper Apstra Allowlists and Blocklists WAN Edges API
-  description: Juniper Apstra is an intent-based networking platform for data center automation. The Apstra API provides RESTful access to manage blueprints, design elements, devices, connectivity templates, virtual networks, and intent-based analytics. It supports multivendor environments and enables closed-loop automation from design through deployment and operations.
-  version: 4.2.0
+  title: Juniper Networks Juniper Mist WAN Edges API
+  description: Juniper Mist is a cloud-native, AI-driven networking platform that provides APIs for managing wireless, wired, and SD-WAN infrastructure. The Mist API enables full lifecycle management of sites, devices, WLANs, clients, and analytics through a RESTful interface. It supports organization-level and site-level management with token-based and OAuth2 authentication.
+  version: 1.0.0
   contact:
-    name: Juniper Support
-    url: https://www.juniper.net/us/en/products/network-automation/apstra.html
-    email: support@juniper.net
+    name: Juniper Mist Support
+    url: https://www.juniper.net/us/en/products/mist-ai.html
+    email: support@mist.com
   license:
     name: Proprietary
     url: https://www.juniper.net/us/en/legal-notices.html
   termsOfService: https://www.juniper.net/us/en/legal-notices.html
 servers:
-- url: https://{apstra_server}/api
-  description: Apstra Server
-  variables:
-    apstra_server:
-      default: apstra.example.com
-      description: Hostname or IP of the Apstra server
+- url: https://api.mist.com/api/v1
+  description: Global Cloud (US)
+- url: https://api.eu.mist.com/api/v1
+  description: EU Cloud
+- url: https://api.gc1.mist.com/api/v1
+  description: GovCloud
 security:
-- authToken: []
+- apiToken: []
+- csrfToken: []
 tags:
 - name: WAN Edges
   description: SD-WAN edge device management
@@ -43,15 +44,6 @@ paths:
                 items:
                   $ref: '#/components/schemas/WanEdge'
 components:
-  parameters:
-    OrgId:
-      name: org_id
-      in: path
-      required: true
-      description: Organization unique identifier
-      schema:
-        type: string
-        format: uuid
   schemas:
     WanEdge:
       type: object
@@ -75,12 +67,25 @@ components:
           type: boolean
         version:
           type: string
+  parameters:
+    OrgId:
+      name: org_id
+      in: path
+      required: true
+      description: Organization unique identifier
+      schema:
+        type: string
+        format: uuid
   securitySchemes:
-    authToken:
+    apiToken:
+      type: http
+      scheme: bearer
+      description: 'API token authentication. Obtain tokens from the Mist dashboard under Organization > Settings > API Token, or via the /self/apitokens endpoint. Pass as Authorization: Token <api-token>.'
+    csrfToken:
       type: apiKey
       in: header
-      name: AuthToken
-      description: Authentication token obtained from the /aaa/login endpoint. Include as AuthToken header in all requests.
+      name: X-CSRFToken
+      description: CSRF token for session-based authentication.
 externalDocs:
-  description: Apstra API Documentation
-  url: https://www.juniper.net/documentation/us/en/software/apstra/
+  description: Juniper Mist API Documentation
+  url: https://doc.mist-lab.fr/
