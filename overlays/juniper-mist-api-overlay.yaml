@@ -1,0 +1,85 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements — Juniper Mist API
+  version: 1.0.0
+  description: >-
+    Overlay of OBSERVED runtime behaviour that the published Mist API OpenAPI (2607.1.1)
+    leaves undeclared. Every action below adds something seen on a live response or read
+    from the provider's own docs; nothing is invented. The original spec in
+    openapi/juniper-mist-api-openapi.yml is never mutated.
+x-generated: '2026-09-18'
+x-method: generated
+x-source: >-
+  openapi/juniper-mist-api-openapi.yml + live probe of api.mist.com on 2026-09-18 +
+  rate-limits/juniper-rate-limits.yml + conventions/juniper-conventions.yml
+extends: ./../openapi/juniper-mist-api-openapi.yml
+actions:
+  - target: $.info
+    description: Record the provider-hosted source of this spec and the derived artifacts that read it.
+    update:
+      x-apievangelist-source: https://www.juniper.net/documentation/us/en/software/mist/api/static/exports/mist-api-openapi31yaml.yaml
+      x-apievangelist-artifacts:
+        conventions: conventions/juniper-conventions.yml
+        errors: errors/juniper-problem-types.yml
+        rate-limits: rate-limits/juniper-rate-limits.yml
+        webhooks: asyncapi/juniper-mist-webhooks.yml
+        data-model: data-model/juniper-data-model.yml
+  - target: $.components.responses
+    description: >-
+      Declare the Retry-After header observed on a live 429 (value 73) which the published
+      spec omits — its 429 responses carry an empty headers object.
+    update:
+      TooManyRequestsObserved:
+        description: >-
+          429 as observed on api.mist.com — the API token reached the 5,000 calls/hour
+          threshold. Retry-After is returned in practice but not declared upstream.
+        headers:
+          Retry-After:
+            description: Seconds to wait before retrying. Observed on 2026-09-18; undocumented by the provider.
+            schema:
+              type: integer
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/response_http429'
+  - target: $.components.headers
+    description: >-
+      Pagination headers the edge exposes via Access-Control-Expose-Headers but the
+      contract never mentions.
+    update:
+      X-Page-Limit:
+        description: Page size applied to this response (observed in access-control-expose-headers, undocumented).
+        schema:
+          type: integer
+      X-Page-Page:
+        description: Current page number (observed, undocumented).
+        schema:
+          type: integer
+      X-Page-Total:
+        description: Total matching items (observed, undocumented).
+        schema:
+          type: integer
+  - target: $.components.securitySchemes.apiToken
+    description: Surface the 90-day idle expiry as a machine-readable extension so agents can plan for it.
+    update:
+      x-token-idle-expiry-days: 90
+      x-rate-limit:
+        limit: 5000
+        window: 1h
+        scope: per-api-token
+        reset: hourly-boundary
+  - target: $.paths['/api/v1/orgs/{org_id}/webhooks'].post
+    description: Point the webhook-creating operation at the derived event catalog and signing rules.
+    update:
+      x-apievangelist-event-catalog: asyncapi/juniper-mist-webhooks.yml
+      x-webhook-signing:
+        header: X-Mist-Signature-v2
+        algorithm: HMAC_SHA256
+        secret_field: secret
+  - target: $.paths['/api/v1/sites/{site_id}/devices/upgrade'].post
+    description: Mark the reversal path so an agent knows the action can be cancelled (window undocumented).
+    update:
+      x-reversal:
+        operationId: cancelSiteDeviceUpgrade
+        window: null
+        grade: documented

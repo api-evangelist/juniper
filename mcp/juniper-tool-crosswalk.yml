@@ -1,0 +1,76 @@
+generated: '2026-09-18'
+method: derived
+source: mcp/juniper-mcp.yml + openapi/juniper-mist-api-openapi.yml
+provider: Juniper Networks
+providerId: juniper
+summary: >-
+  THE CROSSWALK IS EMPTY, AND THAT IS THE FINDING. Juniper's MCP tools and Juniper's
+  published REST contract address two different machines. junos-mcp-server drives a
+  Junos device over NETCONF; the 1,059-operation Mist API drives the Mist cloud over
+  HTTPS. Not one MCP tool binds to a Mist operationId, and not one Mist operation is
+  reachable from an MCP tool. An agent given the Junos MCP server cannot touch the
+  cloud platform Juniper sells, and an agent given the Mist API has no MCP front door.
+surfaces:
+  openapi:
+    path: openapi/juniper-mist-api-openapi.yml
+    title: Mist API
+    version: 2607.1.1
+    operations: 1059
+    gated: false
+    note: Published anonymously as an OpenAPI 3.1 export from the Mist API Reference portal.
+  mcp:
+    url: null
+    mode: local-stdio
+    gated: true
+    note: >-
+      No public endpoint to introspect. Tools were read from junos-mcp-server source,
+      not from a live tools/list call.
+  graphql:
+    endpoint: null
+    note: No GraphQL surface found.
+crosswalk: []
+mcp_only:
+  - tool: execute_junos_command
+    reason: NETCONF RPC against a Junos device; no REST equivalent in the Mist API.
+  - tool: execute_junos_pfe_command
+    reason: Packet Forwarding Engine shell command; device-local, not a cloud API.
+  - tool: execute_junos_command_batch
+    reason: Fan-out over a local devices.json inventory; no Mist counterpart.
+  - tool: get_junos_config
+    reason: Reads the device's own configuration database over NETCONF.
+  - tool: junos_config_diff
+    reason: Junos rollback-version diff; a device feature with no cloud API analogue.
+  - tool: render_and_apply_j2_template
+    reason: Client-side Jinja2 render then NETCONF commit; no Mist operation renders templates.
+  - tool: gather_device_facts
+    reason: PyEZ facts gathering over NETCONF.
+  - tool: get_router_list
+    reason: Reads the operator's local devices.json; not a Juniper-hosted inventory.
+  - tool: load_and_commit_config
+    reason: NETCONF load+commit. Mist configures devices through org/site templates instead.
+rest_only_note: >-
+  All 1,059 Mist operations are rest_only. They are not enumerated here — the list would
+  be the whole spec. The useful statement is the count and the reason.
+coverage:
+  mcp_tools_total: 9
+  mcp_tools_mapped: 0
+  openapi_operations_total: 1059
+  openapi_operations_mapped: 0
+  binding_rate: 0.0
+  confidence: high
+  confidence_note: >-
+    High confidence in the ZERO, not in any mapping. The two surfaces are documented
+    well enough to be sure they do not overlap: one speaks NETCONF to hardware, the
+    other HTTPS to api.mist.com.
+gaps:
+  - >-
+    The Mist cloud — Juniper's flagship AI-native platform and the surface with a real
+    1,059-operation contract — has no MCP server at all. A Mist MCP server generated
+    from the spec captured in openapi/ is the single highest-value agent surface
+    Juniper is not shipping.
+  - >-
+    Routing Director and YAMS tool sets were not enumerated, so their crosswalk rows
+    are absent rather than empty. Re-run once those are read.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

@@ -1,0 +1,123 @@
+generated: '2026-09-18'
+method: probed
+source: live HTTPS probes of every host in apis.yml, openapi/ servers[] and the docs host
+provider: Juniper Networks
+providerId: juniper
+summary: >-
+  No .well-known document is served on any Juniper Networks or Juniper Mist host.
+  Two hosts (support.juniper.net, community.juniper.net) answer 200 to every
+  /.well-known/* path with their single-page-app HTML shell; those are catch-all
+  soft-404s, not documents, and are recorded as misses. No WellKnown, SecurityTxt
+  or AgentCard pointer is emitted from this probe.
+hosts:
+  - host: www.juniper.net
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: juniper.net
+    note: apex redirects (301) to www.juniper.net for every path probed
+    documents:
+      - path: /.well-known/security.txt
+        status: 301
+      - path: /.well-known/api-catalog
+        status: 301
+      - path: /.well-known/agent-card.json
+        status: 301
+  - host: api.mist.com
+    note: primary Mist API host (openapi/juniper-mist-api-openapi.yml servers[0])
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: api.eu.mist.com
+    note: EU Mist API host (openapi servers[])
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: support.juniper.net
+    note: >-
+      SOFT-404. Every path returns HTTP 200 with the support portal's HTML shell
+      (<!DOCTYPE html>, Salesforce Experience Cloud). Treated as a miss — no document
+      is served. Recording these as hits is the dominant false positive on this probe.
+    documents:
+      - path: /.well-known/security.txt
+        status: 200
+        soft_404: true
+        content_type: text/html
+      - path: /.well-known/api-catalog
+        status: 200
+        soft_404: true
+        content_type: text/html
+      - path: /.well-known/agent-card.json
+        status: 200
+        soft_404: true
+        content_type: text/html
+  - host: community.juniper.net
+    note: SOFT-404. Returns the community platform's HTML shell for several well-known paths.
+    documents:
+      - path: /.well-known/security.txt
+        status: 200
+        soft_404: true
+        content_type: text/html
+      - path: /.well-known/openid-configuration
+        status: 200
+        soft_404: true
+        content_type: text/html
+      - path: /.well-known/api-catalog
+        status: 200
+        soft_404: true
+        content_type: text/html
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: developer.juniper.net
+    note: >-
+      NOT PROBEABLE. The hostname resolves to a CNAME
+      (dualstack.juniperlb-595229623.us-west-2.elb.amazonaws.com) that is NXDOMAIN —
+      the load balancer behind the former developer portal has been torn down.
+      Every request fails at DNS resolution.
+    documents:
+      - path: /.well-known/security.txt
+        status: 0
+        error: dns-nxdomain
+findings:
+  - No security.txt is served anywhere on juniper.net or mist.com.
+  - No A2A agent card on any host (both the 0.3 and the legacy pre-0.3 path were probed).
+  - No /.well-known/api-catalog, despite 1,059 published Mist operations.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

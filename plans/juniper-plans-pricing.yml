@@ -3,16 +3,46 @@ specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
 provider: Juniper Networks
 providerId: juniper
+generated: '2026-09-18'
+method: searched
+source: >-
+  Probed https://www.juniper.net/us/en/pricing.html (404),
+  https://www.juniper.net/us/en/how-to-buy.html (301 -> hpe.com),
+  https://www.juniper.net/us/en/dm/juniper-mist-cloud-subscriptions.html (404) on 2026-09-18.
 created: '2026-05-04'
-# Provenance stamped 2026-08-11: this artifact was written by the API Evangelist
-# bulk sweep dated 2026-05-04, not harvested from the provider. See roadmap#35.
-method: generated
-modified: '2026-05-05'
-reconciled: false
-notes: Juniper Networks does not publish public per-call pricing for its product APIs
-  (Mist, Apstra, Junos, Paragon). API access is bundled with the underlying product
-  subscription (Mist cloud subscription, Apstra license, Junos Space) and priced through
-  Juniper sales / partners. Reconciliation blocked pending public license-tier rate sheet.
+modified: '2026-09-18'
+reconciled: true
+plan_count: 0
+description: >-
+  JUNIPER PUBLISHES NO PLANS AND NO PRICES. There is no public pricing page, no per-call
+  rate card and no self-serve tier for any Juniper API. API access is bundled into the
+  subscription or licence for the underlying product (Mist cloud services, Apstra,
+  Paragon/Routing Director, Junos Space) and is quoted through sales or a partner. Since
+  the HPE acquisition the buying path itself has moved: juniper.net/us/en/how-to-buy.html
+  now 301s to hpe.com.
+note: >-
+  plan_count is 0 on purpose. A previous round of this artifact listed one synthetic
+  "Product Subscription" plan with price "included with product subscription", which reads
+  to a scorer as a published plan. Juniper published no such plan; the entry was ours.
+evidence:
+  - url: https://www.juniper.net/us/en/pricing.html
+    status: 404
+  - url: https://www.juniper.net/us/en/how-to-buy.html
+    status: 301
+    redirects_to: https://www.hpe.com/us/en/buy-parts-products.html
+    cross_domain: true
+  - url: https://www.juniper.net/us/en/dm/juniper-mist-cloud-subscriptions.html
+    status: 404
+pricing_model:
+  type: enterprise-contract
+  self_serve: false
+  free_tier: false
+  trial: >-
+    Product trials exist through Juniper/partner sales motions, but no self-serve API trial
+    or free tier was found.
+  api_billing: >-
+    None. The API is not metered or billed separately; the 5,000 calls/hour ceiling is a
+    throttle, not a quota you can buy up. See rate-limits/juniper-rate-limits.yml.
 tags:
   - AI
   - Automation
@@ -21,34 +51,7 @@ tags:
   - Networking
   - SDN
   - Security
-description: Plans artifact for Juniper Networks product APIs. Pricing is bundled with the
-  underlying networking product subscription (Mist AI, Apstra, Paragon, Junos Space, etc.)
-  rather than priced as a self-serve API.
-sources:
-  - https://www.juniper.net/us/en/dm/api-catalog.html
-  - https://www.juniper.net/us/en/products/cloud-services.html
-plans:
-  - id: juniper-product-subscription
-    name: Product Subscription
-    type: enterprise
-    description: API access is included with the active subscription / license for the
-      underlying Juniper product (Mist AI cloud, Apstra, Paragon, Junos Space). API tier is
-      determined by the product SKU; no separate API billing.
-    entries:
-      - label: API Access
-        name: api_access
-        type: flat
-        metric: varies
-        limit: -1
-        timeFrame: usage
-        geo: global
-        unit: 1
-        price: included with product subscription
-        userMultiplied: false
-    elements:
-      - name: Active Juniper product subscription required
-      - name: API capabilities scoped to product SKU and tier
-      - name: Sandbox / trial via Juniper portal where available
+plans: []
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com

@@ -1,0 +1,105 @@
+generated: '2026-09-18'
+method: searched
+source: >-
+  https://github.com/Juniper/junos-mcp-server,
+  https://github.com/Juniper/routing-director-mcp-server,
+  https://github.com/Juniper/yams — READMEs and source read on 2026-09-18.
+provider: Juniper Networks
+providerId: juniper
+summary: >-
+  Juniper ships THREE first-party MCP servers, and every one of them is software you
+  run yourself. None is a hosted endpoint an agent can reach today: junos-mcp-server
+  and yams are stdio/self-hosted-HTTP processes you start on your own machine, and
+  routing-director-mcp-server points at YOUR Routing Director instance. There is no
+  mcp.juniper.net. That distinction is the whole point of the deployment block below.
+deployment:
+  mode: local-stdio
+  endpoint: null
+  install: "git clone https://github.com/Juniper/junos-mcp-server && uv run jmcp.py -f devices.json"
+  package: https://github.com/Juniper/junos-mcp-server
+  auth: api-key
+  verified: searched
+  note: >-
+    mode is local-stdio, not remote. junos-mcp-server also offers a self-hosted HTTP
+    transport for VS Code Copilot, but the URL is one the operator stands up — it is
+    not a Juniper-operated endpoint. No package is published to PyPI or npm; install
+    is a git clone. auth is api-key: the server manages its own bearer tokens via
+    jmcp_token_manager.py, separate from any Juniper credential.
+servers:
+  - name: Junos MCP Server
+    repository: https://github.com/Juniper/junos-mcp-server
+    language: python
+    status: published
+    mode: local-stdio
+    transports: [stdio, http]
+    target: Junos / Junos EVO devices over NETCONF (via PyEZ)
+    auth: bearer token managed by the server (jmcp_token_manager.py); device credentials in devices.json
+    guardrails: >-
+      Ships a config commit blocklist (block.cfg) and an operational command blocklist
+      (block.cmd) — an explicit deny surface for agent-issued commands, which is unusual
+      and worth noting.
+    tools:
+      - name: execute_junos_command
+        description: Execute a Junos command on the router
+      - name: execute_junos_pfe_command
+        description: Execute a Junos PFE (Packet Forwarding Engine) command on the router
+      - name: execute_junos_command_batch
+        description: Execute a command across multiple routers in parallel
+      - name: get_junos_config
+        description: Get the configuration of the router
+      - name: junos_config_diff
+        description: Get the configuration diff against a rollback version
+      - name: render_and_apply_j2_template
+        description: Render a Jinja2 template and apply the resulting configuration
+      - name: gather_device_facts
+        description: Gather Junos device facts from the router
+      - name: get_router_list
+        description: Get list of available Junos routers
+      - name: load_and_commit_config
+        description: Load and commit configuration on a Junos router
+    tools_source: >-
+      Read verbatim from the list_tools() handler in jmcp.py at HEAD on 2026-09-18.
+      The live server was not introspected because it has no public endpoint to introspect.
+  - name: Routing Director MCP Server
+    repository: https://github.com/Juniper/routing-director-mcp-server
+    language: python
+    status: published
+    mode: local-stdio
+    transports: [stdio, http]
+    target: >-
+      Juniper Routing Director (formerly Paragon Automation 2.0) — the customer's own
+      instance, configured via http_url in config.json.
+    auth: basic or token, against the operator's Routing Director
+    registry_name: io.github.Juniper/routing-director-mcp-server
+    note: >-
+      Declares an MCP registry name in its README header but the README's "From MCP
+      Registry" install section still reads "TBD" — not yet published to a registry.
+    tools: []
+    tools_source: >-
+      NOT CAPTURED. Tool definitions were not enumerated; the server has no public
+      endpoint and the tool set was not read from source in this pass. Recorded as
+      an honest gap rather than guessed from the feature list.
+  - name: YAMS (Yet Another MCP Server)
+    repository: https://github.com/Juniper/yams
+    language: python
+    status: published
+    mode: local-stdio
+    transports: [streamable-http, http, stdio]
+    target: >-
+      Kubernetes clusters — built with Juniper Cloud-Native Router (JCNR) in mind but
+      generic. Connects via kubeconfig or SSH tunnel.
+    auth: kubeconfig / SSH
+    note: Implements the MCP 2.0 Streamable HTTP transport at /mcp when self-hosted.
+    tools: []
+    tools_source: NOT CAPTURED — no public endpoint; not enumerated from source in this pass.
+probes:
+  - what: hosted remote MCP endpoint
+    result: none found
+    note: >-
+      No mcp.juniper.net, no /mcp path on api.mist.com, and no MCP endpoint named in
+      the Mist API reference or the Juniper documentation site. Nothing was guessed or
+      probed blind — a guessed MCP path that happens to answer 200 is the worst possible
+      artifact here.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

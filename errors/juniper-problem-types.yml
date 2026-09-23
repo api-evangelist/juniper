@@ -1,0 +1,86 @@
+generated: '2026-09-18'
+method: derived
+source: openapi/juniper-mist-api-openapi.yml (Mist API 2607.1.1)
+provider: Juniper Networks
+providerId: juniper
+api: Mist API
+format: custom
+format_note: >-
+  NOT RFC 9457. Mist returns application/json with a flat envelope — a single human-readable
+  `detail` string, plus a `reason` on some webhook validation errors — and no machine-readable
+  error code, type URI or instance. An agent can branch on the HTTP status and nothing else.
+envelope:
+  fields:
+    - name: detail
+      type: string
+      description: Human-readable explanation. Present on 400/401/403/429.
+    - name: reason
+      type: string
+      description: Additional reason; observed on webhook-specific 400 responses.
+    - name: id
+      type: string
+      description: Missing resource identifier, on 404 responses that include one.
+coverage:
+  operations_total: 1059
+  with_400: 1059
+  with_401: 1058
+  with_403: 1058
+  with_404: 1058
+  with_429: 1058
+  note: >-
+    The error surface is unusually uniform — effectively every operation declares the same
+    five failure modes. That is good for a client and it is the main thing this catalog can say,
+    because there is no code registry underneath it.
+problems:
+  - status: 400
+    schema: response_http400
+    title: Bad Request
+    detail_example: "JSON parse error - Expecting value: line 5 column 8 (char 56)"
+    remediation: Fix the request body or query parameters. Not retryable unchanged.
+  - status: 400
+    schema: response_http400_webhook
+    title: Bad Request (webhook)
+    detail_example: "invalid field: assetfilter_ids"
+    reason_example: contains duplicate uuids
+    remediation: >-
+      Webhook-specific variant carrying a second `reason` field. Applies to the
+      orgs/sites webhook endpoints.
+  - status: 401
+    schema: response_http401
+    title: Unauthorized
+    detail_example: Authentication credentials were not provided.
+    remediation: >-
+      Send `Authorization: Token {apitoken}` or a valid session + X-CSRFToken. Note an
+      API token is auto-removed after 90 days of non-use, so a long-idle agent will start
+      seeing this without any change on its side.
+  - status: 403
+    schema: response_http403
+    title: Permission Denied
+    detail_example: You do not have permission to perform this action.
+    remediation: >-
+      The token authenticated but its admin privileges do not cover this org/site scope.
+      Distinct from 401 — do not retry with the same token.
+  - status: 404
+    schema: response_http404
+    title: Not Found
+    fields: [id]
+    remediation: Resource does not exist or is outside the token's org/site scope.
+  - status: 429
+    schema: response_http429
+    title: Too Many Requests
+    detail_example: >-
+      Too Many Request. The API Token used for the request reached the 5000 API Calls
+      per hour threshold
+    remediation: >-
+      Back off until the hourly boundary. A Retry-After header IS returned (observed: 73)
+      but is not declared in the spec, so honour it if present rather than relying on it.
+    cross_ref: rate-limits/juniper-rate-limits.yml
+codes_registry:
+  published: false
+  note: >-
+    No numeric or symbolic error-code registry is published for the Mist API. This is the
+    single clearest error-semantics gap: every failure of the same status is
+    indistinguishable to a machine.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

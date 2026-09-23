@@ -3,16 +3,25 @@ specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
 provider: Juniper Networks
 providerId: juniper
+generated: '2026-09-18'
+method: searched
+source: >-
+  openapi/juniper-mist-api-openapi.yml (the 429 response description in Mist API 2607.1.1),
+  https://www.juniper.net/documentation/us/en/software/mist/api/http/guides/api-requests/rate-limit,
+  https://www.mist.com/documentation/api-rate-limiting/,
+  plus a live unauthenticated probe of https://api.mist.com/api/v1/login on 2026-09-18.
 created: '2026-05-04'
-# Provenance stamped 2026-08-11: this artifact was written by the API Evangelist
-# bulk sweep dated 2026-05-04, not harvested from the provider. See roadmap#35.
-method: generated
-modified: '2026-05-05'
-reconciled: false
-notes: Juniper Networks does not publish a single canonical public rate-limit table.
-  The Mist API documentation references rate-limit headers and throttling but the
-  authoritative numbers are gated behind authenticated docs. Reconciliation blocked
-  pending publicly accessible rate-limit numbers per product.
+modified: '2026-09-18'
+reconciled: true
+supersedes_note: >-
+  Replaces the 2026-05-04 bulk-sweep artifact, which recorded "authoritative numbers are
+  gated behind authenticated docs". They are not gated — the number is written into the
+  provider's own published OpenAPI, in the description of the 429 response on all 1,058
+  operations that declare one.
+description: >-
+  Rate limits for the Juniper Mist API, the one Juniper surface with a published limit.
+  5,000 calls per hour per API token, reset on the hourly boundary, 429 on exhaustion with
+  a Retry-After header the contract does not document.
 tags:
   - AI
   - Automation
@@ -22,27 +31,78 @@ tags:
   - SDN
   - Security
   - Rate Limiting
-description: Rate-limit artifact for Juniper Networks product APIs (Mist, Apstra, Junos,
-  Paragon). Per-product limits exist but are documented inside authenticated product
-  documentation rather than on a public page.
 sources:
-  - https://api.mist.com/api/v1/docs/Home
-  - https://www.juniper.net/documentation/
+  - https://www.juniper.net/documentation/us/en/software/mist/api/http/guides/api-requests/rate-limit
+  - https://www.mist.com/documentation/api-rate-limiting/
+  - openapi/juniper-mist-api-openapi.yml
 responseCodes:
   throttled: 429
   serviceUnavailable: 503
+limit_count: 1
 limits:
-  - name: Per-product API throttle
-    scope: api-token/org
-    metric: varies
-    limit: see authenticated product API documentation (Mist, Apstra, Junos Space)
+  - name: Mist API calls per token
+    api: Mist API
+    scope: per-api-token
+    metric: requests
+    limit: 5000
+    window: 1h
+    burst: null
+    reset: >-
+      Hourly boundary — "The current rate limiting is 5000 API calls per hour and is reset
+      at the hourly boundary."
+    status_on_exhaustion: 429
+    error_detail: >-
+      "Too Many Request. The API Token used for the request reached the 5000 API Calls per
+      hour threshold"
+    error_source: >-
+      Quoted verbatim from the 429 response description in the published OpenAPI — the
+      strongest evidence available, since it is in the contract rather than in prose.
+    increase: Contact Juniper/Mist support (support@mist.com) with the use case.
+headers:
+  documented: []
+  documented_note: >-
+    The contract declares an EMPTY headers object on every 429 response. Nothing about the
+    runtime rate-limit signal is specified.
+  observed:
+    - name: Retry-After
+      value_observed: '73'
+      status: 429
+      probed_url: https://api.mist.com/api/v1/login
+      probed: '2026-09-18'
+      note: >-
+        Returned in practice but undocumented. An agent should honour it when present and
+        fall back to waiting for the hourly boundary when it is not.
+  absent:
+    - X-RateLimit-Limit
+    - X-RateLimit-Remaining
+    - X-RateLimit-Reset
+    - RateLimit
+    - RateLimit-Policy
+  absent_note: >-
+    No RFC 9238-style RateLimit headers and no X-RateLimit-* family were observed on a
+    live 429. A client cannot see how much budget is left before it runs out — only that
+    it has run out.
+event_rate_limits:
+  source: https://www.juniper.net/documentation/us/en/software/mist/automation-integration/topics/concept/webhooks-and-alerts.html
+  limits:
+    - name: Rogue AP reporting
+      limit: once per 10 hours
+      scope: webhook event
+    - name: Rogue client / Honeypot AP events
+      limit: once per 10 minutes
+      scope: webhook event
+other_products:
+  note: >-
+    No public rate limits are published for Junos Space, Apstra, Paragon/Routing Director
+    or the Junos device REST/NETCONF surfaces. Those are customer-hosted controllers whose
+    throughput is a function of the operator's own deployment, which is a reason there is
+    no number rather than an omission.
 policies:
-  - name: Backoff Strategy
-    description: Clients should implement exponential backoff with jitter on 429 / 503 responses
-      and honor the Retry-After header when present.
-  - name: Per-Product Limits
-    description: Limits are scoped per product (Mist cloud, Apstra controller, Paragon)
-      and are typically expressed via X-RateLimit-* headers.
+  - name: Backoff
+    description: >-
+      Exponential backoff with jitter on 429/503, honouring Retry-After when present.
+      Because no remaining-budget header exists, clients should also track their own call
+      count against the 5,000/hour ceiling.
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com

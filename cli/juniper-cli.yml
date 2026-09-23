@@ -1,0 +1,53 @@
+generated: '2026-09-18'
+method: searched
+source: https://github.com/Juniper/jsnapy (README) + https://pypi.org/pypi/jsnapy/json
+provider: Juniper Networks
+providerId: juniper
+summary: >-
+  Juniper ships no command-line client for the Mist API or for Apstra — the cloud
+  surfaces are driven through Terraform providers and raw HTTP. The first-party CLI that
+  does exist, JSNAPy, targets Junos DEVICES over NETCONF: snapshot a device, change it,
+  snapshot again, assert the difference. It is recorded here honestly as a device-
+  automation CLI, not an API CLI.
+clis:
+  - name: jsnapy
+    title: JSNAPy — Junos Snapshot Administrator in Python
+    repository: https://github.com/Juniper/jsnapy
+    package: https://pypi.org/project/jsnapy/
+    language: python
+    official: true
+    version: 1.3.8
+    published: '2024-08-06'
+    currency_note: >-
+      Two years since the last release; the repository's last push is also 2024-08.
+      Still installable and functional against current Junos, but not actively developed.
+    install:
+      - pip install jsnapy
+      - "pip install git+https://github.com/Juniper/jsnapy.git"
+      - "docker run -it -v $PWD:/scripts jsnapy --snap pre -f config_check.yml"
+    target: Junos devices over NETCONF (via junos-eznc / PyEZ)
+    commands:
+      - command: "jsnapy --snap <name> -f <config.yml>"
+        description: Take a named snapshot of the RPC/CLI outputs listed in the test file.
+      - command: "jsnapy --check <pre> <post> -f <config.yml>"
+        description: Compare two snapshots against the test cases and report pass/fail.
+      - command: "jsnapy --snapcheck <name> -f <config.yml>"
+        description: Take a snapshot and evaluate test cases against it in one step.
+      - command: "jsnapy --diff <pre> <post> -f <config.yml>"
+        description: Show a two-column diff of two snapshot files.
+    key_flows:
+      - name: Pre/post change validation
+        steps:
+          - "jsnapy --snap pre -f config_check.yml"
+          - make the configuration change (PyEZ, Ansible, NETCONF, MCP)
+          - "jsnapy --snap post -f config_check.yml"
+          - "jsnapy --check pre post -f config_check.yml"
+    also_usable_as: Python module — the CLI wraps the SnapAdmin class, so the same tests run from code.
+not_found:
+  - surface: Mist API
+    note: No first-party CLI. The Terraform provider (packages/) is the nearest equivalent.
+  - surface: Apstra
+    note: No first-party CLI; Terraform provider, Go SDK and Ansible collection instead.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

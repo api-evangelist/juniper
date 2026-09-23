@@ -1,0 +1,153 @@
+generated: '2026-09-18'
+method: derived
+source: openapi/juniper-mist-api-openapi.yml (Mist API 2607.1.1) — path hierarchy and components.schemas
+provider: Juniper Networks
+providerId: juniper
+api: Mist API
+summary: >-
+  Mist is a strictly hierarchical, three-level tenancy model — MSP -> Organization -> Site —
+  and almost every one of the 1,059 operations hangs off org_id or site_id. 508 operations
+  take an org_id and 471 take a site_id; only a handful (self, login, const, installer)
+  sit outside the hierarchy. Identifiers are UUIDs throughout, with device MAC addresses
+  used as a second natural key.
+scale:
+  schemas: 2890
+  paths: 756
+  operations: 1059
+  org_scoped_operations: 508
+  site_scoped_operations: 471
+  org_sub_resources: 84
+  site_sub_resources: 65
+identifiers:
+  primary: "UUID (contentEncoding: uuid) on every first-class object — org_id, site_id, wlan_id, map_id, webhook_id"
+  natural_keys:
+    - device_mac / mac — devices and clients are routinely addressed by MAC as well as by id
+  prefixes: none
+  prefixes_note: >-
+    Mist does NOT use typed id prefixes (no org_xxx / site_xxx). A bare UUID carries no
+    type information, so an agent must track which collection an id came from.
+entities:
+  - name: msp
+    path: /api/v1/msps/{msp_id}
+    description: Managed service provider tenant; owns organizations and org groups.
+    relationships:
+      - has_many: org
+        via: msp_id
+      - has_many: orggroup
+      - has_many: admin
+  - name: org
+    path: /api/v1/orgs/{org_id}
+    description: >-
+      The primary tenant. Root of configuration templates, inventory, admins, API tokens,
+      webhooks, alarm templates and every org-level setting.
+    relationships:
+      - belongs_to: msp
+        via: msp_id
+        optional: true
+      - has_many: site
+        via: org_id
+      - has_many: sitegroup
+      - has_many: device
+        via: inventory
+      - has_many: webhook
+      - has_many: apitoken
+      - has_many: admin
+      - has_many: deviceprofile
+      - has_many: wlantemplate
+      - has_many: networktemplate
+      - has_many: alarmtemplate
+      - has_many: nacrule
+      - has_many: mxedge
+  - name: site
+    path: /api/v1/sites/{site_id}
+    description: A physical location. Devices are assigned to a site; most operational data is site-scoped.
+    relationships:
+      - belongs_to: org
+        via: org_id
+      - has_many: device
+        via: site_id
+      - has_many: wlan
+      - has_many: map
+      - has_many: zone
+      - has_many: client
+      - has_many: webhook
+      - has_many: alarm
+      - has_one: site_setting
+        via: "/sites/{site_id}/setting"
+  - name: sitegroup
+    path: /api/v1/orgs/{org_id}/sitegroups
+    relationships:
+      - belongs_to: org
+      - has_many: site
+        via: sitegroup_ids
+  - name: device
+    path: /api/v1/sites/{site_id}/devices/{device_id}
+    description: AP, switch, gateway, SSR or MX Edge. Largest sub-resource in the API (92 site paths).
+    relationships:
+      - belongs_to: site
+        via: site_id
+      - belongs_to: org
+        via: "org_id (inventory)"
+      - has_one: deviceprofile
+        via: deviceprofile_id
+      - has_many: device_stat
+      - has_many: device_event
+  - name: wlan
+    path: /api/v1/sites/{site_id}/wlans/{wlan_id}
+    relationships:
+      - belongs_to: site
+      - has_one: wlantemplate
+        via: template_id
+      - has_many: psk
+  - name: map
+    path: /api/v1/sites/{site_id}/maps/{map_id}
+    description: Floorplan; the anchor for location services, zones and asset tracking.
+    relationships:
+      - belongs_to: site
+      - has_many: zone
+      - has_many: asset
+      - has_many: beacon
+  - name: client
+    path: /api/v1/sites/{site_id}/clients
+    description: Wireless, wired, WAN, NAC and SDK clients. Keyed by MAC, not UUID.
+    relationships:
+      - belongs_to: site
+      - has_many: client_session
+  - name: webhook
+    path: "/api/v1/orgs/{org_id}/webhooks/{webhook_id} and /api/v1/sites/{site_id}/webhooks/{webhook_id}"
+    description: >-
+      Exists at BOTH levels — the same object shape with for_site distinguishing them.
+      Detailed separately in asyncapi/juniper-mist-webhooks.yml.
+    relationships:
+      - belongs_to: org
+      - belongs_to: site
+  - name: mxedge
+    path: /api/v1/orgs/{org_id}/mxedges
+    description: Mist Edge appliance; org-owned and assigned down to sites.
+    relationships:
+      - belongs_to: org
+      - assigned_to: site
+  - name: apitoken
+    path: /api/v1/orgs/{org_id}/apitokens
+    description: >-
+      Org-scoped API credential. The only place privilege is attached, since the API
+      declares no OAuth scopes.
+    relationships:
+      - belongs_to: org
+patterns:
+  tenancy: >-
+    The org/site split is the single most important thing to understand before calling this
+    API: the same logical resource (webhooks, settings, devices, stats, alarms, clients)
+    frequently exists at both levels with different paths and slightly different shapes.
+  constants_api: >-
+    /api/v1/const/* (28 paths) is a self-describing metadata surface — webhook topics,
+    device models, alarm definitions, applications, countries. It is where a client
+    discovers enums the spec leaves open.
+  search_vs_list: >-
+    Large collections are read through /search and /count endpoints with
+    start/end/duration/limit/search_after, not through plain list pagination.
+render: null
+render_note: No subway/ diagram exists for this repo.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

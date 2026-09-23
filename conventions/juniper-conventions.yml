@@ -1,0 +1,184 @@
+generated: '2026-09-18'
+method: derived
+source: >-
+  openapi/juniper-mist-api-openapi.yml (Mist API 2607.1.1) + a live unauthenticated probe
+  of https://api.mist.com/api/v1/login on 2026-09-18 +
+  https://www.juniper.net/documentation/us/en/software/mist/api/http/guides/api-requests/rate-limit
+provider: Juniper Networks
+providerId: juniper
+api: Mist API
+scope_note: >-
+  These conventions describe the Mist API — the one Juniper surface with a published
+  machine-readable contract. They do NOT describe Junos NETCONF/XML, Junos Space, or
+  Apstra, which are separate products with separate conventions.
+auth:
+  style: api-key
+  schemes:
+    - name: apiToken
+      in: header
+      header: Authorization
+      format: "Authorization: Token {apitoken}"
+      note: >-
+        Preferred for automation. Inherits the privileges of the admin who created it,
+        and is AUTO-DELETED after 90 days of non-use — an expiry an agent must plan for.
+    - name: csrfToken
+      in: header
+      header: X-CSRFToken
+      note: Session/cookie flow after POST /api/v1/login; browser-oriented.
+  scopes: >-
+    No OAuth2 securityScheme is declared, so there is no scope surface on the API itself.
+    Privilege is carried by the admin or org token, not by scopes.
+pagination:
+  style: page-and-limit, with a cursor variant on search endpoints
+  request_params:
+    - name: limit
+      note: page size; appears on 249 operations
+    - name: page
+      note: 1-indexed page number; appears on 104 operations
+    - name: start
+      note: epoch-seconds lower bound on time-series and search endpoints (188 operations)
+    - name: end
+      note: epoch-seconds upper bound (188 operations)
+    - name: duration
+      note: relative window shorthand, e.g. 1d (173 operations)
+    - name: search_after
+      note: cursor for deep search pagination (66 operations)
+  response_headers:
+    - X-Page-Limit
+    - X-Page-Page
+    - X-Page-Total
+  response_headers_source: >-
+    PROBED. api.mist.com returns
+    access-control-expose-headers: X-Auth-Token,X-CSRFToken,X-Page-Limit,X-Page-Page,X-Page-Total,X-Requested-With
+    on an unauthenticated request. The headers are exposed to browsers by the edge but are
+    NOT documented in the OpenAPI responses, so a client discovers them by looking.
+  response_body:
+    note: >-
+      Search responses carry start/end/limit/total plus a `next` URL for the following page.
+versioning:
+  in_path: true
+  current: v1
+  path_prefix: /api/v1
+  spec_version: 2607.1.1
+  spec_version_scheme: >-
+    YYMM.minor.patch — 2607.1.1 is the August 17, 2026 build. The API path version has
+    stayed v1 while the document version moves monthly, so the document version, not the
+    URL, is what tells you what you are calling.
+errors:
+  envelope: "{ \"detail\": \"<human readable string>\" }"
+  rfc9457: false
+  rfc9457_note: >-
+    Not RFC 9457 / application/problem+json. A flat `detail` string, plus a `reason`
+    field on some webhook 400s. Machine-readable error CODES are not published — an
+    agent can only string-match.
+  catalog: errors/juniper-problem-types.yml
+  coverage_note: >-
+    Uniform and complete: all 1,059 operations declare 400, and 1,058 declare 401, 403,
+    404 and 429. That consistency is itself a convention.
+content_types:
+  request_response: application/json
+  vendor: >-
+    application/vnd.api+json appears alongside application/json on most operations
+    (6,043 occurrences) — JSON:API media type negotiation without JSON:API document shape.
+  binary: application/octet-stream on file download operations
+rate_limit_signaling:
+  status: 429
+  limit: 5000 requests per hour per API token
+  reset: hourly boundary
+  documented_headers: []
+  observed_headers:
+    - name: Retry-After
+      observed_value: 73
+      note: >-
+        PROBED on a live 429 from POST https://api.mist.com/api/v1/login on 2026-09-18.
+        Retry-After is returned but is NOT declared in the spec's 429 responses, whose
+        `headers` objects are empty. No X-RateLimit-* or RateLimit-* headers were observed.
+  detail: rate-limits/juniper-rate-limits.yml
+idempotency:
+  coverage: none
+  mechanism: null
+  header: null
+  scope: []
+  note: >-
+    NO replay protection of any kind. There is no Idempotency-Key header, no client-token
+    parameter, and no request-id echo anywhere in 1,059 operations — a parameter census of
+    the whole spec returns zero names matching /idempot/. Writes are plain POST/PUT/DELETE.
+    A retried POST creates a second object. This matters more than usual here because many
+    Mist writes are device-affecting (upgrades, config pushes, port profiles).
+  evidence: >-
+    Derived by enumerating every parameter name across every operation in
+    openapi/juniper-mist-api-openapi.yml.
+reversibility:
+  grade: documented
+  grade_note: >-
+    Reversal operations exist and are named in the contract, but no document states the
+    window inside which they work. That is `documented` (partial credit), not `verified`.
+    No window is asserted here, because inventing one could cost an operator a network.
+  reversible:
+    - action: Device firmware/software upgrade
+      forward_operations:
+        - upgradeOrgDevices
+        - upgradeSiteDevices
+      reversal_operation: cancelOrgDeviceUpgrade
+      reversal_path: POST /api/v1/orgs/{org_id}/devices/upgrade/{upgrade_id}/cancel
+      window: null
+      window_note: >-
+        Docs do not state how late in an upgrade a cancel is still honoured. Siblings:
+        cancelSiteDeviceUpgrade, cancelOrgMxEdgeUpgrade, cancelSiteMxEdgeUpgrade,
+        cancelOrgSsrUpgrade.
+    - action: Device configuration change
+      reversal_operation: restoreSiteDeviceBackupVersion
+      reversal_path: POST /api/v1/sites/{site_id}/devices/{device_id}/restore_backup_version
+      window: null
+      window_note: >-
+        Restores a named backup version. How many versions are retained, and for how long,
+        is not stated in the contract. Bulk sibling: restoreSiteMultipleDeviceBackupVersion.
+    - action: Automatic map assignment
+      reversal_operation: cancelSiteAutoMapAssignment
+      reversal_path: DELETE /api/v1/sites/{site_id}/auto_map_assignment
+      window: null
+    - action: Device claim to an organization
+      reversal_operation: unassignInstallerRecentlyClaimedDevice
+      reversal_path: DELETE /api/v1/installer/orgs/{org_id}/devices/{device_mac}
+      window: null
+      window_note: >-
+        The operationId says "recently claimed", which implies a window the documentation
+        never names. Treat the bound as unknown.
+    - action: Device profile / MX Edge assignment
+      reversal_operation: unassignOrgDeviceProfile
+      reversal_path: POST /api/v1/orgs/{org_id}/deviceprofiles/{deviceprofile_id}/unassign
+      window: null
+  irreversible:
+    - >-
+      Ordinary DELETE on orgs, sites, WLANs, templates, webhooks and the rest of the
+      configuration surface. No undelete, no trash, no restore endpoint — 1,059 operations
+      contain no undelete/undo path outside the device-backup case above.
+dry_run_mode:
+  available: false
+  note: >-
+    No dry-run, preview, validate or simulate parameter is offered on any write operation
+    in the Mist API. (The separate junos-mcp-server does perform a commit-check before
+    applying config to a device — a Junos feature, not a Mist API one.)
+request_tracing:
+  header: null
+  observed: >-
+    api.mist.com is fronted by Kong and returns x-kong-request-id on every response
+    (PROBED 2026-09-18). It is an infrastructure identifier, not a documented correlation
+    ID, and it is not mentioned in the contract.
+field_expansion:
+  supported: false
+  note: >-
+    No `expand`/`fields` sparse-fieldset convention. Search endpoints instead offer
+    `distinct` (71 operations) to collapse a result set on one field.
+metadata:
+  supported: true
+  note: Most configuration objects carry a free-form `vars` or tag surface; not a uniform `metadata` field.
+cross_links:
+  errors: errors/juniper-problem-types.yml
+  lifecycle: lifecycle/juniper-lifecycle.yml
+  authentication: authentication/juniper-authentication.yml
+  rate_limits: rate-limits/juniper-rate-limits.yml
+  webhooks: asyncapi/juniper-mist-webhooks.yml
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

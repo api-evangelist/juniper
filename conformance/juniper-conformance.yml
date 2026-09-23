@@ -1,0 +1,165 @@
+generated: '2026-09-18'
+method: derived
+source: >-
+  openapi/juniper-mist-api-openapi.yml (Mist API 2607.1.1) + grpc/ (Junos Telemetry
+  Interface 25.4R1 protos) + security/juniper-vulnerability-disclosure.yml
+provider: Juniper Networks
+providerId: juniper
+summary: >-
+  Juniper's contracts declare real domain standards — SCIM 2.0 and SAML 2.0 for admin
+  identity, OpenRoaming for Wi-Fi federation, OpenConfig/gNMI in the telemetry protos —
+  but almost none of the cross-cutting WEB-API standards. No RFC 9457 problem details,
+  no OAuth2 on the API itself, no RFC 9116 security.txt, no idempotency. Every entry
+  below points at the exact contract location that proves or disproves it.
+conformance:
+  - id: scim2
+    name: SCIM 2.0 (System for Cross-domain Identity Management)
+    conforms: true
+    role: service-provider
+    evidence: >-
+      components.schemas SSO configuration declares scim_enabled, scim_base_url and
+      scim_secret_token, and /api/v1/orgs/{org_id}/ssos/{sso_id}/metadata returns
+      "Read-only SAML and SCIM metadata generated for an SSO configuration". Mist
+      publishes a per-org SCIM base URL that the customer's IdP posts provisioning
+      requests to, authenticated with scim_secret_token as a bearer token.
+    location: openapi/juniper-mist-api-openapi.yml — components.schemas (sso), paths /orgs/{org_id}/ssos
+    domain_standard: true
+    note: >-
+      The SCIM endpoint itself is not described in this OpenAPI — the spec describes how to
+      TURN IT ON, not the SCIM surface. A buyer who already speaks SCIM can provision Mist
+      admins with no bespoke connector; that is the distinction domain_standard_conformance
+      draws.
+  - id: saml2
+    name: SAML 2.0
+    conforms: true
+    evidence: >-
+      /api/v1/orgs/{org_id}/ssos/{sso_id}/metadata.xml and the MSP equivalent serve SAML
+      service-provider metadata; 327 SAML references across the contract.
+    location: openapi/juniper-mist-api-openapi.yml — paths /orgs/{org_id}/ssos/{sso_id}/metadata.xml
+    domain_standard: true
+  - id: openroaming
+    name: WBA OpenRoaming
+    conforms: true
+    evidence: >-
+      26 OpenRoaming references in the contract; Mist Access Assurance supports OpenRoaming
+      as a native identity provider (Product Updates, 2026-07-23).
+    location: openapi/juniper-mist-api-openapi.yml + changelog/juniper-changelog.yml
+    domain_standard: true
+  - id: openconfig
+    name: OpenConfig
+    conforms: partial
+    evidence: >-
+      The Mist contract carries an explicit model flag — "Whether this switch model is
+      identified as an OpenConfig-managed device" — and the Junos telemetry protos in grpc/
+      include a large family of *_oc.proto / *_oc_render.proto OpenConfig renderings
+      (rpd_bgp_oc, mib2d_oc, l2ald_oc, pfe_port_oc and dozens more).
+    location: grpc/ (25.4R1 protos) + openapi/juniper-mist-api-openapi.yml
+    domain_standard: true
+  - id: gnmi
+    name: gNMI (gRPC Network Management Interface)
+    conforms: true
+    evidence: >-
+      grpc/GnmiJuniperTelemetryHeader.proto and
+      grpc/GnmiJuniperTelemetryHeaderExtension.proto define Juniper's header extension
+      attached to gNMI SubscribeResponse notifications — first-party protos published per
+      Junos release.
+    location: grpc/
+    domain_standard: true
+  - id: netconf
+    name: NETCONF (RFC 6241) / YANG (RFC 7950)
+    conforms: true
+    evidence: >-
+      The Junos device API is NETCONF over SSH; Juniper publishes Junos YANG modules at
+      https://github.com/Juniper/yang and first-party NETCONF clients in Python (junos-eznc),
+      Go (go-netconf) and Java (netconf-java) — see packages/juniper-packages.yml.
+    location: packages/juniper-packages.yml, apis.yml Junos XML API entry
+    domain_standard: true
+    note: Junos, not Mist. The two surfaces conform to different standards.
+  - id: radius-8021x
+    name: RADIUS / IEEE 802.1X / EAP
+    conforms: true
+    evidence: >-
+      919 RADIUS and 170 dot1x references across the Mist NAC surface (Access Assurance,
+      nacrules, nac_clients, RADIUS server configuration).
+    location: openapi/juniper-mist-api-openapi.yml
+    domain_standard: true
+  - id: oauth2
+    name: OAuth 2.0
+    conforms: partial
+    evidence: >-
+      NOT used to authenticate the Mist API — components.securitySchemes declares only two
+      apiKey schemes (apiToken, csrfToken). OAuth2 appears in two narrower places: an
+      "Admins Login - OAuth2" tag for admin SSO login, and OUTBOUND webhook delivery, where
+      a webhook of type=oauth2 fetches a token from oauth2_token_url using
+      client_credentials or password grant.
+    location: openapi/juniper-mist-api-openapi.yml — components.securitySchemes, schemas.webhook
+    conforms_note: >-
+      Scored partial deliberately: a caller cannot obtain an OAuth token to call this API.
+  - id: oidc
+    name: OpenID Connect
+    conforms: false
+    evidence: >-
+      Zero occurrences of "openid" in the contract; no /.well-known/openid-configuration on
+      any host (see well-known/juniper-well-known.yml).
+  - id: rfc9457
+    name: RFC 9457 Problem Details for HTTP APIs
+    conforms: false
+    evidence: >-
+      No application/problem+json anywhere. Errors are a flat {"detail": "..."} JSON object.
+      See errors/juniper-problem-types.yml.
+  - id: rfc9116
+    name: RFC 9116 security.txt
+    conforms: false
+    evidence: >-
+      404 on every probed host. Juniper HAS a disclosure program (sirt@juniper.net, PGP key,
+      policy page) — it simply does not publish the file. See well-known/juniper-well-known.yml.
+  - id: rfc8594
+    name: RFC 8594 Sunset header / deprecation signalling
+    conforms: false
+    evidence: >-
+      No Sunset or Deprecation header. 5 operations carry OpenAPI deprecated:true with no
+      date attached. See lifecycle/juniper-lifecycle.yml.
+  - id: idempotency
+    name: Idempotency keys
+    conforms: false
+    evidence: >-
+      Zero parameters matching /idempot/ across all 1,059 operations.
+      See conventions/juniper-conventions.yml.
+  - id: pagination
+    name: Pagination
+    conforms: true
+    evidence: >-
+      limit/page on list endpoints (249/104 operations), start/end/duration/search_after on
+      search endpoints, and X-Page-Limit / X-Page-Page / X-Page-Total response headers
+      (observed on a live request, undocumented in the contract).
+    location: conventions/juniper-conventions.yml
+  - id: jsonapi
+    name: JSON:API
+    conforms: false
+    evidence: >-
+      The application/vnd.api+json media type is offered on most operations (12,086
+      occurrences), but the response bodies are ordinary JSON — no data/attributes/
+      relationships envelope. Media-type negotiation only; not JSON:API.
+  - id: camara
+    name: CAMARA / GSMA Open Gateway
+    conforms: false
+    evidence: >-
+      Zero references in any Juniper contract examined. Checked because the
+      telecommunications regulatory regime shortlists camara, tm-forum-open-api,
+      gsma-open-gateway, 3gpp, mef and etsi — none of which appear. Juniper sells INTO
+      carriers; it does not expose carrier-facing network APIs.
+    reward_only_note: >-
+      Absence here is not a penalty. Recorded so a later pass does not re-probe it.
+  - id: tm-forum-open-api
+    name: TM Forum Open API
+    conforms: false
+    evidence: Zero references in the Mist contract or the Junos telemetry protos.
+compliance_certifications: []
+compliance_note: >-
+  No first-party Juniper page enumerating certifications survived the HPE migration — see
+  security/juniper-trust-center.yml. FIPS is referenced 61 times inside the Mist contract
+  (device-level FIPS mode), but a configuration flag is not a published certification
+  list, so no Compliance pointer is emitted.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

@@ -1,0 +1,76 @@
+generated: '2026-09-18'
+method: searched
+source: >-
+  https://www.juniper.net/documentation/us/en/software/mist/product-updates/,
+  https://www.juniper.net/documentation/us/en/software/mist/api/http/guides/important-api-changes/,
+  https://support.juniper.net/support/eol/,
+  https://mist.statuspage.io/api/v2/status.json,
+  openapi/juniper-mist-api-openapi.yml
+provider: Juniper Networks
+providerId: juniper
+versioning:
+  scheme: path-version + dated document version
+  api_version: v1
+  document_version: 2607.1.1
+  document_date: '2026-08-17'
+  note: >-
+    The URL has stayed /api/v1 while the OpenAPI document version moves on a YYMM.minor.patch
+    cadence. The document version is the only thing that tells a client which build of v1
+    they are reading — a v1 path is not a stability promise.
+  breaking_change_notice:
+    url: https://www.juniper.net/documentation/us/en/software/mist/api/http/guides/important-api-changes/
+    status: 200
+    note: >-
+      The spec's own info.description links to an "Important API Changes" announcements
+      page — Juniper does signal breaking changes, in the contract itself.
+deprecation:
+  policy_published: false
+  policy_note: >-
+    No written API deprecation policy, no Sunset/Deprecation header (RFC 8594) usage, and
+    no stated notice period for the Mist API. What exists instead is the `deprecated: true`
+    flag in the spec and the product EOL program below — which governs HARDWARE and JUNOS
+    RELEASES, not API operations.
+  deprecated_operations:
+    count: 5
+    source: openapi/juniper-mist-api-openapi.yml
+    operations:
+      - method: GET
+        path: /api/v1/orgs/{org_id}/128routers/register_cmd
+      - method: GET
+        path: /api/v1/orgs/{org_id}/logs
+      - method: POST
+        path: /api/v1/sites/{site_id}/maps/{map_id}/use_auto_ap_values
+      - method: GET
+        path: /api/v1/sites/{site_id}/sle/{scope}/{scope_id}/metric/{metric}/classifier/{classifier}/summary
+      - method: GET
+        path: /api/v1/sites/{site_id}/sle/{scope}/{scope_id}/metric/{metric}/summary
+    note: >-
+      5 of 1,059 operations carry deprecated: true. None carries a sunset date — a client
+      learns an operation is going away but not when.
+  product_eol:
+    url: https://support.juniper.net/support/eol/
+    status: 200
+    scope: >-
+      Hardware and Junos software end-of-life / end-of-support announcements. A genuine,
+      long-running program — but it is a product lifecycle surface, not an API one.
+status_page:
+  url: https://mist.statuspage.io/
+  api: https://mist.statuspage.io/api/v2/status.json
+  status: 200
+  platform: Atlassian Statuspage
+  machine_readable: true
+  note: >-
+    status.mist.com is the branded hostname but returns 406 to a plain client; the
+    underlying mist.statuspage.io responds 200 with the standard Statuspage v2 JSON API,
+    which is what an agent should poll.
+  probed: '2026-09-18'
+sla:
+  published: false
+  note: >-
+    No public uptime SLA for the Mist cloud API. Availability commitments live in the
+    subscription contract, not on a public page.
+changelog:
+  artifact: changelog/juniper-changelog.yml
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

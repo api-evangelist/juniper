@@ -1,0 +1,204 @@
+generated: '2026-09-18'
+method: derived
+source: >-
+  openapi/juniper-mist-api-openapi.yml (Mist API 2607.1.1, the provider's own OpenAPI 3.1
+  export) + https://www.juniper.net/documentation/us/en/software/mist/automation-integration/topics/concept/webhooks.html
+provider: Juniper Networks
+providerId: juniper
+api: Mist API
+summary: >-
+  Juniper Mist ships a real, well-specified webhook surface: 30 named topics, each with
+  its own delivery-envelope and event schema in the published OpenAPI, five delivery
+  transports, HMAC request signing, and a delivery-results search API you can query
+  after the fact. There is NO AsyncAPI document — Juniper does not publish one — so this
+  artifact is the webhook catalog, derived from the provider's own contract, and the
+  apis.yml pointer is `Webhooks`, not `AsyncAPI`.
+asyncapi:
+  published: false
+  note: >-
+    Searched the Juniper and mistsys GitHub organizations, the Mist API Reference portal
+    export formats (only postman20/openapi31json/openapi31yaml are offered) and the
+    documentation site. No AsyncAPI document exists. A previous round of this repo carried
+    an apis.yml pointer to asyncapi/juniper-networks-junos-telemetry-asyncapi.yml, a file
+    that was never written and a document Juniper has never published; that pointer was
+    removed on 2026-09-18. The real Junos telemetry contract is Protocol Buffers, captured
+    in grpc/ — not AsyncAPI.
+management:
+  scopes:
+    - level: org
+      collection: /api/v1/orgs/{org_id}/webhooks
+    - level: site
+      collection: /api/v1/sites/{site_id}/webhooks
+  operations:
+    - POST /api/v1/orgs/{org_id}/webhooks
+    - GET /api/v1/orgs/{org_id}/webhooks
+    - GET|PUT|DELETE /api/v1/orgs/{org_id}/webhooks/{webhook_id}
+    - POST /api/v1/orgs/{org_id}/webhooks/{webhook_id}/ping
+    - GET /api/v1/orgs/{org_id}/webhooks/{webhook_id}/events/search
+    - GET /api/v1/orgs/{org_id}/webhooks/{webhook_id}/events/count
+    - POST /api/v1/sites/{site_id}/webhooks
+    - GET /api/v1/sites/{site_id}/webhooks
+    - GET|PUT|DELETE /api/v1/sites/{site_id}/webhooks/{webhook_id}
+    - POST /api/v1/sites/{site_id}/webhooks/{webhook_id}/ping
+    - GET /api/v1/sites/{site_id}/webhooks/{webhook_id}/events/search
+    - GET /api/v1/sites/{site_id}/webhooks/{webhook_id}/events/count
+    - GET /api/v1/const/webhook_topics
+  discovery: >-
+    GET /api/v1/const/webhook_topics returns the live topic list with per-topic flags
+    (for_org, internal, has_delivery_results, allows_single_event_per_message) — a
+    machine-readable event catalog served by the API itself.
+delivery:
+  transports:
+    - http-post
+    - oauth2
+    - aws-sns
+    - google-pubsub
+    - splunk
+  batching: >-
+    Multiple events arrive in one message by default. single_event_per_message=true
+    forces one event per message, and is only available on topics whose
+    allows_single_event_per_message flag is set.
+  custom_headers: >-
+    http-post webhooks accept arbitrary request headers (name+value strings,
+    under 1000 bytes total).
+  tls_verification: verify_cert defaults to true for https destinations.
+security:
+  signing:
+    mechanism: HMAC over the raw request body, using a shared secret set on the webhook
+    headers:
+      - name: X-Mist-Signature-v2
+        algorithm: HMAC_SHA256
+      - name: X-Mist-Signature
+        algorithm: HMAC_SHA1
+        note: legacy; prefer v2
+    applies_to: type=http-post webhooks that set `secret`
+    source: components.schemas.webhook.properties.secret in the published OpenAPI
+  oauth2_delivery: >-
+    type=oauth2 webhooks fetch a bearer token from oauth2_token_url before delivering,
+    supporting client_credentials and password grants with optional oauth2_scopes.
+observability:
+  delivery_results: >-
+    Topics with has_delivery_results expose /events/search and /events/count, returning
+    webhook_delivery records. The published webhook_delivery_topic enum limits this to
+    alarms, audits, device-updowns, occupancy-alerts and ping.
+  ping: A POST /ping on any webhook triggers a test delivery.
+topic_count: 30
+topics:
+  - topic: alarms
+    envelope_schema: webhook_alarms
+    description: "Sample of the `alarms` webhook payload.  **N.B.**: Fields like `aps`, `bssids`, `ssids` are event specific. They are relevant to this event type ( rogue-ap-detected). For a different event type, different fields may be s"
+  - topic: asset-raw-rssi
+    envelope_schema: webhook_asset_raw_rssi
+    event_schema: webhook_asset_raw_rssi_event
+    description: "Sample of the `asset-raw-rssi` webhook payload.   This webhook topic provides raw data from packets emitted by named and filtered assets.   Raw data webhooks are a special subset of webhooks that provide insight into raw"
+  - topic: audits
+    envelope_schema: webhook_audits
+    description: "Sample of the `audits` webhook payload."
+  - topic: client-info
+    envelope_schema: webhook_client_info
+    event_schema: webhook_client_info_event
+    description: "Sample of the `client-info` webhook payload."
+  - topic: client-join
+    envelope_schema: webhook_client_join
+    event_schema: webhook_client_join_event
+    description: "Sample of the `client-join` webhook payload."
+  - topic: client-latency
+    envelope_schema: webhook_client_latency
+    event_schema: webhook_client_latency_event
+    description: "Sample of the `client-latency` webhook payload."
+  - topic: client-sessions
+    envelope_schema: webhook_client_sessions
+    event_schema: webhook_client_sessions_event
+    description: "Sample of the `client-sessions` webhook payload."
+  - topic: device-events
+    envelope_schema: webhook_device_events
+    description: "Sample of the `device-events` webhook payload."
+  - topic: device-updowns
+    envelope_schema: webhook_device_updowns
+    event_schema: webhook_device_updowns_event
+    description: "Sample of the `device-updowns` webhook payload."
+  - topic: discovered-raw-rssi
+    envelope_schema: webhook_discovered_raw_rssi
+    event_schema: webhook_discovered_raw_rssi_event
+    description: "Sample of the `discovered-raw-rssi` webhook payload."
+  - topic: guest-authorizations
+    envelope_schema: webhook_guest_authorizations
+    event_schema: webhook_guest_authorizations_event
+    description: "Sample of the `guest-authorizations` webhook payload."
+  - topic: location
+    envelope_schema: webhook_location
+    event_schema: webhook_location_event
+    description: "Sample of the `location` webhook payload."
+  - topic: location-asset
+    envelope_schema: webhook_location_asset
+    event_schema: webhook_location_asset_event
+    description: "Sample of the `location_asset` webhook payload."
+  - topic: location-centrak
+    envelope_schema: webhook_location_centrak
+    event_schema: webhook_location_centrak_event
+    description: "Sample of the `location-centrak` webhook payload."
+  - topic: location-client
+    envelope_schema: webhook_location_client
+    event_schema: webhook_location_client_event
+    description: "Sample of the `location-client` webhook payload."
+  - topic: location-sdk
+    envelope_schema: webhook_location_sdk
+    event_schema: webhook_location_sdk_event
+    description: "Sample of the `location-sdk` webhook payload."
+  - topic: location-unclient
+    envelope_schema: webhook_location_unclient
+    event_schema: webhook_location_unclient_event
+    description: "Sample of the `location-unclient` webhook payload."
+  - topic: minis-application
+    envelope_schema: webhook_minis_application
+    event_schema: webhook_minis_application_event
+    description: "Sample of the `minis-application` webhook payload."
+  - topic: minis-reachability
+    envelope_schema: webhook_minis_reachability
+    event_schema: webhook_minis_reachability_event
+    description: "Sample of the `minis-reachability` webhook payload."
+  - topic: mxedge-events
+    envelope_schema: webhook_mxedge_event
+    description: "Webhook topic name for Mist Edge event deliveries. enum: `mxedge-events`"
+  - topic: nac-accounting
+    envelope_schema: webhook_nac_accounting
+    event_schema: webhook_nac_accounting_event
+    description: "Sample of the `nac-accounting` webhook payload."
+  - topic: nac-events
+    envelope_schema: webhook_nac_events
+    description: "Sample of the `nac-events` webhook payload."
+  - topic: occupancy-alerts
+    envelope_schema: webhook_occupancy_alerts
+    event_schema: webhook_occupancy_alerts_event
+    description: "Sample of the `occupancy-alerts` webhook payload."
+  - topic: ping
+    envelope_schema: webhook_ping
+    event_schema: webhook_ping_event
+    description: "Sample of the `ping` webhook payload.\n\nThe `ping` webhook can be manually sent with the following API calls:\n- for a Site level webhook with the [Ping Site Webhook]($e/Orgs%20Webhooks/pingOrgWebhook) endpoint\n- for a"
+  - topic: rssizone
+    envelope_schema: webhook_rssizone
+    event_schema: webhook_rssizone_event
+    description: "Sample of the `rssizone` webhook payload."
+  - topic: sdkclient-scan-data
+    envelope_schema: webhook_sdkclient_scan_data
+    event_schema: webhook_sdkclient_scan_data_event
+    description: "Sample of the `sdkclient-scan-data` webhook payload."
+  - topic: site-sle
+    envelope_schema: webhook_site_sle
+    event_schema: webhook_site_sle_event
+    description: "Sample of the `site-sle` webhook payload."
+  - topic: wifi-conn-raw
+    envelope_schema: webhook_wifi_conn_raw
+    event_schema: webhook_wifi_conn_raw_event
+    description: "Sample of the `wifi-conn-raw` webhook payload.   This webhook topic provides raw data from packets emitted by connected devices.   Raw data webhooks are a special subset of webhooks that provide insight into raw data pac"
+  - topic: wifi-unconn-raw
+    envelope_schema: webhook_wifi_unconn_raw
+    event_schema: webhook_wifi_unconn_raw_event
+    description: "Sample of the `wifi-unconn-raw` webhook payload.   This webhook topic provides raw data from packets emitted by unconnected devices.   Raw data webhooks are a special subset of webhooks that provide insight into raw data"
+  - topic: zone
+    envelope_schema: webhook_zone
+    event_schema: webhook_zone_event
+    description: "Sample of the `zone` webhook payload."
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com
