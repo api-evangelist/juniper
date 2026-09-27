@@ -1,6 +1,6 @@
 openapi: 3.2.0
 info:
-  title: Juniper Networks Juniper Mist WLA Ns API
+  title: Juniper Networks Juniper Mist WLANs API
   description: Juniper Mist is a cloud-native, AI-driven networking platform that provides APIs for managing wireless, wired, and SD-WAN infrastructure. The Mist API enables full lifecycle management of sites, devices, WLANs, clients, and analytics through a RESTful interface. It supports organization-level and site-level management with token-based and OAuth2 authentication.
   version: 1.0.0
   contact:
@@ -118,23 +118,6 @@ paths:
         '200':
           description: WLAN deleted
 components:
-  parameters:
-    WlanId:
-      name: wlan_id
-      in: path
-      required: true
-      description: WLAN unique identifier
-      schema:
-        type: string
-        format: uuid
-    SiteId:
-      name: site_id
-      in: path
-      required: true
-      description: Site unique identifier
-      schema:
-        type: string
-        format: uuid
   responses:
     BadRequest:
       description: Bad request - invalid parameters
@@ -143,6 +126,12 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
   schemas:
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Error message
     Wlan:
       type: object
       properties:
@@ -200,12 +189,23 @@ components:
           type: number
         modified_time:
           type: number
-    Error:
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Error message
+  parameters:
+    SiteId:
+      name: site_id
+      in: path
+      required: true
+      description: Site unique identifier
+      schema:
+        type: string
+        format: uuid
+    WlanId:
+      name: wlan_id
+      in: path
+      required: true
+      description: WLAN unique identifier
+      schema:
+        type: string
+        format: uuid
   securitySchemes:
     apiToken:
       type: http

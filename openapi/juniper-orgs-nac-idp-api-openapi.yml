@@ -1,0 +1,433 @@
+openapi: 3.2.0
+info:
+  title: Mist Orgs NAC IDP API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Orgs NAC IDP
+  description: The NAC IDP allows users to integrate with various Identity Providers (IDPs) to enhance authentication and access control. Admins can configure identity providers such as microsoft EntraID, okta workforce identity cloud, and google workspace idp.
+paths:
+  /api/v1/orgs/{org_id}/mist_nac/test_idp:
+    parameters: []
+    post:
+      tags:
+      - Orgs NAC IDP
+      summary: validateOrgIdpCredential
+      description: 'IDP Credential Validation. The output will be available through websocket. As there can be multiple commands issued against the same device at the same time and the output all goes through the same websocket stream, `session` is introduced for demux.
+
+
+        #### Subscribe to Device Command outputs
+
+        `WS /api-ws/v1/stream`
+
+
+        ``` json
+
+        {
+
+        "subscribe": "orgs/{org_id}/mist_nac/test_idp"
+
+        }
+
+
+        ```
+
+
+        ### Response (no idp can be found)
+
+
+        ``` json
+
+        {
+
+        "event": "data",
+
+        "channel": "/orgs/{org_id}/mist_nac/test_idp",
+
+        "status":
+
+        "data": {
+
+        "status": "failure",
+
+        "error": "No matching IDP found"
+
+        }
+
+        }
+
+
+        ```
+
+
+        ### Response OK
+
+
+        ``` json
+
+        {
+
+        "event": "data",
+
+        "channel": "/orgs/{org_id}/mist_nac/test_idp",
+
+        "status":
+
+        "data": {
+
+        "status": "success",
+
+        "idp_id": "915793c0-1355-4e98-b1c0-23df2227b357",
+
+        "idp_type": "ldap",
+
+        // more attributes will be added later
+
+        }
+
+        }
+
+
+        ```
+
+
+        ### Response Invalid Credentials
+
+
+        ``` json
+
+        {
+
+        "event": "data",
+
+        "channel": "/orgs/{org_id}/mist_nac/test_idp",
+
+        "status":
+
+        "data": {
+
+        "status": "failure",
+
+        "error": "Invalid Credentials",
+
+        "idp_id": "915793c0-1355-4e98-b1c0-23df2227b357",
+
+        "idp_type": "ldap",
+
+        }
+
+        }
+
+
+        ```'
+      operationId: validateOrgIdpCredential
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/username_password'
+              - examples:
+                - password: xxxxxx
+                  username: suriyas@juniper.net
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  password: xxxxxx
+                  username: suriyas@juniper.net
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/websocket_session'
+                - description: Response containing the WebSocket session handle for asynchronous command output
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/websocket_session'
+                - description: Response containing the WebSocket session handle for asynchronous command output
+                contentMediaType: application/vnd.api+json
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    websocket_session:
+      title: websocket_session
+      required:
+      - session
+      type: object
+      properties:
+        session:
+          type: string
+          description: Identifier used to correlate output on the WebSocket stream
+          examples:
+          - 19e73828-937f-05e6-f709-e29efdb0a82b
+      description: Response containing the WebSocket session handle for asynchronous command output
+    username_password:
+      title: username_password
+      type: object
+      properties:
+        password:
+          type: string
+          description: Credential password used for the validation attempt
+          contentEncoding: password
+        username:
+          type: string
+          description: Credential username used for the validation attempt
+      description: Credential payload used to validate an identity provider login
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

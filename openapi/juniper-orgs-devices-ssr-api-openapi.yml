@@ -1,0 +1,775 @@
+openapi: 3.2.0
+info:
+  title: Mist Orgs Devices - SSR API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Orgs Devices - SSR
+  description: API Calls specific to SSR devices
+paths:
+  /api/v1/orgs/{org_id}/128routers/register_cmd:
+    parameters: []
+    get:
+      tags:
+      - Orgs Devices - SSR
+      summary: getOrg128TRegistrationCommands
+      description: 128T devices can be managed/adopted by Mist.
+      operationId: getOrg128TRegistrationCommands
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: ttl
+        in: query
+        description: Token validity duration in seconds. Defaults to 1 year (31536000 seconds)
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+          examples:
+          - 31536000
+      - name: asset_ids
+        in: query
+        description: When specified restricts registration to listed assets only. Prefer HTTP body over headers for this parameter, especially with long lists to avoid header size limits.
+        style: form
+        explode: true
+        schema:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_router_ssr_register_cmd'
+                - description: SSR registration token and commands used to register the router with Mist
+                  examples:
+                  - conductor_cmd: register mist eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdfaWQiOiIyODE4ZTM4Ni04ZGVjLTI1NjItOWVkZS01YjhhMGZiYmRjNzEiLCJzdmMiOiIxMjhyb3V0ZXIiLCJwcm92aWRlciI6ImF3cyIsImVudiI6ImxvY2FsIiwiZXB0ZXJtX3VybCI6IndzczovL2xvY2FsL3dzIiwiaWF0IjoxNjEzODQ3NDg0LCJleHAiOjE2NDUzODM0ODR9.YnhgThKYAj1uaooi6j-zY8dMipp5YqJxnn79B9TB5XQ
+                    registration_code: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdfaWQiOiIyODE4ZTM4Ni04ZGVjLTI1NjItOWVkZS01YjhhMGZiYmRjNzEiLCJzdmMiOiIxMjhyb3V0ZXIiLCJwcm92aWRlciI6ImF3cyIsImVudiI6ImxvY2FsIiwiZXB0ZXJtX3VybCI6IndzczovL2xvY2FsL3dzIiwiaWF0IjoxNjEzODQ3NDg0LCJleHAiOjE2NDUzODM0ODR9.YnhgThKYAj1uaooi6j-zY8dMipp5YqJxnn79B9TB5XQ
+                    router_shell_cmd: 128agent register --registration-code eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdfaWQiOiIyODE4ZTM4Ni04ZGVjLTI1NjItOWVkZS01YjhhMGZiYmRjNzEiLCJzdmMiOiIxMjhyb3V0ZXIiLCJwcm92aWRlciI6ImF3cyIsImVudiI6ImxvY2FsIiwiZXB0ZXJtX3VybCI6IndzczovL2xvY2FsL3dzIiwiaWF0IjoxNjEzODQ3NDg0LCJleHAiOjE2NDUzODM0ODR9.YnhgThKYAj1uaooi6j-zY8dMipp5YqJxnn79B9TB5XQ
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    conductor_cmd: register mist eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdfaWQiOiIyODE4ZTM4Ni04ZGVjLTI1NjItOWVkZS01YjhhMGZiYmRjNzEiLCJzdmMiOiIxMjhyb3V0ZXIiLCJwcm92aWRlciI6ImF3cyIsImVudiI6ImxvY2FsIiwiZXB0ZXJtX3VybCI6IndzczovL2xvY2FsL3dzIiwiaWF0IjoxNjEzODQ3NDg0LCJleHAiOjE2NDUzODM0ODR9.YnhgThKYAj1uaooi6j-zY8dMipp5YqJxnn79B9TB5XQ
+                    registration_code: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdfaWQiOiIyODE4ZTM4Ni04ZGVjLTI1NjItOWVkZS01YjhhMGZiYmRjNzEiLCJzdmMiOiIxMjhyb3V0ZXIiLCJwcm92aWRlciI6ImF3cyIsImVudiI6ImxvY2FsIiwiZXB0ZXJtX3VybCI6IndzczovL2xvY2FsL3dzIiwiaWF0IjoxNjEzODQ3NDg0LCJleHAiOjE2NDUzODM0ODR9.YnhgThKYAj1uaooi6j-zY8dMipp5YqJxnn79B9TB5XQ
+                    router_shell_cmd: 128agent register --registration-code eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdfaWQiOiIyODE4ZTM4Ni04ZGVjLTI1NjItOWVkZS01YjhhMGZiYmRjNzEiLCJzdmMiOiIxMjhyb3V0ZXIiLCJwcm92aWRlciI6ImF3cyIsImVudiI6ImxvY2FsIiwiZXB0ZXJtX3VybCI6IndzczovL2xvY2FsL3dzIiwiaWF0IjoxNjEzODQ3NDg0LCJleHAiOjE2NDUzODM0ODR9.YnhgThKYAj1uaooi6j-zY8dMipp5YqJxnn79B9TB5XQ
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_router_ssr_register_cmd'
+                - description: SSR registration token and commands used to register the router with Mist
+                  examples:
+                  - conductor_cmd: register mist eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdfaWQiOiIyODE4ZTM4Ni04ZGVjLTI1NjItOWVkZS01YjhhMGZiYmRjNzEiLCJzdmMiOiIxMjhyb3V0ZXIiLCJwcm92aWRlciI6ImF3cyIsImVudiI6ImxvY2FsIiwiZXB0ZXJtX3VybCI6IndzczovL2xvY2FsL3dzIiwiaWF0IjoxNjEzODQ3NDg0LCJleHAiOjE2NDUzODM0ODR9.YnhgThKYAj1uaooi6j-zY8dMipp5YqJxnn79B9TB5XQ
+                    registration_code: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdfaWQiOiIyODE4ZTM4Ni04ZGVjLTI1NjItOWVkZS01YjhhMGZiYmRjNzEiLCJzdmMiOiIxMjhyb3V0ZXIiLCJwcm92aWRlciI6ImF3cyIsImVudiI6ImxvY2FsIiwiZXB0ZXJtX3VybCI6IndzczovL2xvY2FsL3dzIiwiaWF0IjoxNjEzODQ3NDg0LCJleHAiOjE2NDUzODM0ODR9.YnhgThKYAj1uaooi6j-zY8dMipp5YqJxnn79B9TB5XQ
+                    router_shell_cmd: 128agent register --registration-code eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdfaWQiOiIyODE4ZTM4Ni04ZGVjLTI1NjItOWVkZS01YjhhMGZiYmRjNzEiLCJzdmMiOiIxMjhyb3V0ZXIiLCJwcm92aWRlciI6ImF3cyIsImVudiI6ImxvY2FsIiwiZXB0ZXJtX3VybCI6IndzczovL2xvY2FsL3dzIiwiaWF0IjoxNjEzODQ3NDg0LCJleHAiOjE2NDUzODM0ODR9.YnhgThKYAj1uaooi6j-zY8dMipp5YqJxnn79B9TB5XQ
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    conductor_cmd: register mist eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdfaWQiOiIyODE4ZTM4Ni04ZGVjLTI1NjItOWVkZS01YjhhMGZiYmRjNzEiLCJzdmMiOiIxMjhyb3V0ZXIiLCJwcm92aWRlciI6ImF3cyIsImVudiI6ImxvY2FsIiwiZXB0ZXJtX3VybCI6IndzczovL2xvY2FsL3dzIiwiaWF0IjoxNjEzODQ3NDg0LCJleHAiOjE2NDUzODM0ODR9.YnhgThKYAj1uaooi6j-zY8dMipp5YqJxnn79B9TB5XQ
+                    registration_code: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdfaWQiOiIyODE4ZTM4Ni04ZGVjLTI1NjItOWVkZS01YjhhMGZiYmRjNzEiLCJzdmMiOiIxMjhyb3V0ZXIiLCJwcm92aWRlciI6ImF3cyIsImVudiI6ImxvY2FsIiwiZXB0ZXJtX3VybCI6IndzczovL2xvY2FsL3dzIiwiaWF0IjoxNjEzODQ3NDg0LCJleHAiOjE2NDUzODM0ODR9.YnhgThKYAj1uaooi6j-zY8dMipp5YqJxnn79B9TB5XQ
+                    router_shell_cmd: 128agent register --registration-code eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdfaWQiOiIyODE4ZTM4Ni04ZGVjLTI1NjItOWVkZS01YjhhMGZiYmRjNzEiLCJzdmMiOiIxMjhyb3V0ZXIiLCJwcm92aWRlciI6ImF3cyIsImVudiI6ImxvY2FsIiwiZXB0ZXJtX3VybCI6IndzczovL2xvY2FsL3dzIiwiaWF0IjoxNjEzODQ3NDg0LCJleHAiOjE2NDUzODM0ODR9.YnhgThKYAj1uaooi6j-zY8dMipp5YqJxnn79B9TB5XQ
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: true
+  /api/v1/orgs/{org_id}/ssr/export_idtokens:
+    parameters: []
+    post:
+      tags:
+      - Orgs Devices - SSR
+      summary: exportOrgSsrIdTokens
+      description: Export SSR ID tokens for the requested device MAC addresses so they can be imported into Conductor during SSR onboarding.
+      operationId: exportOrgSsrIdTokens
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/mac_addresses'
+              - description: Request Body
+              contentMediaType: application/json
+        required: false
+      responses:
+        '200':
+          description: Example response
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_ssr_export_id_tokens'
+                - description: Response containing SSR ID tokens exported for device onboarding
+                  examples:
+                  - results:
+                    - mac: 025b35000020
+                      token: string
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    results:
+                    - mac: 025b35000020
+                      token: string
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_ssr_export_id_tokens'
+                - description: Response containing SSR ID tokens exported for device onboarding
+                  examples:
+                  - results:
+                    - mac: 025b35000020
+                      token: string
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    results:
+                    - mac: 025b35000020
+                      token: string
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/ssr/register_cmd:
+    parameters: []
+    get:
+      tags:
+      - Orgs Devices - SSR
+      summary: getOrgSsrRegistrationCommands
+      description: Return the registration token and conductor or router commands used to register SSR routers with Mist. The optional TTL controls token validity, and asset IDs can restrict registration to specific assets.
+      operationId: getOrgSsrRegistrationCommands
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: ttl
+        in: query
+        description: Token validity duration in seconds. Defaults to 1 year (31536000 seconds)
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+          examples:
+          - 31536000
+      - name: asset_ids
+        in: query
+        description: When specified restricts registration to listed assets only. Prefer HTTP body over headers for this parameter, especially with long lists to avoid header size limits.
+        style: form
+        explode: true
+        schema:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_router_ssr_register_cmd'
+                - description: SSR registration token and commands used to register the router with Mist
+                  examples:
+                  - conductor_cmd: register mist eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdfaWQiOiIyODE4ZTM4Ni04ZGVjLTI1NjItOWVkZS01YjhhMGZiYmRjNzEiLCJzdmMiOiIxMjhyb3V0ZXIiLCJwcm92aWRlciI6ImF3cyIsImVudiI6ImxvY2FsIiwiZXB0ZXJtX3VybCI6IndzczovL2xvY2FsL3dzIiwiaWF0IjoxNjEzODQ3NDg0LCJleHAiOjE2NDUzODM0ODR9.YnhgThKYAj1uaooi6j-zY8dMipp5YqJxnn79B9TB5XQ
+                    registration_code: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdfaWQiOiIyODE4ZTM4Ni04ZGVjLTI1NjItOWVkZS01YjhhMGZiYmRjNzEiLCJzdmMiOiIxMjhyb3V0ZXIiLCJwcm92aWRlciI6ImF3cyIsImVudiI6ImxvY2FsIiwiZXB0ZXJtX3VybCI6IndzczovL2xvY2FsL3dzIiwiaWF0IjoxNjEzODQ3NDg0LCJleHAiOjE2NDUzODM0ODR9.YnhgThKYAj1uaooi6j-zY8dMipp5YqJxnn79B9TB5XQ
+                    router_shell_cmd: 128agent register --registration-code eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdfaWQiOiIyODE4ZTM4Ni04ZGVjLTI1NjItOWVkZS01YjhhMGZiYmRjNzEiLCJzdmMiOiIxMjhyb3V0ZXIiLCJwcm92aWRlciI6ImF3cyIsImVudiI6ImxvY2FsIiwiZXB0ZXJtX3VybCI6IndzczovL2xvY2FsL3dzIiwiaWF0IjoxNjEzODQ3NDg0LCJleHAiOjE2NDUzODM0ODR9.YnhgThKYAj1uaooi6j-zY8dMipp5YqJxnn79B9TB5XQ
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    conductor_cmd: register mist eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdfaWQiOiIyODE4ZTM4Ni04ZGVjLTI1NjItOWVkZS01YjhhMGZiYmRjNzEiLCJzdmMiOiIxMjhyb3V0ZXIiLCJwcm92aWRlciI6ImF3cyIsImVudiI6ImxvY2FsIiwiZXB0ZXJtX3VybCI6IndzczovL2xvY2FsL3dzIiwiaWF0IjoxNjEzODQ3NDg0LCJleHAiOjE2NDUzODM0ODR9.YnhgThKYAj1uaooi6j-zY8dMipp5YqJxnn79B9TB5XQ
+                    registration_code: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdfaWQiOiIyODE4ZTM4Ni04ZGVjLTI1NjItOWVkZS01YjhhMGZiYmRjNzEiLCJzdmMiOiIxMjhyb3V0ZXIiLCJwcm92aWRlciI6ImF3cyIsImVudiI6ImxvY2FsIiwiZXB0ZXJtX3VybCI6IndzczovL2xvY2FsL3dzIiwiaWF0IjoxNjEzODQ3NDg0LCJleHAiOjE2NDUzODM0ODR9.YnhgThKYAj1uaooi6j-zY8dMipp5YqJxnn79B9TB5XQ
+                    router_shell_cmd: 128agent register --registration-code eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdfaWQiOiIyODE4ZTM4Ni04ZGVjLTI1NjItOWVkZS01YjhhMGZiYmRjNzEiLCJzdmMiOiIxMjhyb3V0ZXIiLCJwcm92aWRlciI6ImF3cyIsImVudiI6ImxvY2FsIiwiZXB0ZXJtX3VybCI6IndzczovL2xvY2FsL3dzIiwiaWF0IjoxNjEzODQ3NDg0LCJleHAiOjE2NDUzODM0ODR9.YnhgThKYAj1uaooi6j-zY8dMipp5YqJxnn79B9TB5XQ
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_router_ssr_register_cmd'
+                - description: SSR registration token and commands used to register the router with Mist
+                  examples:
+                  - conductor_cmd: register mist eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdfaWQiOiIyODE4ZTM4Ni04ZGVjLTI1NjItOWVkZS01YjhhMGZiYmRjNzEiLCJzdmMiOiIxMjhyb3V0ZXIiLCJwcm92aWRlciI6ImF3cyIsImVudiI6ImxvY2FsIiwiZXB0ZXJtX3VybCI6IndzczovL2xvY2FsL3dzIiwiaWF0IjoxNjEzODQ3NDg0LCJleHAiOjE2NDUzODM0ODR9.YnhgThKYAj1uaooi6j-zY8dMipp5YqJxnn79B9TB5XQ
+                    registration_code: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdfaWQiOiIyODE4ZTM4Ni04ZGVjLTI1NjItOWVkZS01YjhhMGZiYmRjNzEiLCJzdmMiOiIxMjhyb3V0ZXIiLCJwcm92aWRlciI6ImF3cyIsImVudiI6ImxvY2FsIiwiZXB0ZXJtX3VybCI6IndzczovL2xvY2FsL3dzIiwiaWF0IjoxNjEzODQ3NDg0LCJleHAiOjE2NDUzODM0ODR9.YnhgThKYAj1uaooi6j-zY8dMipp5YqJxnn79B9TB5XQ
+                    router_shell_cmd: 128agent register --registration-code eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdfaWQiOiIyODE4ZTM4Ni04ZGVjLTI1NjItOWVkZS01YjhhMGZiYmRjNzEiLCJzdmMiOiIxMjhyb3V0ZXIiLCJwcm92aWRlciI6ImF3cyIsImVudiI6ImxvY2FsIiwiZXB0ZXJtX3VybCI6IndzczovL2xvY2FsL3dzIiwiaWF0IjoxNjEzODQ3NDg0LCJleHAiOjE2NDUzODM0ODR9.YnhgThKYAj1uaooi6j-zY8dMipp5YqJxnn79B9TB5XQ
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    conductor_cmd: register mist eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdfaWQiOiIyODE4ZTM4Ni04ZGVjLTI1NjItOWVkZS01YjhhMGZiYmRjNzEiLCJzdmMiOiIxMjhyb3V0ZXIiLCJwcm92aWRlciI6ImF3cyIsImVudiI6ImxvY2FsIiwiZXB0ZXJtX3VybCI6IndzczovL2xvY2FsL3dzIiwiaWF0IjoxNjEzODQ3NDg0LCJleHAiOjE2NDUzODM0ODR9.YnhgThKYAj1uaooi6j-zY8dMipp5YqJxnn79B9TB5XQ
+                    registration_code: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdfaWQiOiIyODE4ZTM4Ni04ZGVjLTI1NjItOWVkZS01YjhhMGZiYmRjNzEiLCJzdmMiOiIxMjhyb3V0ZXIiLCJwcm92aWRlciI6ImF3cyIsImVudiI6ImxvY2FsIiwiZXB0ZXJtX3VybCI6IndzczovL2xvY2FsL3dzIiwiaWF0IjoxNjEzODQ3NDg0LCJleHAiOjE2NDUzODM0ODR9.YnhgThKYAj1uaooi6j-zY8dMipp5YqJxnn79B9TB5XQ
+                    router_shell_cmd: 128agent register --registration-code eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdfaWQiOiIyODE4ZTM4Ni04ZGVjLTI1NjItOWVkZS01YjhhMGZiYmRjNzEiLCJzdmMiOiIxMjhyb3V0ZXIiLCJwcm92aWRlciI6ImF3cyIsImVudiI6ImxvY2FsIiwiZXB0ZXJtX3VybCI6IndzczovL2xvY2FsL3dzIiwiaWF0IjoxNjEzODQ3NDg0LCJleHAiOjE2NDUzODM0ODR9.YnhgThKYAj1uaooi6j-zY8dMipp5YqJxnn79B9TB5XQ
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    response_ssr_export_id_tokens_results_item:
+      title: response_ssr_export_id_tokens_results_item
+      type: object
+      properties:
+        mac:
+          type: string
+          description: SSR device MAC address for the exported ID token
+        token:
+          type: string
+          description: ID token to import into Conductor for SSR device onboarding
+      description: SSR ID token record for a device
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_ssr_export_id_tokens:
+      title: response_ssr_export_id_tokens
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/response_ssr_export_id_tokens_results_item'
+          description: Exported SSR ID token records for the requested devices
+      description: Response containing SSR ID tokens exported for device onboarding
+    response_router_ssr_register_cmd:
+      title: response_router_ssr_register_cmd
+      type: object
+      properties:
+        conductor_cmd:
+          type: string
+          description: Command to run in the SSR conductor CLI for Mist registration
+        registration_code:
+          type: string
+          description: Registration token used by the SSR registration commands
+        router_shell_cmd:
+          type: string
+          description: Shell command to run on the SSR router for Mist registration
+      description: SSR registration token and commands used to register the router with Mist
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    mac_addresses:
+      title: mac_addresses
+      required:
+      - macs
+      type: object
+      properties:
+        macs:
+          minItems: 1
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: List of MAC addresses included in the request
+          examples:
+          - - 683b679ac024
+      description: Request containing one or more MAC addresses
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

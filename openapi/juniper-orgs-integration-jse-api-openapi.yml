@@ -1,0 +1,853 @@
+openapi: 3.2.0
+info:
+  title: Mist Orgs Integration JSE API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Orgs Integration JSE
+  description: 'JSE stands for Juniper Secure Edge and it is a feature within the Mist UI that allows customers to configure Secure Cloud Connectors.
+
+
+    With JSE, users can establish a tunnel via IPSec protocol and use application policy and traffic steering to send traffic from a WAN edge device to JSE. Mist also provides insights and telemetry for the secure edge connection, which is helpful for troubleshooting and monitoring data.'
+paths:
+  /api/v1/orgs/{org_id}/setting/jse/info:
+    parameters: []
+    get:
+      tags:
+      - Orgs Integration JSE
+      summary: getOrgJseInfo
+      description: Return the JSE organizations associated with the configured account. Use the returned organization names when selecting JSE provider options for secure edge tunnels.
+      operationId: getOrgJseInfo
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: Example response
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/account_jse_info'
+                - description: Linked Juniper Security Exchange account information
+                  examples:
+                  - cloud_name: devcentral.juniperclouds.net
+                    org_names:
+                    - Mist-Sys
+                    - Mist-Eng
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    cloud_name: devcentral.juniperclouds.net
+                    org_names:
+                    - Mist-Sys
+                    - Mist-Eng
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/account_jse_info'
+                - description: Linked Juniper Security Exchange account information
+                  examples:
+                  - cloud_name: devcentral.juniperclouds.net
+                    org_names:
+                    - Mist-Sys
+                    - Mist-Eng
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    cloud_name: devcentral.juniperclouds.net
+                    org_names:
+                    - Mist-Sys
+                    - Mist-Eng
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/setting/jse/setup:
+    parameters: []
+    delete:
+      tags:
+      - Orgs Integration JSE
+      summary: deleteOrgJseIntegration
+      description: Remove the JSE integration configuration from the organization.
+      operationId: deleteOrgJseIntegration
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    get:
+      tags:
+      - Orgs Integration JSE
+      summary: getOrgJseIntegration
+      description: Return the JSE integration configuration, including the cloud hostname, integration username, and associated JSE organization names.
+      operationId: getOrgJseIntegration
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/account_jse_info'
+                - description: Linked Juniper Security Exchange account information
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/account_jse_info'
+                - description: Linked Juniper Security Exchange account information
+                contentMediaType: application/vnd.api+json
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    post:
+      tags:
+      - Orgs Integration JSE
+      summary: setupOrgJseIntegration
+      description: Configure the JSE integration with the JSE cloud hostname and integration-user credentials. In JSE, use a custom role with read access to `service_location` and read-write access to site and IPsec profile APIs, then create and activate the integration user and service locations.
+      operationId: setupOrgJseIntegration
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/account_jse_config'
+              - examples:
+                - cloud_name: devcentral.juniperclouds.net
+                  password: foryoureyesonly
+                  username: john@abc.com
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  cloud_name: devcentral.juniperclouds.net
+                  password: foryoureyesonly
+                  username: john@abc.com
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/account_jse_info'
+                - description: Linked Juniper Security Exchange account information
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/account_jse_info'
+                - description: Linked Juniper Security Exchange account information
+                contentMediaType: application/vnd.api+json
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    account_jse_config:
+      title: account_jse_config
+      required:
+      - password
+      - username
+      type: object
+      properties:
+        cloud_name:
+          type: string
+          description: JSE cloud hostname used for the integration
+          examples:
+          - devcentral.juniperclouds.net
+        password:
+          type: string
+          description: Credential password for the JSE integration user
+          contentEncoding: password
+          examples:
+          - foryoureyesonly
+        username:
+          type: string
+          description: JSE integration username with access to service location, site, and IPsec profile APIs
+          examples:
+          - john@abc.com
+      description: Juniper Security Exchange account credentials used for integration
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    account_jse_info:
+      title: account_jse_info
+      type: object
+      properties:
+        cloud_name:
+          type: string
+          description: JSE cloud hostname configured for the integration
+          examples:
+          - devcentral.juniperclouds.net
+        org_names:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: JSE organization names associated with the linked account
+        username:
+          type: string
+          description: JSE integration username configured for the linked account
+          examples:
+          - john@abc.com
+      description: Linked Juniper Security Exchange account information
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

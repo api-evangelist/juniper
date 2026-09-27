@@ -1,0 +1,378 @@
+openapi: 3.2.0
+info:
+  title: Mist Sites Stats - Beacons API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Sites Stats - Beacons
+paths:
+  /api/v1/sites/{site_id}/stats/beacons:
+    parameters: []
+    get:
+      tags:
+      - Sites Stats - Beacons
+      summary: listSiteBeaconsStats
+      description: Get List of Site Beacons Stats
+      operationId: listSiteBeaconsStats
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: page
+        in: query
+        description: Select the page number to return when using page-based pagination; starts at `1`
+        style: form
+        explode: true
+        schema:
+          minimum: 1
+          type: integer
+          contentEncoding: int32
+          default: 1
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                uniqueItems: true
+                type: array
+                items:
+                  $ref: '#/components/schemas/stats_beacon'
+                description: BLE beacon statistics returned by the request
+                contentMediaType: application/json
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    stats_beacon:
+      title: stats_beacon
+      required:
+      - mac
+      - map_id
+      - name
+      - power
+      - type
+      - x
+      - y
+      type: object
+      properties:
+        battery_voltage:
+          type: number
+          description: Battery voltage, in mV
+        eddystone_instance:
+          type: string
+          description: Eddystone-UID instance value advertised by the beacon
+        eddystone_namespace:
+          type: string
+          description: Eddystone-UID namespace value advertised by the beacon
+        last_seen:
+          type:
+          - number
+          - 'null'
+          description: Time when the beacon was last observed, in epoch seconds
+          readOnly: true
+          examples:
+          - 1470417522
+        mac:
+          type: string
+          description: Beacon MAC address observed by Mist
+        map_id:
+          type: string
+          description: Map identifier where the beacon is placed
+          contentEncoding: uuid
+        name:
+          type: string
+          description: Display name of the beacon
+        power:
+          type: integer
+          description: Transmit power configured for the beacon
+          contentEncoding: int32
+        type:
+          type: string
+          description: Advertisement protocol type used by the beacon, such as iBeacon or Eddystone
+        x:
+          type: number
+          description: Map X coordinate of the beacon placement, in pixels
+        y:
+          type: number
+          description: Map Y coordinate of the beacon placement, in pixels
+      description: BLE beacon runtime statistics and placement data
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

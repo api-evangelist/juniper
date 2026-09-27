@@ -1,0 +1,2121 @@
+openapi: 3.2.0
+info:
+  title: Mist Orgs NAC Tags API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Orgs NAC Tags
+  description: NAC Tags are the building blocks to compose nacrules.
+paths:
+  /api/v1/orgs/{org_id}/nactags:
+    parameters: []
+    get:
+      tags:
+      - Orgs NAC Tags
+      summary: listOrgNacTags
+      description: List organization NAC tags, optionally filtering by tag type, name, or match attribute.
+      operationId: listOrgNacTags
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: type
+        in: query
+        description: 'Filter results by type. enum: `egress_vlan_names`, `gbp_tag`, `match`, `radius_attrs`, `radius_group`, `radius_vendor_attrs`, `redirect_nacportal_id`, `session_timeout`, `username_attr`, `vlan`. Accepts multiple comma-separated values.'
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - match,vlan
+      - name: name
+        in: query
+        description: Filter results by name. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - name-a,name-b
+      - name: match
+        in: query
+        description: 'if `type`==`match`, Type of NAC Tag. enum: `cert_cn`, `cert_eku`, `cert_issuer`, `cert_san`, `cert_serial`, `cert_sub`, `cert_template`, `client_mac`, `edr_status`, `gbp_tag`, `hostname`, `idp_role`, `ingress_vlan`, `mdm_status`, `nas_ip`, `radius_group`, `realm`, `ssid`, `user_name`, `usermac_label`. Accepts multiple comma-separated values.'
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - ssid,idp_role
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: page
+        in: query
+        description: Select the page number to return when using page-based pagination; starts at `1`
+        style: form
+        explode: true
+        schema:
+          minimum: 1
+          type: integer
+          contentEncoding: int32
+          default: 1
+      responses:
+        '200':
+          description: Example response
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/nac_tag'
+                description: List of NAC tags
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/nac_tag'
+                description: List of NAC tags
+                contentMediaType: application/vnd.api+json
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    post:
+      tags:
+      - Orgs NAC Tags
+      summary: createOrgNacTag
+      description: Create a NAC tag used either as rule-matching criteria or as a result attribute returned when NAC allows access.
+      operationId: createOrgNacTag
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/nac_tag'
+        required: false
+      responses:
+        '200':
+          description: Example response
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/nac_tag'
+                - description: NAC tag used as a rule-matching classifier or as a result attribute for allowed users
+                  examples:
+                  - '{"egress_vlan_names":["1vlan-30","1vlan-20","2vlan10"],"name":"trunk_ap","type":"egress_vlan_names"}'
+                  - '{"match":"cert_cn","name":"staff","type":"match","values":["john","staff*"]}'
+                  - '{"match":"cert_eku","name":"EKU-Match","type":"match","values":["1.3.6.1.4.1.54321.10.1","1.3.6.1.4.1.54321.20.2"]}'
+                  - '{"match":"cert_issuer","name":"issuer1","type":"match","values":["/C=CN/ST=defy/L=defy/O=defy/OU=defy/CN=defy"]}'
+                  - '{"match":"cert_san","name":"san1","type":"match","values":["henry1@defy.com"]}'
+                  - '{"match":"cert_serial","name":"serial1","type":"match","values":["6a524ab782fb468c00c59f51cff00268d95533b8"]}'
+                  - '{"match":"cert_sub","name":"subject1","type":"match","values":["/C=CN/ST=defy/O=defy/OU=defy/CN=steve"]}'
+                  - '{"match":"cert_template","name":"templ1","type":"match","values":["1.3.6.1.4.1.311.21.8.4200806.605933.871088.11229391.9863893.29.13545645.4807979","1.3.6.1.4.1.311.21.8.3285427.4093958.2707341.9961608.11572555.6.4903431.2258457"]}'
+                  - '{"match":"client_mac","name":"cameras","type":"match","values":["010203040506","abcdef*"]}'
+                  - '{"match":"edr_status","match_all":false,"name":"edr_health","type":"match","values":["sentinelone_healthy","sentinelone_infected","crowdstrike_low","crowdstrike_medium","crowdstrike_high","crowdstrike_critical","crowdstrike_informational","unknown"]}'
+                  - '{"match":"hostname","name":"hostname1","type":"match","values":["CP*","USR*"]}'
+                  - '{"name":"VIP_group","radius_group":"VIP","type":"radius_group"}'
+                  - '{"match":"realm","name":"defy","type":"match","values":["defy.com"]}'
+                  - '{"match":"idp_role","name":"VIP","type":"match","values":["vip"]}'
+                  - '{"match":"user_name","name":"admins","type":"match","values":["bob","steve"]}'
+                  - '{"name":"guest_vlan","type":"vlan","vlan":"30"}'
+                  - '{"name":"custom_attrs","radius_attrs":["Idle-Timeout=600","Termination-Action=RADIUS-Request"],"type":"radius_attrs"}'
+                  - '{"name":"custom_radius_vendor_attrs","radius_vendor_attrs":["PaloAlto-Admin-Role=superuser","PaloAlto-Panorama-Admin-Role=administrator"],"type":"radius_vendor_attrs"}'
+                  - '{"name":"timeout","session_timeout":86400,"type":"session_timeout"}'
+                  - '{"allow_usermac_override":true,"name":"username_attr","type":"username_attr","username_attr":"automatic"}'
+                contentMediaType: application/json
+              examples:
+                Egress Vlan Names:
+                  value:
+                    egress_vlan_names:
+                    - 1vlan-30
+                    - 1vlan-20
+                    - 2vlan10
+                    name: trunk_ap
+                    type: egress_vlan_names
+                Matches Cert CN:
+                  value:
+                    match: cert_cn
+                    name: staff
+                    type: match
+                    values:
+                    - john
+                    - staff*
+                Matches Cert EKU:
+                  value:
+                    match: cert_eku
+                    name: EKU-Match
+                    type: match
+                    values:
+                    - 1.3.6.1.4.1.54321.10.1
+                    - 1.3.6.1.4.1.54321.20.2
+                Matches Cert Issuer:
+                  value:
+                    match: cert_issuer
+                    name: issuer1
+                    type: match
+                    values:
+                    - /C=CN/ST=defy/L=defy/O=defy/OU=defy/CN=defy
+                Matches Cert SAN:
+                  value:
+                    match: cert_san
+                    name: san1
+                    type: match
+                    values:
+                    - henry1@defy.com
+                Matches Cert Serial:
+                  value:
+                    match: cert_serial
+                    name: serial1
+                    type: match
+                    values:
+                    - 6a524ab782fb468c00c59f51cff00268d95533b8
+                Matches Cert Sub:
+                  value:
+                    match: cert_sub
+                    name: subject1
+                    type: match
+                    values:
+                    - /C=CN/ST=defy/O=defy/OU=defy/CN=steve
+                Matches Cert Template:
+                  value:
+                    match: cert_template
+                    name: templ1
+                    type: match
+                    values:
+                    - 1.3.6.1.4.1.311.21.8.4200806.605933.871088.11229391.9863893.29.13545645.4807979
+                    - 1.3.6.1.4.1.311.21.8.3285427.4093958.2707341.9961608.11572555.6.4903431.2258457
+                Matches Client Mac:
+                  value:
+                    match: client_mac
+                    name: cameras
+                    type: match
+                    values:
+                    - '010203040506'
+                    - abcdef*
+                Matches EDR Status:
+                  value:
+                    match: edr_status
+                    match_all: false
+                    name: edr_health
+                    type: match
+                    values:
+                    - sentinelone_healthy
+                    - sentinelone_infected
+                    - crowdstrike_low
+                    - crowdstrike_medium
+                    - crowdstrike_high
+                    - crowdstrike_critical
+                    - crowdstrike_informational
+                    - unknown
+                Matches Hostname:
+                  value:
+                    match: hostname
+                    name: hostname1
+                    type: match
+                    values:
+                    - CP*
+                    - USR*
+                Matches Radius Group:
+                  value:
+                    name: VIP_group
+                    radius_group: VIP
+                    type: radius_group
+                Matches Realm:
+                  value:
+                    match: realm
+                    name: defy
+                    type: match
+                    values:
+                    - defy.com
+                Matches Role:
+                  value:
+                    match: idp_role
+                    name: VIP
+                    type: match
+                    values:
+                    - vip
+                Matches Username:
+                  value:
+                    match: user_name
+                    name: admins
+                    type: match
+                    values:
+                    - bob
+                    - steve
+                Matches Vlan:
+                  value:
+                    name: guest_vlan
+                    type: vlan
+                    vlan: '30'
+                Radius Attrs:
+                  value:
+                    name: custom_attrs
+                    radius_attrs:
+                    - Idle-Timeout=600
+                    - Termination-Action=RADIUS-Request
+                    type: radius_attrs
+                Radius Vendor Attrs:
+                  value:
+                    name: custom_radius_vendor_attrs
+                    radius_vendor_attrs:
+                    - PaloAlto-Admin-Role=superuser
+                    - PaloAlto-Panorama-Admin-Role=administrator
+                    type: radius_vendor_attrs
+                Session Timeout:
+                  value:
+                    name: timeout
+                    session_timeout: 86400
+                    type: session_timeout
+                Username Attr:
+                  value:
+                    allow_usermac_override: true
+                    name: username_attr
+                    type: username_attr
+                    username_attr: automatic
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/nac_tag'
+                - description: NAC tag used as a rule-matching classifier or as a result attribute for allowed users
+                  examples:
+                  - '{"egress_vlan_names":["1vlan-30","1vlan-20","2vlan10"],"name":"trunk_ap","type":"egress_vlan_names"}'
+                  - '{"match":"cert_cn","name":"staff","type":"match","values":["john","staff*"]}'
+                  - '{"match":"cert_issuer","name":"issuer1","type":"match","values":["/C=CN/ST=defy/L=defy/O=defy/OU=defy/CN=defy"]}'
+                  - '{"match":"cert_san","name":"san1","type":"match","values":["henry1@defy.com"]}'
+                  - '{"match":"cert_serial","name":"serial1","type":"match","values":["6a524ab782fb468c00c59f51cff00268d95533b8"]}'
+                  - '{"match":"cert_sub","name":"subject1","type":"match","values":["/C=CN/ST=defy/O=defy/OU=defy/CN=steve"]}'
+                  - '{"match":"cert_template","name":"templ1","type":"match","values":["1.3.6.1.4.1.311.21.8.4200806.605933.871088.11229391.9863893.29.13545645.4807979","1.3.6.1.4.1.311.21.8.3285427.4093958.2707341.9961608.11572555.6.4903431.2258457"]}'
+                  - '{"match":"client_mac","name":"cameras","type":"match","values":["010203040506","abcdef*"]}'
+                  - '{"match":"hostname","name":"hostname1","type":"match","values":["CP*","USR*"]}'
+                  - '{"name":"VIP_group","radius_group":"VIP","type":"radius_group"}'
+                  - '{"match":"realm","name":"defy","type":"match","values":["defy.com"]}'
+                  - '{"match":"idp_role","name":"VIP","type":"match","values":["vip"]}'
+                  - '{"match":"user_name","name":"admins","type":"match","values":["bob","steve"]}'
+                  - '{"name":"guest_vlan","type":"vlan","vlan":"30"}'
+                  - '{"name":"custom_attrs","radius_attrs":["Idle-Timeout=600","Termination-Action=RADIUS-Request"],"type":"radius_attrs"}'
+                  - '{"name":"custom_radius_vendor_attrs","radius_vendor_attrs":["PaloAlto-Admin-Role=superuser","PaloAlto-Panorama-Admin-Role=administrator"],"type":"radius_vendor_attrs"}'
+                  - '{"name":"timeout","session_timeout":86400,"type":"session_timeout"}'
+                  - '{"allow_usermac_override":true,"name":"username_attr","type":"username_attr","username_attr":"automatic"}'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Egress Vlan Names:
+                  value:
+                    egress_vlan_names:
+                    - 1vlan-30
+                    - 1vlan-20
+                    - 2vlan10
+                    name: trunk_ap
+                    type: egress_vlan_names
+                Matches Cert CN:
+                  value:
+                    match: cert_cn
+                    name: staff
+                    type: match
+                    values:
+                    - john
+                    - staff*
+                Matches Cert Issuer:
+                  value:
+                    match: cert_issuer
+                    name: issuer1
+                    type: match
+                    values:
+                    - /C=CN/ST=defy/L=defy/O=defy/OU=defy/CN=defy
+                Matches Cert SAN:
+                  value:
+                    match: cert_san
+                    name: san1
+                    type: match
+                    values:
+                    - henry1@defy.com
+                Matches Cert Serial:
+                  value:
+                    match: cert_serial
+                    name: serial1
+                    type: match
+                    values:
+                    - 6a524ab782fb468c00c59f51cff00268d95533b8
+                Matches Cert Sub:
+                  value:
+                    match: cert_sub
+                    name: subject1
+                    type: match
+                    values:
+                    - /C=CN/ST=defy/O=defy/OU=defy/CN=steve
+                Matches Cert Template:
+                  value:
+                    match: cert_template
+                    name: templ1
+                    type: match
+                    values:
+                    - 1.3.6.1.4.1.311.21.8.4200806.605933.871088.11229391.9863893.29.13545645.4807979
+                    - 1.3.6.1.4.1.311.21.8.3285427.4093958.2707341.9961608.11572555.6.4903431.2258457
+                Matches Client Mac:
+                  value:
+                    match: client_mac
+                    name: cameras
+                    type: match
+                    values:
+                    - '010203040506'
+                    - abcdef*
+                Matches Hostname:
+                  value:
+                    match: hostname
+                    name: hostname1
+                    type: match
+                    values:
+                    - CP*
+                    - USR*
+                Matches Radius Group:
+                  value:
+                    name: VIP_group
+                    radius_group: VIP
+                    type: radius_group
+                Matches Realm:
+                  value:
+                    match: realm
+                    name: defy
+                    type: match
+                    values:
+                    - defy.com
+                Matches Role:
+                  value:
+                    match: idp_role
+                    name: VIP
+                    type: match
+                    values:
+                    - vip
+                Matches Username:
+                  value:
+                    match: user_name
+                    name: admins
+                    type: match
+                    values:
+                    - bob
+                    - steve
+                Matches Vlan:
+                  value:
+                    name: guest_vlan
+                    type: vlan
+                    vlan: '30'
+                Radius Attrs:
+                  value:
+                    name: custom_attrs
+                    radius_attrs:
+                    - Idle-Timeout=600
+                    - Termination-Action=RADIUS-Request
+                    type: radius_attrs
+                Radius Vendor Attrs:
+                  value:
+                    name: custom_radius_vendor_attrs
+                    radius_vendor_attrs:
+                    - PaloAlto-Admin-Role=superuser
+                    - PaloAlto-Panorama-Admin-Role=administrator
+                    type: radius_vendor_attrs
+                Session Timeout:
+                  value:
+                    name: timeout
+                    session_timeout: 86400
+                    type: session_timeout
+                Username Attr:
+                  value:
+                    allow_usermac_override: true
+                    name: username_attr
+                    type: username_attr
+                    username_attr: automatic
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/nactags/{nactag_id}:
+    parameters: []
+    delete:
+      tags:
+      - Orgs NAC Tags
+      summary: deleteOrgNacTag
+      description: Delete an organization NAC tag by tag ID so it can no longer be used by NAC rules.
+      operationId: deleteOrgNacTag
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: nactag_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    get:
+      tags:
+      - Orgs NAC Tags
+      summary: getOrgNacTag
+      description: Retrieve configuration details for a specific NAC tag, including type, match values, RADIUS attributes, VLAN or session results, and portal redirection settings.
+      operationId: getOrgNacTag
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: nactag_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: Example response
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/nac_tag'
+                - description: NAC tag used as a rule-matching classifier or as a result attribute for allowed users
+                  examples:
+                  - '{"egress_vlan_names":["1vlan-30","1vlan-20","2vlan10"],"name":"trunk_ap","type":"egress_vlan_names"}'
+                  - '{"match":"cert_cn","name":"staff","type":"match","values":["john","staff*"]}'
+                  - '{"match":"cert_eku","name":"EKU-Match","type":"match","values":["1.3.6.1.4.1.54321.10.1","1.3.6.1.4.1.54321.20.2"]}'
+                  - '{"match":"cert_issuer","name":"issuer1","type":"match","values":["/C=CN/ST=defy/L=defy/O=defy/OU=defy/CN=defy"]}'
+                  - '{"match":"cert_san","name":"san1","type":"match","values":["henry1@defy.com"]}'
+                  - '{"match":"cert_serial","name":"serial1","type":"match","values":["6a524ab782fb468c00c59f51cff00268d95533b8"]}'
+                  - '{"match":"cert_sub","name":"subject1","type":"match","values":["/C=CN/ST=defy/O=defy/OU=defy/CN=steve"]}'
+                  - '{"match":"cert_template","name":"templ1","type":"match","values":["1.3.6.1.4.1.311.21.8.4200806.605933.871088.11229391.9863893.29.13545645.4807979","1.3.6.1.4.1.311.21.8.3285427.4093958.2707341.9961608.11572555.6.4903431.2258457"]}'
+                  - '{"match":"client_mac","name":"cameras","type":"match","values":["010203040506","abcdef*"]}'
+                  - '{"match":"edr_status","match_all":false,"name":"edr_health","type":"match","values":["sentinelone_healthy","sentinelone_infected","crowdstrike_low","crowdstrike_medium","crowdstrike_high","crowdstrike_critical","crowdstrike_informational","unknown"]}'
+                  - '{"match":"hostname","name":"hostname1","type":"match","values":["CP*","USR*"]}'
+                  - '{"name":"VIP_group","radius_group":"VIP","type":"radius_group"}'
+                  - '{"match":"realm","name":"defy","type":"match","values":["defy.com"]}'
+                  - '{"match":"idp_role","name":"VIP","type":"match","values":["vip"]}'
+                  - '{"match":"user_name","name":"admins","type":"match","values":["bob","steve"]}'
+                  - '{"name":"guest_vlan","type":"vlan","vlan":"30"}'
+                  - '{"name":"custom_attrs","radius_attrs":["Idle-Timeout=600","Termination-Action=RADIUS-Request"],"type":"radius_attrs"}'
+                  - '{"name":"custom_radius_vendor_attrs","radius_vendor_attrs":["PaloAlto-Admin-Role=superuser","PaloAlto-Panorama-Admin-Role=administrator"],"type":"radius_vendor_attrs"}'
+                  - '{"name":"timeout","session_timeout":86400,"type":"session_timeout"}'
+                  - '{"allow_usermac_override":true,"name":"username_attr","type":"username_attr","username_attr":"automatic"}'
+                contentMediaType: application/json
+              examples:
+                Egress Vlan Names:
+                  value:
+                    egress_vlan_names:
+                    - 1vlan-30
+                    - 1vlan-20
+                    - 2vlan10
+                    name: trunk_ap
+                    type: egress_vlan_names
+                Matches Cert CN:
+                  value:
+                    match: cert_cn
+                    name: staff
+                    type: match
+                    values:
+                    - john
+                    - staff*
+                Matches Cert EKU:
+                  value:
+                    match: cert_eku
+                    name: EKU-Match
+                    type: match
+                    values:
+                    - 1.3.6.1.4.1.54321.10.1
+                    - 1.3.6.1.4.1.54321.20.2
+                Matches Cert Issuer:
+                  value:
+                    match: cert_issuer
+                    name: issuer1
+                    type: match
+                    values:
+                    - /C=CN/ST=defy/L=defy/O=defy/OU=defy/CN=defy
+                Matches Cert SAN:
+                  value:
+                    match: cert_san
+                    name: san1
+                    type: match
+                    values:
+                    - henry1@defy.com
+                Matches Cert Serial:
+                  value:
+                    match: cert_serial
+                    name: serial1
+                    type: match
+                    values:
+                    - 6a524ab782fb468c00c59f51cff00268d95533b8
+                Matches Cert Sub:
+                  value:
+                    match: cert_sub
+                    name: subject1
+                    type: match
+                    values:
+                    - /C=CN/ST=defy/O=defy/OU=defy/CN=steve
+                Matches Cert Template:
+                  value:
+                    match: cert_template
+                    name: templ1
+                    type: match
+                    values:
+                    - 1.3.6.1.4.1.311.21.8.4200806.605933.871088.11229391.9863893.29.13545645.4807979
+                    - 1.3.6.1.4.1.311.21.8.3285427.4093958.2707341.9961608.11572555.6.4903431.2258457
+                Matches Client Mac:
+                  value:
+                    match: client_mac
+                    name: cameras
+                    type: match
+                    values:
+                    - '010203040506'
+                    - abcdef*
+                Matches EDR Status:
+                  value:
+                    match: edr_status
+                    match_all: false
+                    name: edr_health
+                    type: match
+                    values:
+                    - sentinelone_healthy
+                    - sentinelone_infected
+                    - crowdstrike_low
+                    - crowdstrike_medium
+                    - crowdstrike_high
+                    - crowdstrike_critical
+                    - crowdstrike_informational
+                    - unknown
+                Matches Hostname:
+                  value:
+                    match: hostname
+                    name: hostname1
+                    type: match
+                    values:
+                    - CP*
+                    - USR*
+                Matches Radius Group:
+                  value:
+                    name: VIP_group
+                    radius_group: VIP
+                    type: radius_group
+                Matches Realm:
+                  value:
+                    match: realm
+                    name: defy
+                    type: match
+                    values:
+                    - defy.com
+                Matches Role:
+                  value:
+                    match: idp_role
+                    name: VIP
+                    type: match
+                    values:
+                    - vip
+                Matches Username:
+                  value:
+                    match: user_name
+                    name: admins
+                    type: match
+                    values:
+                    - bob
+                    - steve
+                Matches Vlan:
+                  value:
+                    name: guest_vlan
+                    type: vlan
+                    vlan: '30'
+                Radius Attrs:
+                  value:
+                    name: custom_attrs
+                    radius_attrs:
+                    - Idle-Timeout=600
+                    - Termination-Action=RADIUS-Request
+                    type: radius_attrs
+                Radius Vendor Attrs:
+                  value:
+                    name: custom_radius_vendor_attrs
+                    radius_vendor_attrs:
+                    - PaloAlto-Admin-Role=superuser
+                    - PaloAlto-Panorama-Admin-Role=administrator
+                    type: radius_vendor_attrs
+                Session Timeout:
+                  value:
+                    name: timeout
+                    session_timeout: 86400
+                    type: session_timeout
+                Username Attr:
+                  value:
+                    allow_usermac_override: true
+                    name: username_attr
+                    type: username_attr
+                    username_attr: automatic
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/nac_tag'
+                - description: NAC tag used as a rule-matching classifier or as a result attribute for allowed users
+                  examples:
+                  - '{"egress_vlan_names":["1vlan-30","1vlan-20","2vlan10"],"name":"trunk_ap","type":"egress_vlan_names"}'
+                  - '{"match":"cert_cn","name":"staff","type":"match","values":["john","staff*"]}'
+                  - '{"match":"cert_issuer","name":"issuer1","type":"match","values":["/C=CN/ST=defy/L=defy/O=defy/OU=defy/CN=defy"]}'
+                  - '{"match":"cert_san","name":"san1","type":"match","values":["henry1@defy.com"]}'
+                  - '{"match":"cert_serial","name":"serial1","type":"match","values":["6a524ab782fb468c00c59f51cff00268d95533b8"]}'
+                  - '{"match":"cert_sub","name":"subject1","type":"match","values":["/C=CN/ST=defy/O=defy/OU=defy/CN=steve"]}'
+                  - '{"match":"cert_template","name":"templ1","type":"match","values":["1.3.6.1.4.1.311.21.8.4200806.605933.871088.11229391.9863893.29.13545645.4807979","1.3.6.1.4.1.311.21.8.3285427.4093958.2707341.9961608.11572555.6.4903431.2258457"]}'
+                  - '{"match":"client_mac","name":"cameras","type":"match","values":["010203040506","abcdef*"]}'
+                  - '{"match":"hostname","name":"hostname1","type":"match","values":["CP*","USR*"]}'
+                  - '{"name":"VIP_group","radius_group":"VIP","type":"radius_group"}'
+                  - '{"match":"realm","name":"defy","type":"match","values":["defy.com"]}'
+                  - '{"match":"idp_role","name":"VIP","type":"match","values":["vip"]}'
+                  - '{"match":"user_name","name":"admins","type":"match","values":["bob","steve"]}'
+                  - '{"name":"guest_vlan","type":"vlan","vlan":"30"}'
+                  - '{"name":"custom_attrs","radius_attrs":["Idle-Timeout=600","Termination-Action=RADIUS-Request"],"type":"radius_attrs"}'
+                  - '{"name":"custom_radius_vendor_attrs","radius_vendor_attrs":["PaloAlto-Admin-Role=superuser","PaloAlto-Panorama-Admin-Role=administrator"],"type":"radius_vendor_attrs"}'
+                  - '{"name":"timeout","session_timeout":86400,"type":"session_timeout"}'
+                  - '{"allow_usermac_override":true,"name":"username_attr","type":"username_attr","username_attr":"automatic"}'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Egress Vlan Names:
+                  value:
+                    egress_vlan_names:
+                    - 1vlan-30
+                    - 1vlan-20
+                    - 2vlan10
+                    name: trunk_ap
+                    type: egress_vlan_names
+                Matches Cert CN:
+                  value:
+                    match: cert_cn
+                    name: staff
+                    type: match
+                    values:
+                    - john
+                    - staff*
+                Matches Cert Issuer:
+                  value:
+                    match: cert_issuer
+                    name: issuer1
+                    type: match
+                    values:
+                    - /C=CN/ST=defy/L=defy/O=defy/OU=defy/CN=defy
+                Matches Cert SAN:
+                  value:
+                    match: cert_san
+                    name: san1
+                    type: match
+                    values:
+                    - henry1@defy.com
+                Matches Cert Serial:
+                  value:
+                    match: cert_serial
+                    name: serial1
+                    type: match
+                    values:
+                    - 6a524ab782fb468c00c59f51cff00268d95533b8
+                Matches Cert Sub:
+                  value:
+                    match: cert_sub
+                    name: subject1
+                    type: match
+                    values:
+                    - /C=CN/ST=defy/O=defy/OU=defy/CN=steve
+                Matches Cert Template:
+                  value:
+                    match: cert_template
+                    name: templ1
+                    type: match
+                    values:
+                    - 1.3.6.1.4.1.311.21.8.4200806.605933.871088.11229391.9863893.29.13545645.4807979
+                    - 1.3.6.1.4.1.311.21.8.3285427.4093958.2707341.9961608.11572555.6.4903431.2258457
+                Matches Client Mac:
+                  value:
+                    match: client_mac
+                    name: cameras
+                    type: match
+                    values:
+                    - '010203040506'
+                    - abcdef*
+                Matches Hostname:
+                  value:
+                    match: hostname
+                    name: hostname1
+                    type: match
+                    values:
+                    - CP*
+                    - USR*
+                Matches Radius Group:
+                  value:
+                    name: VIP_group
+                    radius_group: VIP
+                    type: radius_group
+                Matches Realm:
+                  value:
+                    match: realm
+                    name: defy
+                    type: match
+                    values:
+                    - defy.com
+                Matches Role:
+                  value:
+                    match: idp_role
+                    name: VIP
+                    type: match
+                    values:
+                    - vip
+                Matches Username:
+                  value:
+                    match: user_name
+                    name: admins
+                    type: match
+                    values:
+                    - bob
+                    - steve
+                Matches Vlan:
+                  value:
+                    name: guest_vlan
+                    type: vlan
+                    vlan: '30'
+                Radius Attrs:
+                  value:
+                    name: custom_attrs
+                    radius_attrs:
+                    - Idle-Timeout=600
+                    - Termination-Action=RADIUS-Request
+                    type: radius_attrs
+                Radius Vendor Attrs:
+                  value:
+                    name: custom_radius_vendor_attrs
+                    radius_vendor_attrs:
+                    - PaloAlto-Admin-Role=superuser
+                    - PaloAlto-Panorama-Admin-Role=administrator
+                    type: radius_vendor_attrs
+                Session Timeout:
+                  value:
+                    name: timeout
+                    session_timeout: 86400
+                    type: session_timeout
+                Username Attr:
+                  value:
+                    allow_usermac_override: true
+                    name: username_attr
+                    type: username_attr
+                    username_attr: automatic
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    put:
+      tags:
+      - Orgs NAC Tags
+      summary: updateOrgNacTag
+      description: Update a NAC tag, including matcher values or result attributes such as RADIUS attributes, VLAN, session timeout, username attribute, or portal redirection.
+      operationId: updateOrgNacTag
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: nactag_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/nac_tag'
+        required: false
+      responses:
+        '200':
+          description: Example response
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/nac_tag'
+                - description: NAC tag used as a rule-matching classifier or as a result attribute for allowed users
+                  examples:
+                  - '{"egress_vlan_names":["1vlan-30","1vlan-20","2vlan10"],"name":"trunk_ap","type":"egress_vlan_names"}'
+                  - '{"match":"cert_cn","name":"staff","type":"match","values":["john","staff*"]}'
+                  - '{"match":"cert_eku","name":"EKU-Match","type":"match","values":["1.3.6.1.4.1.54321.10.1","1.3.6.1.4.1.54321.20.2"]}'
+                  - '{"match":"cert_issuer","name":"issuer1","type":"match","values":["/C=CN/ST=defy/L=defy/O=defy/OU=defy/CN=defy"]}'
+                  - '{"match":"cert_san","name":"san1","type":"match","values":["henry1@defy.com"]}'
+                  - '{"match":"cert_serial","name":"serial1","type":"match","values":["6a524ab782fb468c00c59f51cff00268d95533b8"]}'
+                  - '{"match":"cert_sub","name":"subject1","type":"match","values":["/C=CN/ST=defy/O=defy/OU=defy/CN=steve"]}'
+                  - '{"match":"cert_template","name":"templ1","type":"match","values":["1.3.6.1.4.1.311.21.8.4200806.605933.871088.11229391.9863893.29.13545645.4807979","1.3.6.1.4.1.311.21.8.3285427.4093958.2707341.9961608.11572555.6.4903431.2258457"]}'
+                  - '{"match":"client_mac","name":"cameras","type":"match","values":["010203040506","abcdef*"]}'
+                  - '{"match":"edr_status","match_all":false,"name":"edr_health","type":"match","values":["sentinelone_healthy","sentinelone_infected","crowdstrike_low","crowdstrike_medium","crowdstrike_high","crowdstrike_critical","crowdstrike_informational","unknown"]}'
+                  - '{"match":"hostname","name":"hostname1","type":"match","values":["CP*","USR*"]}'
+                  - '{"name":"VIP_group","radius_group":"VIP","type":"radius_group"}'
+                  - '{"match":"realm","name":"defy","type":"match","values":["defy.com"]}'
+                  - '{"match":"idp_role","name":"VIP","type":"match","values":["vip"]}'
+                  - '{"match":"user_name","name":"admins","type":"match","values":["bob","steve"]}'
+                  - '{"name":"guest_vlan","type":"vlan","vlan":"30"}'
+                  - '{"name":"custom_attrs","radius_attrs":["Idle-Timeout=600","Termination-Action=RADIUS-Request"],"type":"radius_attrs"}'
+                  - '{"name":"custom_radius_vendor_attrs","radius_vendor_attrs":["PaloAlto-Admin-Role=superuser","PaloAlto-Panorama-Admin-Role=administrator"],"type":"radius_vendor_attrs"}'
+                  - '{"name":"timeout","session_timeout":86400,"type":"session_timeout"}'
+                  - '{"allow_usermac_override":true,"name":"username_attr","type":"username_attr","username_attr":"automatic"}'
+                contentMediaType: application/json
+              examples:
+                Egress Vlan Names:
+                  value:
+                    egress_vlan_names:
+                    - 1vlan-30
+                    - 1vlan-20
+                    - 2vlan10
+                    name: trunk_ap
+                    type: egress_vlan_names
+                Matches Cert CN:
+                  value:
+                    match: cert_cn
+                    name: staff
+                    type: match
+                    values:
+                    - john
+                    - staff*
+                Matches Cert EKU:
+                  value:
+                    match: cert_eku
+                    name: EKU-Match
+                    type: match
+                    values:
+                    - 1.3.6.1.4.1.54321.10.1
+                    - 1.3.6.1.4.1.54321.20.2
+                Matches Cert Issuer:
+                  value:
+                    match: cert_issuer
+                    name: issuer1
+                    type: match
+                    values:
+                    - /C=CN/ST=defy/L=defy/O=defy/OU=defy/CN=defy
+                Matches Cert SAN:
+                  value:
+                    match: cert_san
+                    name: san1
+                    type: match
+                    values:
+                    - henry1@defy.com
+                Matches Cert Serial:
+                  value:
+                    match: cert_serial
+                    name: serial1
+                    type: match
+                    values:
+                    - 6a524ab782fb468c00c59f51cff00268d95533b8
+                Matches Cert Sub:
+                  value:
+                    match: cert_sub
+                    name: subject1
+                    type: match
+                    values:
+                    - /C=CN/ST=defy/O=defy/OU=defy/CN=steve
+                Matches Cert Template:
+                  value:
+                    match: cert_template
+                    name: templ1
+                    type: match
+                    values:
+                    - 1.3.6.1.4.1.311.21.8.4200806.605933.871088.11229391.9863893.29.13545645.4807979
+                    - 1.3.6.1.4.1.311.21.8.3285427.4093958.2707341.9961608.11572555.6.4903431.2258457
+                Matches Client Mac:
+                  value:
+                    match: client_mac
+                    name: cameras
+                    type: match
+                    values:
+                    - '010203040506'
+                    - abcdef*
+                Matches EDR Status:
+                  value:
+                    match: edr_status
+                    match_all: false
+                    name: edr_health
+                    type: match
+                    values:
+                    - sentinelone_healthy
+                    - sentinelone_infected
+                    - crowdstrike_low
+                    - crowdstrike_medium
+                    - crowdstrike_high
+                    - crowdstrike_critical
+                    - crowdstrike_informational
+                    - unknown
+                Matches Hostname:
+                  value:
+                    match: hostname
+                    name: hostname1
+                    type: match
+                    values:
+                    - CP*
+                    - USR*
+                Matches Radius Group:
+                  value:
+                    name: VIP_group
+                    radius_group: VIP
+                    type: radius_group
+                Matches Realm:
+                  value:
+                    match: realm
+                    name: defy
+                    type: match
+                    values:
+                    - defy.com
+                Matches Role:
+                  value:
+                    match: idp_role
+                    name: VIP
+                    type: match
+                    values:
+                    - vip
+                Matches Username:
+                  value:
+                    match: user_name
+                    name: admins
+                    type: match
+                    values:
+                    - bob
+                    - steve
+                Matches Vlan:
+                  value:
+                    name: guest_vlan
+                    type: vlan
+                    vlan: '30'
+                Radius Attrs:
+                  value:
+                    name: custom_attrs
+                    radius_attrs:
+                    - Idle-Timeout=600
+                    - Termination-Action=RADIUS-Request
+                    type: radius_attrs
+                Radius Vendor Attrs:
+                  value:
+                    name: custom_radius_vendor_attrs
+                    radius_vendor_attrs:
+                    - PaloAlto-Admin-Role=superuser
+                    - PaloAlto-Panorama-Admin-Role=administrator
+                    type: radius_vendor_attrs
+                Session Timeout:
+                  value:
+                    name: timeout
+                    session_timeout: 86400
+                    type: session_timeout
+                Username Attr:
+                  value:
+                    allow_usermac_override: true
+                    name: username_attr
+                    type: username_attr
+                    username_attr: automatic
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/nac_tag'
+                - description: NAC tag used as a rule-matching classifier or as a result attribute for allowed users
+                  examples:
+                  - '{"egress_vlan_names":["1vlan-30","1vlan-20","2vlan10"],"name":"trunk_ap","type":"egress_vlan_names"}'
+                  - '{"match":"cert_cn","name":"staff","type":"match","values":["john","staff*"]}'
+                  - '{"match":"cert_issuer","name":"issuer1","type":"match","values":["/C=CN/ST=defy/L=defy/O=defy/OU=defy/CN=defy"]}'
+                  - '{"match":"cert_san","name":"san1","type":"match","values":["henry1@defy.com"]}'
+                  - '{"match":"cert_serial","name":"serial1","type":"match","values":["6a524ab782fb468c00c59f51cff00268d95533b8"]}'
+                  - '{"match":"cert_sub","name":"subject1","type":"match","values":["/C=CN/ST=defy/O=defy/OU=defy/CN=steve"]}'
+                  - '{"match":"cert_template","name":"templ1","type":"match","values":["1.3.6.1.4.1.311.21.8.4200806.605933.871088.11229391.9863893.29.13545645.4807979","1.3.6.1.4.1.311.21.8.3285427.4093958.2707341.9961608.11572555.6.4903431.2258457"]}'
+                  - '{"match":"client_mac","name":"cameras","type":"match","values":["010203040506","abcdef*"]}'
+                  - '{"match":"hostname","name":"hostname1","type":"match","values":["CP*","USR*"]}'
+                  - '{"name":"VIP_group","radius_group":"VIP","type":"radius_group"}'
+                  - '{"match":"realm","name":"defy","type":"match","values":["defy.com"]}'
+                  - '{"match":"idp_role","name":"VIP","type":"match","values":["vip"]}'
+                  - '{"match":"user_name","name":"admins","type":"match","values":["bob","steve"]}'
+                  - '{"name":"guest_vlan","type":"vlan","vlan":"30"}'
+                  - '{"name":"custom_attrs","radius_attrs":["Idle-Timeout=600","Termination-Action=RADIUS-Request"],"type":"radius_attrs"}'
+                  - '{"name":"custom_radius_vendor_attrs","radius_vendor_attrs":["PaloAlto-Admin-Role=superuser","PaloAlto-Panorama-Admin-Role=administrator"],"type":"radius_vendor_attrs"}'
+                  - '{"name":"timeout","session_timeout":86400,"type":"session_timeout"}'
+                  - '{"allow_usermac_override":true,"name":"username_attr","type":"username_attr","username_attr":"automatic"}'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Egress Vlan Names:
+                  value:
+                    egress_vlan_names:
+                    - 1vlan-30
+                    - 1vlan-20
+                    - 2vlan10
+                    name: trunk_ap
+                    type: egress_vlan_names
+                Matches Cert CN:
+                  value:
+                    match: cert_cn
+                    name: staff
+                    type: match
+                    values:
+                    - john
+                    - staff*
+                Matches Cert Issuer:
+                  value:
+                    match: cert_issuer
+                    name: issuer1
+                    type: match
+                    values:
+                    - /C=CN/ST=defy/L=defy/O=defy/OU=defy/CN=defy
+                Matches Cert SAN:
+                  value:
+                    match: cert_san
+                    name: san1
+                    type: match
+                    values:
+                    - henry1@defy.com
+                Matches Cert Serial:
+                  value:
+                    match: cert_serial
+                    name: serial1
+                    type: match
+                    values:
+                    - 6a524ab782fb468c00c59f51cff00268d95533b8
+                Matches Cert Sub:
+                  value:
+                    match: cert_sub
+                    name: subject1
+                    type: match
+                    values:
+                    - /C=CN/ST=defy/O=defy/OU=defy/CN=steve
+                Matches Cert Template:
+                  value:
+                    match: cert_template
+                    name: templ1
+                    type: match
+                    values:
+                    - 1.3.6.1.4.1.311.21.8.4200806.605933.871088.11229391.9863893.29.13545645.4807979
+                    - 1.3.6.1.4.1.311.21.8.3285427.4093958.2707341.9961608.11572555.6.4903431.2258457
+                Matches Client Mac:
+                  value:
+                    match: client_mac
+                    name: cameras
+                    type: match
+                    values:
+                    - '010203040506'
+                    - abcdef*
+                Matches Hostname:
+                  value:
+                    match: hostname
+                    name: hostname1
+                    type: match
+                    values:
+                    - CP*
+                    - USR*
+                Matches Radius Group:
+                  value:
+                    name: VIP_group
+                    radius_group: VIP
+                    type: radius_group
+                Matches Realm:
+                  value:
+                    match: realm
+                    name: defy
+                    type: match
+                    values:
+                    - defy.com
+                Matches Role:
+                  value:
+                    match: idp_role
+                    name: VIP
+                    type: match
+                    values:
+                    - vip
+                Matches Username:
+                  value:
+                    match: user_name
+                    name: admins
+                    type: match
+                    values:
+                    - bob
+                    - steve
+                Matches Vlan:
+                  value:
+                    name: guest_vlan
+                    type: vlan
+                    vlan: '30'
+                Radius Attrs:
+                  value:
+                    name: custom_attrs
+                    radius_attrs:
+                    - Idle-Timeout=600
+                    - Termination-Action=RADIUS-Request
+                    type: radius_attrs
+                Radius Vendor Attrs:
+                  value:
+                    name: custom_radius_vendor_attrs
+                    radius_vendor_attrs:
+                    - PaloAlto-Admin-Role=superuser
+                    - PaloAlto-Panorama-Admin-Role=administrator
+                    type: radius_vendor_attrs
+                Session Timeout:
+                  value:
+                    name: timeout
+                    session_timeout: 86400
+                    type: session_timeout
+                Username Attr:
+                  value:
+                    allow_usermac_override: true
+                    name: username_attr
+                    type: username_attr
+                    username_attr: automatic
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    nac_tag_type2:
+      title: nac_tag_type2
+      enum:
+      - egress_vlan_names
+      - gbp_tag
+      - match
+      - radius_attrs
+      - radius_group
+      - radius_vendor_attrs
+      - redirect_nacportal_id
+      - session_timeout
+      - username_attr
+      - vlan
+      type: string
+      description: 'NAC tag type that determines whether the tag is a matcher or a result attribute. enum: `egress_vlan_names`, `gbp_tag`, `match`, `radius_attrs`, `radius_group`, `radius_vendor_attrs`, `redirect_nacportal_id`, `session_timeout`, `username_attr`, `vlan`.'
+    nac_tag_username_attr2:
+      title: nac_tag_username_attr2
+      enum:
+      - automatic
+      - cn
+      - dns
+      - email
+      - upn
+      type: string
+      description: 'If `type`==`username_attr`, attribute used to derive the username returned by the NAC rule. enum: `automatic`, `cn`, `dns`, `email`, `upn`.'
+    nac_tag_match2:
+      title: nac_tag_match2
+      enum:
+      - cert_cn
+      - cert_eku
+      - cert_issuer
+      - cert_san
+      - cert_serial
+      - cert_sub
+      - cert_template
+      - client_mac
+      - edr_status
+      - gbp_tag
+      - hostname
+      - idp_role
+      - ingress_vlan
+      - mdm_status
+      - nas_ip
+      - radius_group
+      - realm
+      - ssid
+      - user_name
+      - usermac_label
+      type: string
+      description: 'If `type`==`match`, client or authentication attribute used for rule matching. enum: `cert_cn`, `cert_eku`, `cert_issuer`, `cert_san`, `cert_serial`, `cert_sub`, `cert_template`, `client_mac`, `edr_status`, `gbp_tag`, `hostname`, `idp_role`, `ingress_vlan`, `mdm_status`, `nas_ip`, `radius_group`, `realm`, `ssid`, `user_name`, `usermac_label`.'
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    nac_tag:
+      title: nac_tag
+      required:
+      - name
+      - type
+      type: object
+      properties:
+        allow_usermac_override:
+          type: boolean
+          description: Whether usermac result values can override this NAC tag when the result type is also supported by usermac
+          default: false
+        created_time:
+          type: number
+          description: Epoch timestamp when the NAC tag was created
+          readOnly: true
+        egress_vlan_names:
+          type: array
+          items:
+            type: string
+          description: If `type`==`egress_vlan_names`, list of egress VLAN names returned by the NAC rule
+          examples:
+          - - 1vlan-30
+            - 1vlan-20
+            - 2-vlan10
+        gbp_tag:
+          anyOf:
+          - maximum: 65535
+            minimum: 1
+            type: integer
+            contentEncoding: int32
+          - type: string
+          description: If `type`==`gbp_tag`, GBP tag value returned by the NAC rule
+        id:
+          type: string
+          description: Unique identifier of the NAC tag
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        match:
+          allOf:
+          - $ref: '#/components/schemas/nac_tag_match2'
+          - minLength: 1
+            description: 'If `type`==`match`, client or authentication attribute used for rule matching. enum: `cert_cn`, `cert_eku`, `cert_issuer`, `cert_san`, `cert_serial`, `cert_sub`, `cert_template`, `client_mac`, `edr_status`, `gbp_tag`, `hostname`, `idp_role`, `ingress_vlan`, `mdm_status`, `nas_ip`, `radius_group`, `realm`, `ssid`, `user_name`, `usermac_label`.'
+        match_all:
+          type: boolean
+          description: "This field is applicable only when `type`==`match`\n  * `false`: means it is sufficient to match any of the values (i.e., match-any behavior)\n  * `true`: means all values should be matched (i.e., match-all behavior)\n\n\nCurrently it makes sense to set this field to `true` only if the `match`==`idp_role`, `match`==`usermac_label` and `edr_status`"
+          default: false
+        modified_time:
+          type: number
+          description: Epoch timestamp when the NAC tag was last modified
+          readOnly: true
+        nacportal_id:
+          type: string
+          description: If `type`==`redirect_nacportal_id`, NAC portal ID used for client redirection
+          contentEncoding: uuid
+          examples:
+          - 1e970fec-0a7a-4d73-a472-3ef3b6a456aa
+        name:
+          minLength: 1
+          type: string
+          description: Human-readable name of the NAC tag
+        org_id:
+          type: string
+          description: Org identifier that owns the NAC tag
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        radius_attrs:
+          type: array
+          items:
+            type: string
+          description: If `type`==`radius_attrs`, standard RADIUS attributes returned by the NAC rule
+          examples:
+          - - Idle-Timeout=600
+            - Termination-Action=RADIUS-Request
+        radius_group:
+          type: string
+          description: If `type`==`radius_group`, RADIUS group value returned by the NAC rule
+        radius_vendor_attrs:
+          type: array
+          items:
+            type: string
+          description: If `type`==`radius_vendor_attrs`, vendor-specific RADIUS attributes returned by the NAC rule
+          examples:
+          - - PaloAlto-Admin-Role=superuser
+            - PaloAlto-Panorama-Admin-Role=administrator
+        session_timeout:
+          type: integer
+          description: If `type`==`session_timeout`, session timeout returned by the NAC rule, in seconds
+          contentEncoding: int32
+          examples:
+          - 86000
+        type:
+          allOf:
+          - $ref: '#/components/schemas/nac_tag_type2'
+          - minLength: 1
+            description: 'NAC tag type that determines whether the tag is a matcher or a result attribute. enum: `egress_vlan_names`, `gbp_tag`, `match`, `radius_attrs`, `radius_group`, `radius_vendor_attrs`, `redirect_nacportal_id`, `session_timeout`, `username_attr`, `vlan`.'
+        username_attr:
+          allOf:
+          - $ref: '#/components/schemas/nac_tag_username_attr2'
+          - description: 'If `type`==`username_attr`, attribute used to derive the username returned by the NAC rule. enum: `automatic`, `cn`, `dns`, `email`, `upn`.'
+        values:
+          type: array
+          items:
+            type: string
+          description: If `type`==`match`, attribute values used by the NAC tag matcher
+        vlan:
+          type: string
+          description: If `type`==`vlan`, VLAN name or ID returned by the NAC rule
+      description: NAC tag used as a rule-matching classifier or as a result attribute for allowed users
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

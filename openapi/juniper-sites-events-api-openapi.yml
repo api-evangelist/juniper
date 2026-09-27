@@ -1,0 +1,1304 @@
+openapi: 3.2.0
+info:
+  title: Mist Sites Events API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Sites Events
+  description: 'Site events are issues or incidents that affect site-assigned access points (aps) and radius, dhcp, and dns servers.
+
+
+    They can be investigated and monitored using the insights dashboard in the juniper mist portal. the dashboard provides a summary of site events, including information about the impacted devices and contributing events.
+
+
+    Site events can be categorized as resolved or acknowledged, and additional details can be accessed by clicking on the event.'
+paths:
+  /api/v1/sites/{site_id}/events/fast_roam:
+    parameters: []
+    get:
+      tags:
+      - Sites Events
+      summary: listSiteRoamingEvents
+      description: List Roaming Events data
+      operationId: listSiteRoamingEvents
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: type
+        in: query
+        description: 'Event type used to filter results. enum: `fail`, `none`, `success`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/fast_roam_result'
+          - description: 'Event type used to filter results. enum: `fail`, `none`, `success`'
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_events_fastroam'
+                - description: Paginated response for fast roaming event results
+                  examples:
+                  - end: 1501023379
+                    limit: 2
+                    next: /api/v1/sites/dca0a44b-324c-11e6-a776-0243ad110007/events/fast_roam?type=success&start=1428939600&end=1428949600&limit=200&token=AAAAEgAIAAVVJh4hF8AAAARzc2lkAH%2F%2F%2F%2F0%3D
+                    results:
+                    - ap_mac: 5c5b350e040b
+                      client_mac: dc2b2a3fb13d
+                      fromap: 5c5b350e0569
+                      latency: 0.1874195
+                      ssid: marvis_test
+                      subtype: CLIENT_AUTHENTICATED_11R
+                      timestamp: 1501000002283782
+                    start: 1500940800
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    end: 1501023379
+                    limit: 2
+                    next: /api/v1/sites/dca0a44b-324c-11e6-a776-0243ad110007/events/fast_roam?type=success&start=1428939600&end=1428949600&limit=200&token=AAAAEgAIAAVVJh4hF8AAAARzc2lkAH%2F%2F%2F%2F0%3D
+                    results:
+                    - ap_mac: 5c5b350e040b
+                      client_mac: dc2b2a3fb13d
+                      fromap: 5c5b350e0569
+                      latency: 0.1874195
+                      ssid: marvis_test
+                      subtype: CLIENT_AUTHENTICATED_11R
+                      timestamp: 1501000002283782
+                    start: 1500940800
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_events_fastroam'
+                - description: Paginated response for fast roaming event results
+                  examples:
+                  - end: 1501023379
+                    limit: 2
+                    next: /api/v1/sites/dca0a44b-324c-11e6-a776-0243ad110007/events/fast_roam?type=success&start=1428939600&end=1428949600&limit=200&token=AAAAEgAIAAVVJh4hF8AAAARzc2lkAH%2F%2F%2F%2F0%3D
+                    results:
+                    - ap_mac: 5c5b350e040b
+                      client_mac: dc2b2a3fb13d
+                      fromap: 5c5b350e0569
+                      latency: 0.1874195
+                      ssid: marvis_test
+                      subtype: CLIENT_AUTHENTICATED_11R
+                      timestamp: 1501000002283782
+                    start: 1500940800
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    end: 1501023379
+                    limit: 2
+                    next: /api/v1/sites/dca0a44b-324c-11e6-a776-0243ad110007/events/fast_roam?type=success&start=1428939600&end=1428949600&limit=200&token=AAAAEgAIAAVVJh4hF8AAAARzc2lkAH%2F%2F%2F%2F0%3D
+                    results:
+                    - ap_mac: 5c5b350e040b
+                      client_mac: dc2b2a3fb13d
+                      fromap: 5c5b350e0569
+                      latency: 0.1874195
+                      ssid: marvis_test
+                      subtype: CLIENT_AUTHENTICATED_11R
+                      timestamp: 1501000002283782
+                    start: 1500940800
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/events/system/count:
+    parameters: []
+    get:
+      tags:
+      - Sites Events
+      summary: countSiteSystemEvents
+      description: Count system events for a site, optionally grouped by the `distinct` field and filtered by time range. Use Count Org System Events to count system events across the organization.
+      operationId: countSiteSystemEvents
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: distinct
+        in: query
+        description: 'Field used to group this count response. enum: `type`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/site_system_events_count_distinct'
+          - description: 'Field used to group this count response. enum: `type`'
+      - name: type
+        in: query
+        description: See [List Device Events Definitions]($e/Constants%20Events/listDeviceEventsDefinitions)
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      responses:
+        '200':
+          description: Result of Count
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_count'
+                - description: Distinct count response for time-bounded search results
+                  examples:
+                  - distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_count'
+                - description: Distinct count response for time-bounded search results
+                  examples:
+                  - distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/events/system/search:
+    parameters: []
+    get:
+      tags:
+      - Sites Events
+      summary: searchSiteSystemEvents
+      description: Search system events for a site with time range, sorting, and pagination controls. Use Search Org System Events to search system events across the organization.
+      operationId: searchSiteSystemEvents
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: type
+        in: query
+        description: See [List Device Events Definitions]($e/Constants%20Events/listDeviceEventsDefinitions)
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: sort
+        in: query
+        description: On which field the list should be sorted, -prefix represents DESC order
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: timestamp
+          examples:
+          - -site_id
+      - name: search_after
+        in: query
+        description: Pagination cursor for retrieving subsequent pages of results. This value is automatically populated by Mist in the `next` URL from the previous response and should not be manually constructed.
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_device_events_search'
+                - description: Paginated response for device or system event search results
+                  examples:
+                  - end: 0
+                    limit: 0
+                    next: string
+                    results:
+                    - ap: 5c5b351e13b5
+                      apfw: 5c5b351e13b5
+                      model: BT11-WW
+                      org_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862a
+                      site_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                      text: Succeeding DNS query from 172.29.101.134 to 172.29.101.7 for "portal.mistsys.com" on vlan 1, id 60224
+                      timestamp: 1547235620.89
+                      type: CLIENT_DNS_OK
+                    - device_type: gateway
+                      job_id: c2096de9-0ca4-4a8b-b500-d37cbe0f0baf
+                      mac: d007ca6c6ac0
+                      org_id: 86f0c649-06b1-4337-b3d4-25eeb887f732
+                      site_id: 9f8d28eb-77c7-44c7-a85b-4426bf291679
+                      status: PROVISION_IN_PROGRESS
+                      template_id: 660e8400-e29b-41d4-a716-446655440001
+                      timestamp: 1748987445.959
+                      tunnel_name: zs1
+                      type: NOTICE
+                    start: 0
+                    total: 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    end: 0
+                    limit: 0
+                    next: string
+                    results:
+                    - ap: 5c5b351e13b5
+                      apfw: 5c5b351e13b5
+                      model: BT11-WW
+                      org_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862a
+                      site_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                      text: Succeeding DNS query from 172.29.101.134 to 172.29.101.7 for "portal.mistsys.com" on vlan 1, id 60224
+                      timestamp: 1547235620.89
+                      type: CLIENT_DNS_OK
+                    - device_type: gateway
+                      job_id: c2096de9-0ca4-4a8b-b500-d37cbe0f0baf
+                      mac: d007ca6c6ac0
+                      org_id: 86f0c649-06b1-4337-b3d4-25eeb887f732
+                      site_id: 9f8d28eb-77c7-44c7-a85b-4426bf291679
+                      status: PROVISION_IN_PROGRESS
+                      template_id: 660e8400-e29b-41d4-a716-446655440001
+                      timestamp: 1748987445.959
+                      tunnel_name: zs1
+                      type: NOTICE
+                    start: 0
+                    total: 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_device_events_search'
+                - description: Paginated response for device or system event search results
+                  examples:
+                  - end: 0
+                    limit: 0
+                    next: string
+                    results:
+                    - ap: 5c5b351e13b5
+                      apfw: 5c5b351e13b5
+                      model: BT11-WW
+                      org_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862a
+                      site_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                      text: Succeeding DNS query from 172.29.101.134 to 172.29.101.7 for "portal.mistsys.com" on vlan 1, id 60224
+                      timestamp: 1547235620.89
+                      type: CLIENT_DNS_OK
+                    - device_type: gateway
+                      job_id: c2096de9-0ca4-4a8b-b500-d37cbe0f0baf
+                      mac: d007ca6c6ac0
+                      org_id: 86f0c649-06b1-4337-b3d4-25eeb887f732
+                      site_id: 9f8d28eb-77c7-44c7-a85b-4426bf291679
+                      status: PROVISION_IN_PROGRESS
+                      template_id: 660e8400-e29b-41d4-a716-446655440001
+                      timestamp: 1748987445.959
+                      tunnel_name: zs1
+                      type: NOTICE
+                    start: 0
+                    total: 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    end: 0
+                    limit: 0
+                    next: string
+                    results:
+                    - ap: 5c5b351e13b5
+                      apfw: 5c5b351e13b5
+                      model: BT11-WW
+                      org_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862a
+                      site_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                      text: Succeeding DNS query from 172.29.101.134 to 172.29.101.7 for "portal.mistsys.com" on vlan 1, id 60224
+                      timestamp: 1547235620.89
+                      type: CLIENT_DNS_OK
+                    - device_type: gateway
+                      job_id: c2096de9-0ca4-4a8b-b500-d37cbe0f0baf
+                      mac: d007ca6c6ac0
+                      org_id: 86f0c649-06b1-4337-b3d4-25eeb887f732
+                      site_id: 9f8d28eb-77c7-44c7-a85b-4426bf291679
+                      status: PROVISION_IN_PROGRESS
+                      template_id: 660e8400-e29b-41d4-a716-446655440001
+                      timestamp: 1748987445.959
+                      tunnel_name: zs1
+                      type: NOTICE
+                    start: 0
+                    total: 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    response_device_events_search:
+      title: response_device_events_search
+      required:
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Epoch timestamp for the end of the event search window
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of event records returned in this page
+          contentEncoding: int32
+        next:
+          type: string
+          description: Pagination cursor or URL for retrieving the next page of event records
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/device_event'
+          description: Device or system event records matching the search filters
+        start:
+          type: integer
+          description: Epoch timestamp for the start of the event search window
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of event records matching the search filters across all pages
+          contentEncoding: int32
+      description: Paginated response for device or system event search results
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    event_fastroam:
+      title: event_fastroam
+      required:
+      - ap_mac
+      - client_mac
+      - fromap
+      - latency
+      - ssid
+      - timestamp
+      type: object
+      properties:
+        ap_mac:
+          type: string
+          description: Destination AP MAC address for the roam
+        client_mac:
+          type: string
+          description: Roaming client MAC address for the event
+        fromap:
+          type: string
+          description: Source AP MAC address reported for the roam
+        latency:
+          type: number
+          description: Roaming latency measured for the client event, in seconds
+        ssid:
+          type: string
+          description: Wireless network SSID involved in the roam
+        subtype:
+          type: string
+          description: Detailed roaming event subtype
+        timestamp:
+          type: number
+          description: Time when the roaming event occurred
+          readOnly: true
+        type:
+          allOf:
+          - $ref: '#/components/schemas/event_fastroam_type2'
+          - description: 'Fast-roam result category for the event. enum: `fail`, `none`, `pingpong`, `poor`, `slow`, `success`.'
+      description: Fast-roaming event observed for a wireless client
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    count_result:
+      title: count_result
+      required:
+      - count
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of matching items for the distinct value or values in this result
+          contentEncoding: int32
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    device_event:
+      title: device_event
+      required:
+      - org_id
+      - timestamp
+      - type
+      type: object
+      properties:
+        ap:
+          type: string
+          description: Deprecated AP MAC address field; use `mac` instead
+          deprecated: true
+        ap_name:
+          type: string
+          description: Deprecated AP name field; use `device_name` instead
+          deprecated: true
+        apfw:
+          type: string
+          description: AP firmware version associated with the device event
+        audit_id:
+          type: string
+          description: Audit log identifier associated with the device event
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        bandwidth:
+          type: integer
+          description: Channel bandwidth associated with a radio event, in MHz
+          contentEncoding: int32
+        channel:
+          type: integer
+          description: RF channel associated with the device event
+          contentEncoding: int32
+        chassis_mac:
+          type: string
+          description: Chassis MAC address associated with the device event
+        count:
+          type: integer
+          description: Event count reported in the device event payload
+          contentEncoding: int32
+        device_name:
+          type: string
+          description: Name of the device associated with the event
+        device_type:
+          allOf:
+          - $ref: '#/components/schemas/device_type6'
+          - description: 'Device type associated with the event. enum: `ap`, `gateway`, `switch`.'
+        ev_type:
+          allOf:
+          - $ref: '#/components/schemas/webhook_device_events_event_ev_type2'
+          - description: 'Advisory severity for the device event. enum: `notice`, `warn`.'
+        ext_ip:
+          type: string
+          description: External IP address reported for the device event
+        job_id:
+          type: string
+          description: Job identifier associated with a tunnel provisioning event (present when `includes`==`ext_tunnel`)
+          contentEncoding: uuid
+        mac:
+          type: string
+          description: Device MAC address associated with the event
+        model:
+          type: string
+          description: Device model associated with the event
+        node:
+          type: string
+          description: Cluster node identifier associated with the device event
+        org_id:
+          type: string
+          description: Organization identifier associated with the device event
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        port_id:
+          type: string
+          description: Port identifier associated with the device event
+        power:
+          type: integer
+          description: Transmit power associated with a radio event
+          contentEncoding: int32
+        pre_bandwidth:
+          type: integer
+          description: Previous channel bandwidth before an RRM change, in MHz
+          contentEncoding: int32
+        pre_channel:
+          type: integer
+          description: Previous RF channel before an RRM change
+          contentEncoding: int32
+        pre_power:
+          type: integer
+          description: Previous transmit power before an RRM change
+          contentEncoding: int32
+        pre_usage:
+          type: integer
+          description: Previous radio usage band before an RRM change
+          contentEncoding: int32
+        reason:
+          type: string
+          description: Optional reason text reported for the device event
+        site_id:
+          type: string
+          description: Site identifier associated with the device event
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        site_name:
+          type: string
+          description: Name of the site associated with the event
+        status:
+          type: string
+          description: Tunnel provisioning status for ext_tunnel events (e.g. `PROVISION_IN_PROGRESS`)
+        template_id:
+          type: string
+          description: Gateway template identifier associated with a tunnel provisioning event (present when `includes`==`ext_tunnel`)
+          contentEncoding: uuid
+        text:
+          type: string
+          description: Optional human-readable text for the device event
+        timestamp:
+          type: number
+          description: Time when the device event occurred
+          readOnly: true
+        tunnel_name:
+          type: string
+          description: Tunnel name associated with a tunnel provisioning event (present when `includes`==`ext_tunnel`)
+        type:
+          type: string
+          description: Device event type key
+        usage:
+          type: integer
+          description: Current radio usage band for an RRM event
+          contentEncoding: int32
+        version:
+          type: string
+          description: Firmware or software version associated with the device event
+      description: Device event payload returned by search and webhook APIs
+    site_system_events_count_distinct:
+      title: site_system_events_count_distinct
+      const: type
+      type: string
+      description: 'Distinct field used when counting site system events. enum: `type`'
+    webhook_device_events_event_ev_type2:
+      title: webhook_device_events_event_ev_type2
+      enum:
+      - notice
+      - warn
+      type: string
+      description: 'Advisory severity for the device event. enum: `notice`, `warn`.'
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_events_fastroam:
+      title: response_events_fastroam
+      required:
+      - end
+      - limit
+      - results
+      - start
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Epoch timestamp for the end of the roaming event search window
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of roaming event records returned in this page
+          contentEncoding: int32
+        next:
+          type: string
+          description: Pagination cursor or URL for retrieving the next page of roaming event records; null when no next page exists
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/event_fastroam'
+          description: Fast roaming event records matching the search filters
+        start:
+          type: integer
+          description: Epoch timestamp for the start of the roaming event search window
+          contentEncoding: int32
+      description: Paginated response for fast roaming event results
+    device_type6:
+      title: device_type6
+      enum:
+      - ap
+      - gateway
+      - switch
+      type: string
+      description: 'Device type associated with the event. enum: `ap`, `gateway`, `switch`.'
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    fast_roam_result:
+      title: fast_roam_result
+      enum:
+      - fail
+      - none
+      - success
+      type: string
+      description: 'enum: `fail`, `none`, `success`'
+    event_fastroam_type2:
+      title: event_fastroam_type2
+      enum:
+      - fail
+      - none
+      - pingpong
+      - poor
+      - slow
+      - success
+      type: string
+      description: 'Fast-roam result category for the event. enum: `fail`, `none`, `pingpong`, `poor`, `slow`, `success`.'
+    response_count:
+      title: response_count
+      required:
+      - distinct
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        distinct:
+          type: string
+          description: Field used to group the count results
+        end:
+          type: integer
+          description: Search window end timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of distinct count results requested
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/count_result'
+          description: Count results grouped by the distinct field
+        start:
+          type: integer
+          description: Search window start timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of distinct result buckets returned
+          contentEncoding: int32
+      description: Distinct count response for time-bounded search results
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

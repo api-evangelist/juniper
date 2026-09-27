@@ -1,0 +1,1073 @@
+openapi: 3.2.0
+info:
+  title: Mist Admins API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Admins
+  description: 'Admin API calls can be used to create, manage or authenticate Mist administrators.
+
+
+    To register administrators into an existing MSP account or Organization, please check: * Invite Msp Admin * Invite Org Admin'
+paths:
+  /api/v1/invite/verify/{token}:
+    parameters: []
+    post:
+      tags:
+      - Admins
+      summary: verifyAdminInvite
+      description: Accept an administrator invite using the invite verification token from the invite email. This public endpoint does not require authentication. After a successful verification, call Get Self to refresh the authenticated admin profile and retrieve the newly granted privileges.
+      operationId: verifyAdminInvite
+      parameters:
+      - name: token
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not Found
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_detail_string'
+                - description: Response containing a human-readable detail message
+                  examples:
+                  - '{"detail":"invalid secret"}'
+                  - '{"detail":"invite created by self"}'
+                contentMediaType: application/json
+              examples:
+                Invalid Secret:
+                  value:
+                    detail: invalid secret
+                Invite Created By Self:
+                  value:
+                    detail: invite created by self
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_detail_string'
+                - description: Response containing a human-readable detail message
+                  examples:
+                  - '{"detail":"invalid secret"}'
+                  - '{"detail":"invite created by self"}'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Invalid Secret:
+                  value:
+                    detail: invalid secret
+                Invite Created By Self:
+                  value:
+                    detail: invite created by self
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+      security: []
+  /api/v1/register:
+    parameters: []
+    post:
+      tags:
+      - Admins
+      summary: registerNewAdmin
+      description: 'Register a new administrator account and initial organization. This public endpoint does not require authentication. Mist sends a verification email containing a link such as `/verify/register?token={token}`; use Verify Registration to complete registration with that token.
+
+
+        Use Get Registration Information before submitting this request to determine whether CAPTCHA is required, which CAPTCHA provider to render, and which public site key to use. If CAPTCHA is required, include the provider response token in `recaptcha` and the provider name in `recaptcha_flavor`.'
+      operationId: registerNewAdmin
+      parameters: []
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/admin_invite'
+              - description: Request Body
+                examples:
+                - account_only: false
+                  allow_mist: false
+                  city: Cupertino
+                  country: United States
+                  email: test@mistsys.com
+                  first_name: John
+                  invite_code: MISTROCKS
+                  last_name: Smith
+                  org_name: Smith LLC
+                  password: foryoureyesonly
+                  recaptcha: string
+                  recaptcha_flavor: hcaptcha
+                  referer_invite_token: Dm2gtT8dwMeM4Bc2E8FLIaA96VHOjPat
+                  return_to: https://mist.zendesk.com/hc/quickstart.pdf
+                  state: California
+                  street_address: 1601 S De Anza Blvd Ste 248
+                  street_address 2: 1601 S De Anza Blvd Ste 248
+                  zipcode: '95014'
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  account_only: false
+                  allow_mist: false
+                  city: Cupertino
+                  country: United States
+                  email: test@mistsys.com
+                  first_name: John
+                  invite_code: MISTROCKS
+                  last_name: Smith
+                  org_name: Smith LLC
+                  password: foryoureyesonly
+                  recaptcha: string
+                  recaptcha_flavor: hcaptcha
+                  referer_invite_token: Dm2gtT8dwMeM4Bc2E8FLIaA96VHOjPat
+                  return_to: https://mist.zendesk.com/hc/quickstart.pdf
+                  state: California
+                  street_address: 1601 S De Anza Blvd Ste 248
+                  street_address 2: 1601 S De Anza Blvd Ste 248
+                  zipcode: '95014'
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+      security: []
+  /api/v1/register/recaptcha:
+    parameters: []
+    get:
+      tags:
+      - Admins
+      summary: getAdminRegistrationInfo
+      description: Return the public CAPTCHA settings required for administrator registration. This public endpoint does not require authentication. Use the returned `flavor`, `required`, and `sitekey` values to render the correct CAPTCHA challenge before calling Register New Admin.
+      operationId: getAdminRegistrationInfo
+      parameters:
+      - name: recaptcha_flavor
+        in: query
+        description: 'Filter login settings by reCAPTCHA flavor. enum: `google`, `hcaptcha`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/recaptcha_flavor'
+          - description: 'Filter login settings by reCAPTCHA flavor. enum: `google`, `hcaptcha`'
+            examples:
+            - hcaptcha
+      responses:
+        '200':
+          description: Example response
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/recaptcha'
+                - description: CAPTCHA settings returned for admin registration
+                  examples:
+                  - '{"flavor":"google","required":true,"sitekey":"6LdAewsTAAAAAE25XKQhPEQ2FiMTft-WrZXQ5NUd"}'
+                  - '{"flavor":"hcaptcha","required":true,"sitekey":"6LdAewsTAAAAAE25XKQhPEQ2FiMTft-WrZXQ5NUd"}'
+                contentMediaType: application/json
+              examples:
+                Google:
+                  value:
+                    flavor: google
+                    required: true
+                    sitekey: 6LdAewsTAAAAAE25XKQhPEQ2FiMTft-WrZXQ5NUd
+                Hcaptcha:
+                  value:
+                    flavor: hcaptcha
+                    required: true
+                    sitekey: 6LdAewsTAAAAAE25XKQhPEQ2FiMTft-WrZXQ5NUd
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/recaptcha'
+                - description: CAPTCHA settings returned for admin registration
+                  examples:
+                  - '{"flavor":"google","required":true,"sitekey":"6LdAewsTAAAAAE25XKQhPEQ2FiMTft-WrZXQ5NUd"}'
+                  - '{"flavor":"hcaptcha","required":true,"sitekey":"6LdAewsTAAAAAE25XKQhPEQ2FiMTft-WrZXQ5NUd"}'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Google:
+                  value:
+                    flavor: google
+                    required: true
+                    sitekey: 6LdAewsTAAAAAE25XKQhPEQ2FiMTft-WrZXQ5NUd
+                Hcaptcha:
+                  value:
+                    flavor: hcaptcha
+                    required: true
+                    sitekey: 6LdAewsTAAAAAE25XKQhPEQ2FiMTft-WrZXQ5NUd
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+      security: []
+  /api/v1/register/verify/{token}:
+    parameters: []
+    post:
+      tags:
+      - Admins
+      summary: verifyRegistration
+      description: Verify a new administrator registration using the token from the registration email. This public endpoint does not require authentication. A successful verification creates a login session and may also apply a pending invitation; the response indicates whether an invitation could not be applied automatically.
+      operationId: verifyRegistration
+      parameters:
+      - name: token
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          headers:
+            Set-Cookie:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                    examples:
+                    - csrftoken=vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx; expires=Tue, 15-Mar-2016 19:47:20 GMT; Max-Age=31449600; Path=/
+                    contentMediaType: text/plain
+                  example: csrftoken=vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx; expires=Tue, 15-Mar-2016 19:47:20 GMT; Max-Age=31449600; Path=/
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_verify_token_success'
+                - description: Successful registration token verification response
+                  examples:
+                  - '{"return_to":"https://mist.zendesk.com/hc/quickstart.pdf"}'
+                  - '{"detail":"password policy not met","invite_not_applied":true,"min_length":8}'
+                contentMediaType: application/json
+              examples:
+                Success:
+                  value:
+                    return_to: https://mist.zendesk.com/hc/quickstart.pdf
+                success-but-failed-to-apply_the-invitation-automatically:
+                  value:
+                    detail: password policy not met
+                    invite_not_applied: true
+                    min_length: 8
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_verify_token_success'
+                - description: Successful registration token verification response
+                  examples:
+                  - '{"return_to":"https://mist.zendesk.com/hc/quickstart.pdf"}'
+                  - '{"detail":"password policy not met","invite_not_applied":true,"min_length":8}'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Success:
+                  value:
+                    return_to: https://mist.zendesk.com/hc/quickstart.pdf
+                success-but-failed-to-apply_the-invitation-automatically:
+                  value:
+                    detail: password policy not met
+                    invite_not_applied: true
+                    min_length: 8
+        '400':
+          description: Response if verification expired or already registered
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_detail_string'
+                - description: Response containing a human-readable detail message
+                  examples:
+                  - '{"detail":"already registered"}'
+                  - '{"detail":"expired"}'
+                contentMediaType: application/json
+              examples:
+                Already Registered:
+                  value:
+                    detail: already registered
+                Verification Expired:
+                  value:
+                    detail: expired
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_detail_string'
+                - description: Response containing a human-readable detail message
+                  examples:
+                  - '{"detail":"already registered"}'
+                  - '{"detail":"expired"}'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Already Registered:
+                  value:
+                    detail: already registered
+                Verification Expired:
+                  value:
+                    detail: expired
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Response if secret is invalid
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_detail_string'
+                - description: Response containing a human-readable detail message
+                  examples:
+                  - detail: Not found.
+                contentMediaType: application/json
+              examples:
+                Not Found:
+                  value:
+                    detail: Not found.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_detail_string'
+                - description: Response containing a human-readable detail message
+                  examples:
+                  - detail: Not found.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Not Found:
+                  value:
+                    detail: Not found.
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+      security: []
+components:
+  schemas:
+    response_detail_string:
+      title: response_detail_string
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable detail message returned by the API
+      description: Response containing a human-readable detail message
+    response_verify_token_success:
+      title: response_verify_token_success
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Result message returned with the verification response
+        invite_not_applied:
+          type: boolean
+          description: Whether the invitation was verified but not applied automatically
+        min_length:
+          type: integer
+          description: Required minimum password length from the applicable password policy
+          contentEncoding: int32
+        return_to:
+          type: string
+          description: URL to redirect the user to after successful registration verification
+      description: Successful registration token verification response
+    recaptcha_flavor1:
+      title: recaptcha_flavor1
+      enum:
+      - google
+      - hcaptcha
+      type: string
+      description: CAPTCHA provider used for registration, such as Google reCAPTCHA or hCaptcha
+      examples:
+      - hcaptcha
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    recaptcha_flavor:
+      title: recaptcha_flavor
+      enum:
+      - google
+      - hcaptcha
+      type: string
+      description: 'CAPTCHA provider flavor. enum: `google`, `hcaptcha`'
+      examples:
+      - hcaptcha
+    admin_invite:
+      title: admin_invite
+      required:
+      - email
+      - first_name
+      - last_name
+      - org_name
+      - password
+      - recaptcha
+      type: object
+      properties:
+        account_only:
+          type: boolean
+          description: Skip creating initial setup if true
+          default: false
+        allow_mist:
+          type: boolean
+          description: Whether to allow Mist to look at this org
+          default: false
+        city:
+          type: string
+          description: Registration city for the admin user
+          examples:
+          - Cupertino
+        country:
+          type: string
+          description: Registration country or region for the admin user, as a name or ISO code
+          examples:
+          - United States
+        email:
+          maxLength: 64
+          type: string
+          description: Registration email address for the admin user
+          examples:
+          - test@mistsys.com
+        first_name:
+          type: string
+          description: Given name for the registering admin user
+          examples:
+          - John
+        invite_code:
+          type: string
+          description: Invite code used to authorize new admin registration
+          examples:
+          - MISTROCKS
+        last_name:
+          type: string
+          description: Family name for the registering admin user
+          examples:
+          - Smith
+        org_name:
+          type: string
+          description: Organization name supplied during initial admin registration
+          examples:
+          - Smith LLC
+        password:
+          type: string
+          description: Credential password for the registering admin account
+          contentEncoding: password
+          examples:
+          - foryoureyesonly
+        recaptcha:
+          type: string
+          description: CAPTCHA verification token submitted during admin registration
+        recaptcha_flavor:
+          allOf:
+          - $ref: '#/components/schemas/recaptcha_flavor4'
+          - description: 'CAPTCHA provider flavor used for registration verification. enum: `google`, `hcaptcha`.'
+            examples:
+            - hcaptcha
+        referer_invite_token:
+          type: string
+          description: Invite token to apply after account creation
+          examples:
+          - Dm2gtT8dwMeM4Bc2E8FLIaA96VHOjPat
+        return_to:
+          type: string
+          description: URL the user should be redirected back to
+          examples:
+          - https://mist.zendesk.com/hc/quickstart.pdf
+        state:
+          type: string
+          description: Registration state or province for the admin user, optional depending on country or region
+          examples:
+          - CA
+        street_address:
+          type: string
+          description: Street address of registering user
+          examples:
+          - 1601 S De Anza Blvd Ste 248
+        street_address 2:
+          type: string
+          description: Street address 2 of registering user
+          examples:
+          - 1601 S De Anza Blvd Ste 248
+        zipcode:
+          type: string
+          description: Postal code for the registering admin user
+          examples:
+          - '95014'
+      description: Administrator invitation and initial registration payload
+    recaptcha:
+      title: recaptcha
+      type: object
+      properties:
+        flavor:
+          allOf:
+          - $ref: '#/components/schemas/recaptcha_flavor1'
+          - description: CAPTCHA provider used for registration, such as Google reCAPTCHA or hCaptcha
+            examples:
+            - hcaptcha
+        required:
+          type: boolean
+          description: Whether CAPTCHA verification is required for registration
+        sitekey:
+          type: string
+          description: Public site key used to render the selected CAPTCHA provider
+      description: CAPTCHA settings returned for admin registration
+    recaptcha_flavor4:
+      title: recaptcha_flavor4
+      enum:
+      - google
+      - hcaptcha
+      type: string
+      description: 'CAPTCHA provider flavor used for registration verification. enum: `google`, `hcaptcha`.'
+      examples:
+      - hcaptcha
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

@@ -1,0 +1,3568 @@
+openapi: 3.2.0
+info:
+  title: Mist Sites Gateway Templates API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Sites Gateway Templates
+  description: The API Endpoints for the Gateway Templates at the site level can be used to get the site derived networks, meaning the org level configuration with the site variables resolved..
+paths:
+  /api/v1/sites/{site_id}/gatewaytemplates/derived:
+    parameters: []
+    get:
+      tags:
+      - Sites Gateway Templates
+      summary: listSiteGatewayTemplatesDerived
+      description: Get the list of derived Gateway Templates a Site
+      operationId: listSiteGatewayTemplatesDerived
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: resolve
+        in: query
+        description: Whether resolve the site variables
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/gateway_template'
+                description: List of gateway device profiles
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/gateway_template'
+                description: List of gateway device profiles
+                contentMediaType: application/vnd.api+json
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    gateway_port_usage2:
+      title: gateway_port_usage2
+      enum:
+      - ha_control
+      - ha_data
+      - lan
+      - wan
+      type: string
+      description: 'Logical usage assigned to the port. enum: `ha_control`, `ha_data`, `lan`, `wan`.'
+    idp_profile_overwrite:
+      title: idp_profile_overwrite
+      type: object
+      properties:
+        action:
+          allOf:
+          - $ref: '#/components/schemas/idp_profile_action2'
+          - description: 'Enforcement action applied when this overwrite rule matches. enum: `alert`, `close`, `drop`.'
+            examples:
+            - alert
+        matching:
+          allOf:
+          - $ref: '#/components/schemas/idp_profile_matching2'
+          - description: Criteria that select signatures for this overwrite rule
+        name:
+          type: string
+          description: Display name for this IDP profile overwrite rule
+      description: Override rule that changes the IDP action for matching signatures
+    gateway_mgmt_auto_signature_update2:
+      title: gateway_mgmt_auto_signature_update2
+      type: object
+      properties:
+        day_of_week:
+          allOf:
+          - $ref: '#/components/schemas/day_of_week1'
+          - description: 'Scheduled weekday for automatic signature updates. enum: `any`, `fri`, `mon`, `sat`, `sun`, `thu`, `tue`, `wed`.'
+        enable:
+          type: boolean
+          description: Whether automatic security signature updates are enabled
+          default: true
+        time_of_day:
+          type: string
+          description: Optional, Mist will decide the timing
+      description: Schedule for automatic security signature updates
+    tunnel_config_probe:
+      title: tunnel_config_probe
+      type: object
+      properties:
+        interval:
+          type: integer
+          description: How often to trigger the probe
+          contentEncoding: int32
+        threshold:
+          type: integer
+          description: Number of consecutive misses before declaring the tunnel down
+          contentEncoding: int32
+        timeout:
+          type: integer
+          description: Time within which to complete the connectivity check
+          contentEncoding: int32
+        type:
+          allOf:
+          - $ref: '#/components/schemas/tunnel_config_probe_type2'
+          - description: 'Protocol used by the custom IPsec tunnel health probe. enum: `http`, `icmp`.'
+      description: Tunnel health probe settings
+    tunnel_config_enc_algo3:
+      title: tunnel_config_enc_algo3
+      enum:
+      - 3des
+      - aes128
+      - aes256
+      - aes_gcm128
+      - aes_gcm256
+      type: string
+      description: 'Cipher algorithm used by this IKE proposal. enum: `3des`, `aes128`, `aes256`, `aes_gcm128`, `aes_gcm256`.'
+    tunnel_config_auto_provision2:
+      title: tunnel_config_auto_provision2
+      required:
+      - provider
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Enable auto provisioning for the tunnel. If enabled, the `primary` and `secondary` nodes will be ignored.
+        latlng:
+          allOf:
+          - $ref: '#/components/schemas/tunnel_config_auto_provision_lat_lng2'
+          - description: Geographic coordinate override used for tunnel POP selection
+        primary:
+          allOf:
+          - $ref: '#/components/schemas/tunnel_config_auto_provision_node3'
+          - description: Main auto-provisioned tunnel endpoint settings
+        provider:
+          allOf:
+          - $ref: '#/components/schemas/tunnel_config_auto_provision_provider2'
+          - description: 'Tunnel provider used for automatic endpoint provisioning. enum: `jse-ipsec`, `zscaler-ipsec`.'
+        region:
+          type: string
+          description: API override for POP selection in the case user wants to override the auto discovery of remote network location and force the tunnel to use the specified peer location.
+        secondary:
+          allOf:
+          - $ref: '#/components/schemas/tunnel_config_auto_provision_node1'
+          - description: Backup auto-provisioned tunnel endpoint settings
+        service_connection:
+          type: string
+          description: if `provider`==`prisma-ipsec`. By default, we'll use the location of the site to determine the optimal Remote Network location, optionally, service_connection can be considered, then we'll also consider this along with the site location. Define service_connection if the traffic is to be routed to a specific service connection. This field takes a service connection name that is configured in the Prisma cloud, Prisma Access Setup -> Service Connections.
+          examples:
+          - Juniper-Lab-SC-1
+      description: Provider auto-provisioning settings for tunnel endpoints
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    service_policy_ssl_proxy3:
+      title: service_policy_ssl_proxy3
+      type: object
+      properties:
+        ciphers_category:
+          allOf:
+          - $ref: '#/components/schemas/ssl_proxy_ciphers_category2'
+          - description: 'Allowed cipher strength category for SSL proxy inspection. enum: `medium`, `strong`, `weak`.'
+        enabled:
+          type: boolean
+          description: Whether SSL proxy inspection is enabled for the service policy
+          default: false
+      description: TLS inspection settings applied by this service policy
+    idp_profile:
+      title: idp_profile
+      type: object
+      properties:
+        base_profile:
+          allOf:
+          - $ref: '#/components/schemas/idp_profile_base_profile2'
+          - description: 'Built-in IDP baseline profile inherited before applying overwrites. enum: `critical`, `standard`, `strict`.'
+            examples:
+            - strict
+        created_time:
+          type: number
+          description: Timestamp when the IDP profile was created
+          readOnly: true
+        id:
+          type: string
+          description: Unique identifier of the IDP profile
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        modified_time:
+          type: number
+          description: Timestamp when the IDP profile was last modified
+          readOnly: true
+        name:
+          type: string
+          description: Display name of the IDP profile
+          examples:
+          - relaxed
+        org_id:
+          type: string
+          description: Owning organization for the IDP profile
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        overwrites:
+          type: array
+          items:
+            $ref: '#/components/schemas/idp_profile_overwrite'
+          description: IDP signature override rules applied on top of the base profile
+      description: Organization IDP profile with a base profile and targeted overwrite rules
+    service_policy:
+      title: service_policy
+      type: object
+      properties:
+        action:
+          allOf:
+          - $ref: '#/components/schemas/allow_deny2'
+          - description: Allow or deny action for traffic matched by this service policy
+        antivirus:
+          allOf:
+          - $ref: '#/components/schemas/service_policy_antivirus1'
+          - description: Malware and virus inspection settings applied by this service policy
+        appqoe:
+          allOf:
+          - $ref: '#/components/schemas/service_policy_appqoe1'
+          - description: Application QoE settings applied by this service policy
+        ewf:
+          type: array
+          items:
+            $ref: '#/components/schemas/service_policy_ewf_rule'
+          description: Enhanced web filtering rules applied by this service policy
+        idp:
+          allOf:
+          - $ref: '#/components/schemas/idp_config2'
+          - description: Intrusion detection and prevention settings applied by this service policy
+        local_routing:
+          type: boolean
+          description: Whether the policy permits access within the same VRF
+        name:
+          type: string
+          description: Display name of the service policy
+        path_preference:
+          type: string
+          description: By default, we derive all paths available and use them. Optionally, you can customize by using `path_preference`
+        secintel:
+          allOf:
+          - $ref: '#/components/schemas/service_policy_secintel3'
+          - description: Threat intelligence settings applied by this service policy
+        servicepolicy_id:
+          type: string
+          description: Organization-level service policy identifier used to link and override selected attributes
+          contentEncoding: uuid
+        services:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Application services or service groups matched by this policy
+        skyatp:
+          allOf:
+          - $ref: '#/components/schemas/service_policy_skyatp2'
+          - description: Threat inspection settings provided by Sky ATP for this service policy
+        ssl_proxy:
+          allOf:
+          - $ref: '#/components/schemas/service_policy_ssl_proxy3'
+          - description: TLS inspection settings applied by this service policy
+        syslog:
+          allOf:
+          - $ref: '#/components/schemas/service_policy_syslog2'
+          - description: Remote logging settings applied by this service policy
+        tenants:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: User or network tenants matched by this service policy
+      description: Site-level service policy that allows or denies traffic for tenants and services
+    idp_profile_matching_severity_value:
+      title: idp_profile_matching_severity_value
+      enum:
+      - critical
+      - info
+      - major
+      - minor
+      type: string
+      description: 'enum: `critical`, `info`, `major`, `minor`'
+      examples:
+      - major
+    tunnel_provider_options_zscaler_sub_location:
+      title: tunnel_provider_options_zscaler_sub_location
+      type: object
+      properties:
+        aup_block_internet_until_accepted:
+          type: boolean
+          description: Whether this sub-location blocks internet access until the Acceptable Use Policy is accepted
+          default: false
+        aup_enabled:
+          type: boolean
+          description: Can only be `true` when `auth_required`==`false`, display Acceptable Use Policy (AUP)
+          default: false
+        aup_force_ssl_inspection:
+          type: boolean
+          description: Proxy HTTPs traffic, requiring Zscaler cert to be installed in browser
+          default: false
+        aup_timeout_in_days:
+          maximum: 180
+          minimum: 1
+          type: integer
+          description: Required if `aup_enabled`==`true`. Days before AUP is requested again
+          contentEncoding: int32
+        auth_required:
+          type: boolean
+          description: Enable this option to authenticate users
+          default: false
+        caution_enabled:
+          type: boolean
+          description: Can only be `true` when `auth_required`==`false`, display caution notification for non-authenticated users
+          default: false
+        dn_bandwidth:
+          maximum: 99999
+          minimum: 0.1
+          type:
+          - number
+          - 'null'
+          description: Download bandwidth cap of the link, in Mbps. Disabled if not set
+          examples:
+          - 200
+        idle_time_in_minutes:
+          maximum: 43200
+          minimum: 0
+          type: integer
+          description: Required if `surrogate_IP`==`true`, idle Time to Disassociation
+          contentEncoding: int32
+        name:
+          type: string
+          description: '[network]($h/Orgs%20Networks/_overview) name'
+        ofw_enabled:
+          type: boolean
+          description: If `true`, enable the firewall control option
+          default: false
+        surrogate_IP:
+          type: boolean
+          description: Can only be `true` when `auth_required`==`true`. Map a user to a private IP address so it applies the user's policies, instead of the location's policies
+          default: false
+        surrogate_IP_enforced_for_known_browsers:
+          type: boolean
+          description: Can only be `true` when `surrogate_IP`==`true`, enforce surrogate IP for known browsers
+        surrogate_refresh_time_in_minutes:
+          maximum: 43200
+          minimum: 1
+          type: integer
+          description: Required if `surrogate_IP_enforced_for_known_browsers`==`true`, must be lower or equal than `idle_time_in_minutes`, refresh Time for re-validation of Surrogacy
+          contentEncoding: int32
+        up_bandwidth:
+          maximum: 99999
+          minimum: 0.1
+          type:
+          - number
+          - 'null'
+          description: Download bandwidth cap of the link, in Mbps. Disabled if not set
+          examples:
+          - 200
+      description: Zscaler sub-location settings for a specific network
+    protect_re_custom_protocol2:
+      title: protect_re_custom_protocol2
+      enum:
+      - any
+      - icmp
+      - tcp
+      - udp
+      type: string
+      description: 'Transport protocol matched by this custom Protect RE ACL. enum: `any`, `icmp`, `tcp`, `udp`.'
+    gateway_port_wan_source_nat2:
+      title: gateway_port_wan_source_nat2
+      type: object
+      properties:
+        disabled:
+          type: boolean
+          description: Or to disable the source-nat
+          default: false
+        nat6_pool:
+          type: string
+          description: If alternative nat_pool is desired
+          examples:
+          - 2601:1700:43c0:dc0:20c:29ff:fea7:93bc/126
+        nat_pool:
+          type: string
+          description: If alternative nat_pool is desired
+          examples:
+          - 64.2.4.0/30
+      description: Source NAT settings applied to traffic leaving this WAN port
+    gateway_port_vpn_path:
+      title: gateway_port_vpn_path
+      type: object
+      properties:
+        bfd_profile:
+          allOf:
+          - $ref: '#/components/schemas/gateway_port_vpn_path_bfd_profile2'
+          - description: 'BFD profile used for this VPN path when the VPN `type`==`hub_spoke`. enum: `broadband`, `lte`.'
+        bfd_use_tunnel_mode:
+          type: boolean
+          description: Only if the VPN `type`==`hub_spoke`. Whether to use tunnel mode. SSR only
+          default: false
+        preference:
+          type: integer
+          description: Only if the VPN `type`==`hub_spoke`. For a given VPN, when `path_selection.strategy`==`simple`, the preference for a path (lower is preferred)
+          contentEncoding: int32
+        role:
+          allOf:
+          - $ref: '#/components/schemas/gateway_port_vpn_path_role2'
+          - description: 'Gateway role for this VPN path; valid values depend on the VPN `type`. enum: `hub`, `mesh`, `spoke`.'
+        traffic_shaping:
+          allOf:
+          - $ref: '#/components/schemas/gateway_traffic_shaping1'
+          - description: Traffic shaping settings applied to this VPN path
+      description: VPN path settings for traffic that uses a gateway port
+    service_policy_skyatp_http_inspection2:
+      title: service_policy_skyatp_http_inspection2
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether Sky ATP HTTP inspection is enabled
+        profile:
+          allOf:
+          - $ref: '#/components/schemas/service_policy_skyatp_http_inspection_profile2'
+          - description: 'Sky ATP HTTP inspection profile to apply. enum: `standard`, `strict`.'
+      description: Web traffic inspection settings provided by Sky ATP
+    tunnel_config_enc_algo1:
+      title: tunnel_config_enc_algo1
+      enum:
+      - 3des
+      - aes128
+      - aes256
+      - aes_gcm128
+      - aes_gcm256
+      type: string
+      description: 'Cipher algorithm used by this IPsec proposal. enum: `3des`, `aes128`, `aes256`, `aes_gcm128`, `aes_gcm256`.'
+    tunnel_config_probe_type2:
+      title: tunnel_config_probe_type2
+      enum:
+      - http
+      - icmp
+      type: string
+      description: 'Protocol used by the custom IPsec tunnel health probe. enum: `http`, `icmp`.'
+    service_policy_skyatp_dns_tunnel_detection2:
+      title: service_policy_skyatp_dns_tunnel_detection2
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether Sky ATP DNS tunneling detection is enabled
+        profile:
+          allOf:
+          - $ref: '#/components/schemas/service_policy_skyatp_dns_tunnel_detection_profile2'
+          - description: 'Sky ATP DNS tunneling detection profile to apply. enum: `default`, `standard`, `strict`.'
+      description: Detection settings for DNS tunneling threats provided by Sky ATP
+    tunnel_via2:
+      title: tunnel_via2
+      enum:
+      - primary
+      - secondary
+      type: string
+      description: If `via`==`tunnel`, primary or secondary tunnel associated with this BGP neighbor
+    tunnel_config_auth_algo1:
+      title: tunnel_config_auth_algo1
+      enum:
+      - md5
+      - sha1
+      - sha2
+      type: string
+      description: 'Integrity algorithm used by this IPsec proposal. enum: `md5`, `sha1`, `sha2`.'
+    network_vpn_access_config:
+      title: network_vpn_access_config
+      type: object
+      properties:
+        advertised_subnet:
+          type: string
+          description: If `routed`==`true`, whether to advertise an aggregated subnet toward HUB this is useful when there are multiple networks on SPOKE's side
+          examples:
+          - 172.16.0.0/24
+        allow_ping:
+          type: boolean
+          description: Whether to allow ping from vpn into this routed network
+        destination_nat:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/network_vpn_access_destination_nat_property'
+          description: Destination NAT rules applied for VPN access to this network
+        nat_pool:
+          type: string
+          description: If `routed`==`false` (usually at Spoke), but some hosts needs to be reachable from Hub, a subnet is required to create and advertise the route to Hub
+          examples:
+          - 172.16.0.0/26
+        no_readvertise_to_lan_bgp:
+          type: boolean
+          description: toward LAN-side BGP peers
+          default: false
+        no_readvertise_to_lan_ospf:
+          type: boolean
+          description: toward LAN-side OSPF peers
+          default: false
+        no_readvertise_to_overlay:
+          type: boolean
+          description: toward overlay, how HUB should deal with routes it received from Spokes
+        other_vrfs:
+          type: array
+          items:
+            type: string
+          description: Other VRFs that can receive leaked routes from this spoke network
+        routed:
+          type: boolean
+          description: Whether this network is routable
+        source_nat:
+          allOf:
+          - $ref: '#/components/schemas/network_source_nat2'
+          - description: Source NAT settings used when non-routed spoke hosts must be reachable from the hub
+        static_nat:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/network_vpn_access_static_nat_property'
+          description: Static NAT rules applied for VPN access to this network
+        summarized_subnet:
+          type: string
+          description: toward overlay, how HUB should deal with routes it received from Spokes
+          examples:
+          - 172.16.0.0/16
+        summarized_subnet_to_lan_bgp:
+          type: string
+          description: toward LAN-side BGP peers
+          examples:
+          - 172.16.0.0/16
+        summarized_subnet_to_lan_ospf:
+          type: string
+          description: toward LAN-side OSPF peers
+          examples:
+          - 172.16.0.0/16
+      description: VPN access settings for a network and VPN pair
+    gateway_oob_ip_config3:
+      title: gateway_oob_ip_config3
+      type: object
+      properties:
+        gateway:
+          type: string
+          description: Default gateway for the out-of-band management interface when `type`==`static`
+        ip:
+          type: string
+          description: Static IPv4 address for the out-of-band management interface when `type`==`static`
+        netmask:
+          type: string
+          description: IPv4 netmask or prefix length for the out-of-band management interface when `type`==`static`
+        node1:
+          allOf:
+          - $ref: '#/components/schemas/gateway_oob_ip_config_node12'
+          - description: Out-of-band management IP configuration override for node1 in an HA cluster
+        type:
+          allOf:
+          - $ref: '#/components/schemas/ip_type2'
+          - description: 'IP assignment mode for the out-of-band management interface. enum: `dhcp`, `static`.'
+            examples:
+            - static
+        use_mgmt_vrf:
+          type: boolean
+          description: If supported on the platform. If enabled, DNS will be using this routing-instance, too
+          default: false
+        use_mgmt_vrf_for_host_out:
+          type: boolean
+          description: For host-out traffic (NTP/TACPLUS/RADIUS/SYSLOG/SNMP), if alternative source network/ip is desired
+          default: false
+        vlan_id:
+          oneOf:
+          - type: string
+          - maximum: 4094
+            minimum: 1
+            type: integer
+            contentEncoding: int32
+          description: VLAN ID used for out-of-band management traffic
+      description: Out-of-band management IP defaults in this gateway template
+    gateway_path_preferences_path:
+      title: gateway_path_preferences_path
+      required:
+      - type
+      type: object
+      properties:
+        cost:
+          type: integer
+          description: Relative cost assigned to this path for gateway path selection
+          contentEncoding: int32
+        disabled:
+          type: boolean
+          description: For SSR Only. `true`, if this specific path is undesired
+        gateway_ip:
+          type: string
+          description: Only if `type`==`local`, if a different gateway is desired
+        internet_access:
+          type: boolean
+          description: Only if `type`==`vpn`, if this vpn path can be used for internet
+        name:
+          type: string
+          description: "Required when \n  * `type`==`vpn`: the name of the VPN Path to use \n  * `type`==`wan`: the name of the WAN interface to use"
+        networks:
+          type: array
+          items:
+            type: string
+          description: List of network names used when `type`==`local`
+        target_ips:
+          type: array
+          items:
+            type: string
+          description: List of destination IP addresses to replace when `type`==`local`
+        type:
+          allOf:
+          - $ref: '#/components/schemas/gateway_path_type2'
+          - description: Gateway path source type, such as local network, WAN interface, VPN path, or tunnel
+        wan_name:
+          type: string
+          description: Optional if `type`==`vpn`; WAN interface name associated with the VPN path
+          examples:
+          - wan0
+      description: Candidate path within a gateway path preference
+    gw_routing_policy_term:
+      title: gw_routing_policy_term
+      type: object
+      properties:
+        actions:
+          allOf:
+          - $ref: '#/components/schemas/gw_routing_policy_term_action2'
+          - description: Policy actions applied when this routing policy term matches
+        matching:
+          allOf:
+          - $ref: '#/components/schemas/gw_routing_policy_term_matching2'
+          - description: Route match criteria that must be satisfied before actions are applied
+      description: Gateway routing policy term with match criteria and actions
+    tunnel_config_auto_provision_lat_lng2:
+      title: tunnel_config_auto_provision_lat_lng2
+      required:
+      - lat
+      - lng
+      type: object
+      properties:
+        lat:
+          type: number
+          description: Geographic latitude used for POP selection override
+          examples:
+          - 37.295833
+        lng:
+          type: number
+          description: Geographic longitude used for POP selection override
+          examples:
+          - -122.032946
+      description: Geographic coordinate override used for tunnel POP selection
+    bgp_as:
+      anyOf:
+      - type: string
+      - maximum: 4294967294
+        minimum: 1
+        type: integer
+        contentEncoding: int32
+      description: BGP AS, value in range 1-4294967294. Can be a Variable (e.g. `{{bgp_as}}` )
+      examples:
+      - '65000'
+    idp_profile_action2:
+      title: idp_profile_action2
+      enum:
+      - alert
+      - close
+      - drop
+      type: string
+      description: 'Enforcement action applied when this overwrite rule matches. enum: `alert`, `close`, `drop`.'
+      examples:
+      - alert
+    ssl_proxy_ciphers_category2:
+      title: ssl_proxy_ciphers_category2
+      enum:
+      - medium
+      - strong
+      - weak
+      type: string
+      description: 'Allowed cipher strength category for SSL proxy inspection. enum: `medium`, `strong`, `weak`.'
+    gateway_oob_ip_config_node12:
+      title: gateway_oob_ip_config_node12
+      type: object
+      properties:
+        gateway:
+          type: string
+          description: Default gateway for the node1 out-of-band management interface when `type`==`static`
+        ip:
+          type: string
+          description: Static IPv4 address for the node1 out-of-band management interface when `type`==`static`
+        netmask:
+          type: string
+          description: IPv4 netmask or prefix length for the node1 out-of-band management interface when `type`==`static`; used only if `subnet` is not specified in `networks`
+        type:
+          allOf:
+          - $ref: '#/components/schemas/ip_type5'
+          - description: 'IP assignment mode for the node1 out-of-band management interface. enum: `dhcp`, `static`.'
+            examples:
+            - static
+        use_mgmt_vrf:
+          type: boolean
+          description: If supported on the platform. If enabled, DNS will be using this routing-instance, too
+          default: false
+        use_mgmt_vrf_for_host_out:
+          type: boolean
+          description: Whether to use `mgmt_junos` for host-out traffic (NTP/TACPLUS/RADIUS/SYSLOG/SNMP), if alternative source network/ip is desired
+          default: false
+        vlan_id:
+          oneOf:
+          - type: string
+          - maximum: 4094
+            minimum: 1
+            type: integer
+            contentEncoding: int32
+          description: VLAN ID used for node1 out-of-band management traffic
+      description: Out-of-band management IP configuration override for node1 in an HA cluster
+    gw_routing_policy_term_matching_route_exists2:
+      title: gw_routing_policy_term_matching_route_exists2
+      type: object
+      properties:
+        route:
+          type: string
+          description: Prefix that must exist for this condition to match
+          examples:
+          - 192.168.0.0/24
+        vrf_name:
+          type: string
+          description: Name of the VRF instance where the route is checked; can also be a VPN or WAN name when applicable
+          default: default
+      description: Existing route condition that must be satisfied before this term matches
+    service_policy_skyatp_iot_device_policy2:
+      title: service_policy_skyatp_iot_device_policy2
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether Sky ATP IoT device policy inspection is enabled
+      description: Device threat policy settings provided by Sky ATP for IoT clients
+    service_policy_skyatp2:
+      title: service_policy_skyatp2
+      type: object
+      properties:
+        dns_dga_detection:
+          allOf:
+          - $ref: '#/components/schemas/service_policy_skyatp_dns_dga_detection2'
+          - description: Detection settings for DNS DGA threats provided by Sky ATP
+        dns_tunnel_detection:
+          allOf:
+          - $ref: '#/components/schemas/service_policy_skyatp_dns_tunnel_detection2'
+          - description: Detection settings for DNS tunneling threats provided by Sky ATP
+        http_inspection:
+          allOf:
+          - $ref: '#/components/schemas/service_policy_skyatp_http_inspection2'
+          - description: Web traffic inspection settings provided by Sky ATP
+        iot_device_policy:
+          allOf:
+          - $ref: '#/components/schemas/service_policy_skyatp_iot_device_policy2'
+          - description: Device threat policy settings provided by Sky ATP for IoT clients
+      description: Threat inspection settings provided by Sky ATP for this service policy
+    idp_profile_base_profile2:
+      title: idp_profile_base_profile2
+      enum:
+      - critical
+      - standard
+      - strict
+      type: string
+      description: 'Built-in IDP baseline profile inherited before applying overwrites. enum: `critical`, `standard`, `strict`.'
+      examples:
+      - strict
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    gw_routing_policy:
+      title: gw_routing_policy
+      type: object
+      properties:
+        terms:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/gw_routing_policy_term'
+          description: Ordered terms evaluated by this gateway routing policy
+      description: Gateway routing policy made of ordered match-action terms
+    service_policy_skyatp_dns_dga_detection2:
+      title: service_policy_skyatp_dns_dga_detection2
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether Sky ATP DNS DGA detection is enabled
+        profile:
+          allOf:
+          - $ref: '#/components/schemas/service_policy_skyatp_dns_dga_detection_profile2'
+          - description: 'Sky ATP DNS DGA detection profile to apply. enum: `default`, `standard`, `strict`.'
+      description: Detection settings for DNS DGA threats provided by Sky ATP
+    service_policy_skyatp_dns_tunnel_detection_profile2:
+      title: service_policy_skyatp_dns_tunnel_detection_profile2
+      enum:
+      - default
+      - standard
+      - strict
+      type: string
+      description: 'Sky ATP DNS tunneling detection profile to apply. enum: `default`, `standard`, `strict`.'
+    app_probing_custom_app_protocol2:
+      title: app_probing_custom_app_protocol2
+      enum:
+      - http
+      - icmp
+      type: string
+      description: 'Probe protocol used by this custom application definition. enum: `http`, `icmp`.'
+    allow_deny2:
+      title: allow_deny2
+      enum:
+      - allow
+      - deny
+      type: string
+      description: Allow or deny action for traffic matched by this service policy
+    gateway_path_strategy2:
+      title: gateway_path_strategy2
+      enum:
+      - ecmp
+      - ordered
+      - weighted
+      type: string
+      description: 'Selection strategy used to evaluate the candidate paths. enum: `ecmp`, `ordered`, `weighted`.'
+    gateway_vrf_instance:
+      title: gateway_vrf_instance
+      type: object
+      properties:
+        networks:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Network names included in this gateway VRF instance
+      description: Gateway VRF instance and its member networks
+      examples:
+      - networks:
+        - CORP_NET
+        - MGMT_NET
+    network_internet_access_static_nat_property:
+      title: network_internet_access_static_nat_property
+      type: object
+      properties:
+        internal_ip:
+          type: string
+          description: The Static NAT destination IP address. Must be an IP address (i.e. "192.168.70.3") or a Variable (i.e. "{{myvar}}")
+          examples:
+          - 192.168.70.3
+        name:
+          type: string
+          description: Label for this direct internet static NAT rule
+          examples:
+          - pos_station-1
+        wan_name:
+          type: string
+          description: SRX Only. If not set, we configure the nat policies against all WAN ports for simplicity. Can be a Variable (i.e. "{{myvar}}")
+          examples:
+          - wan0
+      description: Direct-internet static NAT rule target settings
+    day_of_week1:
+      title: day_of_week1
+      enum:
+      - any
+      - fri
+      - mon
+      - sat
+      - sun
+      - thu
+      - tue
+      - wed
+      type: string
+      description: 'Scheduled weekday for automatic signature updates. enum: `any`, `fri`, `mon`, `sat`, `sun`, `thu`, `tue`, `wed`.'
+    gateway_ip_config_property:
+      title: gateway_ip_config_property
+      type: object
+      properties:
+        ip:
+          type: string
+          description: Static IPv4 address for the gateway network interface when `type`==`static`
+          contentEncoding: ipv4
+        ip6:
+          type: string
+          description: Static IPv6 address for the gateway network interface when `type6`==`static`
+          contentEncoding: ipv6
+        netmask:
+          type: string
+          description: IPv4 netmask or prefix length for the gateway network interface when `type`==`static`
+          examples:
+          - /24
+        netmask6:
+          type: string
+          description: IPv6 netmask or prefix length for the gateway network interface when `type6`==`static`
+          examples:
+          - 2001:db8:abcd:12::1
+        secondary_ips:
+          type: array
+          items:
+            type: string
+          description: Additional IPv4 addresses in CIDR notation for this gateway network interface
+          examples:
+          - - 192.168.50.1/24
+            - 192.168.60.1/26
+        type:
+          allOf:
+          - $ref: '#/components/schemas/ip_type4'
+          - description: 'IPv4 address assignment mode for this gateway network interface. enum: `dhcp`, `static`.'
+            examples:
+            - static
+        type6:
+          allOf:
+          - $ref: '#/components/schemas/ip_type62'
+          - description: 'IPv6 address assignment mode for this gateway network interface. enum: `autoconf`, `dhcp`, `disabled`, `static`.'
+            examples:
+            - static
+      description: Gateway network interface IP configuration
+    network_internet_access_destination_nat_property:
+      title: network_internet_access_destination_nat_property
+      type: object
+      properties:
+        internal_ip:
+          type: string
+          description: The Destination NAT destination IP address. Must be an IP (i.e. "192.168.70.30") or a Variable (i.e. "{{myvar}}")
+          examples:
+          - 192.168.70.30
+        name:
+          type: string
+          description: Label for this direct internet destination NAT rule
+          examples:
+          - web server
+        port:
+          type: string
+          description: The Destination NAT destination IP address. Must be a Port (i.e. "443") or a Variable (i.e. "{{myvar}}")
+          examples:
+          - '443'
+        wan_name:
+          type: string
+          description: SRX Only. If not set, we configure the nat policies against all WAN ports for simplicity
+          examples:
+          - wan0
+      description: Direct-internet destination NAT rule target settings
+    tunnel_config_ipsec_proposal:
+      title: tunnel_config_ipsec_proposal
+      type: object
+      properties:
+        auth_algo:
+          allOf:
+          - $ref: '#/components/schemas/tunnel_config_auth_algo1'
+          - description: 'Integrity algorithm used by this IPsec proposal. enum: `md5`, `sha1`, `sha2`.'
+        dh_group:
+          allOf:
+          - $ref: '#/components/schemas/tunnel_config_dh_group2'
+          - description: 'Diffie-Hellman group used by this IPsec proposal. enum: `1`, `14`, `15`, `16`, `19`, `2`, `20`, `21`, `24`, `5`.'
+        enc_algo:
+          allOf:
+          - oneOf:
+            - {}
+            - $ref: '#/components/schemas/tunnel_config_enc_algo1'
+          - description: 'Cipher algorithm used by this IPsec proposal. enum: `3des`, `aes128`, `aes256`, `aes_gcm128`, `aes_gcm256`.'
+      description: IPsec proposal settings for custom IPsec tunnels
+    ip_type62:
+      title: ip_type62
+      enum:
+      - autoconf
+      - dhcp
+      - disabled
+      - static
+      type: string
+      description: 'IPv6 address assignment mode for this gateway network interface. enum: `autoconf`, `dhcp`, `disabled`, `static`.'
+      examples:
+      - static
+    gw_routing_policy_term_action2:
+      title: gw_routing_policy_term_action2
+      type: object
+      properties:
+        accept:
+          type: boolean
+          description: Whether to accept routes that match this term. Precedence is `accept` > `next_term` > `next_policy`; routes are rejected if all three are false
+        add_community:
+          type: array
+          items:
+            type: string
+          description: BGP communities to add to routes that match this term
+        add_target_vrfs:
+          type: array
+          items:
+            type: string
+          description: SSR target VRFs to add when leaking routes from hub to spoke
+        community:
+          type: array
+          items:
+            type: string
+          description: BGP communities to set when this term is used as an export policy
+        exclude_as_path:
+          type: array
+          items:
+            type: string
+          description: AS path values to exclude when this term is used as an export policy
+        exclude_community:
+          type: array
+          items:
+            type: string
+          description: BGP communities to exclude from routes that match this term
+        export_communities:
+          type: array
+          items:
+            type: string
+          description: BGP communities allowed for export when this term is used as an export policy
+        local_preference:
+          anyOf:
+          - type: string
+          - maximum: 4294967295
+            minimum: 1
+            type: integer
+            contentEncoding: int32
+          description: Preference value to set when this term is used as an import policy
+        next_policy:
+          type: boolean
+          description: When true, continue evaluating the next routing policy in the chain after this term matches; default is false
+          default: false
+        next_term:
+          type: boolean
+          description: When true, continue evaluating the next term in the same routing policy after this term matches; default is false
+          default: false
+        prepend_as_path:
+          type: array
+          items:
+            type: string
+          description: AS path values to prepend when this term is used as an export policy
+      description: Policy actions applied when this routing policy term matches
+    network_internet_access2:
+      title: network_internet_access2
+      type: object
+      properties:
+        create_simple_service_policy:
+          type: boolean
+          description: Whether Mist should create simple service policies for restricted internet access
+          default: false
+        destination_nat:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/network_internet_access_destination_nat_property'
+          description: Destination NAT rules for direct internet access
+        enabled:
+          type: boolean
+          description: Whether direct internet access is enabled for this network
+        restricted:
+          type: boolean
+          description: By default, all access is allowed, to only allow certain traffic, make `restricted`=`true` and define service_policies
+          default: false
+        static_nat:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/network_internet_access_static_nat_property'
+          description: Static NAT rules for direct internet access
+      description: Direct internet access and NAT settings for this network
+    gateway_port_lte_auth2:
+      title: gateway_port_lte_auth2
+      enum:
+      - chap
+      - none
+      - pap
+      type: string
+      description: 'If `wan_type`==`lte`. Authentication method used by the LTE uplink. enum: `chap`, `none`, `pap`.'
+    gw_routing_policy_term_matching_protocol_enum:
+      title: gw_routing_policy_term_matching_protocol_enum
+      enum:
+      - aggregate
+      - bgp
+      - direct
+      - ospf
+      - static
+      type: string
+      description: 'enum: `aggregate`, `bgp`, `direct`, `ospf`, `static` (SRX Only)'
+    dhcpd_config_option_type2:
+      title: dhcpd_config_option_type2
+      enum:
+      - boolean
+      - hex
+      - int16
+      - int32
+      - ip
+      - string
+      - uint16
+      - uint32
+      type: string
+      description: 'Data type used to encode this DHCP option value. enum: `boolean`, `hex`, `int16`, `int32`, `ip`, `string`, `uint16`, `uint32`.'
+    dhcpd_config_option:
+      title: dhcpd_config_option
+      type: object
+      properties:
+        type:
+          allOf:
+          - $ref: '#/components/schemas/dhcpd_config_option_type2'
+          - description: 'Data type used to encode this DHCP option value. enum: `boolean`, `hex`, `int16`, `int32`, `ip`, `string`, `uint16`, `uint32`.'
+        value:
+          type: string
+          description: Option value to send for this DHCP option
+      description: Custom DHCP option value
+    tunnel_config_auto_provision_provider2:
+      title: tunnel_config_auto_provision_provider2
+      enum:
+      - jse-ipsec
+      - zscaler-ipsec
+      type: string
+      description: 'Tunnel provider used for automatic endpoint provisioning. enum: `jse-ipsec`, `zscaler-ipsec`.'
+    service_policy_syslog2:
+      title: service_policy_syslog2
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether syslog logging is enabled for the service policy
+          default: false
+        server_names:
+          type: array
+          items:
+            type: string
+          description: Names of syslog servers that receive logs for this service policy
+          examples:
+          - - dc_syslog_server
+      description: Remote logging settings applied by this service policy
+    service_policy_skyatp_http_inspection_profile2:
+      title: service_policy_skyatp_http_inspection_profile2
+      enum:
+      - standard
+      - strict
+      type: string
+      description: 'Sky ATP HTTP inspection profile to apply. enum: `standard`, `strict`.'
+    tunnel_provider_options_zscaler2:
+      title: tunnel_provider_options_zscaler2
+      type: object
+      properties:
+        aup_block_internet_until_accepted:
+          type: boolean
+          description: Whether Zscaler blocks internet access until the Acceptable Use Policy is accepted
+          default: false
+        aup_enabled:
+          type: boolean
+          description: Can only be `true` when `auth_required`==`false`, display Acceptable Use Policy (AUP)
+          default: false
+        aup_force_ssl_inspection:
+          type: boolean
+          description: Proxy HTTPs traffic, requiring Zscaler cert to be installed in browser
+          default: false
+        aup_timeout_in_days:
+          maximum: 180
+          minimum: 1
+          type: integer
+          description: Required if `aup_enabled`==`true`. Days before AUP is requested again
+          contentEncoding: int32
+        auth_required:
+          type: boolean
+          description: Enable this option to enforce user authentication
+          default: false
+        caution_enabled:
+          type: boolean
+          description: Can only be `true` when `auth_required`==`false`, display caution notification for non-authenticated users
+          default: false
+        dn_bandwidth:
+          maximum: 99999
+          minimum: 0.1
+          type:
+          - number
+          - 'null'
+          description: Download bandwidth cap of the link, in Mbps. Disabled if not set
+          examples:
+          - 200
+        idle_time_in_minutes:
+          maximum: 43200
+          minimum: 0
+          type: integer
+          description: Required if `surrogate_IP`==`true`, idle Time to Disassociation
+          contentEncoding: int32
+        ofw_enabled:
+          type: boolean
+          description: If `true`, enable the firewall control option
+          default: false
+        sub_locations:
+          type: array
+          items:
+            $ref: '#/components/schemas/tunnel_provider_options_zscaler_sub_location'
+          description: Per-network Zscaler sub-location settings
+        surrogate_IP:
+          type: boolean
+          description: Can only be `true` when `auth_required`==`true`. Map a user to a private IP address so it applies the user's policies, instead of the location's policies
+          default: false
+        surrogate_IP_enforced_for_known_browsers:
+          type: boolean
+          description: Can only be `true` when `surrogate_IP`==`true`, enforce surrogate IP for known browsers
+        surrogate_refresh_time_in_minutes:
+          maximum: 43200
+          minimum: 1
+          type: integer
+          description: Required if `surrogate_IP_enforced_for_known_browsers`==`true`, must be lower or equal than `idle_time_in_minutes`, refresh Time for re-validation of Surrogacy
+          contentEncoding: int32
+        up_bandwidth:
+          maximum: 99999
+          minimum: 0.1
+          type:
+          - number
+          - 'null'
+          description: Download bandwidth cap of the link, in Mbps. Disabled if not set
+          examples:
+          - 200
+        xff_forward_enabled:
+          type: boolean
+          description: Location uses proxy chaining to forward traffic
+          default: false
+      description: Provider settings for Zscaler tunnel endpoints
+    tunnel_config:
+      title: tunnel_config
+      type: object
+      properties:
+        auto_provision:
+          allOf:
+          - $ref: '#/components/schemas/tunnel_config_auto_provision2'
+          - description: Provider auto-provisioning settings for tunnel endpoints
+        ike_lifetime:
+          type: integer
+          description: Only if `provider`==`custom-ipsec`. IKE lifetime configured for the custom IPsec tunnel
+          contentEncoding: int32
+        ike_mode:
+          allOf:
+          - $ref: '#/components/schemas/tunnel_config_ike_mode2'
+          - description: 'Only if `provider`==`custom-ipsec`. IKE negotiation mode for the tunnel. enum: `aggressive`, `main`.'
+        ike_proposals:
+          type: array
+          items:
+            $ref: '#/components/schemas/tunnel_config_ike_proposal'
+          description: If `provider`==`custom-ipsec`, IKE proposals used for custom IPsec negotiation
+        ipsec_lifetime:
+          type: integer
+          description: If `provider`==`custom-ipsec`, IPsec lifetime configured for the custom tunnel
+          contentEncoding: int32
+        ipsec_proposals:
+          type: array
+          items:
+            $ref: '#/components/schemas/tunnel_config_ipsec_proposal'
+          description: Only if `provider`==`custom-ipsec`. IPsec proposals used for custom IPsec negotiation
+        local_id:
+          type: string
+          description: Required if `provider`==`zscaler-ipsec`, `provider`==`jse-ipsec` or `provider`==`custom-ipsec`
+        local_subnets:
+          type: array
+          items:
+            type: string
+          description: Local protected subnets advertised by this tunnel
+        mode:
+          allOf:
+          - $ref: '#/components/schemas/tunnel_config_tunnel_mode2'
+          - description: 'Tunnel failover mode used for primary and secondary endpoints. enum: `active-active`, `active-standby`.'
+        networks:
+          type: array
+          items:
+            type: string
+          description: Destination networks reachable through this tunnel
+        primary:
+          allOf:
+          - $ref: '#/components/schemas/tunnel_config_node3'
+          - description: Main remote tunnel endpoint settings
+        probe:
+          allOf:
+          - $ref: '#/components/schemas/tunnel_config_probe'
+          - description: Tunnel health probe settings
+        protocol:
+          allOf:
+          - $ref: '#/components/schemas/tunnel_config_protocol2'
+          - description: 'Only if `provider`==`custom-ipsec`. Tunnel protocol for custom tunnel negotiation. enum: `gre`, `ipsec`.'
+        provider:
+          allOf:
+          - $ref: '#/components/schemas/tunnel_config_provider2'
+          - description: 'Tunnel provider used when auto provisioning is disabled. enum: `custom-ipsec`, `custom-gre`, `jse-ipsec`, `prisma-ipsec`, `zscaler-gre`, `zscaler-ipsec`.'
+        psk:
+          type: string
+          description: Required if `provider`==`zscaler-ipsec`, `provider`==`jse-ipsec` or `provider`==`custom-ipsec`
+        remote_subnets:
+          type: array
+          items:
+            type: string
+          description: Remote protected subnets reached through policy-based IPsec
+        secondary:
+          allOf:
+          - $ref: '#/components/schemas/tunnel_config_node1'
+          - description: Backup remote tunnel endpoint settings
+        version:
+          allOf:
+          - $ref: '#/components/schemas/tunnel_config_version2'
+          - description: 'Only if `provider`==`custom-gre` or `provider`==`custom-ipsec`. Tunnel version value for custom tunnel configuration. enum: `1`, `2`.'
+      description: Gateway tunnel configuration for provider-managed or custom tunnels
+    dhcpd_config_type62:
+      title: dhcpd_config_type62
+      enum:
+      - local
+      - none
+      - relay
+      type: string
+      description: 'IPv6 DHCP mode for this network. enum: `local`, `none`, `relay`.'
+    tunnel_config_node1:
+      title: tunnel_config_node1
+      required:
+      - hosts
+      - wan_names
+      type: object
+      properties:
+        hosts:
+          type: array
+          items:
+            type: string
+          description: Remote gateway host addresses for this tunnel node
+        internal_ip6s:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: IPv6 addresses configured on this tunnel node
+        internal_ips:
+          type: array
+          items:
+            type: string
+          description: Internal IP addresses configured on this tunnel node
+        probe_hostnames:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Hostnames used as ICMP probe destinations for this tunnel node; applicable for both IPv4 and IPv6
+        probe_http:
+          allOf:
+          - $ref: '#/components/schemas/tunnel_config_node_probe_http2'
+          - description: HTTP probe settings for this tunnel node; success from any ICMP or HTTP probe indicates the tunnel is up
+        probe_ip6s:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: IPv6 ICMP probe addresses used to monitor this tunnel node
+        probe_ips:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Health-check IP addresses used to monitor this tunnel node
+        remote_ids:
+          type: array
+          items:
+            type: string
+          description: IKE identities expected from this tunnel node
+        wan_names:
+          type: array
+          items:
+            type: string
+          description: Interface names that source tunnel traffic for this node
+      description: Backup remote tunnel endpoint settings
+    bgp_config_type2:
+      title: bgp_config_type2
+      enum:
+      - external
+      - internal
+      type: string
+      description: Required if `via`==`lan`, `via`==`tunnel` or `via`==`wan`; BGP session type, internal or external
+    dhcpd_config_type2:
+      title: dhcpd_config_type2
+      enum:
+      - local
+      - none
+      - relay
+      type: string
+      description: 'IPv4 DHCP mode for this network. enum: `local`, `none`, `relay`.'
+    gateway_wan_probe_override_http2:
+      title: gateway_wan_probe_override_http2
+      type: object
+      properties:
+        accepted_status_codes:
+          type: array
+          items:
+            type: integer
+            contentEncoding: int32
+          description: HTTP response status codes that indicate a successful probe. Defaults to 200 if not specified.
+          examples:
+          - - 204
+        urls:
+          type: array
+          items:
+            type: string
+          description: HTTP or HTTPS URLs to probe
+          examples:
+          - - http://www.google.com/generate_204
+            - https://www.google.com/generate_204
+      description: HTTP probe settings; success from any ICMP or HTTP probe indicates the WAN is up
+    wan_extra_routes:
+      title: wan_extra_routes
+      type: object
+      properties:
+        via:
+          type: string
+          description: IPv4 next-hop address for this WAN extra route
+          contentEncoding: ipv4
+      description: Additional IPv4 route for a WAN interface
+    tunnel_config_node3:
+      title: tunnel_config_node3
+      required:
+      - hosts
+      - wan_names
+      type: object
+      properties:
+        hosts:
+          type: array
+          items:
+            type: string
+          description: Remote gateway host addresses for this tunnel node
+        internal_ip6s:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: IPv6 addresses configured on this tunnel node
+        internal_ips:
+          type: array
+          items:
+            type: string
+          description: Internal IP addresses configured on this tunnel node
+        probe_hostnames:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Hostnames used as ICMP probe destinations for this tunnel node; applicable for both IPv4 and IPv6
+        probe_http:
+          allOf:
+          - $ref: '#/components/schemas/tunnel_config_node_probe_http2'
+          - description: HTTP probe settings for this tunnel node; success from any ICMP or HTTP probe indicates the tunnel is up
+        probe_ip6s:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: IPv6 ICMP probe addresses used to monitor this tunnel node
+        probe_ips:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Health-check IP addresses used to monitor this tunnel node
+        remote_ids:
+          type: array
+          items:
+            type: string
+          description: IKE identities expected from this tunnel node
+        wan_names:
+          type: array
+          items:
+            type: string
+          description: Interface names that source tunnel traffic for this node
+      description: Main remote tunnel endpoint settings
+    gateway_extra_route:
+      title: gateway_extra_route
+      type: object
+      properties:
+        via:
+          type: string
+          description: Next-hop IPv4 address for the gateway extra route
+          contentEncoding: ipv4
+      description: Gateway IPv4 extra route next-hop settings
+    network:
+      title: network
+      required:
+      - name
+      type: object
+      properties:
+        created_time:
+          type: number
+          description: Epoch timestamp when the network was created
+          readOnly: true
+        disallow_mist_services:
+          type: boolean
+          description: Whether to disallow Mist Devices in the network
+          default: false
+        gateway:
+          type: string
+          description: IPv4 gateway address for this network
+          contentEncoding: ipv4
+          examples:
+          - 192.168.70.1
+        gateway6:
+          type: string
+          description: IPv6 gateway address for this network
+          contentEncoding: ipv6
+          examples:
+          - fdad:b0bc:f29e::1
+        id:
+          type: string
+          description: Unique identifier of the network
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        internal_access:
+          allOf:
+          - $ref: '#/components/schemas/network_internal_access2'
+          - description: Internal access settings for this network
+        internet_access:
+          allOf:
+          - $ref: '#/components/schemas/network_internet_access2'
+          - description: Direct internet access and NAT settings for this network
+        isolation:
+          type: boolean
+          description: Whether to allow clients in the network to talk to each other
+        modified_time:
+          type: number
+          description: Epoch timestamp when the network was last modified
+          readOnly: true
+        multicast:
+          allOf:
+          - $ref: '#/components/schemas/network_multicast2'
+          - description: Settings for multicast routing on this network
+        name:
+          type: string
+          description: Display name of the organization network
+        org_id:
+          type: string
+          description: Organization that owns this network
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        routed_for_networks:
+          type: array
+          items:
+            type: string
+          description: Other network names this network can route to, for example through BGP, OSPF or static routes
+        subnet:
+          type: string
+          description: IPv4 subnet CIDR for this network
+          examples:
+          - 192.168.70.0/24
+        subnet6:
+          type: string
+          description: IPv6 subnet CIDR for this network
+          examples:
+          - fdad:b0bc:f29e::/32
+        tenants:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/network_tenant'
+          description: Tenant address mappings associated with this network
+        vlan_id:
+          oneOf:
+          - type: string
+          - maximum: 4094
+            minimum: 1
+            type: integer
+            contentEncoding: int32
+          description: VLAN ID or variable associated with this network
+        vpn_access:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/network_vpn_access_config'
+          description: VPN access settings keyed by VPN name for this network
+      description: Organization-level Layer 3 network definition that can be merged into site settings and used for service routes. Networks are used to define the service routes in the Gateway settings or templates
+    service_policy_secintel_profile2:
+      title: service_policy_secintel_profile2
+      enum:
+      - default
+      - standard
+      - strict
+      type: string
+      description: 'Protection level applied by SecIntel inspection. enum: `default`, `standard`, `strict`.'
+    gateway_wan_ppoe_auth2:
+      title: gateway_wan_ppoe_auth2
+      enum:
+      - chap
+      - none
+      - pap
+      type: string
+      description: 'Authentication protocol used for PPPoE when `type`==`pppoe`. enum: `chap`, `none`, `pap`.'
+    network_multicast2:
+      title: network_multicast2
+      type: object
+      properties:
+        disable_igmp:
+          type: boolean
+          description: If the network will only be the source of the multicast traffic, IGMP can be disabled
+          default: false
+        enabled:
+          type: boolean
+          description: Whether multicast support is enabled for this network
+          default: false
+        groups:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/network_multicast_group'
+          description: Multicast group-to-RP mappings for this network
+      description: Settings for multicast routing on this network
+    dhcpd_config_vendor_option_type2:
+      title: dhcpd_config_vendor_option_type2
+      enum:
+      - boolean
+      - hex
+      - int16
+      - int32
+      - ip
+      - string
+      - uint16
+      - uint32
+      type: string
+      description: 'Data type used to encode this vendor option value. enum: `boolean`, `hex`, `int16`, `int32`, `ip`, `string`, `uint16`, `uint32`.'
+    service_policy_secintel3:
+      title: service_policy_secintel3
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether SecIntel inspection is enabled for the service policy
+          default: false
+        profile:
+          allOf:
+          - $ref: '#/components/schemas/service_policy_secintel_profile2'
+          - description: 'Protection level applied by SecIntel inspection. enum: `default`, `standard`, `strict`.'
+        secintelprofile_id:
+          type: string
+          description: Organization-level SecIntel profile ID; takes precedence over inline `profile` settings
+      description: Threat intelligence settings applied by this service policy
+    gateway_port_dsl_type2:
+      title: gateway_port_dsl_type2
+      enum:
+      - adsl
+      - vdsl
+      type: string
+      description: 'If `wan_type`==`dsl`. DSL technology used by the WAN port. enum: `adsl`, `vdsl`.'
+    gateway_port_wan_arp_policer2:
+      title: gateway_port_wan_arp_policer2
+      enum:
+      - default
+      - max
+      - recommended
+      type: string
+      description: 'Only when `wan_type`==`broadband`. ARP policer profile applied to the WAN port. enum: `default`, `max`, `recommended`.'
+    bgp_config:
+      title: bgp_config
+      required:
+      - via
+      type: object
+      properties:
+        auth_key:
+          type: string
+          description: Optional if `via`==`lan`, `via`==`tunnel` or `via`==`wan`
+        bfd_minimum_interval:
+          maximum: 255000
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          description: "Optional if `via`==`lan`, `via`==`tunnel` or `via`==`wan`, when bfd_multiplier is configured alone. Default:\n  * 1000 if `type`==`external`\n  * 350 `type`==`internal`"
+          contentEncoding: int32
+          default: 350
+        bfd_multiplier:
+          maximum: 255
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          description: Optional if `via`==`lan`, `via`==`tunnel` or `via`==`wan`, when bfd_minimum_interval_is_configured alone
+          contentEncoding: int32
+          default: 3
+        disable_bfd:
+          type: boolean
+          description: Optional if `via`==`lan`, `via`==`tunnel` or `via`==`wan`. BFD provides faster path failure detection and is enabled by default
+          default: false
+        export:
+          type: string
+          description: Routing policy applied to routes exported by this BGP session
+        export_policy:
+          type: string
+          description: Default export policies if no per-neighbor policies defined
+        extended_v4_nexthop:
+          type: boolean
+          description: Optional if `via`==`lan`, `via`==`tunnel` or `via`==`wan`. By default, either inet/net6 unicast depending on neighbor IP family (v4 or v6). For v6 neighbors, to exchange v4 nexthop, which allows dual-stack support, enable this
+        graceful_restart_time:
+          maximum: 4095
+          minimum: 0
+          type: integer
+          description: Optional if `via`==`lan`, `via`==`tunnel` or `via`==`wan`. `0` means disable
+          contentEncoding: int32
+          default: 0
+        hold_time:
+          maximum: 65535
+          minimum: 0
+          type: integer
+          description: Optional if `via`==`lan`, `via`==`tunnel` or `via`==`wan`. Default is 90.
+          contentEncoding: int32
+          default: 90
+        import:
+          type: string
+          description: Routing policy applied to routes imported by this BGP session
+        import_policy:
+          type: string
+          description: Optional if `via`==`lan`, `via`==`tunnel` or `via`==`wan`. Default import policies if no per-neighbor policies defined
+        local_as:
+          anyOf:
+          - type: string
+          - maximum: 4294967295
+            minimum: 1
+            type: integer
+            contentEncoding: int32
+          description: Required if `via`==`lan`, `via`==`tunnel` or `via`==`wan`; local BGP Autonomous System (AS) number
+          examples:
+          - '65000'
+        neighbor_as:
+          anyOf:
+          - type: string
+          - maximum: 4294967294
+            minimum: 1
+            type: integer
+            contentEncoding: int32
+          description: Default BGP neighbor Autonomous System (AS) number for this session
+          examples:
+          - '65000'
+        neighbors:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/bgp_config_neighbors'
+          description: Required if `via`==`lan`, `via`==`tunnel` or `via`==`wan`. If per-neighbor as is desired. Property key is the neighbor address
+        networks:
+          type: array
+          items:
+            type: string
+          description: Optional if `via`==`lan`; networks where BGP neighbors can connect to or from
+        no_private_as:
+          type: boolean
+          description: Optional if `via`==`lan`, `via`==`tunnel` or `via`==`wan`. If true, we will not advertise private ASNs (AS 64512-65534) to this neighbor
+          default: false
+        no_readvertise_to_overlay:
+          type: boolean
+          description: Optional if `via`==`lan`, `via`==`tunnel` or `via`==`wan`. By default, we'll re-advertise all learned BGP routers toward overlay
+          default: false
+        tunnel_name:
+          type: string
+          description: Optional if `via`==`tunnel`; tunnel name used for this BGP session
+        type:
+          allOf:
+          - $ref: '#/components/schemas/bgp_config_type2'
+          - minLength: 1
+            description: Required if `via`==`lan`, `via`==`tunnel` or `via`==`wan`; BGP session type, internal or external
+        via:
+          allOf:
+          - $ref: '#/components/schemas/bgp_config_via2'
+          - description: Transport used for this BGP session, such as LAN, tunnel, VPN, or WAN
+        vpn_name:
+          type: string
+          description: Optional if `via`==`vpn`; VPN name used for this BGP session
+        wan_name:
+          type: string
+          description: Optional if `via`==`wan`; WAN interface name used for this BGP session
+      description: BGP session configuration. BFD is enabled when either bfd_minimum_interval or bfd_multiplier is configured
+    tunnel_provider_options2:
+      title: tunnel_provider_options2
+      type: object
+      properties:
+        jse:
+          allOf:
+          - $ref: '#/components/schemas/tunnel_provider_options_jse2'
+          - description: Juniper Secure Edge provisioning options for tunnel endpoints
+        prisma:
+          allOf:
+          - $ref: '#/components/schemas/tunnel_provider_options_prisma2'
+          - description: Palo Alto Prisma Access provisioning options for tunnel endpoints
+        zscaler:
+          allOf:
+          - $ref: '#/components/schemas/tunnel_provider_options_zscaler2'
+          - description: Provider settings for Zscaler tunnel endpoints
+      description: Provider-specific tunnel options defined by this gateway template
+    tunnel_config_ike_dh_group2:
+      title: tunnel_config_ike_dh_group2
+      enum:
+      - '1'
+      - '14'
+      - '15'
+      - '16'
+      - '19'
+      - '2'
+      - '20'
+      - '21'
+      - '24'
+      - '5'
+      type: string
+      description: 'Diffie-Hellman group used by this IKE proposal. enum: `1`, `14`, `15`, `16`, `19`, `2`, `20`, `21`, `24`, `5`.'
+    gateway_wan_probe_override_probe_profile2:
+      title: gateway_wan_probe_override_probe_profile2
+      enum:
+      - broadband
+      - lte
+      type: string
+      description: 'WAN probe profile used for health checks on this port. enum: `broadband`, `lte`.'
+    gateway_path_type2:
+      title: gateway_path_type2
+      enum:
+      - local
+      - tunnel
+      - vpn
+      - wan
+      type: string
+      description: Gateway path source type, such as local network, WAN interface, VPN path, or tunnel
+    gateway_wan_type2:
+      title: gateway_wan_type2
+      enum:
+      - dhcp
+      - pppoe
+      - static
+      type: string
+      description: 'IPv4 assignment mode for this gateway port interface. enum: `dhcp`, `pppoe`, `static`.'
+    gateway_matching2:
+      title: gateway_matching2
+      type: object
+      properties:
+        enable:
+          type: boolean
+          description: Whether gateway matching is enabled
+        rules:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/gateway_matching_rule'
+          description: Gateway matching rules evaluated for this configuration
+      description: Matching rules that select gateways for this template
+    gw_routing_policy_term_matching2:
+      title: gw_routing_policy_term_matching2
+      type: object
+      properties:
+        as_path:
+          type: array
+          items:
+            $ref: '#/components/schemas/bgp_as'
+          description: AS path values that routes must match
+        community:
+          type: array
+          items:
+            type: string
+          description: BGP communities that routes must match
+        network:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Configured network names that routes must match
+        prefix:
+          type: array
+          items:
+            type: string
+          description: Route prefixes that routes must match
+        protocol:
+          type: array
+          items:
+            $ref: '#/components/schemas/gw_routing_policy_term_matching_protocol_enum'
+          description: Routing protocols that routes must match
+        route_exists:
+          allOf:
+          - $ref: '#/components/schemas/gw_routing_policy_term_matching_route_exists2'
+          - description: Existing route condition that must be satisfied before this term matches
+        vpn_neighbor_mac:
+          type: array
+          items:
+            type: string
+          description: Overlay neighbor MAC addresses used as match criteria for BGP sessions with `via`==`vpn`
+        vpn_path:
+          type: array
+          items:
+            type: string
+          description: Overlay path names used as match criteria for BGP sessions with `via`==`vpn`
+        vpn_path_sla:
+          allOf:
+          - $ref: '#/components/schemas/gw_routing_policy_term_matching_vpn_path_sla2'
+          - description: SLA thresholds used when matching a VPN path
+      description: Route match criteria that must be satisfied before actions are applied
+    tunnel_config_auto_provision_node3:
+      title: tunnel_config_auto_provision_node3
+      type: object
+      properties:
+        probe_ips:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Probe IP addresses used to monitor auto-provisioned tunnel reachability
+        wan_names:
+          type: array
+          items:
+            type: string
+          description: WAN interface names used by the auto-provisioned tunnel endpoint
+      description: Main auto-provisioned tunnel endpoint settings
+    gateway_traffic_shaping3:
+      title: gateway_traffic_shaping3
+      type: object
+      properties:
+        class_percentages:
+          type: array
+          items:
+            type: integer
+            contentEncoding: int32
+          description: Traffic class bandwidth percentages for high, medium, low, and best-effort queues
+        enabled:
+          type: boolean
+          description: Whether traffic shaping is enabled
+          default: false
+        max_tx_kbps:
+          type: integer
+          description: Maximum transmit bandwidth for the interface, in Kbps
+          contentEncoding: int32
+      description: Traffic shaping settings applied to the port
+    network_vpn_access_static_nat_property:
+      title: network_vpn_access_static_nat_property
+      type: object
+      properties:
+        internal_ip:
+          type: string
+          description: The Static NAT destination IP address. Must be an IP address (i.e. "192.168.70.3") or a Variable (i.e. "{{myvar}}")
+          examples:
+          - 192.168.70.3
+        name:
+          type: string
+          description: Label for this VPN static NAT rule
+          examples:
+          - pos_station-1
+      description: VPN access static NAT rule target settings
+    protect_re1:
+      title: protect_re1
+      type: object
+      properties:
+        allowed_services:
+          type: array
+          items:
+            $ref: '#/components/schemas/protect_re_allowed_service'
+          description: Built-in services explicitly allowed by the Protect RE policy
+          examples:
+          - - icmp
+            - ssh
+        custom:
+          type: array
+          items:
+            $ref: '#/components/schemas/protect_re_custom'
+          description: Additional ACL entries allowed by the Protect RE policy
+        enabled:
+          type: boolean
+          description: "When enabled, all traffic that is not essential to our operation will be dropped\ne.g. ntp / dns / traffic to mist will be allowed by default\n     if dhcpd is enabled, we'll make sure it works"
+          default: false
+        hit_count:
+          type: boolean
+          description: Whether to enable hit count for Protect_RE policy
+          default: false
+        trusted_hosts:
+          type: array
+          items:
+            type: string
+          description: Trusted host or subnet entries allowed by the Protect RE policy
+      description: Control-plane protection settings for the gateway
+    gateway_port_vpn_path_role2:
+      title: gateway_port_vpn_path_role2
+      enum:
+      - hub
+      - mesh
+      - spoke
+      type: string
+      description: 'Gateway role for this VPN path; valid values depend on the VPN `type`. enum: `hub`, `mesh`, `spoke`.'
+    gateway_port_vpn_path_bfd_profile2:
+      title: gateway_port_vpn_path_bfd_profile2
+      enum:
+      - broadband
+      - lte
+      type: string
+      description: 'BFD profile used for this VPN path when the VPN `type`==`hub_spoke`. enum: `broadband`, `lte`.'
+    bgp_config_via2:
+      title: bgp_config_via2
+      enum:
+      - lan
+      - tunnel
+      - vpn
+      - wan
+      type: string
+      description: Transport used for this BGP session, such as LAN, tunnel, VPN, or WAN
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    tunnel_config_dh_group2:
+      title: tunnel_config_dh_group2
+      enum:
+      - '1'
+      - '14'
+      - '15'
+      - '16'
+      - '19'
+      - '2'
+      - '20'
+      - '21'
+      - '24'
+      - '5'
+      type: string
+      description: 'Diffie-Hellman group used by this IPsec proposal. enum: `1`, `14`, `15`, `16`, `19`, `2`, `20`, `21`, `24`, `5`.'
+    ip_type2:
+      title: ip_type2
+      enum:
+      - dhcp
+      - static
+      type: string
+      description: 'IP assignment mode for the out-of-band management interface. enum: `dhcp`, `static`.'
+      examples:
+      - static
+    gateway_mgmt2:
+      title: gateway_mgmt2
+      type: object
+      properties:
+        admin_sshkeys:
+          type: array
+          items:
+            type: string
+          description: SSR-only SSH public keys for administrative access
+          examples:
+          - - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAA...Wxa6p6UW0ZbcP john@host
+        app_probing:
+          allOf:
+          - $ref: '#/components/schemas/app_probing1'
+          - description: Application probing configuration for gateway monitoring
+        app_usage:
+          type: boolean
+          description: Consumes uplink bandwidth, requires WA license
+        auto_signature_update:
+          allOf:
+          - $ref: '#/components/schemas/gateway_mgmt_auto_signature_update2'
+          - description: Schedule for automatic security signature updates
+        config_revert_timer:
+          maximum: 30
+          minimum: 1
+          type: integer
+          description: Rollback timer for commit confirmed
+          contentEncoding: int32
+          default: 10
+        disable_console:
+          type: boolean
+          description: For SSR and SRX, disable console port
+          default: false
+        disable_idp_pcap:
+          type: boolean
+          description: For SRX only, disable IDP packet capture
+          default: false
+        disable_oob:
+          type: boolean
+          description: For SSR and SRX, disable management interface
+          default: false
+        disable_usb:
+          type: boolean
+          description: For SSR and SRX, disable usb interface
+          default: false
+        fips_enabled:
+          type: boolean
+          description: Whether FIPS mode is enabled on the gateway
+          default: false
+        probe_hosts:
+          type: array
+          items:
+            type: string
+          description: IPv4 probe targets used for gateway connectivity checks
+          examples:
+          - - 8.8.8.8
+        probe_hostsv6:
+          type: array
+          items:
+            type: string
+          description: IPv6 probe targets used for gateway connectivity checks
+          examples:
+          - - 2001:4860:4860::8888
+        protect_re:
+          allOf:
+          - $ref: '#/components/schemas/protect_re1'
+          - description: Control-plane protection settings for the gateway
+        root_password:
+          type: string
+          description: SRX only. Root password for local gateway access
+          contentEncoding: password
+        security_log_source_address:
+          type: string
+          description: IPv4 source address used for gateway security log traffic
+          contentEncoding: ipv4
+          examples:
+          - 192.168.1.1
+        security_log_source_interface:
+          type: string
+          description: Source interface used for gateway security log traffic
+          examples:
+          - ge-0/0/1.0
+      description: Management-plane defaults provided by this gateway template
+    tunnel_config_ike_mode2:
+      title: tunnel_config_ike_mode2
+      enum:
+      - aggressive
+      - main
+      type: string
+      description: 'Only if `provider`==`custom-ipsec`. IKE negotiation mode for the tunnel. enum: `aggressive`, `main`.'
+    idp_config2:
+      title: idp_config2
+      type: object
+      properties:
+        alert_only:
+          type: boolean
+          description: Whether to alert without enforcing IDP prevention actions
+        enabled:
+          type: boolean
+          description: Whether IDP inspection is enabled for the policy
+          default: false
+        idpprofile_id:
+          type: string
+          description: org_level IDP Profile can be used, this takes precedence over `profile`
+          contentEncoding: uuid
+          examples:
+          - 89b9d208-84a4-fa8f-af57-78f92c639cf2
+        profile:
+          type: string
+          description: 'enum: `Custom`, `strict` (default), `standard` or keys from idp_profiles'
+          default: strict
+      description: Intrusion detection and prevention settings applied by this service policy
+    network_internal_access2:
+      title: network_internal_access2
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether internal access is enabled for this network
+      description: Internal access settings for this network
+    wan_extra_routes6:
+      title: wan_extra_routes6
+      type: object
+      properties:
+        via:
+          type: string
+          description: IPv6 next-hop address for this WAN extra route
+          contentEncoding: ipv6
+      description: Additional IPv6 route for a WAN interface
+    gateway_template:
+      title: gateway_template
+      required:
+      - name
+      type: object
+      properties:
+        additional_config_cmds:
+          type: array
+          items:
+            type: string
+          description: Additional CLI configuration commands provided by this gateway template
+        bgp_config:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/bgp_config'
+          description: BGP routing defaults for this gateway template. Property key is the BGP session name
+        created_time:
+          type: number
+          description: Timestamp when the gateway template was created
+          readOnly: true
+        dhcpd_config:
+          allOf:
+          - $ref: '#/components/schemas/dhcpd_config3'
+          - description: DHCP server defaults provided by this gateway template
+        dnsOverride:
+          type: boolean
+          description: Whether DNS server and suffix settings in this template override inherited values
+          default: false
+        dns_servers:
+          type: array
+          items:
+            type: string
+          description: DNS servers provided by this gateway template
+        dns_suffix:
+          type: array
+          items:
+            type: string
+          description: DNS search suffixes provided by this gateway template
+        extra_routes:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/gateway_extra_route'
+          description: Additional IPv4 route defaults in this gateway template
+        extra_routes6:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/gateway_extra_route6'
+          description: Additional IPv6 route defaults in this gateway template
+          examples:
+          - 2a02:1234:420a:10c9::/64:
+              via: 2a02:1234:200a::100
+        gateway_matching:
+          allOf:
+          - $ref: '#/components/schemas/gateway_matching2'
+          - description: Matching rules that select gateways for this template
+        gateway_mgmt:
+          allOf:
+          - $ref: '#/components/schemas/gateway_mgmt2'
+          - description: Management-plane defaults provided by this gateway template
+        id:
+          type: string
+          description: Unique identifier of the gateway template
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        idp_profiles:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/idp_profile'
+          description: Intrusion detection and prevention profile defaults in this gateway template
+        ip_configs:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/gateway_ip_config_property'
+          description: Gateway interface IP configuration defaults by network name
+        modified_time:
+          type: number
+          description: Timestamp when the gateway template was last modified
+          readOnly: true
+        name:
+          type: string
+          description: Display name of the gateway template
+          examples:
+          - gw_template
+        networks:
+          type: array
+          items:
+            $ref: '#/components/schemas/network'
+          description: Layer 3 networks configured by this gateway template
+        ntpOverride:
+          type: boolean
+          description: Whether NTP servers in this template override inherited values
+          default: false
+        ntp_servers:
+          type: array
+          items:
+            type: string
+          description: NTP servers provided by this gateway template
+        oob_ip_config:
+          allOf:
+          - $ref: '#/components/schemas/gateway_oob_ip_config3'
+          - description: Out-of-band management IP defaults in this gateway template
+        org_id:
+          type: string
+          description: Organization that owns this gateway template
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        path_preferences:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/gateway_path_preferences'
+          description: Property key is the path name
+        port_config:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/gateway_port_config'
+          description: Property key is the Port Name (i.e. "ge-0/0/0"), the Ports Range (i.e. "ge-0/0/0-10"), the List of Ports (i.e. "ge-0/0/0,ge-1/0/0", only allowed for Aggregated or Redundant interfaces) or a Variable (i.e. "{{myvar}}").
+        router_id:
+          type: string
+          description: Auto assigned if not set
+          examples:
+          - 10.2.1.10
+        routing_policies:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/gw_routing_policy'
+          description: Routing policy defaults applied by this gateway template
+        service_policies:
+          type: array
+          items:
+            $ref: '#/components/schemas/service_policy'
+          description: Traffic service policy defaults enforced by this gateway template
+        tunnel_configs:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/tunnel_config'
+          description: Property key is the tunnel name
+        tunnel_provider_options:
+          allOf:
+          - $ref: '#/components/schemas/tunnel_provider_options2'
+          - description: Provider-specific tunnel options defined by this gateway template
+        type:
+          allOf:
+          - $ref: '#/components/schemas/gateway_template_type2'
+          - description: 'Gateway template deployment type. enum: `spoke`, `standalone`.'
+            examples:
+            - standalone
+        url_filtering_deny_msg:
+          type: string
+          description: When a service policy denies a app_category, what message to show in user's browser
+          default: Access to this URL Category has been blocked
+          examples:
+          - Access to this URL Category has been blocked
+        vrf_config:
+          allOf:
+          - $ref: '#/components/schemas/vrf_config4'
+          - description: VRF defaults applied by this gateway template
+        vrf_instances:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/gateway_vrf_instance'
+          description: VRF instances configured by this gateway template
+          examples:
+          - CORP_VRF:
+              networks:
+              - CORP_NET
+              - MGMT_NET
+      description: Gateway Template is applied to a site for gateway(s) in a site.
+    tunnel_config_auto_provision_node1:
+      title: tunnel_config_auto_provision_node1
+      type: object
+      properties:
+        probe_ips:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Probe IP addresses used to monitor auto-provisioned tunnel reachability
+        wan_names:
+          type: array
+          items:
+            type: string
+          description: WAN interface names used by the auto-provisioned tunnel endpoint
+      description: Backup auto-provisioned tunnel endpoint settings
+    dhcpd_config_fixed_binding:
+      title: dhcpd_config_fixed_binding
+      type: object
+      properties:
+        ip:
+          type: string
+          description: Reserved IPv4 address for this fixed DHCP binding
+          examples:
+          - 192.168.70.35
+        ip6:
+          type: string
+          description: Reserved IPv6 address for this fixed DHCP binding
+          examples:
+          - 2607:f8b0:4005:808::2
+        name:
+          type: string
+          description: Friendly name for this fixed DHCP binding
+      description: Static DHCP binding for a client MAC address
+    gateway_template_type2:
+      title: gateway_template_type2
+      enum:
+      - spoke
+      - standalone
+      type: string
+      description: 'Gateway template deployment type. enum: `spoke`, `standalone`.'
+      examples:
+      - standalone
+    app_probing1:
+      title: app_probing1
+      type: object
+      properties:
+        apps:
+          type: array
+          items:
+            type: string
+          description: Predefined application keys to probe
+          examples:
+          - - facebook
+        custom_apps:
+          type: array
+          items:
+            $ref: '#/components/schemas/app_probing_custom_app'
+          description: User-defined application probe definitions
+        enabled:
+          type: boolean
+          description: Whether gateway application probing is enabled
+      description: Application probing configuration for gateway monitoring
+    tunnel_config_ike_proposal:
+      title: tunnel_config_ike_proposal
+      type: object
+      properties:
+        auth_algo:
+          allOf:
+          - $ref: '#/components/schemas/tunnel_config_auth_algo3'
+          - description: 'Integrity algorithm used by this IKE proposal. enum: `md5`, `sha1`, `sha2`.'
+        dh_group:
+          allOf:
+          - $ref: '#/components/schemas/tunnel_config_ike_dh_group2'
+          - description: 'Diffie-Hellman group used by this IKE proposal. enum: `1`, `14`, `15`, `16`, `19`, `2`, `20`, `21`, `24`, `5`.'
+        enc_algo:
+          allOf:
+          - oneOf:
+            - {}
+            - $ref: '#/components/schemas/tunnel_config_enc_algo3'
+          - description: 'Cipher algorithm used by this IKE proposal. enum: `3des`, `aes128`, `aes256`, `aes_gcm128`, `aes_gcm256`.'
+      description: IKE proposal settings for custom IPsec tunnels
+    network_multicast_group:
+      title: network_multicast_group
+      type: object
+      properties:
+        rp_ip:
+          type: string
+          description: RP (rendezvous point) IP address
+      description: Multicast group rendezvous point mapping
+    network_vpn_access_destination_nat_property:
+      title: network_vpn_access_destination_nat_property
+      type: object
+      properties:
+        internal_ip:
+          type: string
+          description: The Destination NAT destination IP address. Must be an IP (i.e. "192.168.70.30") or a Variable (i.e. "{{myvar}}")
+          examples:
+          - 192.168.70.30
+        name:
+          type: string
+          description: Label for this VPN destination NAT rule
+          examples:
+          - web server
+        port:
+          type: string
+          description: Destination port or variable for this VPN destination NAT rule
+          examples:
+          - '443'
+      description: VPN access destination NAT rule target settings
+    tunnel_config_version2:
+      title: tunnel_config_version2
+      enum:
+      - '1'
+      - '2'
+      type: string
+      description: 'Only if `provider`==`custom-gre` or `provider`==`custom-ipsec`. Tunnel version value for custom tunnel configuration. enum: `1`, `2`.'
+    tunnel_provider_options_jse2:
+      title: tunnel_provider_options_jse2
+      type: object
+      properties:
+        num_users:
+          type: integer
+          description: User capacity to provision on Juniper Secure Edge
+          contentEncoding: int32
+          examples:
+          - 5
+        org_name:
+          type: string
+          description: JSE Organization name. The list of available organizations can be retrieved with the [Get Org JSE Info]($e/Orgs%20Integration%20JSE/getOrgJseInfo) API Call
+          examples:
+          - JSE_ORG1
+      description: Juniper Secure Edge provisioning options for tunnel endpoints
+    dhcpd_config_vendor_option:
+      title: dhcpd_config_vendor_option
+      type: object
+      properties:
+        type:
+          allOf:
+          - $ref: '#/components/schemas/dhcpd_config_vendor_option_type2'
+          - description: 'Data type used to encode this vendor option value. enum: `boolean`, `hex`, `int16`, `int32`, `ip`, `string`, `uint16`, `uint32`.'
+        value:
+          type: string
+          description: Option value to send for this vendor option
+      description: Vendor-encapsulated DHCP option value
+    network_tenant:
+      title: network_tenant
+      type: object
+      properties:
+        addresses:
+          type: array
+          items:
+            type: string
+          description: IP addresses or subnets assigned to this tenant in the network
+      description: Tenant address entry for a network
+    service_policy_appqoe1:
+      title: service_policy_appqoe1
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether application QoE is enabled for the service policy
+          default: false
+      description: Application QoE settings applied by this service policy
+    tunnel_config_protocol2:
+      title: tunnel_config_protocol2
+      enum:
+      - gre
+      - ipsec
+      type: string
+      description: 'Only if `provider`==`custom-ipsec`. Tunnel protocol for custom tunnel negotiation. enum: `gre`, `ipsec`.'
+    service_policy_antivirus1:
+      title: service_policy_antivirus1
+      type: object
+      properties:
+        avprofile_id:
+          type: string
+          description: Organization-level antivirus profile ID; takes precedence over inline `profile` settings
+          contentEncoding: uuid
+        enabled:
+          type: boolean
+          description: Whether antivirus inspection is enabled for the service policy
+          default: false
+        profile:
+          type: string
+          description: Antivirus profile name to apply, such as `default`, `noftp`, `httponly`, or an AV profile key
+      description: Malware and virus inspection settings applied by this service policy
+    dhcpd_config3:
+      title: dhcpd_config3
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: If set to `false`, disable the DHCP server
+          default: true
+      additionalProperties:
+        allOf:
+        - $ref: '#/components/schemas/dhcpd_config_property'
+        - description: DHCP server or relay configuration for one network
+      description: DHCP server defaults provided by this gateway template
+    protect_re_allowed_service:
+      title: protect_re_allowed_service
+      enum:
+      - icmp
+      - ssh
+      type: string
+      description: 'Services allowed through protect-RE filters. enum: `icmp`, `ssh`'
+    gateway_port_config:
+      title: gateway_port_config
+      required:
+      - usage
+      type: object
+      properties:
+        ae_disable_lacp:
+          type: boolean
+          description: If `aggregated`==`true`. To disable LCP support for the AE interface
+          default: false
+        ae_idx:
+          type:
+          - string
+          - 'null'
+          description: If `aggregated`==`true`. Users could force to use the designated AE name (must be an integer between 0 and 127)
+        ae_lacp_force_up:
+          type: boolean
+          description: 'For SRX only, if `aggregated`==`true`.Sets the state of the interface as UP when the peer has limited LACP capability. Use case: When a device connected to this AE port is ZTPing for the first time, it will not have LACP configured on the other end. **Note:** Turning this on will enable force-up on one of the interfaces in the bundle only'
+          default: false
+        aggregated:
+          type: boolean
+          description: Whether the port participates in an aggregated Ethernet interface
+          default: false
+        critical:
+          type: boolean
+          description: To generate port up/down alarm, set it to true
+          default: false
+        description:
+          type: string
+          description: Interface Description. Can be a variable (i.e. "{{myvar}}")
+        disable_autoneg:
+          type: boolean
+          description: Whether Ethernet autonegotiation is disabled on the port
+          default: false
+        disabled:
+          type: boolean
+          description: Port admin up (true) / down (false)
+          default: false
+        dsl_type:
+          allOf:
+          - $ref: '#/components/schemas/gateway_port_dsl_type2'
+          - description: 'If `wan_type`==`dsl`. DSL technology used by the WAN port. enum: `adsl`, `vdsl`.'
+        dsl_vci:
+          type: integer
+          description: If `wan_type`==`dsl`, 16 bit int
+          contentEncoding: int32
+          default: 35
+        dsl_vpi:
+          type: integer
+          description: If `wan_type`==`dsl`, 8 bit int
+          contentEncoding: int32
+          default: 0
+        duplex:
+          allOf:
+          - $ref: '#/components/schemas/gateway_port_duplex2'
+          - description: 'Ethernet duplex mode configured on the port. enum: `auto`, `full`, `half`.'
+            examples:
+            - full
+        ip_config:
+          allOf:
+          - $ref: '#/components/schemas/gateway_port_config_ip_config2'
+          - description: Layer 3 IP configuration for the port
+        lte_apn:
+          type: string
+          description: If `wan_type`==`lte`. APN used by the LTE uplink
+        lte_auth:
+          allOf:
+          - $ref: '#/components/schemas/gateway_port_lte_auth2'
+          - description: 'If `wan_type`==`lte`. Authentication method used by the LTE uplink. enum: `chap`, `none`, `pap`.'
+        lte_backup:
+          type: boolean
+          description: Whether the LTE uplink is used as a backup WAN connection
+        lte_password:
+          type: string
+          description: If `wan_type`==`lte`. Password used for LTE uplink authentication
+          contentEncoding: password
+        lte_username:
+          type: string
+          description: If `wan_type`==`lte`. Username used for LTE uplink authentication
+        mtu:
+          type: integer
+          description: Layer 3 MTU configured on the port
+          contentEncoding: int32
+        name:
+          type: string
+          description: Interface name used to derive device configuration
+        networks:
+          type: array
+          items:
+            type: string
+          description: If `usage`==`lan`. Networks attached to the interface
+        outer_vlan_id:
+          type: integer
+          description: For Q-in-Q. Outer VLAN ID used for QinQ encapsulation
+          contentEncoding: int32
+        poe_disabled:
+          type: boolean
+          description: Whether PoE output is disabled on the port
+          default: false
+        poe_keep_state_when_reboot:
+          type: boolean
+          description: Whether Perpetual PoE capabilities are enabled for a port
+          default: false
+        port_network:
+          type: string
+          description: Only for SRX and if `usage`==`lan`, the name of the Network to be used as the Untagged VLAN
+        preserve_dscp:
+          type: boolean
+          description: Whether to preserve dscp when sending traffic over VPN (SSR-only)
+          default: true
+        redundant:
+          type: boolean
+          description: If HA mode. Whether the port participates in the redundant Ethernet configuration
+        redundant_group:
+          maximum: 128
+          minimum: 1
+          type: integer
+          description: If HA mode, SRX Only - support redundancy-group. 1-128 for physical SRX, 1-64 for virtual SRX
+          contentEncoding: int32
+        reth_idx:
+          anyOf:
+          - type: integer
+            contentEncoding: int32
+          - type: string
+          description: If HA mode and for SRX only. Redundant Ethernet interface index assigned to the port
+        reth_node:
+          type: string
+          description: If HA mode. Node associated with the redundant Ethernet interface
+        reth_nodes:
+          type: array
+          items:
+            type: string
+          description: If HA mode and for SSR only. Per-network node assignment used for VLAN-based redundancy
+          examples:
+          - - node0
+            - node1
+        speed:
+          type: string
+          description: Link speed configured on the port
+          default: auto
+          examples:
+          - 1g
+        ssr_no_virtual_mac:
+          type: boolean
+          description: When SSR is running as VM, this is required on certain hosting platforms
+          default: false
+        svr_port_range:
+          type: string
+          description: For SSR only. Port range configured on the interface
+          default: none
+          examples:
+          - 60000-60005
+        traffic_shaping:
+          allOf:
+          - $ref: '#/components/schemas/gateway_traffic_shaping3'
+          - description: Traffic shaping settings applied to the port
+        usage:
+          allOf:
+          - $ref: '#/components/schemas/gateway_port_usage2'
+          - description: 'Logical usage assigned to the port. enum: `ha_control`, `ha_data`, `lan`, `wan`.'
+        vlan_id:
+          oneOf:
+          - type: string
+          - maximum: 4094
+            minimum: 1
+            type: integer
+            contentEncoding: int32
+          description: VLAN ID or variable used when the WAN interface is carried on a VLAN
+        vpn_paths:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/gateway_port_vpn_path'
+          description: Per-VPN path settings for traffic that uses this port
+        wan_arp_policer:
+          allOf:
+          - $ref: '#/components/schemas/gateway_port_wan_arp_policer2'
+          - description: 'Only when `wan_type`==`broadband`. ARP policer profile applied to the WAN port. enum: `default`, `max`, `recommended`.'
+        wan_ext_ip:
+          type: string
+          description: Only if `usage`==`wan`, optional. If spoke should reach this port by a different IP
+          examples:
+          - 64.2.4.3
+        wan_ext_ip6:
+          type: string
+          description: Only if `usage`==`wan`, optional. If spoke should reach this port by a different IPv6
+          examples:
+          - 2601:1700:43c0:dc0::10
+        wan_extra_routes:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/wan_extra_routes'
+          description: Only if `usage`==`wan`. Property Key is the destination CIDR (e.g. "100.100.100.0/24")
+        wan_extra_routes6:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/wan_extra_routes6'
+          description: Only if `usage`==`wan`. Property Key is the destination CIDR (e.g. "2a02:1234:420a:10c9::/64")
+        wan_networks:
+          type: array
+          items:
+            type: string
+          description: Only if `usage`==`wan`. Networks reachable through this WAN port for policy definition
+        wan_probe_override:
+          allOf:
+          - $ref: '#/components/schemas/gateway_wan_probe_override2'
+          - description: Optional WAN health probe override settings for this port
+        wan_source_nat:
+          allOf:
+          - $ref: '#/components/schemas/gateway_port_wan_source_nat2'
+          - description: Source NAT settings applied to traffic leaving this WAN port
+        wan_speedtest_mode:
+          allOf:
+          - $ref: '#/components/schemas/gateway_port_config_wan_speedtest_mode2'
+          - description: 'Controls whether Marvis or the scheduler can run speed tests on this WAN port. enum: `auto`, `enabled`, `disabled`.'
+            examples:
+            - auto
+        wan_type:
+          allOf:
+          - $ref: '#/components/schemas/gateway_port_wan_type2'
+          - description: 'Only if `usage`==`wan`. WAN uplink type configured on the port. enum: `broadband`, `dsl`, `lte`.'
+      description: Gateway port configuration for LAN, WAN, tunnel, and HA interfaces
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    gateway_port_config_wan_speedtest_mode2:
+      title: gateway_port_config_wan_speedtest_mode2
+      enum:
+      - auto
+      - enabled
+      - disabled
+      type: string
+      description: 'Controls whether Marvis or the scheduler can run speed tests on this WAN port. enum: `auto`, `enabled`, `disabled`.'
+      examples:
+      - auto
+    protect_re_custom:
+      title: protect_re_custom
+      type: object
+      properties:
+        port_range:
+          type: string
+          description: Matched dst port, "0" means any
+          default: '0'
+          examples:
+          - 80,1035-1040
+        protocol:
+          allOf:
+          - $ref: '#/components/schemas/protect_re_custom_protocol2'
+          - description: 'Transport protocol matched by this custom Protect RE ACL. enum: `any`, `icmp`, `tcp`, `udp`.'
+        subnets:
+          type: array
+          items:
+            type: string
+          description: Source subnets matched by this custom Protect RE ACL
+      description: Custom Protect RE ACL entry
+    gateway_path_preferences:
+      title: gateway_path_preferences
+      type: object
+      properties:
+        paths:
+          type: array
+          items:
+            $ref: '#/components/schemas/gateway_path_preferences_path'
+          description: Candidate paths evaluated for this gateway path preference
+        strategy:
+          allOf:
+          - $ref: '#/components/schemas/gateway_path_strategy2'
+          - description: 'Selection strategy used to evaluate the candidate paths. enum: `ecmp`, `ordered`, `weighted`.'
+      description: Gateway path preference that selects among one or more local, WAN, VPN, or tunnel paths
+    dhcpd_config_property:
+      title: dhcpd_config_property
+      type: object
+      properties:
+        dns_servers:
+          type: array
+          items:
+            type: string
+          description: If `type`==`local` or `type6`==`local`, DNS servers advertised to DHCP clients
+          examples:
+          - - 8.8.8.8
+            - 4.4.4.4
+            - 2001:4860:4860::8888
+        dns_suffix:
+          type: array
+          items:
+            type: string
+          description: If `type`==`local` or `type6`==`local`, DNS search suffixes advertised to DHCP clients
+          examples:
+          - - .mist.local
+            - .mist.com
+        fixed_bindings:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/dhcpd_config_fixed_binding'
+          description: If `type`==`local` or `type6`==`local`, fixed client bindings for local DHCP service
+          examples:
+          - 5684dae9ac8b:
+              ip: 192.168.70.35
+              name: John
+        gateway:
+          type: string
+          description: If `type`==`local` - optional, `ip` will be used if not provided
+          examples:
+          - 192.168.70.1
+        ip6_end:
+          type: string
+          description: If `type6`==`local`, ending IPv6 address for the DHCP lease pool
+          examples:
+          - 2607:f8b0:4005:808::ff
+        ip6_start:
+          type: string
+          description: If `type6`==`local`, starting IPv6 address for the DHCP lease pool
+          examples:
+          - 2607:f8b0:4005:808::2
+        ip_end:
+          type: string
+          description: If `type`==`local`, ending IPv4 address for the DHCP lease pool
+          examples:
+          - 192.168.70.200
+        ip_start:
+          type: string
+          description: If `type`==`local`, starting IPv4 address for the DHCP lease pool
+          examples:
+          - 192.168.70.100
+        lease_time:
+          maximum: 604800
+          minimum: 3600
+          type: integer
+          description: In seconds, lease time has to be between 3600 [1hr] - 604800 [1 week], default is 86400 [1 day]
+          contentEncoding: int32
+          default: 86400
+        options:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/dhcpd_config_option'
+          description: If `type`==`local` or `type6`==`local`, custom DHCP options advertised to clients
+        server_id_override:
+          type: boolean
+          description: "`server_id_override`==`true` means the device, when acts as DHCP relay and forwards DHCP responses from DHCP server to clients, \nshould overwrite the Sever Identifier option (i.e. DHCP option 54) in DHCP responses with its own IP address."
+          default: false
+        servers:
+          type: array
+          items:
+            type: string
+          description: If `type`==`relay`, upstream IPv4 DHCP servers
+          examples:
+          - - 11.2.3.4
+        serversv6:
+          type: array
+          items:
+            type: string
+          description: If `type6`==`relay`, upstream IPv6 DHCP servers
+          examples:
+          - - 2607:f8b0:4005:808::64
+        type:
+          allOf:
+          - $ref: '#/components/schemas/dhcpd_config_type2'
+          - description: 'IPv4 DHCP mode for this network. enum: `local`, `none`, `relay`.'
+        type6:
+          allOf:
+          - $ref: '#/components/schemas/dhcpd_config_type62'
+          - description: 'IPv6 DHCP mode for this network. enum: `local`, `none`, `relay`.'
+        vendor_encapsulated:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/dhcpd_config_vendor_option'
+          description: If `type`==`local` or `type6`==`local`, vendor-encapsulated DHCP options advertised to clients
+      description: DHCP server or relay configuration for one network
+    gateway_matching_rule:
+      title: gateway_matching_rule
+      type: object
+      properties:
+        additional_config_cmds:
+          type: array
+          items:
+            type: string
+          description: For SRX only, additional Junos CLI commands appended when this gateway matching rule applies
+        name:
+          type: string
+          description: Display name for the gateway matching rule
+        port_config:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/gateway_port_config'
+          description: Property key is the port(s) name or range (e.g. "ge-0/0/0-10").
+      additionalProperties:
+        type: string
+        description: 'Property key defines the type of matching. e.g: `match_name[0:3]`, `match_model[0-6]` or `match_role`'
+      description: Gateway matching rule that applies settings when its match keys select a gateway
+    tunnel_config_tunnel_mode2:
+      title: tunnel_config_tunnel_mode2
+      enum:
+      - active-active
+      - active-standby
+      type: string
+      description: 'Tunnel failover mode used for primary and secondary endpoints. enum: `active-active`, `active-standby`.'
+    vrf_config4:
+      title: vrf_config4
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether to enable VRF (when supported on the device)
+      description: VRF defaults applied by this gateway template
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    tunnel_config_provider2:
+      title: tunnel_config_provider2
+      enum:
+      - custom-ipsec
+      - custom-gre
+      - jse-ipsec
+      - prisma-ipsec
+      - zscaler-gre
+      - zscaler-ipsec
+      type: string
+      description: 'Tunnel provider used when auto provisioning is disabled. enum: `custom-ipsec`, `custom-gre`, `jse-ipsec`, `prisma-ipsec`, `zscaler-gre`, `zscaler-ipsec`.'
+    app_probing_custom_app:
+      title: app_probing_custom_app
+      type: object
+      properties:
+        address:
+          type: string
+          description: Required if `protocol`==`icmp`. IP address probed by the ICMP custom app
+          examples:
+          - 192.168.1.1
+        app_type:
+          type: string
+          description: Category label used for this custom application probe
+        hostnames:
+          type: array
+          items:
+            type: string
+          description: If `protocol`==`http`. Hostnames or URLs probed by this custom app
+          examples:
+          - - https://www.abc.com
+        key:
+          type: string
+          description: Stable key used to identify this custom application probe
+        name:
+          type: string
+          description: Display name for this custom application probe
+          examples:
+          - pos_app
+        network:
+          type: string
+          description: Gateway network used as the source context for this probe
+          examples:
+          - lan
+        packetSize:
+          maximum: 65400
+          minimum: 0
+          type: integer
+          description: If `protocol`==`icmp`. ICMP packet size used by this custom app probe
+          contentEncoding: int32
+        protocol:
+          allOf:
+          - $ref: '#/components/schemas/app_probing_custom_app_protocol2'
+          - description: 'Probe protocol used by this custom application definition. enum: `http`, `icmp`.'
+        url:
+          type: string
+          description: If `protocol`==`http`. HTTP URL or hostname probed by this custom app
+          examples:
+          - www.abc.com
+        vrf:
+          type: string
+          description: Gateway VRF used as the source context for this probe
+          examples:
+          - lan
+      description: User-defined application probe definition
+    service_policy_ewf_rule_profile2:
+      title: service_policy_ewf_rule_profile2
+      enum:
+      - critical
+      - standard
+      - strict
+      type: string
+      description: 'Enhanced web filtering profile applied by this rule. enum: `critical`, `standard`, `strict`.'
+    ip_type5:
+      title: ip_type5
+      enum:
+      - dhcp
+      - static
+      type: string
+      description: 'IP assignment mode for the node1 out-of-band management interface. enum: `dhcp`, `static`.'
+      examples:
+      - static
+    gateway_wan_type62:
+      title: gateway_wan_type62
+      enum:
+      - autoconf
+      - dhcp
+      - static
+      type: string
+      description: 'IPv6 assignment mode for this gateway port interface. enum: `autoconf`, `dhcp`, `static`.'
+    ip_type4:
+      title: ip_type4
+      enum:
+      - dhcp
+      - static
+      type: string
+      description: 'IPv4 address assignment mode for this gateway network interface. enum: `dhcp`, `static`.'
+      examples:
+      - static
+    network_source_nat2:
+      title: network_source_nat2
+      type: object
+      properties:
+        external_ip:
+          type: string
+          description: External source NAT IP or subnet used when spoke hosts must be reachable from the hub
+          examples:
+          - 172.16.0.8/30
+      description: Source NAT settings used when non-routed spoke hosts must be reachable from the hub
+    gateway_port_wan_type2:
+      title: gateway_port_wan_type2
+      enum:
+      - broadband
+      - dsl
+      - lte
+      type: string
+      description: 'Only if `usage`==`wan`. WAN uplink type configured on the port. enum: `broadband`, `dsl`, `lte`.'
+    tunnel_config_node_probe_http2:
+      title: tunnel_config_node_probe_http2
+      type: object
+      properties:
+        accepted_status_codes:
+          type: array
+          items:
+            type: integer
+            contentEncoding: int32
+          description: HTTP response status codes that indicate a successful probe. Defaults to 200 if not specified.
+          examples:
+          - - 204
+        urls:
+          type: array
+          items:
+            type: string
+          description: HTTP or HTTPS URLs to probe
+          examples:
+          - - http://www.google.com/generate_204
+            - https://www.google.com/generate_204
+      description: HTTP probe settings for this tunnel node; success from any ICMP or HTTP probe indicates the tunnel is up
+    gateway_wan_probe_override2:
+      title: gateway_wan_probe_override2
+      type: object
+      properties:
+        hostnames:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: List of hostnames used as probe destinations; applicable for both IPv4 and IPv6
+        http:
+          allOf:
+          - $ref: '#/components/schemas/gateway_wan_probe_override_http2'
+          - description: HTTP probe settings; success from any ICMP or HTTP probe indicates the WAN is up
+        ip6s:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: List of IPv6 probe host addresses used by this WAN override
+        ips:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: List of IPv4 probe host addresses used by this WAN override
+        probe_profile:
+          allOf:
+          - $ref: '#/components/schemas/gateway_wan_probe_override_probe_profile2'
+          - description: 'WAN probe profile used for health checks on this port. enum: `broadband`, `lte`.'
+      description: Optional WAN health probe override settings for this port
+    service_policy_ewf_rule:
+      title: service_policy_ewf_rule
+      type: object
+      properties:
+        alert_only:
+          type: boolean
+          description: Whether matching enhanced web filtering traffic is logged without being blocked
+        block_message:
+          type: string
+          description: Message returned when enhanced web filtering blocks a request
+          examples:
+          - Access to this URL Category has been blocked
+        enabled:
+          type: boolean
+          description: Whether this enhanced web filtering rule is enabled
+          default: false
+        profile:
+          allOf:
+          - $ref: '#/components/schemas/service_policy_ewf_rule_profile2'
+          - description: 'Enhanced web filtering profile applied by this rule. enum: `critical`, `standard`, `strict`.'
+      description: Enhanced web filtering rule applied by a service policy
+    idp_profile_matching2:
+      title: idp_profile_matching2
+      type: object
+      properties:
+        attack_name:
+          type: array
+          items:
+            type: string
+          description: Signature names matched by the IDP profile overwrite
+        dst_subnet:
+          type: array
+          items:
+            type: string
+          description: Destination subnets matched by the IDP profile overwrite
+        severity:
+          type: array
+          items:
+            $ref: '#/components/schemas/idp_profile_matching_severity_value'
+          description: Threat levels matched by the IDP profile overwrite
+      description: Criteria that select signatures for this overwrite rule
+    tunnel_config_auth_algo3:
+      title: tunnel_config_auth_algo3
+      enum:
+      - md5
+      - sha1
+      - sha2
+      type: string
+      description: 'Integrity algorithm used by this IKE proposal. enum: `md5`, `sha1`, `sha2`.'
+    bgp_config_neighbors:
+      title: bgp_config_neighbors
+      required:
+      - neighbor_as
+      type: object
+      properties:
+        disabled:
+          type: boolean
+          description: If true, the BGP session to this neighbor will be administratively disabled/shutdown
+          default: false
+        export_policy:
+          type: string
+          description: Export policy applied only to this BGP neighbor
+        hold_time:
+          maximum: 65535
+          minimum: 0
+          type: integer
+          description: BGP hold time for this neighbor, in seconds
+          contentEncoding: int32
+          default: 90
+        import_policy:
+          type: string
+          description: Import policy applied only to this BGP neighbor
+        multihop_ttl:
+          maximum: 255
+          minimum: 0
+          type: integer
+          description: Assuming BGP neighbor is directly connected
+          contentEncoding: int32
+        neighbor_as:
+          anyOf:
+          - type: string
+          - maximum: 4294967294
+            minimum: 1
+            type: integer
+            contentEncoding: int32
+          description: Autonomous System (AS) number of this BGP neighbor
+          examples:
+          - '65000'
+        tunnel_via:
+          allOf:
+          - $ref: '#/components/schemas/tunnel_via2'
+          - description: If `via`==`tunnel`, primary or secondary tunnel associated with this BGP neighbor
+      description: Per-neighbor BGP session settings
+    gateway_port_duplex2:
+      title: gateway_port_duplex2
+      enum:
+      - auto
+      - full
+      - half
+      type: string
+      description: 'Ethernet duplex mode configured on the port. enum: `auto`, `full`, `half`.'
+      examples:
+      - full
+    tunnel_provider_options_prisma2:
+      title: tunnel_provider_options_prisma2
+      type: object
+      properties:
+        service_account_name:
+          type: string
+          description: For prisma-ipsec, service account name to used for tunnel auto provisioning
+          examples:
+          - sa1@1823425211
+      description: Palo Alto Prisma Access provisioning options for tunnel endpoints
+    gw_routing_policy_term_matching_vpn_path_sla2:
+      title: gw_routing_policy_term_matching_vpn_path_sla2
+      type: object
+      properties:
+        max_jitter:
+          type:
+          - integer
+          - 'null'
+          description: Maximum jitter threshold allowed for the VPN path
+          contentEncoding: int32
+        max_latency:
+          type:
+          - integer
+          - 'null'
+          description: Maximum latency threshold allowed for the VPN path
+          contentEncoding: int32
+          examples:
+          - 1500
+        max_loss:
+          type:
+          - integer
+          - 'null'
+          description: Maximum packet-loss threshold allowed for the VPN path
+          contentEncoding: int32
+          examples:
+          - 30
+      description: SLA thresholds used when matching a VPN path
+    service_policy_skyatp_dns_dga_detection_profile2:
+      title: service_policy_skyatp_dns_dga_detection_profile2
+      enum:
+      - default
+      - standard
+      - strict
+      type: string
+      description: 'Sky ATP DNS DGA detection profile to apply. enum: `default`, `standard`, `strict`.'
+    gateway_traffic_shaping1:
+      title: gateway_traffic_shaping1
+      type: object
+      properties:
+        class_percentages:
+          type: array
+          items:
+            type: integer
+            contentEncoding: int32
+          description: Traffic class bandwidth percentages for high, medium, low, and best-effort queues
+        enabled:
+          type: boolean
+          description: Whether traffic shaping is enabled
+          default: false
+        max_tx_kbps:
+          type: integer
+          description: Maximum transmit bandwidth for the interface, in Kbps
+          contentEncoding: int32
+      description: Traffic shaping settings applied to this VPN path
+    gateway_extra_route6:
+      title: gateway_extra_route6
+      type: object
+      properties:
+        via:
+          type: string
+          description: Next-hop IPv6 address for the gateway extra route
+          contentEncoding: ipv6
+      description: Gateway IPv6 extra route next-hop settings
+    gateway_port_config_ip_config2:
+      title: gateway_port_config_ip_config2
+      type: object
+      properties:
+        dns:
+          type: array
+          items:
+            type: string
+          description: Resolver server IP addresses used by this interface, except on out-of-band interfaces such as vme, em0, or fxp0
+        dns_suffix:
+          type: array
+          items:
+            type: string
+          description: DNS search suffixes used by this interface, except on out-of-band interfaces such as vme, em0, or fxp0
+        gateway:
+          type: string
+          description: Except for out-of_band interface (vme/em0/fxp0). Interface Default Gateway IP address (i.e. "192.168.1.1") or a Variable (i.e. "{{myvar}}")
+          examples:
+          - 192.168.1.1
+        gateway6:
+          type: string
+          description: Except for out-of_band interface (vme/em0/fxp0). Interface Default Gateway IPv6 Address (i.e. "2001:db8::1") or a Variable (i.e. "{{myvar}}")
+          examples:
+          - 2001:db8::1
+        ip:
+          type: string
+          description: Interface IP address (i.e. "192.168.1.8") or a Variable (i.e. "{{myvar}}")
+          contentEncoding: ipv4
+          examples:
+          - 192.168.1.8
+        ip6:
+          type: string
+          description: Interface IPv6 Address (i.e. "2001:db8::123") or a Variable (i.e. "{{myvar}}")
+          contentEncoding: ipv6
+          examples:
+          - 2001:db8::123
+        netmask:
+          type: string
+          description: Used only if `subnet` is not specified in `networks`. Interface Netmask (i.e. "/24") or a Variable (i.e. "{{myvar}}")
+          examples:
+          - /24
+        netmask6:
+          type: string
+          description: Used only if `subnet` is not specified in `networks`. Interface IPv6 Netmask (i.e. "/64") or a Variable (i.e. "{{myvar}}")
+          examples:
+          - /64
+        network:
+          type: string
+          description: Optional, the network to be used for mgmt
+        poser_password:
+          type: string
+          description: Password used for PPPoE when `type`==`pppoe`
+          contentEncoding: password
+        pppoe_auth:
+          allOf:
+          - $ref: '#/components/schemas/gateway_wan_ppoe_auth2'
+          - description: 'Authentication protocol used for PPPoE when `type`==`pppoe`. enum: `chap`, `none`, `pap`.'
+        pppoe_username:
+          type: string
+          description: Username used for PPPoE when `type`==`pppoe`
+        type:
+          allOf:
+          - $ref: '#/components/schemas/gateway_wan_type2'
+          - description: 'IPv4 assignment mode for this gateway port interface. enum: `dhcp`, `pppoe`, `static`.'
+        type6:
+          allOf:
+          - $ref: '#/components/schemas/gateway_wan_type62'
+          - description: 'IPv6 assignment mode for this gateway port interface. enum: `autoconf`, `dhcp`, `static`.'
+      description: Layer 3 IP configuration for the port
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

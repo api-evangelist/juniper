@@ -1,0 +1,2940 @@
+openapi: 3.2.0
+info:
+  title: Mist Orgs Clients - NAC API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Orgs Clients - NAC
+  description: NAC Clients are devices connected to the network and authenticated by Juniper Mist Access Assurance.
+paths:
+  /api/v1/orgs/{org_id}/nac_clients/count:
+    parameters: []
+    get:
+      tags:
+      - Orgs Clients - NAC
+      summary: countOrgNacClients
+      description: Count NAC clients across the organization, optionally grouped by `distinct` and filtered by authentication, identity, endpoint, network, site, and time attributes.
+      operationId: countOrgNacClients
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: distinct
+        in: query
+        description: 'Field used to group this count response. enum: `ap`, `auth_type`, `device_mac`, `edr_managed`, `edr_providers`, `edr_status`, `family`, `hostname`, `idp_id`, `mfg`, `mdm_compliance`, `mdm_managed`, `mdm_provider`, `model`, `mxedge_id`, `nacrule_matched`, `nacrule_name`, `nacrule_id`, `nas_ip`, `nas_vendor`, `os`, `site_id`, `ssid`, `status`, `type`, `usermac_label`, `username`, `vlan`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/org_nac_clients_count_distinct'
+          - description: 'Field used to group this count response. enum: `ap`, `auth_type`, `device_mac`, `edr_managed`, `edr_providers`, `edr_status`, `family`, `hostname`, `idp_id`, `mfg`, `mdm_compliance`, `mdm_managed`, `mdm_provider`, `model`, `mxedge_id`, `nacrule_matched`, `nacrule_name`, `nacrule_id`, `nas_ip`, `nas_vendor`, `os`, `site_id`, `ssid`, `status`, `type`, `usermac_label`, `username`, `vlan`'
+      - name: last_nacrule_id
+        in: query
+        description: NAC Policy Rule ID, if matched
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: nacrule_matched
+        in: query
+        description: NAC Policy Rule Matched
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: auth_type
+        in: query
+        description: Authentication type, e.g. "eap-tls", "eap-peap", "eap-ttls", "eap-teap", "mab", "psk", "device-auth"
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: last_vlan_id
+        in: query
+        description: Filter results by last VLAN ID
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: last_nas_vendor
+        in: query
+        description: Vendor of NAS device
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: idp_id
+        in: query
+        description: SSO ID, if present and used
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: last_ssid
+        in: query
+        description: Filter results by last SSID
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: last_username
+        in: query
+        description: Username presented by the client
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: site_id
+        in: query
+        description: Filter results by site identifier
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: last_ap
+        in: query
+        description: AP MAC connected to by client
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: mac
+        in: query
+        description: Filter results by MAC address
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: last_status
+        in: query
+        description: Connection status of client i.e "permitted", "denied, "session_ended"
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: type
+        in: query
+        description: Client type i.e. "wireless", "wired" etc. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - wired,wireless
+      - name: mdm_compliance_status
+        in: query
+        description: MDM compliance of client i.e "compliant", "not compliant"
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: mdm_provider
+        in: query
+        description: MDM provider of client’s organization eg "intune", "jamf"
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      responses:
+        '200':
+          description: Result of Count
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_count'
+                - description: Distinct count response for time-bounded search results
+                  examples:
+                  - distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_count'
+                - description: Distinct count response for time-bounded search results
+                  examples:
+                  - distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/nac_clients/events/count:
+    parameters: []
+    get:
+      tags:
+      - Orgs Clients - NAC
+      summary: countOrgNacClientEvents
+      description: Count NAC client events across the organization, optionally grouped by `distinct` and filtered by event type and time range.
+      operationId: countOrgNacClientEvents
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: distinct
+        in: query
+        description: 'Field used to group this count response. enum: `ap`, `auth_type`, `dryrun_nacrule_id`, `mac`, `nacrule_id`, `nas_vendor`, `ssid`, `type`, `username`, `vlan`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/org_nac_client_events_count_distinct'
+          - description: 'Field used to group this count response. enum: `ap`, `auth_type`, `dryrun_nacrule_id`, `mac`, `nacrule_id`, `nas_vendor`, `ssid`, `type`, `username`, `vlan`'
+      - name: type
+        in: query
+        description: See [List Device Events Definitions]($e/Constants%20Events/listNacEventsDefinitions). Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - NAC_CLIENT_PERMIT,NAC_SESSION_STARTED
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      responses:
+        '200':
+          description: Result of Count
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_count'
+                - description: Distinct count response for time-bounded search results
+                  examples:
+                  - distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_count'
+                - description: Distinct count response for time-bounded search results
+                  examples:
+                  - distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/nac_clients/events/search:
+    parameters: []
+    get:
+      tags:
+      - Orgs Clients - NAC
+      summary: searchOrgNacClientEvents
+      description: Search NAC client authentication event records across the organization with filters for authentication, NAC rule, identity provider, RADIUS, network, endpoint, site, and time attributes.
+      operationId: searchOrgNacClientEvents
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: type
+        in: query
+        description: See [List Device Events Definitions]($e/Constants%20Events/listNacEventsDefinitions). Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - NAC_CLIENT_PERMIT,NAC_SESSION_STARTED
+      - name: nacrule_id
+        in: query
+        description: NAC Policy Rule ID, if matched. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          contentEncoding: uuid
+      - name: nacrule_matched
+        in: query
+        description: NAC Policy Rule Matched
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: dryrun_nacrule_id
+        in: query
+        description: NAC Policy Dry Run Rule ID, if present and matched
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: dryrun_nacrule_matched
+        in: query
+        description: True - if dryrun rule present and matched with priority, False - if not matched or not present
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: auth_type
+        in: query
+        description: Authentication type, e.g. "eap-tls", "eap-peap", "eap-ttls", "eap-teap", "mab", "psk", "device-auth". Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - mab,eap-tls
+      - name: vlan
+        in: query
+        description: Filter results by VLAN ID. Accepts multiple comma-separated integer values.
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+      - name: nas_vendor
+        in: query
+        description: Vendor of NAS device
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: bssid
+        in: query
+        description: Filter results by BSSID
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: idp_id
+        in: query
+        description: SSO ID, if present and used
+        style: form
+        explode: true
+        schema:
+          type: string
+          contentEncoding: uuid
+      - name: idp_role
+        in: query
+        description: IDP returned roles/groups for the user
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: idp_username
+        in: query
+        description: Username presented to the Identity Provider
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: resp_attrs
+        in: query
+        description: RADIUS attributes returned by NAC to NAS derive
+        style: form
+        explode: true
+        schema:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          examples:
+          - - Tunnel-Type=VLAN
+            - Tunnel-Medium-Type=IEEE-802
+            - Tunnel-Private-Group-Id=750
+            - User-Name=anonymous
+      - name: ssid
+        in: query
+        description: Filter results by SSID
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: username
+        in: query
+        description: Filter results by username. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - john.doe,jane.doe
+      - name: site_id
+        in: query
+        description: Filter results by one site identifier. Use a single value; comma-separated values are not supported
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: ap
+        in: query
+        description: Filter results by AP MAC address
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: random_mac
+        in: query
+        description: Filter results by whether the client is using a randomized MAC address. Accepts multiple comma-separated boolean values.
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: mac
+        in: query
+        description: Filter results by one MAC address. Use a single value; comma-separated values are not supported
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: usermac_label
+        in: query
+        description: Labels derived from usermac entry
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: text
+        in: query
+        description: Partial / full MAC address, username, device_mac or ap
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: nas_ip
+        in: query
+        description: IP address of NAS device. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 192.0.2.10,192.0.2.11
+      - name: ingress_vlan
+        in: query
+        description: Vendor specific VLAN ID in RADIUS requests
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: sort
+        in: query
+        description: On which field the list should be sorted, -prefix represents DESC order.
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: wxid
+          examples:
+          - -site_id
+      - name: search_after
+        in: query
+        description: Pagination cursor for retrieving subsequent pages of results. This value is automatically populated by Mist in the `next` URL from the previous response and should not be manually constructed.
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: NAC Client Events
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_events_nac_client_search'
+                - description: Paginated response for NAC client event search results
+                  examples:
+                  - end: 1513176951
+                    limit: 10
+                    results:
+                    - ap: 5c5b35513227
+                      auth_type: eap-ttls
+                      bssid: 5c5b355fafcc
+                      dryrun_nacrule_id: 32f27e7d-ff26-4a9b-b3d1-ff9bcb264012
+                      dryrun_nacrule_matched: true
+                      idp_id: 912ef72e-2239-4996-b81e-469e87a27cd6
+                      idp_role:
+                      - itsuperusers
+                      - vip
+                      mac: ac3eb179e535
+                      nacrule_id: 32f27e7d-ff26-4a9b-b3d1-ff9bcb264c62
+                      nacrule_matched: true
+                      nas_vendor: juniper-mist
+                      org_id: 27547ac2-d114-4e04-beb1-f3f1e6e81ec6
+                      random_mac: 'false'
+                      resp_attrs:
+                      - Tunnel-Type=VLAN
+                      - Tunnel-Medium-Type=IEEE-802
+                      - Tunnel-Private-Group-Id=750
+                      - User-Name=anonymous
+                      site_id: 441a1214-6928-442a-8e92-e1d34b8ec6a6
+                      ssid: mist_nac
+                      timestamp: 1691512031.358188
+                      type: NAC_CLIENT_PERMIT
+                      username: user@deaflyz.net
+                      vlan: '750'
+                    start: 1512572151
+                    total: 1
+                contentMediaType: application/json
+              examples:
+                NAC-client_events:
+                  value:
+                    end: 1513176951
+                    limit: 10
+                    results:
+                    - ap: 5c5b35513227
+                      auth_type: eap-ttls
+                      bssid: 5c5b355fafcc
+                      dryrun_nacrule_id: 32f27e7d-ff26-4a9b-b3d1-ff9bcb264012
+                      dryrun_nacrule_matched: true
+                      idp_id: 912ef72e-2239-4996-b81e-469e87a27cd6
+                      idp_role:
+                      - itsuperusers
+                      - vip
+                      mac: ac3eb179e535
+                      nacrule_id: 32f27e7d-ff26-4a9b-b3d1-ff9bcb264c62
+                      nacrule_matched: true
+                      nas_vendor: juniper-mist
+                      org_id: 27547ac2-d114-4e04-beb1-f3f1e6e81ec6
+                      random_mac: 'false'
+                      resp_attrs:
+                      - Tunnel-Type=VLAN
+                      - Tunnel-Medium-Type=IEEE-802
+                      - Tunnel-Private-Group-Id=750
+                      - User-Name=anonymous
+                      site_id: 441a1214-6928-442a-8e92-e1d34b8ec6a6
+                      ssid: mist_nac
+                      timestamp: 1691512031.358188
+                      type: NAC_CLIENT_PERMIT
+                      username: user@deaflyz.net
+                      vlan: '750'
+                    start: 1512572151
+                    total: 1
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_events_nac_client_search'
+                - description: Paginated response for NAC client event search results
+                  examples:
+                  - end: 1513176951
+                    limit: 10
+                    results:
+                    - ap: 5c5b35513227
+                      auth_type: eap-ttls
+                      bssid: 5c5b355fafcc
+                      dryrun_nacrule_id: 32f27e7d-ff26-4a9b-b3d1-ff9bcb264012
+                      dryrun_nacrule_matched: true
+                      idp_id: 912ef72e-2239-4996-b81e-469e87a27cd6
+                      idp_role:
+                      - itsuperusers
+                      - vip
+                      mac: ac3eb179e535
+                      nacrule_id: 32f27e7d-ff26-4a9b-b3d1-ff9bcb264c62
+                      nacrule_matched: true
+                      nas_vendor: juniper-mist
+                      org_id: 27547ac2-d114-4e04-beb1-f3f1e6e81ec6
+                      random_mac: 'false'
+                      resp_attrs:
+                      - Tunnel-Type=VLAN
+                      - Tunnel-Medium-Type=IEEE-802
+                      - Tunnel-Private-Group-Id=750
+                      - User-Name=anonymous
+                      site_id: 441a1214-6928-442a-8e92-e1d34b8ec6a6
+                      ssid: mist_nac
+                      timestamp: 1691512031.358188
+                      type: NAC_CLIENT_PERMIT
+                      username: user@deaflyz.net
+                      vlan: '750'
+                    start: 1512572151
+                    total: 1
+                contentMediaType: application/vnd.api+json
+              examples:
+                NAC-client_events:
+                  value:
+                    end: 1513176951
+                    limit: 10
+                    results:
+                    - ap: 5c5b35513227
+                      auth_type: eap-ttls
+                      bssid: 5c5b355fafcc
+                      dryrun_nacrule_id: 32f27e7d-ff26-4a9b-b3d1-ff9bcb264012
+                      dryrun_nacrule_matched: true
+                      idp_id: 912ef72e-2239-4996-b81e-469e87a27cd6
+                      idp_role:
+                      - itsuperusers
+                      - vip
+                      mac: ac3eb179e535
+                      nacrule_id: 32f27e7d-ff26-4a9b-b3d1-ff9bcb264c62
+                      nacrule_matched: true
+                      nas_vendor: juniper-mist
+                      org_id: 27547ac2-d114-4e04-beb1-f3f1e6e81ec6
+                      random_mac: 'false'
+                      resp_attrs:
+                      - Tunnel-Type=VLAN
+                      - Tunnel-Medium-Type=IEEE-802
+                      - Tunnel-Private-Group-Id=750
+                      - User-Name=anonymous
+                      site_id: 441a1214-6928-442a-8e92-e1d34b8ec6a6
+                      ssid: mist_nac
+                      timestamp: 1691512031.358188
+                      type: NAC_CLIENT_PERMIT
+                      username: user@deaflyz.net
+                      vlan: '750'
+                    start: 1512572151
+                    total: 1
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/nac_clients/search:
+    parameters: []
+    get:
+      tags:
+      - Orgs Clients - NAC
+      summary: searchOrgNacClients
+      description: Search NAC client records across the organization with filters for authentication, endpoint posture, identity, network, NAC rule, site, and time attributes.
+      operationId: searchOrgNacClients
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: ap
+        in: query
+        description: MAC address of the AP the client is/was connected to
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: auth_type
+        in: query
+        description: Authentication type, e.g. "eap-tls", "eap-peap", "eap-ttls", "eap-teap", "mab", "psk", "device-auth". Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - mab,eap-tls
+      - name: cert_expiry_duration
+        in: query
+        description: Filter by certificate expiry within a specific duration from now (e.g., "7d" for 7 days, "1m" for 1 month). Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 7d,1m
+          - 7d
+          - 1m
+        examples:
+          Untitled Example1:
+            value: 7d,1m
+          Untitled Example2:
+            value: 7d
+          Untitled Example3:
+            value: 1m
+      - name: edr_managed
+        in: query
+        description: Filters NAC clients that are integrated with EDR providers
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: edr_providers
+        in: query
+        description: 'EDR provider of the client''s organization. enum: `crowdstrike`, `sentinelone`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/edr_provider'
+          - description: 'EDR provider of the client''s organization. enum: `crowdstrike`, `sentinelone`'
+      - name: edr_status
+        in: query
+        description: 'EDR status used to filter NAC clients. enum: `sentinelone_healthy`, `sentinelone_infected`, `crowdstrike_low`, `crowdstrike_medium`, `crowdstrike_high`, `crowdstrike_critical`, `crowdstrike_informational`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/edr_status'
+          - description: 'EDR status used to filter NAC clients. enum: `sentinelone_healthy`, `sentinelone_infected`, `crowdstrike_low`, `crowdstrike_medium`, `crowdstrike_high`, `crowdstrike_critical`, `crowdstrike_informational`'
+      - name: family
+        in: query
+        description: Partial / full Client family (e.g. "Phone/Tablet/Wearable", "Access Point"). Use `prefix*` for prefix search or `*substring*` for contains search (e.g. `Surveillance*` and `*urveillance*` match `Surveillance Camera`). Suffix-only wildcards (e.g. `*Camera`) are not supported. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - Surveillance Camera,Surveillance*
+          - Surveillance Camera
+          - Surveillance*
+          - '*urveillance*'
+        examples:
+          Untitled Example1:
+            value: Surveillance Camera,Surveillance*
+          Untitled Example2:
+            value: Surveillance Camera
+          Untitled Example3:
+            value: Surveillance*
+          Untitled Example4:
+            value: '*urveillance*'
+      - name: hostname
+        in: query
+        description: Partial / full Client hostname. Use `prefix*` for prefix search or `*substring*` for contains search (e.g. `everest*` and `*rest*` match `my-everest-client`). Suffix-only wildcards (e.g. `*everest`) are not supported. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - my-everest-client,my-everest*
+          - my-everest-client
+          - my-everest*
+          - '*everest*'
+        examples:
+          Untitled Example1:
+            value: my-everest-client,my-everest*
+          Untitled Example2:
+            value: my-everest-client
+          Untitled Example3:
+            value: my-everest*
+          Untitled Example4:
+            value: '*everest*'
+      - name: idp_id
+        in: query
+        description: SSO ID, if present and used
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: mac
+        in: query
+        description: Partial / full Client MAC address. Use a single value; comma-separated values are not supported. Use `prefix*` for prefix search or `*substring*` for contains search (e.g. `aabbcc*` and `*bbcc*` match `aabbccddeeff`). Suffix-only wildcards (e.g. `*bccddeeff`) are not supported
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - aabbccddeeff
+          - aabbcc*
+          - '*bbcc*'
+        examples:
+          Untitled Example1:
+            value: aabbccddeeff
+          Untitled Example2:
+            value: aabbcc*
+          Untitled Example3:
+            value: '*bbcc*'
+      - name: mdm_compliance
+        in: query
+        description: MDM compliance of client i.e "compliant", "not compliant"
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: mdm_provider
+        in: query
+        description: MDM provider of client’s organization eg "intune", "jamf"
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: mdm_managed
+        in: query
+        description: Filters NAC clients that are managed by MDM providers
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: mfg
+        in: query
+        description: Partial / full Client manufacturer (e.g. "apple", "cisco", "juniper"). Use `prefix*` for prefix search or `*substring*` for contains search (e.g. `Raspberry Pi*` and `*Pi*` match `Raspberry Pi Trading Ltd`). Suffix-only wildcards (e.g. `*Ltd`) are not supported. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - Raspberry Pi Trading Ltd,Raspberry Pi*
+          - Raspberry Pi Trading Ltd
+          - Raspberry Pi*
+          - '*Pi*'
+        examples:
+          Untitled Example1:
+            value: Raspberry Pi Trading Ltd,Raspberry Pi*
+          Untitled Example2:
+            value: Raspberry Pi Trading Ltd
+          Untitled Example3:
+            value: Raspberry Pi*
+          Untitled Example4:
+            value: '*Pi*'
+      - name: model
+        in: query
+        description: Client model, e.g. "iPhone 12", "MX100"
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: nacrule_name
+        in: query
+        description: NAC Policy Rule Name matched
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: nacrule_id
+        in: query
+        description: NAC Policy Rule ID, if matched
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: nacrule_matched
+        in: query
+        description: NAC Policy Rule Matched
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: nas_vendor
+        in: query
+        description: Vendor of NAS device
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: nas_ip
+        in: query
+        description: IP address of NAS device. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 192.0.2.10,192.0.2.11
+      - name: ingress_vlan
+        in: query
+        description: Vendor specific VLAN ID in RADIUS requests
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: os
+        in: query
+        description: Client OS, e.g. "iOS 18.1", "Android", "Windows", "Linux"
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: ssid
+        in: query
+        description: Filter results by SSID
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: 'Client connection status used to filter results. enum: `permitted`, `session_started`, `session_stopped`, `denied`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/nac_client_last_status'
+          - description: 'Client connection status used to filter results. enum: `permitted`, `session_started`, `session_stopped`, `denied`'
+            examples:
+            - permitted
+      - name: text
+        in: query
+        description: partial / full MAC address, last_username, device_mac, nas_ip or last_ap
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: type
+        in: query
+        description: Client type i.e. "wireless", "wired" etc. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - wired,wireless
+      - name: usermac_label
+        in: query
+        description: Labels derived from usermac entry
+        style: form
+        explode: true
+        schema:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+      - name: username
+        in: query
+        description: Filter results by username
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: vlan
+        in: query
+        description: Filter results by VLAN ID
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: site_id
+        in: query
+        description: Filter results by one site identifier. Use a single value; comma-separated values are not supported
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: sort
+        in: query
+        description: On which field the list should be sorted, -prefix represents DESC order.
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: wxid
+          examples:
+          - -site_id
+      - name: search_after
+        in: query
+        description: Pagination cursor for retrieving subsequent pages of results. This value is automatically populated by Mist in the `next` URL from the previous response and should not be manually constructed.
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Example response
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_client_nac_search'
+                - description: Paginated NAC client search response
+                  examples:
+                  - end: 1513362753
+                    limit: 3
+                    results:
+                    - ap:
+                      - 5c5b35bf16bb
+                      - d4dc090041b4
+                      auth_type: eap-tls
+                      cert_cn:
+                      - john@mycorp.net
+                      cert_issuer:
+                      - /C=US/ST=CA/CN=MyCorp
+                      client_ip:
+                      - 10.7.51.74
+                      edr_managed: true
+                      edr_providers:
+                      - sentinelone
+                      edr_status:
+                      - sentinelone_healthy
+                      idp_id: string
+                      idp_role:
+                      - string
+                      last_ap: string
+                      last_cert_cn: john@mycorp.net
+                      last_cert_expiry: 1746711240
+                      last_cert_issuer: /C=US/ST=CA/CN=MyCorp
+                      last_cert_serial: 2c63510123456789
+                      last_cert_subject: /C=US/O=MyCorp/CN=john@mycorp.net/emailAddress=john@mycorp.net
+                      last_client_ip: 10.7.51.74
+                      last_nacrule_id: 603b62db-d839-4152-9f7f-f2578443de8d
+                      last_nacrule_name: Wireless Cert Auth
+                      last_nas_vendor: juniper-mist
+                      last_ssid: string
+                      last_status: permitted
+                      mac: string
+                      nacrule_id:
+                      - 603b62db-d839-4152-9f7f-f2578443de8d
+                      nacrule_matched: true
+                      nacrule_name:
+                      - Wireless Cert Auth
+                      nas_vendor:
+                      - juniper-mist
+                      org_id: 31f27122-68a9-47a4-b526-8fb8a62a8acb
+                      random_mac: 'true'
+                      site_id: 832b1d74-9531-409b-ae37-4d7f3edbde92
+                      ssid:
+                      - string
+                      timestamp: 1694689718.612
+                      type: wireless
+                      usermac_label:
+                      - non-compliant
+                      - building26
+                      - floor52
+                    start: 1513276353
+                    total: 2
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    end: 1513362753
+                    limit: 3
+                    results:
+                    - ap:
+                      - 5c5b35bf16bb
+                      - d4dc090041b4
+                      auth_type: eap-tls
+                      cert_cn:
+                      - john@mycorp.net
+                      cert_issuer:
+                      - /C=US/ST=CA/CN=MyCorp
+                      client_ip:
+                      - 10.7.51.74
+                      edr_managed: true
+                      edr_providers:
+                      - sentinelone
+                      edr_status:
+                      - sentinelone_healthy
+                      idp_id: string
+                      idp_role:
+                      - string
+                      last_ap: string
+                      last_cert_cn: john@mycorp.net
+                      last_cert_expiry: 1746711240
+                      last_cert_issuer: /C=US/ST=CA/CN=MyCorp
+                      last_cert_serial: 2c63510123456789
+                      last_cert_subject: /C=US/O=MyCorp/CN=john@mycorp.net/emailAddress=john@mycorp.net
+                      last_client_ip: 10.7.51.74
+                      last_nacrule_id: 603b62db-d839-4152-9f7f-f2578443de8d
+                      last_nacrule_name: Wireless Cert Auth
+                      last_nas_vendor: juniper-mist
+                      last_ssid: string
+                      last_status: permitted
+                      mac: string
+                      nacrule_id:
+                      - 603b62db-d839-4152-9f7f-f2578443de8d
+                      nacrule_matched: true
+                      nacrule_name:
+                      - Wireless Cert Auth
+                      nas_vendor:
+                      - juniper-mist
+                      org_id: 31f27122-68a9-47a4-b526-8fb8a62a8acb
+                      random_mac: 'true'
+                      site_id: 832b1d74-9531-409b-ae37-4d7f3edbde92
+                      ssid:
+                      - string
+                      timestamp: 1694689718.612
+                      type: wireless
+                      usermac_label:
+                      - non-compliant
+                      - building26
+                      - floor52
+                    start: 1513276353
+                    total: 2
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_client_nac_search'
+                - description: Paginated NAC client search response
+                  examples:
+                  - end: 1513362753
+                    limit: 3
+                    results:
+                    - ap:
+                      - 5c5b35bf16bb
+                      - d4dc090041b4
+                      auth_type: eap-tls
+                      cert_cn:
+                      - john@mycorp.net
+                      cert_issuer:
+                      - /C=US/ST=CA/CN=MyCorp
+                      client_ip:
+                      - 10.7.51.74
+                      edr_managed: true
+                      edr_providers:
+                      - sentinelone
+                      edr_status:
+                      - sentinelone_healthy
+                      idp_id: string
+                      idp_role:
+                      - string
+                      last_ap: string
+                      last_cert_cn: john@mycorp.net
+                      last_cert_expiry: 1746711240
+                      last_cert_issuer: /C=US/ST=CA/CN=MyCorp
+                      last_cert_serial: 2c63510123456789
+                      last_cert_subject: /C=US/O=MyCorp/CN=john@mycorp.net/emailAddress=john@mycorp.net
+                      last_client_ip: 10.7.51.74
+                      last_nacrule_id: 603b62db-d839-4152-9f7f-f2578443de8d
+                      last_nacrule_name: Wireless Cert Auth
+                      last_nas_vendor: juniper-mist
+                      last_ssid: string
+                      last_status: permitted
+                      mac: string
+                      nacrule_id:
+                      - 603b62db-d839-4152-9f7f-f2578443de8d
+                      nacrule_matched: true
+                      nacrule_name:
+                      - Wireless Cert Auth
+                      nas_vendor:
+                      - juniper-mist
+                      org_id: 31f27122-68a9-47a4-b526-8fb8a62a8acb
+                      random_mac: 'true'
+                      site_id: 832b1d74-9531-409b-ae37-4d7f3edbde92
+                      ssid:
+                      - string
+                      timestamp: 1694689718.612
+                      type: wireless
+                      usermac_label:
+                      - non-compliant
+                      - building26
+                      - floor52
+                    start: 1513276353
+                    total: 2
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    end: 1513362753
+                    limit: 3
+                    results:
+                    - ap:
+                      - 5c5b35bf16bb
+                      - d4dc090041b4
+                      auth_type: eap-tls
+                      cert_cn:
+                      - john@mycorp.net
+                      cert_issuer:
+                      - /C=US/ST=CA/CN=MyCorp
+                      client_ip:
+                      - 10.7.51.74
+                      edr_managed: true
+                      edr_providers:
+                      - sentinelone
+                      edr_status:
+                      - sentinelone_healthy
+                      idp_id: string
+                      idp_role:
+                      - string
+                      last_ap: string
+                      last_cert_cn: john@mycorp.net
+                      last_cert_expiry: 1746711240
+                      last_cert_issuer: /C=US/ST=CA/CN=MyCorp
+                      last_cert_serial: 2c63510123456789
+                      last_cert_subject: /C=US/O=MyCorp/CN=john@mycorp.net/emailAddress=john@mycorp.net
+                      last_client_ip: 10.7.51.74
+                      last_nacrule_id: 603b62db-d839-4152-9f7f-f2578443de8d
+                      last_nacrule_name: Wireless Cert Auth
+                      last_nas_vendor: juniper-mist
+                      last_ssid: string
+                      last_status: permitted
+                      mac: string
+                      nacrule_id:
+                      - 603b62db-d839-4152-9f7f-f2578443de8d
+                      nacrule_matched: true
+                      nacrule_name:
+                      - Wireless Cert Auth
+                      nas_vendor:
+                      - juniper-mist
+                      org_id: 31f27122-68a9-47a4-b526-8fb8a62a8acb
+                      random_mac: 'true'
+                      site_id: 832b1d74-9531-409b-ae37-4d7f3edbde92
+                      ssid:
+                      - string
+                      timestamp: 1694689718.612
+                      type: wireless
+                      usermac_label:
+                      - non-compliant
+                      - building26
+                      - floor52
+                    start: 1513276353
+                    total: 2
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/nac_clients/{client_mac}/coa:
+    parameters: []
+    post:
+      tags:
+      - Orgs Clients - NAC
+      summary: sendOrgNacClientCoA
+      description: Sends CoA (Change of Authorization) command to a NAC client.
+      operationId: sendOrgNacClientCoA
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: client_mac
+        in: path
+        description: ''
+        required: true
+        schema:
+          pattern: ^[0-9a-fA-F]{12}$
+          type: string
+          examples:
+          - 0000000000ab
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/nac_client_coa'
+              - description: Request Body
+              contentMediaType: application/json
+        required: false
+      responses:
+        '200':
+          description: Example response
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/nac_client_coa_response'
+                - description: Response returned after sending a NAC client CoA command
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/nac_client_coa_response'
+                - description: Response returned after sending a NAC client CoA command
+                contentMediaType: application/vnd.api+json
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    nac_client_coa_response:
+      title: nac_client_coa_response
+      type: object
+      properties:
+        device_mac:
+          type: string
+          description: Target AP or switch MAC address for the CoA command
+        device_type:
+          allOf:
+          - $ref: '#/components/schemas/device_type3'
+          - description: 'Type of network device that received the CoA command. enum: `ap`, `gateway`, `switch`.'
+      description: Response returned after sending a NAC client CoA command
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    nac_client_last_status:
+      title: nac_client_last_status
+      enum:
+      - permitted
+      - session_started
+      - session_stopped
+      - denied
+      type: string
+      description: 'Latest Authentication status of the client. enum: `denied`, `permitted`, `session_started`, `session_stopped`'
+      examples:
+      - permitted
+    count_result:
+      title: count_result
+      required:
+      - count
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of matching items for the distinct value or values in this result
+          contentEncoding: int32
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
+    random_mac1:
+      title: random_mac1
+      enum:
+      - 'true'
+      - 'false'
+      type: string
+      description: 'Whether the client used a randomized MAC address. enum: `true`, `false`.'
+    nac_client_last_status2:
+      title: nac_client_last_status2
+      enum:
+      - permitted
+      - session_started
+      - session_stopped
+      - denied
+      type: string
+      description: 'Most recent NAC authentication status for the client. enum: `permitted`, `session_started`, `session_stopped`, `denied`.'
+      examples:
+      - permitted
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    nac_access_type4:
+      title: nac_access_type4
+      enum:
+      - wireless
+      - wired
+      - vty
+      type: string
+      description: 'Network access type for the NAC client. enum: `wireless`, `wired`, `vty`.'
+      examples:
+      - wireless
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    device_type3:
+      title: device_type3
+      enum:
+      - ap
+      - gateway
+      - switch
+      type: string
+      description: 'Type of network device that received the CoA command. enum: `ap`, `gateway`, `switch`.'
+    nac_access_type3:
+      title: nac_access_type3
+      enum:
+      - wireless
+      - wired
+      - vty
+      type: string
+      description: 'Access type of the port where the NAC event occurred. enum: `wireless`, `wired`, `vty`.'
+      examples:
+      - wireless
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    edr_provider:
+      title: edr_provider
+      enum:
+      - crowdstrike
+      - sentinelone
+      type: string
+      description: 'EDR provider associated with the NAC client. enum: `crowdstrike`, `sentinelone`'
+    nac_client_event:
+      title: nac_client_event
+      type: object
+      properties:
+        ap:
+          type: string
+          description: Access point MAC address for the client session
+          examples:
+          - 5c5b35513227
+        auth_type:
+          allOf:
+          - $ref: '#/components/schemas/nac_auth_type2'
+          - description: 'Authentication method used for the NAC event. enum: `cert`, `device-auth`, `eap-teap`, `eap-tls`, `eap-ttls`, `idp`, `mab`, `eap-peap`.'
+            examples:
+            - eap-tls
+        bssid:
+          type: string
+          description: Wireless BSSID used for the client session
+          examples:
+          - 5c5b355fafcc
+        client_type:
+          allOf:
+          - $ref: '#/components/schemas/nac_access_type2'
+          - description: 'Access type for the NAC client event. enum: `wireless`, `wired`, `vty`.'
+            examples:
+            - wireless
+        device_mac:
+          type: string
+          description: Network device MAC address for the AP or switch handling the client session
+          readOnly: true
+          examples:
+          - 60c78d8c7f6f
+        dryrun_nacrule_id:
+          type: string
+          description: Dry-run NAC rule ID that matched the event, when present
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 32f27e7d-ff26-4a9b-b3d1-ff9bcb264012
+        dryrun_nacrule_matched:
+          type: boolean
+          description: Whether a dry-run NAC rule matched the event
+          readOnly: true
+        idp_id:
+          type: string
+          description: Identity provider configuration ID used for the event
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 912ef72e-2239-4996-b81e-469e87a27cd6
+        idp_role:
+          type: array
+          items:
+            type: string
+          description: Roles or groups returned by the identity provider
+          examples:
+          - - itsuperusers
+            - vip
+        idp_username:
+          type: string
+          description: Username presented to the identity provider
+          readOnly: true
+          examples:
+          - user@deaflyz.net
+        mac:
+          type: string
+          description: Client MAC address for the NAC event
+          readOnly: true
+          examples:
+          - ac3eb179e535
+        mxedge_id:
+          type: string
+          description: Mist Edge ID used to connect to cloud
+        nacrule_id:
+          type: string
+          description: NAC rule ID that matched the event
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 32f27e7d-ff26-4a9b-b3d1-ff9bcb264c62
+        nacrule_matched:
+          type: boolean
+          description: Whether a NAC rule matched the event
+          readOnly: true
+        nas_vendor:
+          type: string
+          description: Vendor of the network access server
+          readOnly: true
+          examples:
+          - juniper-mist
+        org_id:
+          type: string
+          description: Identifier of the org where the NAC event occurred
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        port_id:
+          type: string
+          description: Switch port identifier where the NAC event occurred
+          readOnly: true
+          examples:
+          - ge-0/0/17.0
+        port_type:
+          allOf:
+          - $ref: '#/components/schemas/nac_access_type3'
+          - description: 'Access type of the port where the NAC event occurred. enum: `wireless`, `wired`, `vty`.'
+            examples:
+            - wireless
+        random_mac:
+          allOf:
+          - $ref: '#/components/schemas/random_mac1'
+          - description: 'Whether the client used a randomized MAC address. enum: `true`, `false`.'
+        resp_attrs:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: RADIUS response attributes returned by NAC to the NAS
+          examples:
+          - - Tunnel-Type=VLAN
+            - Tunnel-Medium-Type=IEEE-802
+            - Tunnel-Private-Group-Id=750
+            - User-Name=anonymous
+        site_id:
+          type: string
+          description: Identifier of the site where the NAC event occurred
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        ssid:
+          type: string
+          description: Wireless network SSID used for the NAC session
+          readOnly: true
+          examples:
+          - MyCorp-NAC
+        timestamp:
+          type: number
+          description: Time when the NAC event occurred
+          readOnly: true
+        type:
+          type: string
+          description: NAC event type code
+          readOnly: true
+          examples:
+          - NAC_CLIENT_PERMIT
+        usermac_label:
+          type: array
+          items:
+            type: string
+          description: Labels derived from the usermac entry matched by the client
+          examples:
+          - - bldg5
+            - printer
+        username:
+          type: string
+          description: Client-presented username for the NAC event
+          readOnly: true
+        vlan:
+          type: string
+          description: Network VLAN name or ID returned for the NAC client
+          readOnly: true
+        vlan_source:
+          type: string
+          description: Source of the assigned VLAN, for example `nactag` or `usermac`
+          examples:
+          - nactag
+      description: NAC authentication event for a wired or wireless client
+    random_mac3:
+      title: random_mac3
+      enum:
+      - 'true'
+      - 'false'
+      type: string
+      description: 'Whether the NAC client used a randomized MAC address. enum: `true`, `false`.'
+    nac_coa_type3:
+      title: nac_coa_type3
+      enum:
+      - reauth
+      - disconnect
+      type: string
+      description: 'Change of Authorization command to send to the NAC client. enum: `reauth`, `disconnect`.'
+    edr_status:
+      title: edr_status
+      enum:
+      - sentinelone_healthy
+      - sentinelone_infected
+      - crowdstrike_low
+      - crowdstrike_medium
+      - crowdstrike_high
+      - crowdstrike_critical
+      - crowdstrike_informational
+      type: string
+      description: 'EDR Status of the NAC client. enum: `sentinelone_healthy`, `sentinelone_infected`, `crowdstrike_low`, `crowdstrike_medium`, `crowdstrike_high`, `crowdstrike_critical`, `crowdstrike_informational`'
+    response_events_nac_client_search:
+      title: response_events_nac_client_search
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Epoch timestamp for the end of the NAC client event search window
+          contentEncoding: int32
+          examples:
+          - 1513176951
+        limit:
+          type: integer
+          description: Maximum number of NAC client event records returned in this page
+          contentEncoding: int32
+          examples:
+          - 10
+        next:
+          type: string
+          description: Pagination cursor or URL for retrieving the next page of NAC client event records
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/nac_client_event'
+          description: NAC client event records matching the search filters
+        start:
+          type: integer
+          description: Epoch timestamp for the start of the NAC client event search window
+          contentEncoding: int32
+          examples:
+          - 1512572151
+        total:
+          type: integer
+          description: Number of NAC client event records matching the search filters across all pages
+          contentEncoding: int32
+          examples:
+          - 1
+      description: Paginated response for NAC client event search results
+    nac_auth_type5:
+      title: nac_auth_type5
+      enum:
+      - cert
+      - device-auth
+      - eap-teap
+      - eap-tls
+      - eap-ttls
+      - idp
+      - mab
+      - eap-peap
+      type: string
+      description: 'Authentication method used by the NAC client. enum: `cert`, `device-auth`, `eap-teap`, `eap-tls`, `eap-ttls`, `idp`, `mab`, `eap-peap`.'
+      examples:
+      - eap-tls
+    nac_access_type2:
+      title: nac_access_type2
+      enum:
+      - wireless
+      - wired
+      - vty
+      type: string
+      description: 'Access type for the NAC client event. enum: `wireless`, `wired`, `vty`.'
+      examples:
+      - wireless
+    org_nac_clients_count_distinct:
+      title: org_nac_clients_count_distinct
+      enum:
+      - ap
+      - auth_type
+      - device_mac
+      - edr_managed
+      - edr_providers
+      - edr_status
+      - family
+      - hostname
+      - idp_id
+      - mfg
+      - mdm_compliance
+      - mdm_managed
+      - mdm_provider
+      - model
+      - mxedge_id
+      - nacrule_matched
+      - nacrule_name
+      - nacrule_id
+      - nas_ip
+      - nas_vendor
+      - os
+      - site_id
+      - ssid
+      - status
+      - type
+      - usermac_label
+      - username
+      - vlan
+      type: string
+      description: 'enum: `ap`, `auth_type`, `device_mac`, `edr_managed`, `edr_providers`, `edr_status`, `family`, `hostname`, `idp_id`, `mfg`, `mdm_compliance`, `mdm_managed`, `mdm_provider`, `model`, `mxedge_id`, `nacrule_matched`, `nacrule_name`, `nacrule_id`, `nas_ip`, `nas_vendor`, `os`, `site_id`, `ssid`, `status`, `type`, `usermac_label`, `username`, `vlan`'
+    nac_auth_type2:
+      title: nac_auth_type2
+      enum:
+      - cert
+      - device-auth
+      - eap-teap
+      - eap-tls
+      - eap-ttls
+      - idp
+      - mab
+      - eap-peap
+      type: string
+      description: 'Authentication method used for the NAC event. enum: `cert`, `device-auth`, `eap-teap`, `eap-tls`, `eap-ttls`, `idp`, `mab`, `eap-peap`.'
+      examples:
+      - eap-tls
+    response_client_nac_search:
+      title: response_client_nac_search
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Search window end timestamp for NAC clients, in epoch seconds
+          contentEncoding: int32
+          examples:
+          - 1513362753
+        limit:
+          type: integer
+          description: Maximum number of NAC client results requested
+          contentEncoding: int32
+          examples:
+          - 3
+        next:
+          type: string
+          description: URL for the next page of NAC client results
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/client_nac'
+          description: NAC client records returned for this page
+        start:
+          type: integer
+          description: Search window start timestamp for NAC clients, in epoch seconds
+          contentEncoding: int32
+          examples:
+          - 1513276353
+        total:
+          type: integer
+          description: Number of NAC client records matching the search
+          contentEncoding: int32
+          examples:
+          - 2
+      description: Paginated NAC client search response
+    client_nac:
+      title: client_nac
+      type: object
+      properties:
+        ap:
+          type: array
+          items:
+            type: string
+          description: Observed AP MAC addresses for the NAC client during the query duration
+          readOnly: true
+          examples:
+          - - 5c5b35bf16bb
+            - d4dc090041b4
+        auth_type:
+          allOf:
+          - $ref: '#/components/schemas/nac_auth_type5'
+          - description: 'Authentication method used by the NAC client. enum: `cert`, `device-auth`, `eap-teap`, `eap-tls`, `eap-ttls`, `idp`, `mab`, `eap-peap`.'
+            examples:
+            - eap-tls
+        cert_cn:
+          type: array
+          items:
+            type: string
+          description: Certificate common names observed for the client during the query duration
+          readOnly: true
+          examples:
+          - - john@mycorp.net
+        cert_issuer:
+          type: array
+          items:
+            type: string
+          description: Certificate issuers observed for the client during the query duration
+          readOnly: true
+          examples:
+          - - /C=US/ST=CA/CN=MyCorp
+        cert_serial:
+          type: array
+          items:
+            type: string
+          description: Certificate serial numbers observed for the client during the query duration
+          readOnly: true
+          examples:
+          - - 2c63510123456789
+        cert_subject:
+          type: array
+          items:
+            type: string
+          description: Certificate subjects observed for the client during the query duration
+          readOnly: true
+          examples:
+          - - /C=US/O=MyCorp/CN=john@mycorp.net/emailAddress=john@mycorp.net
+        client_ip:
+          type: array
+          items:
+            type: string
+          description: Client IP addresses observed during the query duration
+          readOnly: true
+          examples:
+          - - 10.100.0.157
+        device_mac:
+          type: string
+          description: MAC address of the AP or switch handling the NAC client session
+          readOnly: true
+          examples:
+          - 60c78d8c7f6f
+        edr_managed:
+          type: boolean
+          description: Whether the NAC client is managed by an EDR provider
+        edr_providers:
+          type: array
+          items:
+            $ref: '#/components/schemas/edr_provider'
+          description: EDR providers associated with the NAC client
+        edr_status:
+          type: array
+          items:
+            $ref: '#/components/schemas/edr_status'
+          description: EDR health statuses reported for the NAC client
+        group:
+          type: string
+          description: User group associated with the NAC client
+        idp_id:
+          type: string
+          description: Identity Provider identifier used during NAC authentication
+        idp_role:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Identity Provider roles or groups returned for the NAC client
+        last_ap:
+          type: string
+          description: Most recent AP MAC address used by the NAC client
+          examples:
+          - a83a79a947ee
+        last_cert_cn:
+          type: string
+          description: Most recent certificate common name used by the NAC client
+          examples:
+          - john@mycorp.net
+        last_cert_expiry:
+          type: number
+          description: Most recent certificate expiration timestamp for the NAC client
+          examples:
+          - 1746711240
+        last_cert_issuer:
+          type: string
+          description: Most recent certificate issuer used by the NAC client
+          examples:
+          - /C=US/ST=CA/CN=MyCorp
+        last_cert_serial:
+          type: string
+          description: Most recent certificate serial number used by the NAC client
+          examples:
+          - 2c63510123456789
+        last_cert_subject:
+          type: string
+          description: Most recent certificate subject used by the NAC client
+          examples:
+          - /C=US/O=MyCorp/CN=john@mycorp.net/emailAddress=john@mycorp.net
+        last_client_ip:
+          type: string
+          description: Most recent client IP address observed for the NAC client
+          examples:
+          - 10.100.0.157
+        last_nacrule_id:
+          type: string
+          description: Most recent NAC policy rule identifier used for authentication
+          examples:
+          - 603b62db-d839-4152-9f7f-f2578443de8d
+        last_nacrule_name:
+          type: string
+          description: Most recent NAC policy rule name used for authentication
+          examples:
+          - Wireless Cert Auth
+        last_nas_vendor:
+          type: string
+          description: Most recent NAS vendor reported for the NAC client
+          examples:
+          - juniper-mist
+        last_port_id:
+          type: string
+          description: Most recent port identifier used by the NAC client
+          examples:
+          - ge-0/0/17.0
+        last_ssid:
+          type: string
+          description: Most recent SSID used by the NAC client
+          examples:
+          - MyCorp-NAC
+        last_status:
+          allOf:
+          - $ref: '#/components/schemas/nac_client_last_status2'
+          - description: 'Most recent NAC authentication status for the client. enum: `permitted`, `session_started`, `session_stopped`, `denied`.'
+            examples:
+            - permitted
+        last_username:
+          type: string
+          description: Most recent username presented by the NAC client
+          examples:
+          - john@mycorp.net
+        last_vlan:
+          type: integer
+          description: Most recent VLAN associated with the NAC client
+          contentEncoding: int32
+          examples:
+          - 10
+        mac:
+          type: string
+          description: Client MAC address for the NAC record
+          readOnly: true
+          examples:
+          - ac3eb179e535
+        nacrule_id:
+          type: array
+          items:
+            type: string
+          description: NAC policy rule identifiers used during the query duration
+          readOnly: true
+          examples:
+          - - 603b62db-d839-4152-9f7f-f2578443de8d
+        nacrule_matched:
+          type: boolean
+          description: Whether a NAC policy rule matched the client
+        nacrule_name:
+          type: array
+          items:
+            type: string
+          description: NAC policy rule names used during the query duration
+          readOnly: true
+          examples:
+          - - Wireless Cert Auth
+        nas_ip:
+          type: string
+          description: IP address of the NAS device used for authentication
+        nas_vendor:
+          type: array
+          items:
+            type: string
+          description: NAS vendors observed for the client during the query duration
+          readOnly: true
+          examples:
+          - - juniper-mist
+        org_id:
+          type: string
+          description: Owning organization identifier for the NAC client
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        port_id:
+          type: array
+          items:
+            type: string
+          description: Port identifiers used by the NAC client during the query duration
+          readOnly: true
+          examples:
+          - - ge-0/0/17.0
+        random_mac:
+          allOf:
+          - $ref: '#/components/schemas/random_mac3'
+          - description: 'Whether the NAC client used a randomized MAC address. enum: `true`, `false`.'
+        resp_attrs:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: RADIUS response attributes returned for the NAC client
+          examples:
+          - - Tunnel-Type=VLAN
+            - Tunnel-Medium-Type=IEEE-802
+            - Tunnel-Private-Group-Id=750
+            - User-Name=anonymous
+        site_id:
+          type: string
+          description: Site identifier associated with the NAC client
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        ssid:
+          type: array
+          items:
+            type: string
+          description: Wireless SSIDs used by the NAC client during the query duration
+          examples:
+          - - MyCorp-NAC
+        timestamp:
+          type: number
+          description: Time when the NAC client record was observed
+          readOnly: true
+        type:
+          allOf:
+          - $ref: '#/components/schemas/nac_access_type4'
+          - description: 'Network access type for the NAC client. enum: `wireless`, `wired`, `vty`.'
+            examples:
+            - wireless
+        usermac_label:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: User MAC labels associated with the NAC client
+        username:
+          type: array
+          items:
+            type: string
+          description: User identities associated with the NAC client authentication
+          readOnly: true
+        vlan:
+          type: array
+          items:
+            type: string
+          description: Network VLANs associated with the NAC client during authentication
+          readOnly: true
+      description: NAC client authentication and access state
+    org_nac_client_events_count_distinct:
+      title: org_nac_client_events_count_distinct
+      enum:
+      - ap
+      - auth_type
+      - dryrun_nacrule_id
+      - mac
+      - nacrule_id
+      - nas_vendor
+      - ssid
+      - type
+      - username
+      - vlan
+      type: string
+      description: 'enum: `ap`, `auth_type`, `dryrun_nacrule_id`, `mac`, `nacrule_id`, `nas_vendor`, `ssid`, `type`, `username`, `vlan`'
+    nac_client_coa:
+      title: nac_client_coa
+      type: object
+      properties:
+        coa_type:
+          allOf:
+          - $ref: '#/components/schemas/nac_coa_type3'
+          - description: 'Change of Authorization command to send to the NAC client. enum: `reauth`, `disconnect`.'
+      description: Change of Authorization request for a NAC client
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_count:
+      title: response_count
+      required:
+      - distinct
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        distinct:
+          type: string
+          description: Field used to group the count results
+        end:
+          type: integer
+          description: Search window end timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of distinct count results requested
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/count_result'
+          description: Count results grouped by the distinct field
+        start:
+          type: integer
+          description: Search window start timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of distinct result buckets returned
+          contentEncoding: int32
+      description: Distinct count response for time-bounded search results
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

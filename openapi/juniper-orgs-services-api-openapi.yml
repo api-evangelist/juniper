@@ -1,0 +1,1696 @@
+openapi: 3.2.0
+info:
+  title: Mist Orgs Services API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Orgs Services
+  description: A Service refers to the applications that network users will connect to.
+paths:
+  /api/v1/orgs/{org_id}/services:
+    parameters: []
+    get:
+      tags:
+      - Orgs Services
+      summary: listOrgServices
+      description: List organization service definitions. Services describe applications, application categories, URLs, hostnames, subnets, or custom protocol and port match criteria used by gateway and SSR policies.
+      operationId: listOrgServices
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: page
+        in: query
+        description: Select the page number to return when using page-based pagination; starts at `1`
+        style: form
+        explode: true
+        schema:
+          minimum: 1
+          type: integer
+          contentEncoding: int32
+          default: 1
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/service'
+                description: Service definitions returned by list operations
+                examples:
+                - - addresses:
+                    - string
+                    apps:
+                    - string
+                    dscp: 8
+                    hostnames:
+                    - string
+                    max_jitter: 0
+                    max_latency: 0
+                    max_loss: 0
+                    name: string
+                    specs:
+                    - port_range: '0'
+                      protocol: any
+                    traffic_class: best_effort
+                    traffic_type: default
+                    type: custom
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                  - addresses:
+                    - string
+                    apps:
+                    - string
+                    dscp: 8
+                    hostnames:
+                    - string
+                    max_jitter: 0
+                    max_latency: 0
+                    max_loss: 0
+                    name: string
+                    specs:
+                    - port_range: '0'
+                      protocol: any
+                    traffic_class: best_effort
+                    traffic_type: default
+                    type: custom
+            application/vnd.api+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/service'
+                description: Service definitions returned by list operations
+                examples:
+                - - addresses:
+                    - string
+                    apps:
+                    - string
+                    dscp: 8
+                    hostnames:
+                    - string
+                    max_jitter: 0
+                    max_latency: 0
+                    max_loss: 0
+                    name: string
+                    specs:
+                    - port_range: '0'
+                      protocol: any
+                    traffic_class: best_effort
+                    traffic_type: default
+                    type: custom
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                  - addresses:
+                    - string
+                    apps:
+                    - string
+                    dscp: 8
+                    hostnames:
+                    - string
+                    max_jitter: 0
+                    max_latency: 0
+                    max_loss: 0
+                    name: string
+                    specs:
+                    - port_range: '0'
+                      protocol: any
+                    traffic_class: best_effort
+                    traffic_type: default
+                    type: custom
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    post:
+      tags:
+      - Orgs Services
+      summary: createOrgService
+      description: 'Create an organization service definition with the match criteria
+
+        used by gateway and SSR policies, such as applications, URLs, hostnames,
+
+        subnets, or custom protocol and port rules.
+
+
+        Services can be user in the service policies to allow or deny traffic matching the service or to apply specific inspection settings or steering rules.'
+      operationId: createOrgService
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/service'
+              - examples:
+                - addresses:
+                  - 0.0.0.0/0
+                  app_key: string
+                  name: string
+                  network_id: d6797cf4-42b9-4cad-8591-9dd91c3f0fc3
+                  specs:
+                  - port_range: 8080,8443
+                    protocol: any
+                  subnet: string
+                  type: custom
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  addresses:
+                  - 0.0.0.0/0
+                  app_key: string
+                  name: string
+                  network_id: d6797cf4-42b9-4cad-8591-9dd91c3f0fc3
+                  specs:
+                  - port_range: 8080,8443
+                    protocol: any
+                  subnet: string
+                  type: custom
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/service'
+                - description: Traffic service definition for applications or destinations used by gateway and SSR policies
+                  examples:
+                  - addresses:
+                    - string
+                    app_categories:
+                    - string
+                    apps:
+                    - string
+                    created_time: 0
+                    dscp: 0
+                    failover_policy: revertible
+                    hostnames:
+                    - string
+                    id: 497f6eca-6276-5004-bfeb-53cbbbba6f16
+                    max_jitter: 0
+                    max_latency: 0
+                    max_loss: 0
+                    modified_time: 0
+                    name: string
+                    org_id: a40f5d1f-d889-42e9-94ea-b9b33585fc6b
+                    sle_enabled: false
+                    specs:
+                    - port_range: '0'
+                      protocol: any
+                    traffic_class: best_effort
+                    traffic_type: data_best_effort
+                    type: custom
+                    vpn_name: addresses
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    addresses:
+                    - string
+                    app_categories:
+                    - string
+                    apps:
+                    - string
+                    created_time: 0
+                    dscp: 0
+                    failover_policy: revertible
+                    hostnames:
+                    - string
+                    id: 497f6eca-6276-5004-bfeb-53cbbbba6f16
+                    max_jitter: 0
+                    max_latency: 0
+                    max_loss: 0
+                    modified_time: 0
+                    name: string
+                    org_id: a40f5d1f-d889-42e9-94ea-b9b33585fc6b
+                    sle_enabled: false
+                    specs:
+                    - port_range: '0'
+                      protocol: any
+                    traffic_class: best_effort
+                    traffic_type: data_best_effort
+                    type: custom
+                    vpn_name: addresses
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/service'
+                - description: Traffic service definition for applications or destinations used by gateway and SSR policies
+                  examples:
+                  - addresses:
+                    - string
+                    app_categories:
+                    - string
+                    apps:
+                    - string
+                    created_time: 0
+                    dscp: 0
+                    failover_policy: revertible
+                    hostnames:
+                    - string
+                    id: 497f6eca-6276-5004-bfeb-53cbbbba6f16
+                    max_jitter: 0
+                    max_latency: 0
+                    max_loss: 0
+                    modified_time: 0
+                    name: string
+                    org_id: a40f5d1f-d889-42e9-94ea-b9b33585fc6b
+                    sle_enabled: false
+                    specs:
+                    - port_range: '0'
+                      protocol: any
+                    traffic_class: best_effort
+                    traffic_type: data_best_effort
+                    type: custom
+                    vpn_name: addresses
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    addresses:
+                    - string
+                    app_categories:
+                    - string
+                    apps:
+                    - string
+                    created_time: 0
+                    dscp: 0
+                    failover_policy: revertible
+                    hostnames:
+                    - string
+                    id: 497f6eca-6276-5004-bfeb-53cbbbba6f16
+                    max_jitter: 0
+                    max_latency: 0
+                    max_loss: 0
+                    modified_time: 0
+                    name: string
+                    org_id: a40f5d1f-d889-42e9-94ea-b9b33585fc6b
+                    sle_enabled: false
+                    specs:
+                    - port_range: '0'
+                      protocol: any
+                    traffic_class: best_effort
+                    traffic_type: data_best_effort
+                    type: custom
+                    vpn_name: addresses
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/services/{service_id}:
+    parameters: []
+    delete:
+      tags:
+      - Orgs Services
+      summary: deleteOrgService
+      description: Remove an organization service definition from the available service catalog.
+      operationId: deleteOrgService
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: service_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    get:
+      tags:
+      - Orgs Services
+      summary: getOrgService
+      description: Return an organization service definition, including its matching mode, match values, traffic classification, and optional SSR path-selection thresholds.
+      operationId: getOrgService
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: service_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/service'
+                - description: Traffic service definition for applications or destinations used by gateway and SSR policies
+                  examples:
+                  - addresses:
+                    - string
+                    app_categories:
+                    - string
+                    apps:
+                    - string
+                    created_time: 0
+                    dscp: 0
+                    failover_policy: revertible
+                    hostnames:
+                    - string
+                    id: 497f6eca-6276-5004-bfeb-53cbbbba6f16
+                    max_jitter: 0
+                    max_latency: 0
+                    max_loss: 0
+                    modified_time: 0
+                    name: string
+                    org_id: a40f5d1f-d889-42e9-94ea-b9b33585fc6b
+                    sle_enabled: false
+                    specs:
+                    - port_range: '0'
+                      protocol: any
+                    traffic_class: best_effort
+                    traffic_type: data_best_effort
+                    type: custom
+                    vpn_name: addresses
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    addresses:
+                    - string
+                    app_categories:
+                    - string
+                    apps:
+                    - string
+                    created_time: 0
+                    dscp: 0
+                    failover_policy: revertible
+                    hostnames:
+                    - string
+                    id: 497f6eca-6276-5004-bfeb-53cbbbba6f16
+                    max_jitter: 0
+                    max_latency: 0
+                    max_loss: 0
+                    modified_time: 0
+                    name: string
+                    org_id: a40f5d1f-d889-42e9-94ea-b9b33585fc6b
+                    sle_enabled: false
+                    specs:
+                    - port_range: '0'
+                      protocol: any
+                    traffic_class: best_effort
+                    traffic_type: data_best_effort
+                    type: custom
+                    vpn_name: addresses
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/service'
+                - description: Traffic service definition for applications or destinations used by gateway and SSR policies
+                  examples:
+                  - addresses:
+                    - string
+                    app_categories:
+                    - string
+                    apps:
+                    - string
+                    created_time: 0
+                    dscp: 0
+                    failover_policy: revertible
+                    hostnames:
+                    - string
+                    id: 497f6eca-6276-5004-bfeb-53cbbbba6f16
+                    max_jitter: 0
+                    max_latency: 0
+                    max_loss: 0
+                    modified_time: 0
+                    name: string
+                    org_id: a40f5d1f-d889-42e9-94ea-b9b33585fc6b
+                    sle_enabled: false
+                    specs:
+                    - port_range: '0'
+                      protocol: any
+                    traffic_class: best_effort
+                    traffic_type: data_best_effort
+                    type: custom
+                    vpn_name: addresses
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    addresses:
+                    - string
+                    app_categories:
+                    - string
+                    apps:
+                    - string
+                    created_time: 0
+                    dscp: 0
+                    failover_policy: revertible
+                    hostnames:
+                    - string
+                    id: 497f6eca-6276-5004-bfeb-53cbbbba6f16
+                    max_jitter: 0
+                    max_latency: 0
+                    max_loss: 0
+                    modified_time: 0
+                    name: string
+                    org_id: a40f5d1f-d889-42e9-94ea-b9b33585fc6b
+                    sle_enabled: false
+                    specs:
+                    - port_range: '0'
+                      protocol: any
+                    traffic_class: best_effort
+                    traffic_type: data_best_effort
+                    type: custom
+                    vpn_name: addresses
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    put:
+      tags:
+      - Orgs Services
+      summary: updateOrgService
+      description: Update an organization service definition, including its matching mode, match values, traffic classification, or optional SSR path-selection thresholds.
+      operationId: updateOrgService
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: service_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/service'
+              - examples:
+                - addresses:
+                  - string
+                  app_categories:
+                  - string
+                  apps:
+                  - string
+                  dscp: 0
+                  failover_policy: revertible
+                  hostnames:
+                  - string
+                  max_jitter: 0
+                  max_latency: 0
+                  max_loss: 0
+                  name: string
+                  sle_enabled: false
+                  specs:
+                  - port_range: '0'
+                    protocol: any
+                  traffic_class: best_effort
+                  traffic_type: data_best_effort
+                  type: custom
+                  vpn_name: addresses
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  addresses:
+                  - string
+                  app_categories:
+                  - string
+                  apps:
+                  - string
+                  dscp: 0
+                  failover_policy: revertible
+                  hostnames:
+                  - string
+                  max_jitter: 0
+                  max_latency: 0
+                  max_loss: 0
+                  name: string
+                  sle_enabled: false
+                  specs:
+                  - port_range: '0'
+                    protocol: any
+                  traffic_class: best_effort
+                  traffic_type: data_best_effort
+                  type: custom
+                  vpn_name: addresses
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/service'
+                - description: Traffic service definition for applications or destinations used by gateway and SSR policies
+                  examples:
+                  - addresses:
+                    - string
+                    app_categories:
+                    - string
+                    apps:
+                    - string
+                    created_time: 0
+                    dscp: 0
+                    failover_policy: revertible
+                    hostnames:
+                    - string
+                    id: 497f6eca-6276-5004-bfeb-53cbbbba6f16
+                    max_jitter: 0
+                    max_latency: 0
+                    max_loss: 0
+                    modified_time: 0
+                    name: string
+                    org_id: a40f5d1f-d889-42e9-94ea-b9b33585fc6b
+                    sle_enabled: false
+                    specs:
+                    - port_range: '0'
+                      protocol: any
+                    traffic_class: best_effort
+                    traffic_type: data_best_effort
+                    type: custom
+                    vpn_name: addresses
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    addresses:
+                    - string
+                    app_categories:
+                    - string
+                    apps:
+                    - string
+                    created_time: 0
+                    dscp: 0
+                    failover_policy: revertible
+                    hostnames:
+                    - string
+                    id: 497f6eca-6276-5004-bfeb-53cbbbba6f16
+                    max_jitter: 0
+                    max_latency: 0
+                    max_loss: 0
+                    modified_time: 0
+                    name: string
+                    org_id: a40f5d1f-d889-42e9-94ea-b9b33585fc6b
+                    sle_enabled: false
+                    specs:
+                    - port_range: '0'
+                      protocol: any
+                    traffic_class: best_effort
+                    traffic_type: data_best_effort
+                    type: custom
+                    vpn_name: addresses
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/service'
+                - description: Traffic service definition for applications or destinations used by gateway and SSR policies
+                  examples:
+                  - addresses:
+                    - string
+                    app_categories:
+                    - string
+                    apps:
+                    - string
+                    created_time: 0
+                    dscp: 0
+                    failover_policy: revertible
+                    hostnames:
+                    - string
+                    id: 497f6eca-6276-5004-bfeb-53cbbbba6f16
+                    max_jitter: 0
+                    max_latency: 0
+                    max_loss: 0
+                    modified_time: 0
+                    name: string
+                    org_id: a40f5d1f-d889-42e9-94ea-b9b33585fc6b
+                    sle_enabled: false
+                    specs:
+                    - port_range: '0'
+                      protocol: any
+                    traffic_class: best_effort
+                    traffic_type: data_best_effort
+                    type: custom
+                    vpn_name: addresses
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    addresses:
+                    - string
+                    app_categories:
+                    - string
+                    apps:
+                    - string
+                    created_time: 0
+                    dscp: 0
+                    failover_policy: revertible
+                    hostnames:
+                    - string
+                    id: 497f6eca-6276-5004-bfeb-53cbbbba6f16
+                    max_jitter: 0
+                    max_latency: 0
+                    max_loss: 0
+                    modified_time: 0
+                    name: string
+                    org_id: a40f5d1f-d889-42e9-94ea-b9b33585fc6b
+                    sle_enabled: false
+                    specs:
+                    - port_range: '0'
+                      protocol: any
+                    traffic_class: best_effort
+                    traffic_type: data_best_effort
+                    type: custom
+                    vpn_name: addresses
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    service_traffic_class2:
+      title: service_traffic_class2
+      enum:
+      - best_effort
+      - high
+      - low
+      - medium
+      type: string
+      description: 'Traffic class applied when `traffic_type`==`custom`. enum: `best_effort`, `high`, `low`, `medium`.'
+    service_type2:
+      title: service_type2
+      enum:
+      - app_categories
+      - apps
+      - custom
+      - urls
+      type: string
+      description: 'Matching mode that determines which app, URL, or custom fields are used. enum: `app_categories`, `apps`, `custom`, `urls`.'
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    service_spec:
+      title: service_spec
+      type: object
+      properties:
+        port_range:
+          type: string
+          description: Port number, port range, or variable
+          examples:
+          - 8080,8443
+        protocol:
+          type: string
+          description: '`https`/ `tcp` / `udp` / `icmp` / `gre` / `any` / `:protocol_number`, `protocol_number` is between 1-254'
+          default: any
+          examples:
+          - tcp
+      description: Protocol and port match rule for a custom service
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    service:
+      title: service
+      type: object
+      properties:
+        addresses:
+          type: array
+          items:
+            type: string
+          description: Custom IPv4 or IPv6 subnets matched by this service when `type`==`custom`
+          examples:
+          - - 10.0.0.0/8
+            - 172.21.0.0/16
+            - 2001:db8:abcd:12::/64
+            - fd28::/128
+        app_categories:
+          type: array
+          items:
+            type: string
+          description: Categories of applications matched by this service when `type`==`app_categories`
+          examples:
+          - - Sports
+        app_subcategories:
+          type: array
+          items:
+            type: string
+          description: Application subcategories matched by this service when `type`==`app_categories`
+          examples:
+          - - Shopping
+        apps:
+          type: array
+          items:
+            type: string
+          description: Application identifiers matched by this service when `type`==`apps`
+          examples:
+          - - office365
+            - okta
+        client_limit_down:
+          maximum: 107374182
+          minimum: 0
+          type: integer
+          description: 0 means unlimited, value from 0 to 107374182
+          contentEncoding: int32
+          default: 0
+          examples:
+          - 300000
+        client_limit_up:
+          maximum: 107374182
+          minimum: 0
+          type: integer
+          description: 0 means unlimited, value from 0 to 107374182
+          contentEncoding: int32
+          default: 0
+          examples:
+          - 300000
+        created_time:
+          type: number
+          description: Timestamp when the service definition was created, in epoch seconds
+          readOnly: true
+        description:
+          type: string
+          description: Free-form description of the service definition
+        dscp:
+          oneOf:
+          - type: string
+          - maximum: 63
+            minimum: 0
+            type: integer
+            contentEncoding: int32
+          description: QoS DSCP value used for custom SSR traffic classification
+        failover_policy:
+          allOf:
+          - $ref: '#/components/schemas/service_failover_policy2'
+          - description: 'Failover behavior for traffic matched by this service. enum: `non_revertible`, `none`, `revertible`.'
+        hostnames:
+          type: array
+          items:
+            type: string
+          description: Domain hostnames matched by this custom service for web filtering
+        id:
+          type: string
+          description: Unique value identifying the service definition
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        max_jitter:
+          oneOf:
+          - type: string
+          - maximum: 2147483647
+            minimum: 0
+            type: integer
+            contentEncoding: int32
+          description: Maximum jitter threshold used for SSR uplink selection when `traffic_type`==`custom`
+        max_latency:
+          oneOf:
+          - type: string
+          - maximum: 2147483647
+            minimum: 0
+            type: integer
+            contentEncoding: int32
+          description: Maximum latency threshold used for SSR uplink selection when `traffic_type`==`custom`
+        max_loss:
+          oneOf:
+          - type: string
+          - maximum: 100
+            minimum: 0
+            type: integer
+            contentEncoding: int32
+          description: Maximum packet loss threshold used for SSR uplink selection when `traffic_type`==`custom`
+        modified_time:
+          type: number
+          description: Timestamp when the service definition was last modified, in epoch seconds
+          readOnly: true
+        name:
+          type: string
+          description: Display name of the service definition
+        org_id:
+          type: string
+          description: Organization identifier associated with the service definition
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        service_limit_down:
+          maximum: 107374182
+          minimum: 0
+          type: integer
+          description: 0 means unlimited, value from 0 to 107374182
+          contentEncoding: int32
+          default: 0
+          examples:
+          - 300000
+        service_limit_up:
+          maximum: 107374182
+          minimum: 0
+          type: integer
+          description: 0 means unlimited, value from 0 to 107374182
+          contentEncoding: int32
+          default: 0
+          examples:
+          - 300000
+        sle_enabled:
+          type: boolean
+          description: Whether to enable measure SLE
+          default: false
+        specs:
+          type: array
+          items:
+            $ref: '#/components/schemas/service_spec'
+          description: Protocol and port match rules used when `type`==`custom`
+        ssr_relaxed_tcp_state_enforcement:
+          type: boolean
+          description: Whether SSR relaxes TCP state enforcement for this service
+          default: false
+        traffic_class:
+          allOf:
+          - $ref: '#/components/schemas/service_traffic_class2'
+          - description: 'Traffic class applied when `traffic_type`==`custom`. enum: `best_effort`, `high`, `low`, `medium`.'
+        traffic_type:
+          type: string
+          description: values from [List Traffic Types]($e/Constants%20Definitions/listTrafficTypes)
+          default: data_best_effort
+        type:
+          allOf:
+          - $ref: '#/components/schemas/service_type2'
+          - description: 'Matching mode that determines which app, URL, or custom fields are used. enum: `app_categories`, `apps`, `custom`, `urls`.'
+        urls:
+          type: array
+          items:
+            type: string
+          description: URL patterns matched by this service when `type`==`urls`
+      description: Traffic service definition for applications or destinations used by gateway and SSR policies
+    service_failover_policy2:
+      title: service_failover_policy2
+      enum:
+      - non_revertible
+      - none
+      - revertible
+      type: string
+      description: 'Failover behavior for traffic matched by this service. enum: `non_revertible`, `none`, `revertible`.'
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

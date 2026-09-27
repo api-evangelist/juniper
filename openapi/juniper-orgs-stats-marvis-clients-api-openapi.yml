@@ -1,0 +1,1028 @@
+openapi: 3.2.0
+info:
+  title: Mist Orgs Stats - Marvis Clients API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Orgs Stats - Marvis Clients
+  description: API Calls to retrieve statistics about Marvis Clients at the Org level
+paths:
+  /api/v1/orgs/{org_id}/stats/marvisclients/count:
+    parameters: []
+    get:
+      tags:
+      - Orgs Stats - Marvis Clients
+      summary: countOrgMarvisClientsStats
+      description: Count Marvis Client stats records by a distinct field.
+      operationId: countOrgMarvisClientsStats
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: distinct
+        in: query
+        description: 'Field to count by. enum: `device_id`, `wifi_mac`, `wifi_ip`, `hostname`, `model`, `mfg`, `serial`, `os_type`, `os_version`'
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: os_type
+      - name: device_id
+        in: query
+        description: Filter by Marvis Client installation device UUID
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: wifi_mac
+        in: query
+        description: Filter by device Wi-Fi MAC address
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: wifi_ip
+        in: query
+        description: Filter by device Wi-Fi IP address
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: hostname
+        in: query
+        description: Filter by device hostname
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: model
+        in: query
+        description: Filter by device model
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: mfg
+        in: query
+        description: Filter by device manufacturer
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: serial
+        in: query
+        description: Filter by device serial number
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: os_type
+        in: query
+        description: Filter by device OS type or platform
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: os_version
+        in: query
+        description: Filter by device OS version
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      responses:
+        '200':
+          description: Count result
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_count'
+                - description: Distinct count response for time-bounded search results
+                  examples:
+                  - distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_count'
+                - description: Distinct count response for time-bounded search results
+                  examples:
+                  - distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/stats/marvisclients/search:
+    parameters: []
+    get:
+      tags:
+      - Orgs Stats - Marvis Clients
+      summary: searchOrgMarvisClientsStats
+      description: Search Marvis Client stats records across the organization.
+      operationId: searchOrgMarvisClientsStats
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: device_id
+        in: query
+        description: Filter by Marvis Client installation device UUID
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: wifi_mac
+        in: query
+        description: Filter by device Wi-Fi MAC address
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: wifi_ip
+        in: query
+        description: Filter by device Wi-Fi IP address
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: hostname
+        in: query
+        description: Filter by device hostname
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: model
+        in: query
+        description: Filter by device model
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: mfg
+        in: query
+        description: Filter by device manufacturer
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: serial
+        in: query
+        description: Filter by device serial number
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: os_type
+        in: query
+        description: Filter by device OS type or platform
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: os_version
+        in: query
+        description: Filter by device OS version
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      responses:
+        '200':
+          description: Paginated Marvis Client stats search results
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/stats_marvis_clients_search'
+                - description: Paginated list of Marvis Client stats records
+                  examples:
+                  - limit: 100
+                    results:
+                    - battery_charging: false
+                      battery_level: 82
+                      cpu_background: 2.1
+                      cpu_idle: 78.3
+                      cpu_system: 5.4
+                      cpu_user: 14.2
+                      device_id: 0c2a2c6c-5a95-4956-a02d-e1b39c2e5c6e
+                      hostname: my-android-phone
+                      location:
+                        map_id: b4695157-0d1d-4da0-8f9e-5c38149d8b81
+                        site_id: d14f16d8-d14f-11e5-8e81-1258369c38a9
+                        timestamp: 1717027100
+                        x: 423.5
+                        y: 201
+                      memory_total: 8589934592
+                      memory_usage: 3758096384
+                      mfg: Samsung
+                      model: Galaxy S23
+                      org_id: c168ddee-c14c-11e5-8e81-1258369c38a9
+                      os_type: Android
+                      os_version: '14'
+                      serial: R5CX123456A
+                      storage_total: 128849018880
+                      storage_usage: 52428800000
+                      timestamp: 1717027200
+                      wifi_band: 5GHz
+                      wifi_bssid: 00:11:22:33:44:55
+                      wifi_channel: 36
+                      wifi_ip: 192.168.1.55
+                      wifi_mac: 00:aa:bb:cc:dd:ee
+                      wifi_rssi: -58
+                      wifi_ssid: Corp-WiFi
+                    total: 1
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    limit: 100
+                    results:
+                    - battery_charging: false
+                      battery_level: 82
+                      cpu_background: 2.1
+                      cpu_idle: 78.3
+                      cpu_system: 5.4
+                      cpu_user: 14.2
+                      device_id: 0c2a2c6c-5a95-4956-a02d-e1b39c2e5c6e
+                      hostname: my-android-phone
+                      location:
+                        map_id: b4695157-0d1d-4da0-8f9e-5c38149d8b81
+                        site_id: d14f16d8-d14f-11e5-8e81-1258369c38a9
+                        timestamp: 1717027100
+                        x: 423.5
+                        y: 201
+                      memory_total: 8589934592
+                      memory_usage: 3758096384
+                      mfg: Samsung
+                      model: Galaxy S23
+                      org_id: c168ddee-c14c-11e5-8e81-1258369c38a9
+                      os_type: Android
+                      os_version: '14'
+                      serial: R5CX123456A
+                      storage_total: 128849018880
+                      storage_usage: 52428800000
+                      timestamp: 1717027200
+                      wifi_band: 5GHz
+                      wifi_bssid: 00:11:22:33:44:55
+                      wifi_channel: 36
+                      wifi_ip: 192.168.1.55
+                      wifi_mac: 00:aa:bb:cc:dd:ee
+                      wifi_rssi: -58
+                      wifi_ssid: Corp-WiFi
+                    total: 1
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/stats_marvis_clients_search'
+                - description: Paginated list of Marvis Client stats records
+                  examples:
+                  - limit: 100
+                    results:
+                    - battery_charging: false
+                      battery_level: 82
+                      cpu_background: 2.1
+                      cpu_idle: 78.3
+                      cpu_system: 5.4
+                      cpu_user: 14.2
+                      device_id: 0c2a2c6c-5a95-4956-a02d-e1b39c2e5c6e
+                      hostname: my-android-phone
+                      location:
+                        map_id: b4695157-0d1d-4da0-8f9e-5c38149d8b81
+                        site_id: d14f16d8-d14f-11e5-8e81-1258369c38a9
+                        timestamp: 1717027100
+                        x: 423.5
+                        y: 201
+                      memory_total: 8589934592
+                      memory_usage: 3758096384
+                      mfg: Samsung
+                      model: Galaxy S23
+                      org_id: c168ddee-c14c-11e5-8e81-1258369c38a9
+                      os_type: Android
+                      os_version: '14'
+                      serial: R5CX123456A
+                      storage_total: 128849018880
+                      storage_usage: 52428800000
+                      timestamp: 1717027200
+                      wifi_band: 5GHz
+                      wifi_bssid: 00:11:22:33:44:55
+                      wifi_channel: 36
+                      wifi_ip: 192.168.1.55
+                      wifi_mac: 00:aa:bb:cc:dd:ee
+                      wifi_rssi: -58
+                      wifi_ssid: Corp-WiFi
+                    total: 1
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    limit: 100
+                    results:
+                    - battery_charging: false
+                      battery_level: 82
+                      cpu_background: 2.1
+                      cpu_idle: 78.3
+                      cpu_system: 5.4
+                      cpu_user: 14.2
+                      device_id: 0c2a2c6c-5a95-4956-a02d-e1b39c2e5c6e
+                      hostname: my-android-phone
+                      location:
+                        map_id: b4695157-0d1d-4da0-8f9e-5c38149d8b81
+                        site_id: d14f16d8-d14f-11e5-8e81-1258369c38a9
+                        timestamp: 1717027100
+                        x: 423.5
+                        y: 201
+                      memory_total: 8589934592
+                      memory_usage: 3758096384
+                      mfg: Samsung
+                      model: Galaxy S23
+                      org_id: c168ddee-c14c-11e5-8e81-1258369c38a9
+                      os_type: Android
+                      os_version: '14'
+                      serial: R5CX123456A
+                      storage_total: 128849018880
+                      storage_usage: 52428800000
+                      timestamp: 1717027200
+                      wifi_band: 5GHz
+                      wifi_bssid: 00:11:22:33:44:55
+                      wifi_channel: 36
+                      wifi_ip: 192.168.1.55
+                      wifi_mac: 00:aa:bb:cc:dd:ee
+                      wifi_rssi: -58
+                      wifi_ssid: Corp-WiFi
+                    total: 1
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    stats_marvis_client:
+      title: stats_marvis_client
+      type: object
+      properties:
+        battery_charging:
+          type: boolean
+          description: Whether the device battery is currently charging
+        battery_level:
+          type: integer
+          description: Battery level percentage (0–100)
+          contentEncoding: int32
+        cpu_background:
+          type: number
+          description: Background CPU utilization (0–100)
+        cpu_idle:
+          type: number
+          description: Idle CPU percentage (0–100)
+        cpu_system:
+          type: number
+          description: System CPU utilization (0–100)
+        cpu_user:
+          type: number
+          description: User-space CPU utilization (0–100)
+        device_id:
+          type: string
+          description: UUID of the device the Marvis Client is installed on
+          contentEncoding: uuid
+        hostname:
+          type: string
+          description: Device hostname
+        location:
+          allOf:
+          - $ref: '#/components/schemas/stats_marvis_client_location1'
+          - description: Last known device location
+        memory_total:
+          type: integer
+          description: Total device memory, in bytes
+          contentEncoding: int32
+        memory_usage:
+          type: integer
+          description: Memory in use, in bytes
+          contentEncoding: int32
+        mfg:
+          type: string
+          description: Device manufacturer
+        model:
+          type: string
+          description: Device model name
+        org_id:
+          type: string
+          description: Organization UUID
+          contentEncoding: uuid
+        os_type:
+          type: string
+          description: OS type or platform (e.g. Android, iOS)
+        os_version:
+          type: string
+          description: OS version string
+        serial:
+          type: string
+          description: Device serial number
+        storage_total:
+          type: integer
+          description: Total device storage, in bytes
+          contentEncoding: int32
+        storage_usage:
+          type: integer
+          description: Storage in use, in bytes
+          contentEncoding: int32
+        timestamp:
+          type: integer
+          description: Timestamp of the stats record, in epoch seconds
+          contentEncoding: int32
+        wifi_band:
+          type: string
+          description: Wi-Fi band the device is connected on
+        wifi_bssid:
+          type: string
+          description: BSSID the device is connected to
+        wifi_channel:
+          type: integer
+          description: Wi-Fi channel the device is on
+          contentEncoding: int32
+        wifi_ip:
+          type: string
+          description: Device Wi-Fi IP address
+        wifi_mac:
+          type: string
+          description: Device Wi-Fi MAC address
+        wifi_rssi:
+          type: integer
+          description: Wi-Fi RSSI, in dBm
+          contentEncoding: int32
+        wifi_ssid:
+          type: string
+          description: SSID the device is connected to
+      description: Marvis Client stats record returned by search
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    count_result:
+      title: count_result
+      required:
+      - count
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of matching items for the distinct value or values in this result
+          contentEncoding: int32
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    stats_marvis_client_location1:
+      title: stats_marvis_client_location1
+      type: object
+      properties:
+        map_id:
+          type: string
+          description: UUID of the floor-plan map
+          contentEncoding: uuid
+        site_id:
+          type: string
+          description: UUID of the site the device was located in
+          contentEncoding: uuid
+        timestamp:
+          type: integer
+          description: Timestamp of the location fix, in epoch seconds
+          contentEncoding: int32
+        x:
+          type: number
+          description: X coordinate on the floor-plan map, in pixels
+        y:
+          type: number
+          description: Y coordinate on the floor-plan map, in pixels
+      description: Last known device location
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    stats_marvis_clients_search:
+      title: stats_marvis_clients_search
+      type: object
+      properties:
+        limit:
+          type: integer
+          description: Maximum number of results requested
+          contentEncoding: int32
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/stats_marvis_client'
+          description: List of Marvis Client stats records
+        total:
+          type: integer
+          description: Total number of matching results
+          contentEncoding: int32
+      description: Paginated list of Marvis Client stats records
+    response_count:
+      title: response_count
+      required:
+      - distinct
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        distinct:
+          type: string
+          description: Field used to group the count results
+        end:
+          type: integer
+          description: Search window end timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of distinct count results requested
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/count_result'
+          description: Count results grouped by the distinct field
+        start:
+          type: integer
+          description: Search window start timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of distinct result buckets returned
+          contentEncoding: int32
+      description: Distinct count response for time-bounded search results
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

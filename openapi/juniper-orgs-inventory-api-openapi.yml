@@ -1,0 +1,3199 @@
+openapi: 3.2.0
+info:
+  title: Mist Orgs Inventory API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Orgs Inventory
+  description: The Org Inventory allows administrators to view and manage all devices registered (claimed) to the Organization.
+paths:
+  /api/v1/orgs/{org_id}/inventory:
+    parameters: []
+    get:
+      tags:
+      - Orgs Inventory
+      summary: getOrgInventory
+      description: 'Get Org Inventory
+
+
+        ### VC (Virtual-Chassis) Management
+
+
+        Starting with the April release, Virtual Chassis devices in Mist will now use
+
+        a cloud-assigned virtual MAC address as the device ID, instead of the physical
+
+        MAC address of the FPC0 member.
+
+
+        **Retrieving the device ID or Site ID of a Virtual Chassis:**
+
+
+        1. Use this API call with the query parameters `vc=true` and `mac` set to the MAC address of the VC member.
+
+
+        2. In the response, check the `vc_mac` and `mac` fields:
+
+
+        - If `vc_mac` is empty or not present, the device is not part of a Virtual Chassis.
+
+        The `device_id` and `site_id` will be available in the device information.
+
+
+        - If `vc_mac` differs from the `mac` field, the device is part of a Virtual Chassis
+
+        but is not the device used to generate the Virtual Chassis ID. Use the `vc_mac` value with the Get Org Inventory
+
+        API call to retrieve the `device_id` and `site_id`.
+
+
+        - If `vc_mac` matches the `mac` field, the device is the device used to generate the Virtual Chassis ID and he `device_id` and `site_id` will be available
+
+        in the device information.
+
+        This is the case if the device is the Virtual Chassis "virtual device" (MAC starting with `020003`) or if the device is the Virtual Chassis FPC0 and the Virtual Chassis is still using the FPC0 MAC address to generate the device ID.'
+      operationId: getOrgInventory
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: serial
+        in: query
+        description: Filter results by device serial number. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - PE3717390301,EY2523AN0523
+          - FXLH2015150025
+        examples:
+          Untitled Example1:
+            value: PE3717390301,EY2523AN0523
+          Untitled Example2:
+            value: FXLH2015150025
+      - name: model
+        in: query
+        description: Filter results by device model. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - EX4300-48T,EX4100-48MP
+          - AP43
+        examples:
+          Untitled Example1:
+            value: EX4300-48T,EX4100-48MP
+          Untitled Example2:
+            value: AP43
+      - name: type
+        in: query
+        description: 'Filter results by type. enum: `ap`, `gateway`, `switch`. Accepts multiple comma-separated values.'
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - switch,ap
+      - name: mac
+        in: query
+        description: Filter results by MAC address. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 5c5b53010101,5c5b53020202
+          - 5c5b350e0001
+        examples:
+          Untitled Example1:
+            value: 5c5b53010101,5c5b53020202
+          Untitled Example2:
+            value: 5c5b350e0001
+      - name: site_id
+        in: query
+        description: Filter results by one site identifier. Use a single value; comma-separated values are not supported
+        style: form
+        explode: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+      - name: vc_mac
+        in: query
+        description: Virtual Chassis MAC address. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 5c5b53010101,5c5b53020202
+          - 5c5b350e0001
+        examples:
+          Untitled Example1:
+            value: 5c5b53010101,5c5b53020202
+          Untitled Example2:
+            value: 5c5b350e0001
+      - name: vc
+        in: query
+        description: To display Virtual Chassis members
+        style: form
+        explode: true
+        schema:
+          type: boolean
+          default: false
+          examples:
+          - false
+      - name: unassigned
+        in: query
+        description: To display Unassigned devices
+        style: form
+        explode: true
+        schema:
+          type: boolean
+          default: true
+          examples:
+          - true
+      - name: modified_after
+        in: query
+        description: Filter on inventory last modified time, in epoch
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+          examples:
+          - 1703003296
+      - name: disconnected_before
+        in: query
+        description: Filter results to devices that were last disconnected before this time, in epoch seconds
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+          examples:
+          - 1733522845
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: page
+        in: query
+        description: Select the page number to return when using page-based pagination; starts at `1`
+        style: form
+        explode: true
+        schema:
+          minimum: 1
+          type: integer
+          contentEncoding: int32
+          default: 1
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inventory'
+                description: Inventory records for claimed devices
+                examples:
+                - - connected: true
+                    created_time: 1542328276
+                    deviceprofile_id: 6f4bf402-45f9-2a56-6c8b-7f83d3bc98e9
+                    id: 00000000-0000-0000-0000-5c5b35000018
+                    last_disconnected: 1542828000
+                    mac: 5c5b35000018
+                    model: AP41
+                    modified_time: 1542829778
+                    name: hallway
+                    serial: FXLH2015150025
+                    site_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                    type: ap
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                  - connected: true
+                    created_time: 1542328276
+                    deviceprofile_id: 6f4bf402-45f9-2a56-6c8b-7f83d3bc98e9
+                    id: 00000000-0000-0000-0000-5c5b35000018
+                    last_disconnected: 1542828000
+                    mac: 5c5b35000018
+                    model: AP41
+                    modified_time: 1542829778
+                    name: hallway
+                    serial: FXLH2015150025
+                    site_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                    type: ap
+            application/vnd.api+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inventory'
+                description: Inventory records for claimed devices
+                examples:
+                - - connected: true
+                    created_time: 1542328276
+                    deviceprofile_id: 6f4bf402-45f9-2a56-6c8b-7f83d3bc98e9
+                    id: 00000000-0000-0000-0000-5c5b35000018
+                    last_disconnected: 1542828000
+                    mac: 5c5b35000018
+                    model: AP41
+                    modified_time: 1542829778
+                    name: hallway
+                    serial: FXLH2015150025
+                    site_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                    type: ap
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                  - connected: true
+                    created_time: 1542328276
+                    deviceprofile_id: 6f4bf402-45f9-2a56-6c8b-7f83d3bc98e9
+                    id: 00000000-0000-0000-0000-5c5b35000018
+                    last_disconnected: 1542828000
+                    mac: 5c5b35000018
+                    model: AP41
+                    modified_time: 1542829778
+                    name: hallway
+                    serial: FXLH2015150025
+                    site_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                    type: ap
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    post:
+      tags:
+      - Orgs Inventory
+      summary: addOrgInventory
+      description: Claim devices into the organization inventory using order activation codes or device claim codes.
+      operationId: addOrgInventory
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              uniqueItems: true
+              type: array
+              items:
+                type: string
+              description: Request Body
+              examples:
+              - - 6JG8E-PTFV2-A9Z2N
+                - DVH4V-SNMSZ-PDXBR
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                - 6JG8E-PTFV2-A9Z2N
+                - DVH4V-SNMSZ-PDXBR
+        required: false
+      responses:
+        '200':
+          description: OK - if any of entries are valid or there’s no errors
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_inventory'
+                - description: Result of adding device claim codes to organization inventory
+                  examples:
+                  - added:
+                    - 6JG8E-PTFV2-A9Z2N
+                    duplicated:
+                    - DVH4V-SNMSZ-PDXBR
+                    error:
+                    - PO1025335ohoh
+                    inventory_added:
+                    - mac: 5c5b35000018
+                      magic: 6JG8EPTFV2A9Z2N
+                      model: AP41
+                      serial: FXLH2015150025
+                      type: ap
+                    inventory_duplicated:
+                    - mac: 5c5b35000012
+                      magic: DVH4VSNMSZPDXBR
+                      model: AP41
+                      serial: FXLH2015150027
+                      type: ap
+                    reason:
+                    - belongs to another org ('e2f543f7-d6e1-409f-a565-e77a1f098d3b' (other) != '0de5d6fc-219a-414d-a840-67d6b919ad8f' (you))
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    added:
+                    - 6JG8E-PTFV2-A9Z2N
+                    duplicated:
+                    - DVH4V-SNMSZ-PDXBR
+                    error:
+                    - PO1025335ohoh
+                    inventory_added:
+                    - mac: 5c5b35000018
+                      magic: 6JG8EPTFV2A9Z2N
+                      model: AP41
+                      serial: FXLH2015150025
+                      type: ap
+                    inventory_duplicated:
+                    - mac: 5c5b35000012
+                      magic: DVH4VSNMSZPDXBR
+                      model: AP41
+                      serial: FXLH2015150027
+                      type: ap
+                    reason:
+                    - belongs to another org ('e2f543f7-d6e1-409f-a565-e77a1f098d3b' (other) != '0de5d6fc-219a-414d-a840-67d6b919ad8f' (you))
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_inventory'
+                - description: Result of adding device claim codes to organization inventory
+                  examples:
+                  - added:
+                    - 6JG8E-PTFV2-A9Z2N
+                    duplicated:
+                    - DVH4V-SNMSZ-PDXBR
+                    error:
+                    - PO1025335ohoh
+                    inventory_added:
+                    - mac: 5c5b35000018
+                      magic: 6JG8EPTFV2A9Z2N
+                      model: AP41
+                      serial: FXLH2015150025
+                      type: ap
+                    inventory_duplicated:
+                    - mac: 5c5b35000012
+                      magic: DVH4VSNMSZPDXBR
+                      model: AP41
+                      serial: FXLH2015150027
+                      type: ap
+                    reason:
+                    - belongs to another org ('e2f543f7-d6e1-409f-a565-e77a1f098d3b' (other) != '0de5d6fc-219a-414d-a840-67d6b919ad8f' (you))
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    added:
+                    - 6JG8E-PTFV2-A9Z2N
+                    duplicated:
+                    - DVH4V-SNMSZ-PDXBR
+                    error:
+                    - PO1025335ohoh
+                    inventory_added:
+                    - mac: 5c5b35000018
+                      magic: 6JG8EPTFV2A9Z2N
+                      model: AP41
+                      serial: FXLH2015150025
+                      type: ap
+                    inventory_duplicated:
+                    - mac: 5c5b35000012
+                      magic: DVH4VSNMSZPDXBR
+                      model: AP41
+                      serial: FXLH2015150027
+                      type: ap
+                    reason:
+                    - belongs to another org ('e2f543f7-d6e1-409f-a565-e77a1f098d3b' (other) != '0de5d6fc-219a-414d-a840-67d6b919ad8f' (you))
+        '400':
+          description: OK - if any of entries are valid or there’s no errors
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_inventory'
+                - description: Result of adding device claim codes to organization inventory
+                  examples:
+                  - added:
+                    - 6JG8E-PTFV2-A9Z2N
+                    duplicated:
+                    - DVH4V-SNMSZ-PDXBR
+                    error:
+                    - PO1025335ohoh
+                    inventory_added:
+                    - mac: 5c5b35000018
+                      magic: 6JG8EPTFV2A9Z2N
+                      model: AP41
+                      serial: FXLH2015150025
+                      type: ap
+                    inventory_duplicated:
+                    - mac: 5c5b35000012
+                      magic: DVH4VSNMSZPDXBR
+                      model: AP41
+                      serial: FXLH2015150027
+                      type: ap
+                    reason:
+                    - belongs to another org ('e2f543f7-d6e1-409f-a565-e77a1f098d3b' (other) != '0de5d6fc-219a-414d-a840-67d6b919ad8f' (you))
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    added:
+                    - 6JG8E-PTFV2-A9Z2N
+                    duplicated:
+                    - DVH4V-SNMSZ-PDXBR
+                    error:
+                    - PO1025335ohoh
+                    inventory_added:
+                    - mac: 5c5b35000018
+                      magic: 6JG8EPTFV2A9Z2N
+                      model: AP41
+                      serial: FXLH2015150025
+                      type: ap
+                    inventory_duplicated:
+                    - mac: 5c5b35000012
+                      magic: DVH4VSNMSZPDXBR
+                      model: AP41
+                      serial: FXLH2015150027
+                      type: ap
+                    reason:
+                    - belongs to another org ('e2f543f7-d6e1-409f-a565-e77a1f098d3b' (other) != '0de5d6fc-219a-414d-a840-67d6b919ad8f' (you))
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_inventory'
+                - description: Result of adding device claim codes to organization inventory
+                  examples:
+                  - added:
+                    - 6JG8E-PTFV2-A9Z2N
+                    duplicated:
+                    - DVH4V-SNMSZ-PDXBR
+                    error:
+                    - PO1025335ohoh
+                    inventory_added:
+                    - mac: 5c5b35000018
+                      magic: 6JG8EPTFV2A9Z2N
+                      model: AP41
+                      serial: FXLH2015150025
+                      type: ap
+                    inventory_duplicated:
+                    - mac: 5c5b35000012
+                      magic: DVH4VSNMSZPDXBR
+                      model: AP41
+                      serial: FXLH2015150027
+                      type: ap
+                    reason:
+                    - belongs to another org ('e2f543f7-d6e1-409f-a565-e77a1f098d3b' (other) != '0de5d6fc-219a-414d-a840-67d6b919ad8f' (you))
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    added:
+                    - 6JG8E-PTFV2-A9Z2N
+                    duplicated:
+                    - DVH4V-SNMSZ-PDXBR
+                    error:
+                    - PO1025335ohoh
+                    inventory_added:
+                    - mac: 5c5b35000018
+                      magic: 6JG8EPTFV2A9Z2N
+                      model: AP41
+                      serial: FXLH2015150025
+                      type: ap
+                    inventory_duplicated:
+                    - mac: 5c5b35000012
+                      magic: DVH4VSNMSZPDXBR
+                      model: AP41
+                      serial: FXLH2015150027
+                      type: ap
+                    reason:
+                    - belongs to another org ('e2f543f7-d6e1-409f-a565-e77a1f098d3b' (other) != '0de5d6fc-219a-414d-a840-67d6b919ad8f' (you))
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    put:
+      tags:
+      - Orgs Inventory
+      summary: updateOrgInventoryAssignment
+      description: Update inventory assignment for one or more devices, such as assigning them to a site, unassigning them, or deleting inventory records by MAC address or serial number.
+      operationId: updateOrgInventoryAssignment
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/inventory_update'
+              - examples:
+                - '{"disable_auto_config":false,"macs":["5c5b350e0001"],"no_reassign":false,"op":"assign","site_id":"4ac1dcf4-9d8b-7211-65c4-057819f0862b"}'
+                - '{"macs":["5c5b350e0001"],"op":"delete","serials":["FXLH2015150025","FXLH2015150026"]}'
+              contentMediaType: application/json
+            examples:
+              assign:
+                value:
+                  disable_auto_config: false
+                  macs:
+                  - 5c5b350e0001
+                  no_reassign: false
+                  op: assign
+                  site_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+              delete:
+                value:
+                  macs:
+                  - 5c5b350e0001
+                  op: delete
+                  serials:
+                  - FXLH2015150025
+                  - FXLH2015150026
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_org_inventory_change'
+                - description: Result of an organization inventory assignment or deletion operation
+                  examples:
+                  - '{"error":[],"op":"assign","reason":[],"success":["5c5b350e0001"]}'
+                  - '{"error":["FXLH2015150026"],"op":"delete","reason":[],"success":["FXLH2015150025","5c5b350e0001"]}'
+                  - '{"error":["5c5b350e0001"],"op":"upgrade_to_mist","reason":["already managed"],"success":["c15353123096"]}'
+                contentMediaType: application/json
+              examples:
+                Assign:
+                  value:
+                    error: []
+                    op: assign
+                    reason: []
+                    success:
+                    - 5c5b350e0001
+                Delete:
+                  value:
+                    error:
+                    - FXLH2015150026
+                    op: delete
+                    reason: []
+                    success:
+                    - FXLH2015150025
+                    - 5c5b350e0001
+                Error:
+                  value:
+                    error:
+                    - 5c5b350e0001
+                    op: upgrade_to_mist
+                    reason:
+                    - already managed
+                    success:
+                    - c15353123096
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_org_inventory_change'
+                - description: Result of an organization inventory assignment or deletion operation
+                  examples:
+                  - '{"error":[],"op":"assign","reason":[],"success":["5c5b350e0001"]}'
+                  - '{"error":["FXLH2015150026"],"op":"delete","reason":[],"success":["FXLH2015150025","5c5b350e0001"]}'
+                  - '{"error":["5c5b350e0001"],"op":"upgrade_to_mist","reason":["already managed"],"success":["c15353123096"]}'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Assign:
+                  value:
+                    error: []
+                    op: assign
+                    reason: []
+                    success:
+                    - 5c5b350e0001
+                Delete:
+                  value:
+                    error:
+                    - FXLH2015150026
+                    op: delete
+                    reason: []
+                    success:
+                    - FXLH2015150025
+                    - 5c5b350e0001
+                Error:
+                  value:
+                    error:
+                    - 5c5b350e0001
+                    op: upgrade_to_mist
+                    reason:
+                    - already managed
+                    success:
+                    - c15353123096
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/inventory/count:
+    parameters: []
+    get:
+      tags:
+      - Orgs Inventory
+      summary: countOrgInventory
+      description: Count organization inventory records, optionally grouped by `distinct` and filtered by device type, site, model, version, and status.
+      operationId: countOrgInventory
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: distinct
+        in: query
+        description: 'Field used to group this count response. enum: `model`, `status`, `site_id`, `sku`, `version`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/inventory_count_distinct'
+          - description: 'Field used to group this count response. enum: `model`, `status`, `site_id`, `sku`, `version`'
+      - name: type
+        in: query
+        description: 'Filter results by type. enum: `ap`, `gateway`, `switch`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/device_type_default_ap'
+          - description: 'Filter results by type. enum: `ap`, `gateway`, `switch`'
+      - name: site_id
+        in: query
+        description: Filter results by site identifier
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: model
+        in: query
+        description: Filter results by device model. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - AP45,BT11
+      - name: version
+        in: query
+        description: Filter results by software version
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: 'Filter results by status. enum: `connected`, `disconnected`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/device_status_filter'
+          - description: 'Filter results by status. enum: `connected`, `disconnected`'
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      responses:
+        '200':
+          description: Result of Count
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_count'
+                - description: Distinct count response for time-bounded search results
+                  examples:
+                  - distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_count'
+                - description: Distinct count response for time-bounded search results
+                  examples:
+                  - distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/inventory/create_ha_cluster:
+    parameters: []
+    post:
+      tags:
+      - Orgs Inventory
+      summary: createOrgGatewayHaCluster
+      description: Create a gateway HA cluster from unassigned gateway inventory nodes and assign the cluster to the specified site.
+      operationId: createOrgGatewayHaCluster
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ha_cluster_config'
+              - examples:
+                - disable_auto_config: true
+                  mist_configured: true
+                  nodes:
+                  - mac: aff827549235
+                  - mac: 8396cd006c8c
+                  site_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  disable_auto_config: true
+                  mist_configured: true
+                  nodes:
+                  - mac: aff827549235
+                  - mac: 8396cd006c8c
+                  site_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/inventory/delete_ha_cluster:
+    parameters: []
+    post:
+      tags:
+      - Orgs Inventory
+      summary: deleteOrgGatewayHaCluster
+      description: 'Delete HA Cluster
+
+
+        After HA cluster deleted, both of the nodes will be unassigned.'
+      operationId: deleteOrgGatewayHaCluster
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ha_cluster_delete'
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/inventory/reevaluate_auto_assignment:
+    parameters: []
+    post:
+      tags:
+      - Orgs Inventory
+      summary: reevaluateOrgAutoAssignment
+      description: Re-run organization inventory auto-assignment rules against devices that are eligible for automatic site assignment.
+      operationId: reevaluateOrgAutoAssignment
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/inventory/replace:
+    parameters: []
+    post:
+      tags:
+      - Orgs Inventory
+      summary: replaceOrgDevices
+      description: 'It’s a common request we get from the customers. When a AP HW has problem and need a replacement, they would want to copy the existing attributes (Device Config) of this old AP to the new one. It can be done by providing the MAC of a device that’s currently in the inventory but not assigned. The Device replaced will become unassigned.
+
+
+        This API also supports replacement of Mist Edges. This API copies device agnostic attributes from old Mist edge to new one.
+
+        Mist manufactured Mist Edges will be reset to factory settings but will still be in Inventory.Brownfield or VM’s will be
+
+        deleted from Inventory
+
+
+        **Note:** For Gateway devices only like-for-like replacements (can only replace a SRX320 with a SRX320 and not some other model) are allowed.'
+      operationId: replaceOrgDevices
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/replace_device'
+              - description: Request Body
+                examples:
+                - discard: []
+                  inventory_mac: 5c5b35000301
+                  mac: 5c5b35000101
+                  site_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  discard: []
+                  inventory_mac: 5c5b35000301
+                  mac: 5c5b35000101
+                  site_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_org_inventory_change'
+                - description: Result of an organization inventory assignment or deletion operation
+                  examples:
+                  - '{"error":[],"op":"assign","reason":[],"success":["5c5b350e0001"]}'
+                  - '{"error":["FXLH2015150026"],"op":"delete","reason":[],"success":["FXLH2015150025","5c5b350e0001"]}'
+                  - '{"error":["5c5b350e0001"],"op":"upgrade_to_mist","reason":["already managed"],"success":["c15353123096"]}'
+                contentMediaType: application/json
+              examples:
+                Assign:
+                  value:
+                    error: []
+                    op: assign
+                    reason: []
+                    success:
+                    - 5c5b350e0001
+                Delete:
+                  value:
+                    error:
+                    - FXLH2015150026
+                    op: delete
+                    reason: []
+                    success:
+                    - FXLH2015150025
+                    - 5c5b350e0001
+                Error:
+                  value:
+                    error:
+                    - 5c5b350e0001
+                    op: upgrade_to_mist
+                    reason:
+                    - already managed
+                    success:
+                    - c15353123096
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_org_inventory_change'
+                - description: Result of an organization inventory assignment or deletion operation
+                  examples:
+                  - '{"error":[],"op":"assign","reason":[],"success":["5c5b350e0001"]}'
+                  - '{"error":["FXLH2015150026"],"op":"delete","reason":[],"success":["FXLH2015150025","5c5b350e0001"]}'
+                  - '{"error":["5c5b350e0001"],"op":"upgrade_to_mist","reason":["already managed"],"success":["c15353123096"]}'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Assign:
+                  value:
+                    error: []
+                    op: assign
+                    reason: []
+                    success:
+                    - 5c5b350e0001
+                Delete:
+                  value:
+                    error:
+                    - FXLH2015150026
+                    op: delete
+                    reason: []
+                    success:
+                    - FXLH2015150025
+                    - 5c5b350e0001
+                Error:
+                  value:
+                    error:
+                    - 5c5b350e0001
+                    op: upgrade_to_mist
+                    reason:
+                    - already managed
+                    success:
+                    - c15353123096
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/inventory/search:
+    parameters: []
+    get:
+      tags:
+      - Orgs Inventory
+      summary: searchOrgInventory
+      description: Search organization inventory records with filters for type, MAC address, model, name, site, serial number, Virtual Chassis master state, SKU, version, status, and text.
+      operationId: searchOrgInventory
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: type
+        in: query
+        description: 'Filter results by type. enum: `ap`, `gateway`, `switch`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/device_type_default_ap'
+          - description: 'Filter results by type. enum: `ap`, `gateway`, `switch`'
+      - name: mac
+        in: query
+        description: Filter by MAC address. Partial matches may use `*` wildcards (e.g. `*5b35*` matches `5c5b350e0001` and `5c5b35000301`). Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 5c5b350e0001,*5b35*
+          - 5c5b350e0001
+          - '*5b35*'
+        examples:
+          Untitled Example1:
+            value: 5c5b350e0001,*5b35*
+          Untitled Example2:
+            value: 5c5b350e0001
+          Untitled Example3:
+            value: '*5b35*'
+      - name: model
+        in: query
+        description: Partial / full Device model. Use `prefix*` for prefix search or `*substring*` for contains search (e.g. `AP4*` and `*P4*` match `AP43`). Suffix-only wildcards (e.g. `*43`) are not supported. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - AP43,AP4*
+          - AP43
+          - AP4*
+          - '*P4*'
+        examples:
+          Untitled Example1:
+            value: AP43,AP4*
+          Untitled Example2:
+            value: AP43
+          Untitled Example3:
+            value: AP4*
+          Untitled Example4:
+            value: '*P4*'
+      - name: name
+        in: query
+        description: Device name. Always a partial match (e.g. `london` will match `london-1`, `london-2`, `my-london-device`...). Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - name-a,name-b
+          - london
+        examples:
+          Untitled Example1:
+            value: name-a,name-b
+          Untitled Example2:
+            value: london
+      - name: site_id
+        in: query
+        description: Filter inventory results by site identifier. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+        examples:
+          Untitled Example2:
+            value: 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+      - name: serial
+        in: query
+        description: Device serial number. Partial match allowed with wildcard * (e.g. `*123*` will match `AB123CD`, `12345`, `XY123`). Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - AB123CD,*123*
+          - AB123CD
+          - '*123*'
+        examples:
+          Untitled Example1:
+            value: AB123CD,*123*
+          Untitled Example2:
+            value: AB123CD
+          Untitled Example3:
+            value: '*123*'
+      - name: magic
+        in: query
+        description: Device claim code (magic). Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - WVTFBLTNPXD23H2
+      - name: master
+        in: query
+        description: Filter inventory results by whether the device is the Virtual Chassis master
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 'true'
+      - name: sku
+        in: query
+        description: Device SKU. Partial match allowed with wildcard * (e.g. `*2300*` will match `EX2300-F-12P`). Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - EX2300-F-12P,*2300*
+          - EX2300-F-12P
+          - '*2300*'
+        examples:
+          Untitled Example1:
+            value: EX2300-F-12P,*2300*
+          Untitled Example2:
+            value: EX2300-F-12P
+          Untitled Example3:
+            value: '*2300*'
+      - name: version
+        in: query
+        description: Device version. Partial match allowed with wildcard * (e.g. `2R3` will match `21.2R3-S3.5`). Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 21.2R3-S3.5,*2R3*
+          - 21.2R3-S3.5
+          - '*2R3*'
+        examples:
+          Untitled Example1:
+            value: 21.2R3-S3.5,*2R3*
+          Untitled Example2:
+            value: 21.2R3-S3.5
+          Untitled Example3:
+            value: '*2R3*'
+      - name: status
+        in: query
+        description: 'Device status. enum: `connected`, `disconnected`. Accepts multiple comma-separated values.'
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - connected,disconnected
+      - name: text
+        in: query
+        description: Wildcards for name, mac, serial
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: sort
+        in: query
+        description: On which field the list should be sorted, -prefix represents DESC order
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: timestamp
+          examples:
+          - -site_id
+      - name: search_after
+        in: query
+        description: Pagination cursor for retrieving subsequent pages of results. This value is automatically populated by Mist in the `next` URL from the previous response and should not be manually constructed.
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/inventory_search'
+                - description: Paginated inventory search response
+                  examples:
+                  - limit: 1000
+                    results:
+                    - mac: f01c2df166e0
+                      magic: WVTFBLTNPXD23H2
+                      master: true
+                      members:
+                      - mac: f01c2df166e0
+                        model: EX4300-48P
+                        serial: PD3714460200
+                      model: EX4300-48P
+                      name: mist-wa-ex4300-VC
+                      org_id: 9b853544-51e4-45fb-81ac-a442e4a111d0
+                      serial: PD3714460200
+                      site_id: 01dc141d-b6af-4baa-b00f-0e31ef954c4f
+                      sku: EX4300-48P
+                      status: disconnected
+                      type: switch
+                      vc_mac: f01c2df166e0
+                      version: 21.4R3.5
+                    total: 1
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    limit: 1000
+                    results:
+                    - mac: f01c2df166e0
+                      magic: WVTFBLTNPXD23H2
+                      master: true
+                      members:
+                      - mac: f01c2df166e0
+                        model: EX4300-48P
+                        serial: PD3714460200
+                      model: EX4300-48P
+                      name: mist-wa-ex4300-VC
+                      org_id: 9b853544-51e4-45fb-81ac-a442e4a111d0
+                      serial: PD3714460200
+                      site_id: 01dc141d-b6af-4baa-b00f-0e31ef954c4f
+                      sku: EX4300-48P
+                      status: disconnected
+                      type: switch
+                      vc_mac: f01c2df166e0
+                      version: 21.4R3.5
+                    total: 1
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/inventory_search'
+                - description: Paginated inventory search response
+                  examples:
+                  - limit: 1000
+                    results:
+                    - mac: f01c2df166e0
+                      magic: WVTFBLTNPXD23H2
+                      master: true
+                      members:
+                      - mac: f01c2df166e0
+                        model: EX4300-48P
+                        serial: PD3714460200
+                      model: EX4300-48P
+                      name: mist-wa-ex4300-VC
+                      org_id: 9b853544-51e4-45fb-81ac-a442e4a111d0
+                      serial: PD3714460200
+                      site_id: 01dc141d-b6af-4baa-b00f-0e31ef954c4f
+                      sku: EX4300-48P
+                      status: disconnected
+                      type: switch
+                      vc_mac: f01c2df166e0
+                      version: 21.4R3.5
+                    total: 1
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    limit: 1000
+                    results:
+                    - mac: f01c2df166e0
+                      magic: WVTFBLTNPXD23H2
+                      master: true
+                      members:
+                      - mac: f01c2df166e0
+                        model: EX4300-48P
+                        serial: PD3714460200
+                      model: EX4300-48P
+                      name: mist-wa-ex4300-VC
+                      org_id: 9b853544-51e4-45fb-81ac-a442e4a111d0
+                      serial: PD3714460200
+                      site_id: 01dc141d-b6af-4baa-b00f-0e31ef954c4f
+                      sku: EX4300-48P
+                      status: disconnected
+                      type: switch
+                      vc_mac: f01c2df166e0
+                      version: 21.4R3.5
+                    total: 1
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    response_org_inventory_change:
+      title: response_org_inventory_change
+      required:
+      - error
+      - op
+      - reason
+      - success
+      type: object
+      properties:
+        error:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Device identifiers that failed during the inventory operation
+        op:
+          allOf:
+          - $ref: '#/components/schemas/response_org_inventory_change_op2'
+          - description: 'Inventory operation applied to the requested device identifiers. enum: `assign`, `delete`, `downgrade_to_jsi`, `unassign`, `upgrade_to_mist`.'
+        reason:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Failure reasons corresponding to entries in the error list
+        success:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Device identifiers successfully processed by the inventory operation
+      description: Result of an organization inventory assignment or deletion operation
+    inventory_search_result:
+      title: inventory_search_result
+      type: object
+      properties:
+        mac:
+          type: string
+          description: Device MAC address for this inventory search result
+          examples:
+          - f01c2df166e0
+        magic:
+          type: string
+          description: Device claim code (magic) for this inventory search result
+          examples:
+          - WVTFBLTNPXD23H2
+        master:
+          type: boolean
+          description: Whether this search result represents the master member of a Virtual Chassis
+          examples:
+          - true
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/inventory_search_result_member'
+          description: Virtual Chassis members included in this inventory search result
+        model:
+          type: string
+          description: Device model for this inventory search result
+          examples:
+          - EX4300-48P
+        name:
+          type: string
+          description: Configured device name in this inventory search result
+          examples:
+          - mist-wa-ex4300-VC
+        org_id:
+          type: string
+          description: Organization that owns this inventory search result
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        serial:
+          type: string
+          description: Device serial number for this inventory search result
+          examples:
+          - PD3714460200
+        site_id:
+          type: string
+          description: Site associated with this inventory search result, when assigned
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        sku:
+          type: string
+          description: Device SKU for this inventory search result
+          examples:
+          - EX4300-48P
+        status:
+          type: string
+          description: Current inventory status for the device
+          examples:
+          - disconnected
+        type:
+          allOf:
+          - $ref: '#/components/schemas/device_type_default_ap4'
+          - description: 'Device type for this inventory search result. enum: `ap`, `gateway`, `switch`.'
+        vc_mac:
+          type: string
+          description: Virtual Chassis MAC address for this inventory search result
+          examples:
+          - f01c2df166e0
+        version:
+          type: string
+          description: Software version reported for this inventory search result
+          examples:
+          - 21.4R3.5
+      description: Inventory record returned by inventory search
+    response_org_inventory_change_op2:
+      title: response_org_inventory_change_op2
+      enum:
+      - assign
+      - delete
+      - downgrade_to_jsi
+      - unassign
+      - upgrade_to_mist
+      type: string
+      description: 'Inventory operation applied to the requested device identifiers. enum: `assign`, `delete`, `downgrade_to_jsi`, `unassign`, `upgrade_to_mist`.'
+    inventory_count_distinct:
+      title: inventory_count_distinct
+      enum:
+      - model
+      - status
+      - site_id
+      - sku
+      - version
+      type: string
+      description: 'enum: `model`, `status`, `site_id`, `sku`, `version`'
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    count_result:
+      title: count_result
+      required:
+      - count
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of matching items for the distinct value or values in this result
+          contentEncoding: int32
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
+    replace_device:
+      title: replace_device
+      type: object
+      properties:
+        discard:
+          type: array
+          items:
+            type: string
+          description: Existing device attributes that should not be copied to the replacement device
+        inventory_mac:
+          type: string
+          description: MAC address of the claimed, unassigned inventory device that will replace the old device
+          examples:
+          - 5c5b35000301
+        mac:
+          type: string
+          description: Device MAC address being replaced
+          examples:
+          - 5c5b35000101
+        site_id:
+          type: string
+          description: Site containing the device being replaced
+          contentEncoding: uuid
+          examples:
+          - 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+        tunterm_port_config:
+          allOf:
+          - $ref: '#/components/schemas/tunterm_port_config1'
+          - description: Tunnel termination Ethernet port configuration for a Mist Edge replacement
+      description: Request payload for replacing an inventory device with a claimed, unassigned device
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    inventory:
+      title: inventory
+      type: object
+      properties:
+        adopted:
+          type: boolean
+          description: Only if `type`==`switch` or `type`==`gateway`, whether the switch/gateway is adopted
+        chassis_mac:
+          type: string
+          description: For Virtual Chassis only, MAC address of the FPC0 member
+        chassis_serial:
+          type: string
+          description: For Virtual Chassis only, the Serial Number of the FPC0
+        connected:
+          type: boolean
+          description: Whether the device is connected
+        created_time:
+          type: number
+          description: Timestamp when the inventory record was created
+          readOnly: true
+        deviceprofile_id:
+          type:
+          - string
+          - 'null'
+          description: Deviceprofile id if assigned, null if not assigned
+        hostname:
+          type: string
+          description: Inventory hostname value reported by the device
+        hw_rev:
+          type: string
+          description: Device hardware revision number
+        id:
+          type: string
+          description: Unique identifier of the inventory record
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        jsi:
+          type: boolean
+          description: Whether the inventory device is in JSI mode
+        last_disconnected:
+          type: integer
+          description: Timestamp when the device last disconnected, in epoch seconds
+          contentEncoding: int32
+        mac:
+          type: string
+          description: Device MAC address for this inventory record
+        magic:
+          type: string
+          description: Claim code used to add this device to inventory
+        model:
+          type: string
+          description: Device model reported in inventory
+        modified_time:
+          type: number
+          description: Timestamp when the inventory record was last modified
+          readOnly: true
+        name:
+          type: string
+          description: Device name if configured
+        org_id:
+          type: string
+          description: Organization that owns this inventory record
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        serial:
+          type: string
+          description: Device serial number reported in inventory
+        site_id:
+          type: string
+          description: Site associated with this inventory record, when assigned
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        sku:
+          type: string
+          description: Device stock keeping unit
+        type:
+          allOf:
+          - $ref: '#/components/schemas/device_type_default_ap3'
+          - description: 'Device type for this inventory record. enum: `ap`, `gateway`, `switch`.'
+        vc_mac:
+          type: string
+          description: If `type`==`switch` and the device is part of a Virtual Chassis, MAC address of the Virtual Chassis. If `type`==`gateway` and the device is part of a cluster, MAC address of the cluster
+      description: Organization inventory record for a claimed device
+    response_inventory_inventory_duplicated_items:
+      title: response_inventory_inventory_duplicated_items
+      required:
+      - mac
+      - magic
+      - model
+      - serial
+      - type
+      type: object
+      properties:
+        mac:
+          type: string
+          description: Device MAC address for the duplicate inventory item
+          examples:
+          - 5c5b35000012
+        magic:
+          type: string
+          description: Activation code or claim code associated with the duplicate inventory item
+          examples:
+          - DVH4VSNMSZPDXBR
+        model:
+          type: string
+          description: Device model for the duplicate inventory item
+          examples:
+          - AP41
+        serial:
+          type: string
+          description: Device serial number for the duplicate inventory item
+          examples:
+          - FXLH2015150027
+        type:
+          type: string
+          description: Device type for the duplicate inventory item
+          examples:
+          - ap
+      description: Inventory device already present during the claim operation
+    device_type_default_ap4:
+      title: device_type_default_ap4
+      enum:
+      - ap
+      - gateway
+      - switch
+      type: string
+      description: 'Device type for this inventory search result. enum: `ap`, `gateway`, `switch`.'
+    inventory_search:
+      title: inventory_search
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Page ending index for this inventory search response
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of inventory search results requested
+          contentEncoding: int32
+          examples:
+          - 1000
+        next:
+          type: string
+          description: URL for the next page of inventory search results
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/inventory_search_result'
+          description: Inventory records returned by the search
+        start:
+          type: integer
+          description: Page starting index for this inventory search response
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of inventory records matching the search
+          contentEncoding: int32
+          examples:
+          - 1
+      description: Paginated inventory search response
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    device_status_filter:
+      title: device_status_filter
+      enum:
+      - connected
+      - disconnected
+      type: string
+      description: 'Filter devices based on their status. enum: `connected`, `disconnected`'
+    inventory_update_operation2:
+      title: inventory_update_operation2
+      enum:
+      - assign
+      - delete
+      - downgrade_to_jsi
+      - unassign
+      - upgrade_to_mist
+      type: string
+      description: 'Inventory operation to apply to the listed devices. enum: `assign`, `delete`, `downgrade_to_jsi`, `unassign`, `upgrade_to_mist`.'
+    ha_cluster_config_node:
+      title: ha_cluster_config_node
+      maxProperties: 2
+      type: object
+      properties:
+        mac:
+          type: string
+          description: Gateway node MAC address for an inventory node that is currently unassigned
+          examples:
+          - aff827549235
+      description: HA cluster inventory node identified by MAC address
+    device_type_default_ap:
+      title: device_type_default_ap
+      enum:
+      - ap
+      - gateway
+      - switch
+      type: string
+      description: 'enum: `ap`, `gateway`, `switch`'
+    device_type_default_ap3:
+      title: device_type_default_ap3
+      enum:
+      - ap
+      - gateway
+      - switch
+      type: string
+      description: 'Device type for this inventory record. enum: `ap`, `gateway`, `switch`.'
+    inventory_search_result_member:
+      title: inventory_search_result_member
+      type: object
+      properties:
+        mac:
+          type: string
+          description: Member device MAC address in this inventory search result
+          examples:
+          - f01c2df166e0
+        model:
+          type: string
+          description: Member device model in this inventory search result
+          examples:
+          - EX4300-48P
+        serial:
+          type: string
+          description: Member device serial number in this inventory search result
+          examples:
+          - PD3714460200
+      description: Virtual Chassis member in an inventory search result
+    ha_cluster_config:
+      title: ha_cluster_config
+      type: object
+      properties:
+        disable_auto_config:
+          type: boolean
+          description: This disables the default behavior of a cloud-ready switch/gateway being managed/configured by Mist. Setting this to `true` means you want to disable the default behavior and do not want the device to be Mist-managed.
+          deprecated: true
+        managed:
+          type: boolean
+          description: An adopted switch/gateway will not be managed/configured by Mist by default. Setting this parameter to `true` enables the adopted switch/gateway to be managed/configured by Mist.
+          deprecated: true
+        mist_configured:
+          type: boolean
+          description: whether the device can be configured by Mist or not. This deprecates `managed` (for adopted device) and `disable_auto_config` for claimed device)
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ha_cluster_config_node'
+          description: Gateway nodes to include in the HA cluster; each node must be currently unassigned in inventory
+        site_id:
+          type: string
+          description: Site where the HA cluster should be created
+          contentEncoding: uuid
+          examples:
+          - 43e9c864-a7e4-4310-8031-d9817d2c5a43
+      description: Request to create an HA cluster from unassigned gateway inventory nodes
+    response_inventory_inventory_added_items:
+      title: response_inventory_inventory_added_items
+      required:
+      - mac
+      - magic
+      - model
+      - serial
+      - type
+      type: object
+      properties:
+        mac:
+          type: string
+          description: Device MAC address for the claimed inventory item
+          examples:
+          - 5c5b35000018
+        magic:
+          type: string
+          description: Activation code or claim code associated with the inventory item
+          examples:
+          - 6JG8EPTFV2A9Z2N
+        model:
+          type: string
+          description: Device model for the claimed inventory item
+          examples:
+          - AP41
+        serial:
+          type: string
+          description: Device serial number for the claimed inventory item
+          examples:
+          - FXLH2015150025
+        type:
+          type: string
+          description: Device type for the claimed inventory item
+          examples:
+          - ap
+      description: Inventory device added by the claim operation
+    ha_cluster_delete:
+      title: ha_cluster_delete
+      type: object
+      properties:
+        mac:
+          type: string
+          description: Node0 MAC address identifying the HA cluster to delete
+          examples:
+          - aff827549235
+      description: Request body identifying the HA cluster node to remove
+    response_inventory:
+      title: response_inventory
+      type: object
+      properties:
+        added:
+          type: array
+          items:
+            type: string
+          description: Claim codes accepted into organization inventory
+        duplicated:
+          type: array
+          items:
+            type: string
+          description: Claim codes already present in organization inventory
+        error:
+          type: array
+          items:
+            type: string
+          description: Claim codes rejected by the inventory add operation
+        inventory_added:
+          minItems: 1
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/response_inventory_inventory_added_items'
+          description: Detailed inventory records added by the claim operation
+        inventory_duplicated:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/response_inventory_inventory_duplicated_items'
+          description: Detailed inventory records already present during the claim operation
+        reason:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Error reasons for claim codes that could not be added
+      description: Result of adding device claim codes to organization inventory
+    tunterm_port_config1:
+      title: tunterm_port_config1
+      type: object
+      properties:
+        downstream_ports:
+          type: array
+          items:
+            type: string
+          description: Ports connected downstream toward APs for tunnel termination
+          examples:
+          - - '2'
+            - '3'
+        separate_upstream_downstream:
+          type: boolean
+          description: Whether to separate upstream / downstream ports. default is false where all ports will be used.
+          default: false
+        upstream_port_vlan_id:
+          oneOf:
+          - type: string
+          - maximum: 4094
+            minimum: 1
+            type: integer
+            contentEncoding: int32
+          description: Native VLAN ID applied to upstream tunnel termination ports
+        upstream_ports:
+          type: array
+          items:
+            type: string
+          description: Ports connected upstream toward the LAN for tunnel termination
+          examples:
+          - - '0'
+            - '1'
+      description: Tunnel termination Ethernet port configuration for a Mist Edge replacement
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    inventory_update:
+      title: inventory_update
+      required:
+      - op
+      type: object
+      properties:
+        disable_auto_config:
+          type: boolean
+          description: If `op`==`assign`, this disables the default behavior of a cloud-ready switch/gateway being managed/configured by Mist. Setting this to `true` means you want to disable the default behavior and do not want the device to be Mist-managed.
+          default: false
+          deprecated: true
+        macs:
+          type: array
+          items:
+            type: string
+          description: Device MAC addresses affected by this inventory operation
+        managed:
+          type: boolean
+          description: If `op`==`assign`. An adopted switch/gateway will not be managed/configured by Mist by default. Setting this parameter to `true` enables the adopted switch/gateway to be managed/configured by Mist.
+          default: false
+          deprecated: true
+        mist_configured:
+          type: boolean
+          description: Whether the device can be configured by Mist. Replaces `managed` for adopted devices and `disable_auto_config` for claimed devices
+        no_reassign:
+          type: boolean
+          description: If `op`==`assign`, if true, treat site assignment against an already assigned AP as error
+          default: false
+        op:
+          allOf:
+          - $ref: '#/components/schemas/inventory_update_operation2'
+          - description: 'Inventory operation to apply to the listed devices. enum: `assign`, `delete`, `downgrade_to_jsi`, `unassign`, `upgrade_to_mist`.'
+        serials:
+          type: array
+          items:
+            type: string
+          description: Device serial numbers affected by this inventory operation
+        site_id:
+          type: string
+          description: If `op`==`assign`, target site ID for the inventory operation
+          contentEncoding: uuid
+      description: Request to assign, unassign, delete, or change management mode for inventory devices
+    response_count:
+      title: response_count
+      required:
+      - distinct
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        distinct:
+          type: string
+          description: Field used to group the count results
+        end:
+          type: integer
+          description: Search window end timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of distinct count results requested
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/count_result'
+          description: Count results grouped by the distinct field
+        start:
+          type: integer
+          description: Search window start timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of distinct result buckets returned
+          contentEncoding: int32
+      description: Distinct count response for time-bounded search results
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

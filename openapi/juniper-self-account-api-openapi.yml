@@ -1,0 +1,1798 @@
+openapi: 3.2.0
+info:
+  title: Mist Self Account API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Self Account
+  description: API calls related to the currently connected user account.
+paths:
+  /api/v1/self:
+    parameters: []
+    delete:
+      tags:
+      - Self Account
+      summary: deleteSelf
+      description: 'To delete ones account and every associated with it. The effects:
+
+
+        the account would be deleted
+
+        any orphaned Org (that only has this account as admin) will be deleted
+
+        along with all data with Org (sites, wlans, devices) will be gone.'
+      operationId: deleteSelf
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Request
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/error_delete_failed'
+                - description: Error response returned when an organization delete request is blocked
+                  examples:
+                  - detail: inventory not empty
+                    org_id: 424f6eca-7276-4993-bfeb-53cbbbba6f05
+                contentMediaType: application/json
+              examples:
+                If Any Of The Org To Be Deleted Still Has Inventory:
+                  value:
+                    detail: inventory not empty
+                    org_id: 424f6eca-7276-4993-bfeb-53cbbbba6f05
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/error_delete_failed'
+                - description: Error response returned when an organization delete request is blocked
+                  examples:
+                  - detail: inventory not empty
+                    org_id: 424f6eca-7276-4993-bfeb-53cbbbba6f05
+                contentMediaType: application/vnd.api+json
+              examples:
+                If Any Of The Org To Be Deleted Still Has Inventory:
+                  value:
+                    detail: inventory not empty
+                    org_id: 424f6eca-7276-4993-bfeb-53cbbbba6f05
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    get:
+      tags:
+      - Self Account
+      summary: getSelf
+      description: Get ‘whoami’ and privileges (which org and which sites I have access to)
+      operationId: getSelf
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/admin'
+                - description: Mist administrator account or organization API token details
+                  examples:
+                  - admin_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    email: user@example.com
+                    first_name: string
+                    last_name: string
+                    password_modified_time: 1656353525
+                    privileges:
+                    - msp_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      msp_name: string
+                      name: string
+                      org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      org_name: string
+                      orggroup_ids:
+                      - b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      role: admin
+                      scope: org
+                      site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      sitegroup_ids:
+                      - 6f4bf402-45f9-2a56-6c8b-7f83d3bc98e9
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    admin_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    email: user@example.com
+                    first_name: string
+                    last_name: string
+                    password_modified_time: 1656353525
+                    privileges:
+                    - msp_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      msp_name: string
+                      name: string
+                      org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      org_name: string
+                      orggroup_ids:
+                      - b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      role: admin
+                      scope: org
+                      site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      sitegroup_ids:
+                      - 6f4bf402-45f9-2a56-6c8b-7f83d3bc98e9
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/admin'
+                - description: Mist administrator account or organization API token details
+                  examples:
+                  - admin_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    email: user@example.com
+                    first_name: string
+                    last_name: string
+                    password_modified_time: 1656353525
+                    privileges:
+                    - msp_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      msp_name: string
+                      name: string
+                      org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      org_name: string
+                      orggroup_ids:
+                      - b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      role: admin
+                      scope: org
+                      site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      sitegroup_ids:
+                      - 6f4bf402-45f9-2a56-6c8b-7f83d3bc98e9
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    admin_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    email: user@example.com
+                    first_name: string
+                    last_name: string
+                    password_modified_time: 1656353525
+                    privileges:
+                    - msp_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      msp_name: string
+                      name: string
+                      org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      org_name: string
+                      orggroup_ids:
+                      - b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      role: admin
+                      scope: org
+                      site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      sitegroup_ids:
+                      - 6f4bf402-45f9-2a56-6c8b-7f83d3bc98e9
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    put:
+      tags:
+      - Self Account
+      summary: updateSelf
+      description: Update Account Information
+      operationId: updateSelf
+      parameters: []
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/admin'
+              - description: Request Body
+                examples:
+                - email: john.smith@mycorp.net
+                  first_name: John
+                  last_name: Smith
+                  persona: security
+                  phone: '14081112222'
+                  phone2: '14083334444'
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  email: john.smith@mycorp.net
+                  first_name: John
+                  last_name: Smith
+                  persona: security
+                  phone: '14081112222'
+                  phone2: '14083334444'
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/admin'
+                - description: Mist administrator account or organization API token details
+                  examples:
+                  - admin_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    email: user@example.com
+                    first_name: string
+                    last_name: string
+                    password_modified_time: 1656353525
+                    privileges:
+                    - msp_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      msp_name: string
+                      name: string
+                      org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      org_name: string
+                      orggroup_ids:
+                      - b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      role: admin
+                      scope: org
+                      site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      sitegroup_ids:
+                      - 6f4bf402-45f9-2a56-6c8b-7f83d3bc98e9
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    admin_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    email: user@example.com
+                    first_name: string
+                    last_name: string
+                    password_modified_time: 1656353525
+                    privileges:
+                    - msp_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      msp_name: string
+                      name: string
+                      org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      org_name: string
+                      orggroup_ids:
+                      - b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      role: admin
+                      scope: org
+                      site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      sitegroup_ids:
+                      - 6f4bf402-45f9-2a56-6c8b-7f83d3bc98e9
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/admin'
+                - description: Mist administrator account or organization API token details
+                  examples:
+                  - admin_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    email: user@example.com
+                    first_name: string
+                    last_name: string
+                    password_modified_time: 1656353525
+                    privileges:
+                    - msp_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      msp_name: string
+                      name: string
+                      org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      org_name: string
+                      orggroup_ids:
+                      - b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      role: admin
+                      scope: org
+                      site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      sitegroup_ids:
+                      - 6f4bf402-45f9-2a56-6c8b-7f83d3bc98e9
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    admin_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    email: user@example.com
+                    first_name: string
+                    last_name: string
+                    password_modified_time: 1656353525
+                    privileges:
+                    - msp_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      msp_name: string
+                      name: string
+                      org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      org_name: string
+                      orggroup_ids:
+                      - b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      role: admin
+                      scope: org
+                      site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      sitegroup_ids:
+                      - 6f4bf402-45f9-2a56-6c8b-7f83d3bc98e9
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/self/login_failures:
+    parameters: []
+    get:
+      tags:
+      - Self Account
+      summary: getSelfLoginFailures
+      description: Get a list of failed login attempts across all Orgs for the current admin
+      operationId: getSelfLoginFailures
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/login_failures'
+                - description: Failed login attempt summary with source IPs and user agents
+                  examples:
+                  - email: admin@test.com
+                    last_failure_at: 1509161968
+                    num_attempts: 40
+                    src_ips:
+                    - 192.168.1.39
+                    - 192.168.1.38
+                    - 192.168.1.37
+                    user_agents:
+                    - Test UA 39
+                    - Test UA 38
+                    - Test UA 37
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    email: admin@test.com
+                    last_failure_at: 1509161968
+                    num_attempts: 40
+                    src_ips:
+                    - 192.168.1.39
+                    - 192.168.1.38
+                    - 192.168.1.37
+                    user_agents:
+                    - Test UA 39
+                    - Test UA 38
+                    - Test UA 37
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/login_failures'
+                - description: Failed login attempt summary with source IPs and user agents
+                  examples:
+                  - email: admin@test.com
+                    last_failure_at: 1509161968
+                    num_attempts: 40
+                    src_ips:
+                    - 192.168.1.39
+                    - 192.168.1.38
+                    - 192.168.1.37
+                    user_agents:
+                    - Test UA 39
+                    - Test UA 38
+                    - Test UA 37
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    email: admin@test.com
+                    last_failure_at: 1509161968
+                    num_attempts: 40
+                    src_ips:
+                    - 192.168.1.39
+                    - 192.168.1.38
+                    - 192.168.1.37
+                    user_agents:
+                    - Test UA 39
+                    - Test UA 38
+                    - Test UA 37
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/self/update:
+    parameters: []
+    post:
+      tags:
+      - Self Account
+      summary: updateSelfEmail
+      description: 'Change Email
+
+        We require the user to verify that they actually own the email address they intend to change it to.
+
+
+        After the API call, the user will receive an email to the new email address with a link like https://manage.mist.com/verify/update?expire=:exp_time&email=:admin_email&token=:token
+
+
+        Upon clicking the link, the user is provided with a login page to authenticate using existing credentials. After successful login, the email address of the user gets updated
+
+
+        **Note**: The request parameter email can be used by UI to validate that the current session (if any) belongs to the admin or provide a login page (by pre-populating the email on login screen). UI can also use the request parameter expire to validate token expiry.'
+      operationId: updateSelfEmail
+      parameters: []
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/email_string'
+              - description: Request Body
+                examples:
+                - email: new@mistsys.com
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  email: new@mistsys.com
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Invalid email address or new email address already exists
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_detail_string'
+                - description: Response containing a human-readable detail message
+                  examples:
+                  - '{}'
+                  - '{"detail":"email already existed"}'
+                contentMediaType: application/json
+              examples:
+                Invalid Email Address:
+                  value: {}
+                New Email Address Already Exists:
+                  value:
+                    detail: email already existed
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_detail_string'
+                - description: Response containing a human-readable detail message
+                  examples:
+                  - '{}'
+                  - '{"detail":"email already existed"}'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Invalid Email Address:
+                  value: {}
+                New Email Address Already Exists:
+                  value:
+                    detail: email already existed
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/self/update/verify/{token}:
+    parameters: []
+    get:
+      tags:
+      - Self Account
+      summary: verifySelfEmail
+      description: Verify Email change
+      operationId: verifySelfEmail
+      parameters:
+      - name: token
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: With correct verification, the email address of the user will be updated
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Request
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_detail_string'
+                - description: Response containing a human-readable detail message
+                  examples:
+                  - '{"detail":"invalid token"}'
+                  - '{"detail":"email already existed"}'
+                  - '{"detail":"invalid token"}'
+                contentMediaType: application/json
+              examples:
+                Invalid Or Expired Token:
+                  value:
+                    detail: invalid token
+                New Email Address Already Exists:
+                  value:
+                    detail: email already existed
+                Request Comes From Authenticated Users Other Than Admin:
+                  value:
+                    detail: invalid token
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_detail_string'
+                - description: Response containing a human-readable detail message
+                  examples:
+                  - '{"detail":"invalid token"}'
+                  - '{"detail":"email already existed"}'
+                  - '{"detail":"invalid token"}'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Invalid Or Expired Token:
+                  value:
+                    detail: invalid token
+                New Email Address Already Exists:
+                  value:
+                    detail: email already existed
+                Request Comes From Authenticated Users Other Than Admin:
+                  value:
+                    detail: invalid token
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/self/usage:
+    parameters: []
+    get:
+      tags:
+      - Self Account
+      summary: getSelfApiUsage
+      description: Get the status of the API usage for the current user or API Token
+      operationId: getSelfApiUsage
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/api_usage'
+                - description: API rate-limit usage status for the current user or API token
+                  examples:
+                  - request_limit: 5000
+                    requests: 5
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    request_limit: 5000
+                    requests: 5
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/api_usage'
+                - description: API rate-limit usage status for the current user or API token
+                  examples:
+                  - request_limit: 5000
+                    requests: 5
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    request_limit: 5000
+                    requests: 5
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    response_detail_string:
+      title: response_detail_string
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable detail message returned by the API
+      description: Response containing a human-readable detail message
+    admin_compliance_status2:
+      title: admin_compliance_status2
+      enum:
+      - blocked
+      - restricted
+      type: string
+      description: 'Trade compliance status for this administrator. enum: `blocked`, `restricted`.'
+    error_delete_failed:
+      title: error_delete_failed
+      required:
+      - detail
+      - org_id
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Reason the delete request failed
+          examples:
+          - inventory not empty
+        org_id:
+          type: string
+          description: Organization that could not be deleted and caused the delete request to fail
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+      description: Error response returned when an organization delete request is blocked
+    admin_privilege_view:
+      title: admin_privilege_view
+      enum:
+      - lobby_admin
+      - location
+      - marketing
+      - mxedge_admin
+      - reporting
+      - security
+      - super_observer
+      - switch_admin
+      type: string
+      description: 'UI view name allowed by a custom admin role. enum: `lobby_admin`, `location`, `marketing`, `mxedge_admin`, `reporting`, `security`, `super_observer`, `switch_admin`'
+    admin_privilege_scope2:
+      title: admin_privilege_scope2
+      enum:
+      - msp
+      - org
+      - orggroup
+      - site
+      - sitegroup
+      type: string
+      description: 'Object scope where this privilege applies. enum: `msp`, `org`, `orggroup`, `site`, `sitegroup`.'
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    admin_privilege_role2:
+      title: admin_privilege_role2
+      enum:
+      - admin
+      - helpdesk
+      - installer
+      - read
+      - write
+      type: string
+      description: 'Access role granted by this privilege. enum: `admin`, `helpdesk`, `installer`, `read`, `write`.'
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    admin_privilege:
+      title: admin_privilege
+      required:
+      - role
+      - scope
+      type: object
+      properties:
+        msp_id:
+          type: string
+          description: Required if `scope`==`msp`. MSP granted by this privilege
+          contentEncoding: uuid
+          examples:
+          - b9d42c2e-88ee-41f8-b798-f009ce7fe909
+        msp_logo_url:
+          type: string
+          description: Logo of the MSP (if the MSP belongs to an Advanced tier)
+          readOnly: true
+        msp_name:
+          type:
+          - string
+          - 'null'
+          description: Name of the MSP (if the org belongs to an MSP)
+          readOnly: true
+        msp_url:
+          type: string
+          description: Custom url of the MSP (if the MSP belongs to an Advanced tier)
+          readOnly: true
+        name:
+          type: string
+          description: Display name of the object for this privilege scope
+          readOnly: true
+        org_id:
+          type: string
+          description: Required if `scope`==`org`. Organization granted by this privilege
+          contentEncoding: uuid
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        org_name:
+          type: string
+          description: Name of the org (for a site belonging to org)
+          readOnly: true
+        orggroup_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: If `scope`==`orggroup`. Organization groups granted by this privilege
+        role:
+          allOf:
+          - $ref: '#/components/schemas/admin_privilege_role2'
+          - description: 'Access role granted by this privilege. enum: `admin`, `helpdesk`, `installer`, `read`, `write`.'
+        scope:
+          allOf:
+          - $ref: '#/components/schemas/admin_privilege_scope2'
+          - description: 'Object scope where this privilege applies. enum: `msp`, `org`, `orggroup`, `site`, `sitegroup`.'
+        site_id:
+          type: string
+          description: Required if `scope`==`site`. Site granted by this privilege
+          contentEncoding: uuid
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        sitegroup_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: If `scope`==`sitegroup`. Site groups granted by this privilege
+        views:
+          type: array
+          items:
+            $ref: '#/components/schemas/admin_privilege_view'
+          description: UI view restrictions applied when custom roles limit this privilege
+      description: Admin privilege scope, role, and UI access settings
+    email_string:
+      title: email_string
+      required:
+      - email
+      type: object
+      properties:
+        email:
+          type: string
+          description: Request email address provided in the payload
+          contentEncoding: email
+      description: Request body containing an email address
+    api_usage:
+      title: api_usage
+      required:
+      - request_limit
+      - requests
+      type: object
+      properties:
+        request_limit:
+          type: integer
+          description: Maximum API requests allowed in the current hourly rate-limit window
+          contentEncoding: int32
+          readOnly: true
+        requests:
+          type: integer
+          description: Number of API requests made in the current hourly rate-limit window
+          contentEncoding: int32
+          readOnly: true
+        seconds:
+          type: number
+          description: Time remaining, in seconds, before the current hourly rate-limit window resets
+      description: API rate-limit usage status for the current user or API token
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    admin:
+      title: admin
+      type: object
+      properties:
+        admin_id:
+          type: string
+          description: Unique identifier of the administrator
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 456b7016-a916-a4b1-78dd-72b947c152b7
+        compliance_status:
+          allOf:
+          - $ref: '#/components/schemas/admin_compliance_status2'
+          - description: 'Trade compliance status for this administrator. enum: `blocked`, `restricted`.'
+        email:
+          type: string
+          description: If admin account is not an Org API Token
+          contentEncoding: email
+          examples:
+          - jsnow@abc.com
+        enable_two_factor:
+          type: boolean
+          description: If admin account is not an Org API Token
+          readOnly: true
+        expire_time:
+          type: integer
+          description: Expiration time for the admin invitation, in epoch seconds
+          contentEncoding: int32
+        first_name:
+          type: string
+          description: If admin account is not an Org API Token. For an invite, this is the original first name used
+          examples:
+          - John
+        hours:
+          maximum: 168
+          minimum: 1
+          type: integer
+          description: If admin account is not an Org API Token, how long the invite should be valid
+          contentEncoding: int32
+          default: 24
+        last_name:
+          type: string
+          description: If admin account is not an Org API Token. For an invite, this is the original last name used
+          examples:
+          - Sno
+        name:
+          type: string
+          description: For Org API Token Only
+        no_tracking:
+          type:
+          - boolean
+          - 'null'
+          description: Optional, whether to store privacy-consent information. When it doesn’t exist, it’s assumed true on EU (i.e. no tracking, the user has to opt-in); otherwise, the user would have to opt-out
+        oauth_google:
+          type: boolean
+          description: If admin account is not an Org API Token
+          readOnly: true
+        password_modified_time:
+          type: number
+          description: Password last modified time, in epoch
+        phone:
+          type: string
+          description: If admin account is not an Org API Token. Phone number (numbers only, including country code)
+        phone2:
+          type: string
+          description: If admin account is not an Org API Token. Secondary phone number (numbers only, including country code)
+        privileges:
+          minItems: 1
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/admin_privilege'
+          description: Privilege assignments that define the admin's MSP, organization, site, or site group access
+        session_expiry:
+          maximum: 20160
+          minimum: 10
+          type: integer
+          description: Session lifetime for the admin, in minutes
+          contentEncoding: int64
+          readOnly: true
+          examples:
+          - 1440
+        tags:
+          type: array
+          items:
+            type: string
+          description: Read-only tags associated with the admin account
+          readOnly: true
+        two_factor_verified:
+          type: boolean
+          description: If admin account is not an Org API Token. Two factor status
+          readOnly: true
+        via_sso:
+          type: boolean
+          description: If admin account is not an Org API Token, an admin login via_sso is more restircted. (password and email cannot be changed)
+          readOnly: true
+      description: Mist administrator account or organization API token details
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    login_failures:
+      title: login_failures
+      type: object
+      properties:
+        email:
+          type: string
+          description: User email address for the failed login attempts
+          examples:
+          - admin@test.com
+        last_failure_at:
+          type: integer
+          description: Time of the most recent failed login attempt
+          contentEncoding: int32
+          examples:
+          - 1509161968
+        num_attempts:
+          type: integer
+          description: Number of failed login attempts
+          contentEncoding: int32
+          examples:
+          - 1
+        src_ips:
+          type: array
+          items:
+            type: string
+          description: Source IP addresses observed for failed login attempts
+          examples:
+          - - 192.168.1.39
+            - 192.168.1.38
+            - 192.168.1.37
+        user_agents:
+          type: array
+          items:
+            type: string
+          description: User-Agent strings observed for failed login attempts
+          examples:
+          - - Test UA 39
+            - Test UA 38
+            - Test UA 37
+      description: Failed login attempt summary with source IPs and user agents
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

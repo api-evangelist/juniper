@@ -1,0 +1,1767 @@
+openapi: 3.2.0
+info:
+  title: Mist Sites Rogues API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Sites Rogues
+  description: 'Rogues are unauthorized wireless access points that are installed on a network without authorization.
+
+
+    They can be connected to the LAN via an ethernet cable, similar to a pc, and are typically set up by individuals with malicious intent or by employees trying to cover a dead spot with their own wi-fi hotspot.'
+paths:
+  /api/v1/sites/{site_id}/insights/rogues:
+    parameters: []
+    get:
+      tags:
+      - Sites Rogues
+      summary: listSiteRogueAPs
+      description: Get List of Site Rogue/Neighbor APs
+      operationId: listSiteRogueAPs
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: type
+        in: query
+        description: 'Rogue classification used to filter the results. enum: `honeypot`, `lan`, `others`, `spoof`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/rogue_type'
+          - description: 'Rogue classification used to filter the results. enum: `honeypot`, `lan`, `others`, `spoof`'
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: interval
+        in: query
+        description: Aggregation works by giving a time range plus interval (e.g. 1d, 1h, 10m) where aggregation function would be applied to.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 10m
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_insight_rogue'
+                - description: Paginated response for rogue or neighbor AP insight results
+                  examples:
+                  - end: 1428954000
+                    limit: 100
+                    next: /api/v1/sites/a3eda150-ab3f-11e4-aa18-13e21dd250cc/rogues?start=1498482000&end=1498485600&limit=10&interval=1h&type=others
+                    results:
+                    - ap_mac: 5c5b350e021c
+                      avg_rssi: -72
+                      bssid: d8-97-ba-76-b5-aa
+                      channel: '11'
+                      num_aps: 4
+                      ssid: xfinitywifi
+                      times_heard: 8
+                    start: 1428939600
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    end: 1428954000
+                    limit: 100
+                    next: /api/v1/sites/a3eda150-ab3f-11e4-aa18-13e21dd250cc/rogues?start=1498482000&end=1498485600&limit=10&interval=1h&type=others
+                    results:
+                    - ap_mac: 5c5b350e021c
+                      avg_rssi: -72
+                      bssid: d8-97-ba-76-b5-aa
+                      channel: '11'
+                      num_aps: 4
+                      ssid: xfinitywifi
+                      times_heard: 8
+                    start: 1428939600
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_insight_rogue'
+                - description: Paginated response for rogue or neighbor AP insight results
+                  examples:
+                  - end: 1428954000
+                    limit: 100
+                    next: /api/v1/sites/a3eda150-ab3f-11e4-aa18-13e21dd250cc/rogues?start=1498482000&end=1498485600&limit=10&interval=1h&type=others
+                    results:
+                    - ap_mac: 5c5b350e021c
+                      avg_rssi: -72
+                      bssid: d8-97-ba-76-b5-aa
+                      channel: '11'
+                      num_aps: 4
+                      ssid: xfinitywifi
+                      times_heard: 8
+                    start: 1428939600
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    end: 1428954000
+                    limit: 100
+                    next: /api/v1/sites/a3eda150-ab3f-11e4-aa18-13e21dd250cc/rogues?start=1498482000&end=1498485600&limit=10&interval=1h&type=others
+                    results:
+                    - ap_mac: 5c5b350e021c
+                      avg_rssi: -72
+                      bssid: d8-97-ba-76-b5-aa
+                      channel: '11'
+                      num_aps: 4
+                      ssid: xfinitywifi
+                      times_heard: 8
+                    start: 1428939600
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/insights/rogues/clients:
+    parameters: []
+    get:
+      tags:
+      - Sites Rogues
+      summary: listSiteRogueClients
+      description: Get List of Site Rogue Clients
+      operationId: listSiteRogueClients
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: interval
+        in: query
+        description: Aggregation works by giving a time range plus interval (e.g. 1d, 1h, 10m) where aggregation function would be applied to.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 10m
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_insight_rogue_client'
+                - description: Paginated response for rogue client insight results
+                  examples:
+                  - end: 1428954000
+                    limit: 100
+                    next: /api/v1/sites/a3eda150-ab3f-11e4-aa18-13e21dd250cc/rogues/clients?start=1498482000&end=1498485600&limit=10&interval=1h
+                    results:
+                    - annotation: whitelist
+                      ap_mac: 5c-5b-35-0e-02-1c
+                      avg_rssi: -63.9
+                      band: '5'
+                      bssid: d8-97-ba-76-b5-aa
+                      client_mac: 34-f8-32-13-57-c2
+                      num_aps: 2
+                    start: 1428939600
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    end: 1428954000
+                    limit: 100
+                    next: /api/v1/sites/a3eda150-ab3f-11e4-aa18-13e21dd250cc/rogues/clients?start=1498482000&end=1498485600&limit=10&interval=1h
+                    results:
+                    - annotation: whitelist
+                      ap_mac: 5c-5b-35-0e-02-1c
+                      avg_rssi: -63.9
+                      band: '5'
+                      bssid: d8-97-ba-76-b5-aa
+                      client_mac: 34-f8-32-13-57-c2
+                      num_aps: 2
+                    start: 1428939600
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_insight_rogue_client'
+                - description: Paginated response for rogue client insight results
+                  examples:
+                  - end: 1428954000
+                    limit: 100
+                    next: /api/v1/sites/a3eda150-ab3f-11e4-aa18-13e21dd250cc/rogues/clients?start=1498482000&end=1498485600&limit=10&interval=1h
+                    results:
+                    - annotation: whitelist
+                      ap_mac: 5c-5b-35-0e-02-1c
+                      avg_rssi: -63.9
+                      band: '5'
+                      bssid: d8-97-ba-76-b5-aa
+                      client_mac: 34-f8-32-13-57-c2
+                      num_aps: 2
+                    start: 1428939600
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    end: 1428954000
+                    limit: 100
+                    next: /api/v1/sites/a3eda150-ab3f-11e4-aa18-13e21dd250cc/rogues/clients?start=1498482000&end=1498485600&limit=10&interval=1h
+                    results:
+                    - annotation: whitelist
+                      ap_mac: 5c-5b-35-0e-02-1c
+                      avg_rssi: -63.9
+                      band: '5'
+                      bssid: d8-97-ba-76-b5-aa
+                      client_mac: 34-f8-32-13-57-c2
+                      num_aps: 2
+                    start: 1428939600
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/rogues/events/count:
+    parameters: []
+    get:
+      tags:
+      - Sites Rogues
+      summary: countSiteRogueEvents
+      description: Count by Distinct Attributes of Rogue Events
+      operationId: countSiteRogueEvents
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: distinct
+        in: query
+        description: 'Field used to group this count response. enum: `ap`, `bssid`, `ssid`, `type`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/site_rogue_events_count_distinct'
+          - description: 'Field used to group this count response. enum: `ap`, `bssid`, `ssid`, `type`'
+      - name: type
+        in: query
+        description: 'Rogue classification used to filter the results. enum: `honeypot`, `lan`, `others`, `spoof`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/rogue_type'
+          - description: 'Rogue classification used to filter the results. enum: `honeypot`, `lan`, `others`, `spoof`'
+      - name: ssid
+        in: query
+        description: Filter results by SSID
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: bssid
+        in: query
+        description: Filter results by BSSID
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: ap_mac
+        in: query
+        description: MAC of the device that had strongest signal strength for ssid/bssid pair
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: channel
+        in: query
+        description: Filter results by channel
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: seen_on_lan
+        in: query
+        description: Whether the reporting AP see a wireless client (on LAN) connecting to it
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      responses:
+        '200':
+          description: Result of Count
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_count'
+                - description: Distinct count response for time-bounded search results
+                  examples:
+                  - distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_count'
+                - description: Distinct count response for time-bounded search results
+                  examples:
+                  - distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/rogues/events/search:
+    parameters: []
+    get:
+      tags:
+      - Sites Rogues
+      summary: searchSiteRogueEvents
+      description: Search Rogue Events
+      operationId: searchSiteRogueEvents
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: type
+        in: query
+        description: 'Rogue classification used to filter the results. enum: `honeypot`, `lan`, `others`, `spoof`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/rogue_type'
+          - description: 'Rogue classification used to filter the results. enum: `honeypot`, `lan`, `others`, `spoof`'
+      - name: ssid
+        in: query
+        description: Filter results by SSID
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: bssid
+        in: query
+        description: Filter results by BSSID
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: ap_mac
+        in: query
+        description: MAC of the device that had strongest signal strength for ssid/bssid pair
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: channel
+        in: query
+        description: Filter results by channel
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+      - name: seen_on_lan
+        in: query
+        description: Whether the reporting AP see a wireless client (on LAN) connecting to it
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: sort
+        in: query
+        description: On which field the list should be sorted, -prefix represents DESC order
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: timestamp
+          examples:
+          - -site_id
+      - name: search_after
+        in: query
+        description: Pagination cursor for retrieving subsequent pages of results. This value is automatically populated by Mist in the `next` URL from the previous response and should not be manually constructed.
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_events_rogue_search'
+                - description: Paginated response for rogue AP event search results
+                  examples:
+                  - end: 1538074800
+                    limit: 10
+                    results:
+                    - ap: 5c5b350e10030
+                      bssid: 38ff363c8c4c
+                      channel: 136
+                      rssi: -54
+                      ssid: MyHomeNetwork
+                      timestamp: 1538074612
+                    - ap: 5c5b350e10030
+                      bssid: 60d02c2394cc
+                      channel: 11
+                      rssi: -59
+                      ssid: Home-Office
+                      timestamp: 1538074612
+                    start: 1538071200
+                    total: 2
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    end: 1538074800
+                    limit: 10
+                    results:
+                    - ap: 5c5b350e10030
+                      bssid: 38ff363c8c4c
+                      channel: 136
+                      rssi: -54
+                      ssid: MyHomeNetwork
+                      timestamp: 1538074612
+                    - ap: 5c5b350e10030
+                      bssid: 60d02c2394cc
+                      channel: 11
+                      rssi: -59
+                      ssid: Home-Office
+                      timestamp: 1538074612
+                    start: 1538071200
+                    total: 2
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_events_rogue_search'
+                - description: Paginated response for rogue AP event search results
+                  examples:
+                  - end: 1538074800
+                    limit: 10
+                    results:
+                    - ap: 5c5b350e10030
+                      bssid: 38ff363c8c4c
+                      channel: 136
+                      rssi: -54
+                      ssid: MyHomeNetwork
+                      timestamp: 1538074612
+                    - ap: 5c5b350e10030
+                      bssid: 60d02c2394cc
+                      channel: 11
+                      rssi: -59
+                      ssid: Home-Office
+                      timestamp: 1538074612
+                    start: 1538071200
+                    total: 2
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    end: 1538074800
+                    limit: 10
+                    results:
+                    - ap: 5c5b350e10030
+                      bssid: 38ff363c8c4c
+                      channel: 136
+                      rssi: -54
+                      ssid: MyHomeNetwork
+                      timestamp: 1538074612
+                    - ap: 5c5b350e10030
+                      bssid: 60d02c2394cc
+                      channel: 11
+                      rssi: -59
+                      ssid: Home-Office
+                      timestamp: 1538074612
+                    start: 1538071200
+                    total: 2
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/rogues/{rogue_bssid}:
+    parameters: []
+    get:
+      tags:
+      - Sites Rogues
+      summary: getSiteRogueAP
+      description: Get Rogue AP Details
+      operationId: getSiteRogueAP
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: rogue_bssid
+        in: path
+        description: ''
+        required: true
+        schema:
+          pattern: ^[0-9a-fA-F]{12}$
+          type: string
+          examples:
+          - 0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/rogue_details'
+                - description: Rogue AP detail response
+                  examples:
+                  - manufacture: Intel Corporate
+                    seen_as_client: true
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    manufacture: Intel Corporate
+                    seen_as_client: true
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/rogue_details'
+                - description: Rogue AP detail response
+                  examples:
+                  - manufacture: Intel Corporate
+                    seen_as_client: true
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    manufacture: Intel Corporate
+                    seen_as_client: true
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    insight_rogue_client:
+      title: insight_rogue_client
+      required:
+      - annotation
+      - ap_mac
+      - avg_rssi
+      - band
+      - bssid
+      - client_mac
+      - num_aps
+      type: object
+      properties:
+        annotation:
+          type: string
+          description: Rogue client annotation or classification
+        ap_mac:
+          type: string
+          description: Reporting AP MAC address that observed the rogue client
+        avg_rssi:
+          type: number
+          description: Average RSSI for the rogue client as heard by reporting APs
+        band:
+          type: string
+          description: Radio band on which the rogue client was observed
+        bssid:
+          type: string
+          description: Rogue BSSID associated with the client
+        client_mac:
+          type: string
+          description: Observed client MAC address on the rogue BSSID
+        num_aps:
+          type: integer
+          description: Number of APs that observed the rogue client
+          contentEncoding: int32
+      description: Rogue client observation returned by site insights
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    site_rogue_events_count_distinct:
+      title: site_rogue_events_count_distinct
+      enum:
+      - ap
+      - bssid
+      - ssid
+      - type
+      type: string
+      description: 'enum: `ap`, `bssid`, `ssid`, `type`'
+    response_insight_rogue:
+      title: response_insight_rogue
+      required:
+      - end
+      - limit
+      - results
+      - start
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Epoch timestamp for the end of the rogue AP insight window
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of rogue or neighbor AP observations returned in this page
+          contentEncoding: int32
+        next:
+          type: string
+          description: Pagination cursor or URL for retrieving the next page of rogue or neighbor AP observations; null when no next page exists
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/insight_rogue_ap'
+          description: Rogue or neighbor AP observations returned for the site insight query
+        start:
+          type: integer
+          description: Epoch timestamp for the start of the rogue AP insight window
+          contentEncoding: int32
+      description: Paginated response for rogue or neighbor AP insight results
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    events_rogue:
+      title: events_rogue
+      required:
+      - ap
+      - bssid
+      - channel
+      - rssi
+      - ssid
+      - timestamp
+      type: object
+      properties:
+        ap:
+          type: string
+          description: Access point MAC address that detected the rogue BSSID
+        bssid:
+          type: string
+          description: Rogue BSSID observed by the AP
+        channel:
+          type: integer
+          description: Radio channel where the rogue BSSID was observed
+          contentEncoding: int32
+        rssi:
+          type: integer
+          description: Received signal strength of the rogue BSSID, in dBm
+          contentEncoding: int32
+        ssid:
+          type: string
+          description: Wireless network SSID advertised by the rogue BSSID
+        timestamp:
+          type: number
+          description: Time when the rogue event was observed
+          readOnly: true
+      description: Rogue wireless network event detected by a site AP
+    count_result:
+      title: count_result
+      required:
+      - count
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of matching items for the distinct value or values in this result
+          contentEncoding: int32
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
+    response_insight_rogue_client:
+      title: response_insight_rogue_client
+      required:
+      - end
+      - limit
+      - results
+      - start
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Epoch timestamp for the end of the rogue client insight window
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of rogue client observations returned in this page
+          contentEncoding: int32
+        next:
+          type: string
+          description: Pagination cursor or URL for retrieving the next page of rogue client observations
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/insight_rogue_client'
+          description: Rogue client observations returned for the site insight query
+        start:
+          type: integer
+          description: Epoch timestamp for the start of the rogue client insight window
+          contentEncoding: int32
+      description: Paginated response for rogue client insight results
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    rogue_type:
+      title: rogue_type
+      enum:
+      - honeypot
+      - lan
+      - others
+      - spoof
+      type: string
+      description: 'enum: `honeypot`, `lan`, `others`, `spoof`'
+    rogue_details:
+      title: rogue_details
+      required:
+      - manufacture
+      - seen_as_client
+      type: object
+      properties:
+        manufacture:
+          type: string
+          description: Vendor or manufacturer name reported for the rogue AP
+        seen_as_client:
+          type: boolean
+          description: Whether this rogue AP was also observed as a client
+      description: Rogue AP detail response
+    response_events_rogue_search:
+      title: response_events_rogue_search
+      required:
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Epoch timestamp for the end of the rogue AP event search window
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of rogue AP event records returned in this page
+          contentEncoding: int32
+        next:
+          type: string
+          description: Pagination cursor or URL for retrieving the next page of rogue AP event records
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/events_rogue'
+          description: Rogue AP event records matching the search filters
+        start:
+          type: integer
+          description: Epoch timestamp for the start of the rogue AP event search window
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of rogue AP event records matching the search filters across all pages
+          contentEncoding: int32
+      description: Paginated response for rogue AP event search results
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    insight_rogue_ap:
+      title: insight_rogue_ap
+      required:
+      - ap_mac
+      - avg_rssi
+      - bssid
+      - channel
+      - num_aps
+      type: object
+      properties:
+        ap_mac:
+          type: string
+          description: Reporting AP MAC address with the strongest signal for the SSID/BSSID pair
+        avg_rssi:
+          type: number
+          description: Average RSSI for the SSID/BSSID pair as heard by the reporting AP
+        bssid:
+          type: string
+          description: Rogue or neighbor BSSID detected as a threat
+        channel:
+          type: string
+          description: Radio channel where the reporting AP heard the SSID/BSSID pair
+        delta_x:
+          type: number
+          description: X position relative to the reporting AP (`ap_mac`)
+        delta_y:
+          type: number
+          description: Y position relative to the reporting AP (`ap_mac`)
+        num_aps:
+          type: integer
+          description: Number of APs that heard the SSID/BSSID pair
+          contentEncoding: int32
+        seen_on_lan:
+          type: boolean
+          description: Whether the reporting AP sees a LAN-side client associated with the BSSID
+        ssid:
+          type: string
+          description: Wireless SSID detected for the rogue or neighbor BSSID
+        times_heard:
+          type: integer
+          description: Represents number of times the pair was heard in the interval. Each count roughly corresponds to a minute.
+          contentEncoding: int32
+      description: Rogue or neighbor AP observation returned by site insights
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_count:
+      title: response_count
+      required:
+      - distinct
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        distinct:
+          type: string
+          description: Field used to group the count results
+        end:
+          type: integer
+          description: Search window end timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of distinct count results requested
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/count_result'
+          description: Count results grouped by the distinct field
+        start:
+          type: integer
+          description: Search window start timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of distinct result buckets returned
+          contentEncoding: int32
+      description: Distinct count response for time-bounded search results
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

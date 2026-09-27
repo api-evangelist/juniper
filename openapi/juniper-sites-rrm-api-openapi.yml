@@ -1,0 +1,3131 @@
+openapi: 3.2.0
+info:
+  title: Mist Sites RRM API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Sites RRM
+  description: RRM, or Radio Resource Management, is a tool used by large multi-site organizations to efficiently manage their RF spectrum.
+paths:
+  /api/v1/sites/{site_id}/rrm/channel_scores/band/{band}:
+    parameters: []
+    get:
+      tags:
+      - Sites RRM
+      summary: getSiteChannelScores
+      description: Get Site Channel Scores
+      operationId: getSiteChannelScores
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: band
+        in: path
+        description: 802.11 Band
+        required: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/dot11_band'
+          - description: 802.11 Band
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_rrm_channel_scores'
+                - description: Response containing RRM channel score records
+                  examples:
+                  - results:
+                    - channel: 36
+                      util_score: 0.009
+                      util_score_noise_floor: 0.001
+                      util_score_non_wifi: 0.003
+                      util_score_other: 0.002
+                      util_score_radar: 0
+                      util_score_undecodable_wifi: 0.004
+                      util_score_unknown_wifi: 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    results:
+                    - channel: 36
+                      util_score: 0.009
+                      util_score_noise_floor: 0.001
+                      util_score_non_wifi: 0.003
+                      util_score_other: 0.002
+                      util_score_radar: 0
+                      util_score_undecodable_wifi: 0.004
+                      util_score_unknown_wifi: 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_rrm_channel_scores'
+                - description: Response containing RRM channel score records
+                  examples:
+                  - results:
+                    - channel: 36
+                      util_score: 0.009
+                      util_score_noise_floor: 0.001
+                      util_score_non_wifi: 0.003
+                      util_score_other: 0.002
+                      util_score_radar: 0
+                      util_score_undecodable_wifi: 0.004
+                      util_score_unknown_wifi: 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    results:
+                    - channel: 36
+                      util_score: 0.009
+                      util_score_noise_floor: 0.001
+                      util_score_non_wifi: 0.003
+                      util_score_other: 0.002
+                      util_score_radar: 0
+                      util_score_undecodable_wifi: 0.004
+                      util_score_unknown_wifi: 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/rrm/current:
+    parameters: []
+    get:
+      tags:
+      - Sites RRM
+      summary: getSiteCurrentChannelPlanning
+      description: Get Current Channel Planning
+      operationId: getSiteCurrentChannelPlanning
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/rrm'
+                - description: Current RRM channel-planning state for a site
+                  examples:
+                  - band_24: {}
+                    band_24_metric:
+                      avg_aps_per_channel: 0
+                      channel_distribution_uniformity: 0
+                      cochannel_neighbors: 0
+                      density: 0
+                      naps_by_channel: {}
+                      naps_by_power: {}
+                      neighbors: 0
+                      noise: 0
+                    band_5: {}
+                    band_5_metric:
+                      avg_aps_per_channel: 0
+                      channel_distribution_uniformity: 0
+                      cochannel_neighbors: 0
+                      density: 0
+                      naps_by_channel: {}
+                      naps_by_power: {}
+                      neighbors: 0
+                      noise: 0
+                    rftemplate:
+                      band_24:
+                        allow_rrm_disable: true
+                        antenna_mode: default
+                        bandwidth: 20
+                        channels:
+                        - 1
+                        - 6
+                        - 11
+                        disabled: true
+                        power: 5
+                        power_max: 3
+                        power_min: 18
+                        preamble: auto
+                      band_5:
+                        allow_rrm_disable: true
+                        antenna_mode: default
+                        bandwidth: 20
+                        channels:
+                        - 36
+                        - 40
+                        - 44
+                        - 48
+                        - 52
+                        - 56
+                        - 60
+                        - 64
+                        - 100
+                        - 104
+                        - 108
+                        - 112
+                        disabled: true
+                        power: 9
+                        power_max: 6
+                        power_min: 17
+                        preamble: auto
+                      country_code: string
+                      created_time: 0
+                      id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      model_specific:
+                        property1:
+                          band_24:
+                            allow_rrm_disable: true
+                            antenna_mode: default
+                            bandwidth: 20
+                            channels:
+                            - 1
+                            - 6
+                            - 11
+                            disabled: true
+                            power: 9
+                            power_max: 6
+                            power_min: 17
+                            preamble: auto
+                          band_5:
+                            allow_rrm_disable: true
+                            antenna_mode: default
+                            bandwidth: 20
+                            channels:
+                            - 36
+                            - 40
+                            - 44
+                            - 48
+                            - 52
+                            - 56
+                            - 60
+                            - 64
+                            - 100
+                            - 104
+                            - 108
+                            - 112
+                            disabled: true
+                            power: 10
+                            power_max: 6
+                            power_min: 15
+                            preamble: auto
+                      modified_time: 0
+                      name: string
+                      org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    rftemplate_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    rftemplate_name: string
+                    status: updating
+                    timestamp: 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    band_24: {}
+                    band_24_metric:
+                      avg_aps_per_channel: 0
+                      channel_distribution_uniformity: 0
+                      cochannel_neighbors: 0
+                      density: 0
+                      naps_by_channel: {}
+                      naps_by_power: {}
+                      neighbors: 0
+                      noise: 0
+                    band_5: {}
+                    band_5_metric:
+                      avg_aps_per_channel: 0
+                      channel_distribution_uniformity: 0
+                      cochannel_neighbors: 0
+                      density: 0
+                      naps_by_channel: {}
+                      naps_by_power: {}
+                      neighbors: 0
+                      noise: 0
+                    rftemplate:
+                      band_24:
+                        allow_rrm_disable: true
+                        antenna_mode: default
+                        bandwidth: 20
+                        channels:
+                        - 1
+                        - 6
+                        - 11
+                        disabled: true
+                        power: 5
+                        power_max: 3
+                        power_min: 18
+                        preamble: auto
+                      band_5:
+                        allow_rrm_disable: true
+                        antenna_mode: default
+                        bandwidth: 20
+                        channels:
+                        - 36
+                        - 40
+                        - 44
+                        - 48
+                        - 52
+                        - 56
+                        - 60
+                        - 64
+                        - 100
+                        - 104
+                        - 108
+                        - 112
+                        disabled: true
+                        power: 9
+                        power_max: 6
+                        power_min: 17
+                        preamble: auto
+                      country_code: string
+                      created_time: 0
+                      id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      model_specific:
+                        property1:
+                          band_24:
+                            allow_rrm_disable: true
+                            antenna_mode: default
+                            bandwidth: 20
+                            channels:
+                            - 1
+                            - 6
+                            - 11
+                            disabled: true
+                            power: 9
+                            power_max: 6
+                            power_min: 17
+                            preamble: auto
+                          band_5:
+                            allow_rrm_disable: true
+                            antenna_mode: default
+                            bandwidth: 20
+                            channels:
+                            - 36
+                            - 40
+                            - 44
+                            - 48
+                            - 52
+                            - 56
+                            - 60
+                            - 64
+                            - 100
+                            - 104
+                            - 108
+                            - 112
+                            disabled: true
+                            power: 10
+                            power_max: 6
+                            power_min: 15
+                            preamble: auto
+                      modified_time: 0
+                      name: string
+                      org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    rftemplate_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    rftemplate_name: string
+                    status: updating
+                    timestamp: 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/rrm'
+                - description: Current RRM channel-planning state for a site
+                  examples:
+                  - band_24: {}
+                    band_24_metric:
+                      avg_aps_per_channel: 0
+                      channel_distribution_uniformity: 0
+                      cochannel_neighbors: 0
+                      density: 0
+                      naps_by_channel: {}
+                      naps_by_power: {}
+                      neighbors: 0
+                      noise: 0
+                    band_5: {}
+                    band_5_metric:
+                      avg_aps_per_channel: 0
+                      channel_distribution_uniformity: 0
+                      cochannel_neighbors: 0
+                      density: 0
+                      naps_by_channel: {}
+                      naps_by_power: {}
+                      neighbors: 0
+                      noise: 0
+                    rftemplate:
+                      band_24:
+                        allow_rrm_disable: true
+                        antenna_mode: default
+                        bandwidth: 20
+                        channels:
+                        - 1
+                        - 6
+                        - 11
+                        disabled: true
+                        power: 5
+                        power_max: 3
+                        power_min: 18
+                        preamble: auto
+                      band_5:
+                        allow_rrm_disable: true
+                        antenna_mode: default
+                        bandwidth: 20
+                        channels:
+                        - 36
+                        - 40
+                        - 44
+                        - 48
+                        - 52
+                        - 56
+                        - 60
+                        - 64
+                        - 100
+                        - 104
+                        - 108
+                        - 112
+                        disabled: true
+                        power: 9
+                        power_max: 6
+                        power_min: 17
+                        preamble: auto
+                      country_code: string
+                      created_time: 0
+                      id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      model_specific:
+                        property1:
+                          band_24:
+                            allow_rrm_disable: true
+                            antenna_mode: default
+                            bandwidth: 20
+                            channels:
+                            - 1
+                            - 6
+                            - 11
+                            disabled: true
+                            power: 9
+                            power_max: 6
+                            power_min: 17
+                            preamble: auto
+                          band_5:
+                            allow_rrm_disable: true
+                            antenna_mode: default
+                            bandwidth: 20
+                            channels:
+                            - 36
+                            - 40
+                            - 44
+                            - 48
+                            - 52
+                            - 56
+                            - 60
+                            - 64
+                            - 100
+                            - 104
+                            - 108
+                            - 112
+                            disabled: true
+                            power: 10
+                            power_max: 6
+                            power_min: 15
+                            preamble: auto
+                      modified_time: 0
+                      name: string
+                      org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    rftemplate_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    rftemplate_name: string
+                    status: updating
+                    timestamp: 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    band_24: {}
+                    band_24_metric:
+                      avg_aps_per_channel: 0
+                      channel_distribution_uniformity: 0
+                      cochannel_neighbors: 0
+                      density: 0
+                      naps_by_channel: {}
+                      naps_by_power: {}
+                      neighbors: 0
+                      noise: 0
+                    band_5: {}
+                    band_5_metric:
+                      avg_aps_per_channel: 0
+                      channel_distribution_uniformity: 0
+                      cochannel_neighbors: 0
+                      density: 0
+                      naps_by_channel: {}
+                      naps_by_power: {}
+                      neighbors: 0
+                      noise: 0
+                    rftemplate:
+                      band_24:
+                        allow_rrm_disable: true
+                        antenna_mode: default
+                        bandwidth: 20
+                        channels:
+                        - 1
+                        - 6
+                        - 11
+                        disabled: true
+                        power: 5
+                        power_max: 3
+                        power_min: 18
+                        preamble: auto
+                      band_5:
+                        allow_rrm_disable: true
+                        antenna_mode: default
+                        bandwidth: 20
+                        channels:
+                        - 36
+                        - 40
+                        - 44
+                        - 48
+                        - 52
+                        - 56
+                        - 60
+                        - 64
+                        - 100
+                        - 104
+                        - 108
+                        - 112
+                        disabled: true
+                        power: 9
+                        power_max: 6
+                        power_min: 17
+                        preamble: auto
+                      country_code: string
+                      created_time: 0
+                      id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      model_specific:
+                        property1:
+                          band_24:
+                            allow_rrm_disable: true
+                            antenna_mode: default
+                            bandwidth: 20
+                            channels:
+                            - 1
+                            - 6
+                            - 11
+                            disabled: true
+                            power: 9
+                            power_max: 6
+                            power_min: 17
+                            preamble: auto
+                          band_5:
+                            allow_rrm_disable: true
+                            antenna_mode: default
+                            bandwidth: 20
+                            channels:
+                            - 36
+                            - 40
+                            - 44
+                            - 48
+                            - 52
+                            - 56
+                            - 60
+                            - 64
+                            - 100
+                            - 104
+                            - 108
+                            - 112
+                            disabled: true
+                            power: 10
+                            power_max: 6
+                            power_min: 15
+                            preamble: auto
+                      modified_time: 0
+                      name: string
+                      org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    rftemplate_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    rftemplate_name: string
+                    status: updating
+                    timestamp: 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/rrm/current/devices/{device_id}/band/{band}:
+    parameters: []
+    get:
+      tags:
+      - Sites RRM
+      summary: getSiteCurrentRrmConsiderations
+      description: Get Current RRM Considerations for an AP on a Specific Band
+      operationId: getSiteCurrentRrmConsiderations
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: device_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: band
+        in: path
+        description: 802.11 Band
+        required: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/dot11_band'
+          - description: 802.11 Band
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_rrm_consideration'
+                - description: Response containing current RRM considerations for an AP radio band
+                  examples:
+                  - results:
+                    - channel: 36
+                      noise: -78
+                      other_rssi: -66
+                      other_ssid: Rivendell5G
+                      rssi: -48
+                      util_score: 0.1
+                      util_score_non_wifi: 0.01
+                      util_score_other: 0.05
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    results:
+                    - channel: 36
+                      noise: -78
+                      other_rssi: -66
+                      other_ssid: Rivendell5G
+                      rssi: -48
+                      util_score: 0.1
+                      util_score_non_wifi: 0.01
+                      util_score_other: 0.05
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_rrm_consideration'
+                - description: Response containing current RRM considerations for an AP radio band
+                  examples:
+                  - results:
+                    - channel: 36
+                      noise: -78
+                      other_rssi: -66
+                      other_ssid: Rivendell5G
+                      rssi: -48
+                      util_score: 0.1
+                      util_score_non_wifi: 0.01
+                      util_score_other: 0.05
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    results:
+                    - channel: 36
+                      noise: -78
+                      other_rssi: -66
+                      other_ssid: Rivendell5G
+                      rssi: -48
+                      util_score: 0.1
+                      util_score_non_wifi: 0.01
+                      util_score_other: 0.05
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/rrm/events:
+    parameters: []
+    get:
+      tags:
+      - Sites RRM
+      summary: listSiteRrmEvents
+      description: List Site RRM Events
+      operationId: listSiteRrmEvents
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: band
+        in: query
+        description: '802.11 band used to filter radio results. enum: `24`, `5`, `5-dedicated`, `5-selectable`, `6`, `6-dedicated`, `6-selectable`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/dot11_band'
+          - description: '802.11 band used to filter radio results. enum: `24`, `5`, `5-dedicated`, `5-selectable`, `6`, `6-dedicated`, `6-selectable`'
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: page
+        in: query
+        description: Select the page number to return when using page-based pagination; starts at `1`
+        style: form
+        explode: true
+        schema:
+          minimum: 1
+          type: integer
+          contentEncoding: int32
+          default: 1
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_events_rrm'
+                - description: Paginated response for RRM event results
+                  examples:
+                  - end: 1428954000
+                    limit: 100
+                    next: /api/v1/sites/dca0a44b-324c-11e6-a776-0243ad110007/events/rrm?start=1428939600&end=1428949600&limit=200&token=001a0010000000120010000005005880ec18000004776c616e007fffffeb067ab8e29c1d659b6a7c8cf698bf81490003
+                    results:
+                    - ap: 5c5b359e4fe0
+                      band: '24'
+                      bandwidth: 20
+                      channel: 6
+                      event: scheduled-site_rrm
+                      power: 5
+                      pre_bandwidth: 20
+                      pre_channel: 1
+                      pre_power: 11
+                      pre_usage: '24'
+                      timestamp: 1428939600
+                      usage: '24'
+                    start: 1428939600
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    end: 1428954000
+                    limit: 100
+                    next: /api/v1/sites/dca0a44b-324c-11e6-a776-0243ad110007/events/rrm?start=1428939600&end=1428949600&limit=200&token=001a0010000000120010000005005880ec18000004776c616e007fffffeb067ab8e29c1d659b6a7c8cf698bf81490003
+                    results:
+                    - ap: 5c5b359e4fe0
+                      band: '24'
+                      bandwidth: 20
+                      channel: 6
+                      event: scheduled-site_rrm
+                      power: 5
+                      pre_bandwidth: 20
+                      pre_channel: 1
+                      pre_power: 11
+                      pre_usage: '24'
+                      timestamp: 1428939600
+                      usage: '24'
+                    start: 1428939600
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_events_rrm'
+                - description: Paginated response for RRM event results
+                  examples:
+                  - end: 1428954000
+                    limit: 100
+                    next: /api/v1/sites/dca0a44b-324c-11e6-a776-0243ad110007/events/rrm?start=1428939600&end=1428949600&limit=200&token=001a0010000000120010000005005880ec18000004776c616e007fffffeb067ab8e29c1d659b6a7c8cf698bf81490003
+                    results:
+                    - ap: 5c5b359e4fe0
+                      band: '24'
+                      bandwidth: 20
+                      channel: 6
+                      event: scheduled-site_rrm
+                      power: 5
+                      pre_bandwidth: 20
+                      pre_channel: 1
+                      pre_power: 11
+                      pre_usage: '24'
+                      timestamp: 1428939600
+                      usage: '24'
+                    start: 1428939600
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    end: 1428954000
+                    limit: 100
+                    next: /api/v1/sites/dca0a44b-324c-11e6-a776-0243ad110007/events/rrm?start=1428939600&end=1428949600&limit=200&token=001a0010000000120010000005005880ec18000004776c616e007fffffeb067ab8e29c1d659b6a7c8cf698bf81490003
+                    results:
+                    - ap: 5c5b359e4fe0
+                      band: '24'
+                      bandwidth: 20
+                      channel: 6
+                      event: scheduled-site_rrm
+                      power: 5
+                      pre_bandwidth: 20
+                      pre_channel: 1
+                      pre_power: 11
+                      pre_usage: '24'
+                      timestamp: 1428939600
+                      usage: '24'
+                    start: 1428939600
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/rrm/neighbors/band/{band}:
+    parameters: []
+    get:
+      tags:
+      - Sites RRM
+      summary: listSiteCurrentRrmNeighbors
+      description: List Current RRM observed neighbors
+      operationId: listSiteCurrentRrmNeighbors
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: band
+        in: path
+        description: 802.11 Band
+        required: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/dot11_band'
+          - description: 802.11 Band
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: page
+        in: query
+        description: Select the page number to return when using page-based pagination; starts at `1`
+        style: form
+        explode: true
+        schema:
+          minimum: 1
+          type: integer
+          contentEncoding: int32
+          default: 1
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_rrm_neighbors'
+                - description: Paginated response for current RRM neighbor observations
+                  examples:
+                  - end: 1428954000
+                    limit: 100
+                    next: /api/v1/sites/dca0a44b-324c-11e6-a776-0243ad110007/events/rrm?start=1428939600&end=1428949600&limit=200&token=001a0010000000120010000005005880ec18000004776c616e007fffffeb067ab8e29c1d659b6a7c8cf698bf81490003
+                    results:
+                    - mac: a7c7096d7b8f
+                      neighbors:
+                      - mac: 5c5b35000311
+                        rssi: -75
+                    start: 1428939600
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    end: 1428954000
+                    limit: 100
+                    next: /api/v1/sites/dca0a44b-324c-11e6-a776-0243ad110007/events/rrm?start=1428939600&end=1428949600&limit=200&token=001a0010000000120010000005005880ec18000004776c616e007fffffeb067ab8e29c1d659b6a7c8cf698bf81490003
+                    results:
+                    - mac: a7c7096d7b8f
+                      neighbors:
+                      - mac: 5c5b35000311
+                        rssi: -75
+                    start: 1428939600
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_rrm_neighbors'
+                - description: Paginated response for current RRM neighbor observations
+                  examples:
+                  - end: 1428954000
+                    limit: 100
+                    next: /api/v1/sites/dca0a44b-324c-11e6-a776-0243ad110007/events/rrm?start=1428939600&end=1428949600&limit=200&token=001a0010000000120010000005005880ec18000004776c616e007fffffeb067ab8e29c1d659b6a7c8cf698bf81490003
+                    results:
+                    - mac: a7c7096d7b8f
+                      neighbors:
+                      - mac: 5c5b35000311
+                        rssi: -75
+                    start: 1428939600
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    end: 1428954000
+                    limit: 100
+                    next: /api/v1/sites/dca0a44b-324c-11e6-a776-0243ad110007/events/rrm?start=1428939600&end=1428949600&limit=200&token=001a0010000000120010000005005880ec18000004776c616e007fffffeb067ab8e29c1d659b6a7c8cf698bf81490003
+                    results:
+                    - mac: a7c7096d7b8f
+                      neighbors:
+                      - mac: 5c5b35000311
+                        rssi: -75
+                    start: 1428939600
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    radio_band_antenna_mode1:
+      title: radio_band_antenna_mode1
+      enum:
+      - 1x1
+      - 2x2
+      - 3x3
+      - 4x4
+      - default
+      type: string
+      description: 'Radio chain mode for the 5 GHz radio. enum: `1x1`, `2x2`, `3x3`, `4x4`, `default`.'
+      examples:
+      - default
+    response_events_rrm:
+      title: response_events_rrm
+      required:
+      - end
+      - limit
+      - results
+      - start
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Epoch timestamp for the end of the RRM event search window
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of RRM event records returned in this page
+          contentEncoding: int32
+        next:
+          type: string
+          description: Pagination cursor or URL for retrieving the next page of RRM event records; null when no next page exists
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/rrm_event'
+          description: RRM event records matching the search filters
+        start:
+          type: integer
+          description: Epoch timestamp for the start of the RRM event search window
+          contentEncoding: int32
+      description: Paginated response for RRM event results
+    rrm_event:
+      title: rrm_event
+      required:
+      - ap
+      - band
+      - bandwidth
+      - channel
+      - event
+      - power
+      - pre_bandwidth
+      - pre_channel
+      - pre_power
+      - pre_usage
+      - timestamp
+      - usage
+      type: object
+      properties:
+        ap:
+          type: string
+          description: MAC address of the AP associated with the RRM event
+          examples:
+          - 5c5b350e0001
+        band:
+          allOf:
+          - $ref: '#/components/schemas/dot11_band2'
+          - description: 'Radio band affected by the RRM event. enum: `24`, `5`, `5-dedicated`, `5-selectable`, `6`, `6-dedicated`, `6-selectable`.'
+        bandwidth:
+          allOf:
+          - $ref: '#/components/schemas/dot11_bandwidth3'
+          - description: 'Channel width after the RRM event, in MHz. enum: `0`, `20`, `40`, `80`, `160`.'
+            examples:
+            - 20
+        channel:
+          type: integer
+          description: RF channel after the RRM event
+          contentEncoding: int32
+        event:
+          allOf:
+          - $ref: '#/components/schemas/rrm_event_type2'
+          - description: 'RRM event type that caused or records the change. enum: `interference-ap-co-channel`, `interference-ap-non-wifi`, `neighbor-ap-down`, `neighbor-ap-recovered`, `radar-detected`, `rrm-radar`, `scheduled-site_rrm`, `triggered-site_rrm`.'
+        power:
+          type: integer
+          description: Transmit power after the RRM event
+          contentEncoding: int32
+        pre_bandwidth:
+          allOf:
+          - $ref: '#/components/schemas/rrm_event_pre_bandwidth2'
+          - description: 'Channel width before the RRM event, in MHz. enum: `0`, `20`, `40`, `80`, `160`.'
+        pre_channel:
+          type: integer
+          description: RF channel before the RRM event; 0 means no previous value was available
+          contentEncoding: int32
+        pre_power:
+          type: number
+          description: Transmit power before the RRM event; 0 means no previous value was available
+        pre_usage:
+          type: string
+          description: Radio usage band before the RRM event
+        timestamp:
+          type: number
+          description: Time when the RRM event occurred
+          readOnly: true
+        usage:
+          type: string
+          description: Radio usage band after the RRM event
+      description: RRM event record for radio setting changes or RF conditions
+    rftemplate_radio_band55:
+      title: rftemplate_radio_band55
+      type: object
+      properties:
+        allow_rrm_disable:
+          type: boolean
+          description: Whether RRM may disable the 5 GHz radio when optimizing RF settings
+          default: false
+        ant_gain:
+          maximum: 10
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: External antenna gain for the 5 GHz radio
+          contentEncoding: int32
+          default: 0
+        antenna_mode:
+          allOf:
+          - $ref: '#/components/schemas/radio_band_antenna_mode1'
+          - description: 'Radio chain mode for the 5 GHz radio. enum: `1x1`, `2x2`, `3x3`, `4x4`, `default`.'
+            examples:
+            - default
+        bandwidth:
+          allOf:
+          - $ref: '#/components/schemas/dot11_bandwidth52'
+          - description: 'Channel width configured for the 5 GHz radio. enum: `0`, `20`, `40`, `80`.'
+            examples:
+            - 40
+        channels:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            contentEncoding: int32
+          description: Allowed channel list for the 5 GHz radio; null or an empty array uses automatic selection
+          default: []
+        disabled:
+          type: boolean
+          description: Whether to disable the radio
+          default: false
+        power:
+          maximum: 25
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: Radio Tx power, in dBm. Can be an integer 0-25 for static power configuration, or `null` or unset for auto power mode
+          contentEncoding: int32
+          examples:
+          - 6
+        power_max:
+          maximum: 17
+          minimum: 5
+          type:
+          - integer
+          - 'null'
+          description: When power=null/unset, max tx power to use, HW-specific values will be used if not set
+          contentEncoding: int32
+        power_min:
+          maximum: 17
+          minimum: 5
+          type:
+          - integer
+          - 'null'
+          description: When power=null/unset, min tx power to use, HW-specific values will be used if not set
+          contentEncoding: int32
+        preamble:
+          allOf:
+          - $ref: '#/components/schemas/radio_band_preamble1'
+          - description: '802.11 preamble mode used by the 5 GHz radio. enum: `auto`, `long`, `short`.'
+      description: 5 GHz radio settings in this RF template
+    rftemplate_radio_band52:
+      title: rftemplate_radio_band52
+      type: object
+      properties:
+        allow_rrm_disable:
+          type: boolean
+          description: Whether RRM may disable the 5 GHz radio when optimizing RF settings
+          default: false
+        ant_gain:
+          maximum: 10
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: External antenna gain for the 5 GHz radio
+          contentEncoding: int32
+          default: 0
+        antenna_mode:
+          allOf:
+          - $ref: '#/components/schemas/radio_band_antenna_mode1'
+          - description: 'Radio chain mode for the 5 GHz radio. enum: `1x1`, `2x2`, `3x3`, `4x4`, `default`.'
+            examples:
+            - default
+        bandwidth:
+          allOf:
+          - $ref: '#/components/schemas/dot11_bandwidth52'
+          - description: 'Channel width configured for the 5 GHz radio. enum: `0`, `20`, `40`, `80`.'
+            examples:
+            - 40
+        channels:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            contentEncoding: int32
+          description: Allowed channel list for the 5 GHz radio; null or an empty array uses automatic selection
+          default: []
+        disabled:
+          type: boolean
+          description: Whether to disable the radio
+          default: false
+        power:
+          maximum: 25
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: Radio Tx power, in dBm. Can be an integer 0-25 for static power configuration, or `null` or unset for auto power mode
+          contentEncoding: int32
+          examples:
+          - 6
+        power_max:
+          maximum: 17
+          minimum: 5
+          type:
+          - integer
+          - 'null'
+          description: When power=null/unset, max tx power to use, HW-specific values will be used if not set
+          contentEncoding: int32
+        power_min:
+          maximum: 17
+          minimum: 5
+          type:
+          - integer
+          - 'null'
+          description: When power=null/unset, min tx power to use, HW-specific values will be used if not set
+          contentEncoding: int32
+        preamble:
+          allOf:
+          - $ref: '#/components/schemas/radio_band_preamble1'
+          - description: '802.11 preamble mode used by the 5 GHz radio. enum: `auto`, `long`, `short`.'
+      description: Model-specific 5 GHz radio settings that override RF template defaults
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    rrm_band_metric1:
+      title: rrm_band_metric1
+      required:
+      - cochannel_neighbors
+      - density
+      - neighbors
+      - noise
+      type: object
+      properties:
+        avg_aps_per_channel:
+          type: number
+          description: Average number of APs per channel
+        channel_distribution_uniformity:
+          type: number
+          description: Distribution of channel across the Access Points
+        cochannel_neighbors:
+          type: number
+          description: Average number of co-channel neighbors
+        density:
+          maximum: 1
+          minimum: 0
+          type: number
+          description: defined by how APs can hear from one and another, 0 - 1 (everyone can hear everyone)
+        interferences:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/rrm_band_metric_interference'
+          description: Property key is the channel number
+          examples:
+          - '149':
+              radar: 0.3
+            '153':
+              radar: 0.2
+        naps_by_channel:
+          type: object
+          additionalProperties:
+            type: number
+          description: Number of APs grouped by channel for this band
+        naps_by_power:
+          type: object
+          additionalProperties:
+            type: number
+          description: Number of APs grouped by transmit power for this band
+        neighbors:
+          type: number
+          description: Average number of neighbors
+        noise:
+          type: number
+          description: Average noise in dBm
+      description: Aggregate RRM metrics for the 5 GHz band
+    rftemplate_radio_band241:
+      title: rftemplate_radio_band241
+      type: object
+      properties:
+        allow_rrm_disable:
+          type: boolean
+          description: Whether RRM may disable the 2.4 GHz radio when optimizing RF settings
+          default: false
+        ant_gain:
+          maximum: 10
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: External antenna gain for the 2.4 GHz radio
+          contentEncoding: int32
+          default: 0
+        antenna_mode:
+          allOf:
+          - $ref: '#/components/schemas/radio_band_antenna_mode4'
+          - description: 'Radio chain mode for the 2.4 GHz radio. enum: `1x1`, `2x2`, `3x3`, `4x4`, `default`.'
+            examples:
+            - default
+        bandwidth:
+          allOf:
+          - $ref: '#/components/schemas/dot11_bandwidth242'
+          - description: 'Channel width configured for the 2.4 GHz radio. enum: `0`, `20`, `40`.'
+            examples:
+            - 20
+        channels:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            contentEncoding: int32
+          description: Allowed channel list for the 2.4 GHz radio; null or an empty array uses automatic selection
+          default: []
+        disabled:
+          type: boolean
+          description: Whether to disable the radio
+          default: false
+        power:
+          maximum: 25
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: Radio Tx power, in dBm. Can be an integer 0-25 for static power configuration, or `null` or unset for auto power mode
+          contentEncoding: int32
+          examples:
+          - 3
+        power_max:
+          maximum: 18
+          minimum: 3
+          type:
+          - integer
+          - 'null'
+          description: When power=null/unset, max tx power to use, HW-specific values will be used if not set
+          contentEncoding: int32
+        power_min:
+          maximum: 18
+          minimum: 3
+          type:
+          - integer
+          - 'null'
+          description: When power=null/unset, min tx power to use, HW-specific values will be used if not set
+          contentEncoding: int32
+        preamble:
+          allOf:
+          - $ref: '#/components/schemas/radio_band_preamble4'
+          - description: '802.11 preamble mode used by the 2.4 GHz radio. enum: `auto`, `long`, `short`.'
+      description: Model-specific 2.4 GHz radio settings that override RF template defaults
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_rrm_consideration:
+      title: response_rrm_consideration
+      required:
+      - results
+      type: object
+      properties:
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/rrm_consideration'
+          description: Channel consideration metrics used by RRM for the AP radio band
+      description: Response containing current RRM considerations for an AP radio band
+    rrm_status2:
+      title: rrm_status2
+      enum:
+      - ready
+      - unknown
+      - updating
+      type: string
+      description: 'Current RRM calculation status. enum: `ready`, `unknown`, `updating`.'
+    rrm:
+      title: rrm
+      required:
+      - band_24
+      - band_24_metric
+      - band_5
+      - band_5_metric
+      - rftemplate
+      - rftemplate_id
+      - rftemplate_name
+      - status
+      - timestamp
+      type: object
+      properties:
+        band_24:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/rrm_band'
+          description: RRM proposed channel, power, and usage settings for 2.4 GHz radios; property key is AP ID
+        band_24_metric:
+          allOf:
+          - $ref: '#/components/schemas/rrm_band_metric4'
+          - description: Aggregate RRM metrics for the 2.4 GHz band
+        band_5:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/rrm_band'
+          description: RRM proposed channel, power, and usage settings for 5 GHz radios; property key is AP ID
+        band_5_metric:
+          allOf:
+          - $ref: '#/components/schemas/rrm_band_metric1'
+          - description: Aggregate RRM metrics for the 5 GHz band
+        band_6:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/rrm_band'
+          description: RRM proposed channel, power, and usage settings for 6 GHz radios; property key is AP ID
+        band_6_metric:
+          allOf:
+          - $ref: '#/components/schemas/rrm_band_metric2'
+          - description: Aggregate RRM metrics for the 6 GHz band
+        rftemplate:
+          allOf:
+          - $ref: '#/components/schemas/rf_template'
+          - description: RF template used by the current RRM calculation
+        rftemplate_id:
+          type: string
+          description: RF template identifier used by the current RRM calculation
+          contentEncoding: uuid
+        rftemplate_name:
+          type: string
+          description: RF template name used by the current RRM calculation
+        status:
+          allOf:
+          - $ref: '#/components/schemas/rrm_status2'
+          - description: 'Current RRM calculation status. enum: `ready`, `unknown`, `updating`.'
+        timestamp:
+          type: number
+          description: Time when the current RRM data was generated
+          readOnly: true
+      description: Current RRM channel-planning state for a site
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    dot11_band2:
+      title: dot11_band2
+      enum:
+      - '24'
+      - '5'
+      - 5-dedicated
+      - 5-selectable
+      - '6'
+      - 6-dedicated
+      - 6-selectable
+      type: string
+      description: 'Radio band affected by the RRM event. enum: `24`, `5`, `5-dedicated`, `5-selectable`, `6`, `6-dedicated`, `6-selectable`.'
+    rftemplate_radio_band61:
+      title: rftemplate_radio_band61
+      type: object
+      properties:
+        allow_rrm_disable:
+          type: boolean
+          description: Whether RRM may disable the 6 GHz radio when optimizing RF settings
+          default: false
+        ant_gain:
+          maximum: 10
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: External antenna gain for the 6 GHz radio
+          contentEncoding: int32
+          default: 0
+        antenna_mode:
+          allOf:
+          - $ref: '#/components/schemas/radio_band_antenna_mode2'
+          - description: 'Radio chain mode for the 6 GHz radio. enum: `1x1`, `2x2`, `3x3`, `4x4`, `default`.'
+            examples:
+            - default
+        bandwidth:
+          allOf:
+          - $ref: '#/components/schemas/dot11_bandwidth62'
+          - description: 'Channel width configured for the 6 GHz radio. enum: `0`, `20`, `40`, `80`, `160`.'
+            examples:
+            - 80
+        channels:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            contentEncoding: int32
+          description: Allowed channel list for the 6 GHz radio; null or an empty array uses automatic selection
+          default: []
+        disabled:
+          type: boolean
+          description: Whether to disable the radio
+          default: false
+        power:
+          maximum: 25
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: Radio Tx power, in dBm. Can be an integer 0-25 for static power configuration, or `null` or unset for auto power mode
+          contentEncoding: int32
+          examples:
+          - 7
+        power_max:
+          maximum: 17
+          minimum: 5
+          type:
+          - integer
+          - 'null'
+          description: When power=null/unset, max tx power to use, HW-specific values will be used if not set
+          contentEncoding: int32
+        power_min:
+          maximum: 18
+          minimum: 5
+          type:
+          - integer
+          - 'null'
+          description: When power=null/unset, min tx power to use, HW-specific values will be used if not set
+          contentEncoding: int32
+        preamble:
+          allOf:
+          - $ref: '#/components/schemas/radio_band_preamble2'
+          - description: '802.11 preamble mode used by the 6 GHz radio. enum: `auto`, `long`, `short`.'
+        standard_power:
+          type: boolean
+          description: For 6GHz Only, standard-power operation, AFC (Automatic Frequency Coordination) will be performed, and we'll fall back to Low Power Indoor if AFC failed
+          default: false
+      description: Model-specific 6 GHz radio settings that override RF template defaults
+    dot11_bandwidth3:
+      title: dot11_bandwidth3
+      enum:
+      - 0
+      - 20
+      - 40
+      - 80
+      - 160
+      type: integer
+      description: 'Channel width after the RRM event, in MHz. enum: `0`, `20`, `40`, `80`, `160`.'
+      examples:
+      - 20
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    rftemplate_radio_band63:
+      title: rftemplate_radio_band63
+      type: object
+      properties:
+        allow_rrm_disable:
+          type: boolean
+          description: Whether RRM may disable the 6 GHz radio when optimizing RF settings
+          default: false
+        ant_gain:
+          maximum: 10
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: External antenna gain for the 6 GHz radio
+          contentEncoding: int32
+          default: 0
+        antenna_mode:
+          allOf:
+          - $ref: '#/components/schemas/radio_band_antenna_mode2'
+          - description: 'Radio chain mode for the 6 GHz radio. enum: `1x1`, `2x2`, `3x3`, `4x4`, `default`.'
+            examples:
+            - default
+        bandwidth:
+          allOf:
+          - $ref: '#/components/schemas/dot11_bandwidth62'
+          - description: 'Channel width configured for the 6 GHz radio. enum: `0`, `20`, `40`, `80`, `160`.'
+            examples:
+            - 80
+        channels:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            contentEncoding: int32
+          description: Allowed channel list for the 6 GHz radio; null or an empty array uses automatic selection
+          default: []
+        disabled:
+          type: boolean
+          description: Whether to disable the radio
+          default: false
+        power:
+          maximum: 25
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: Radio Tx power, in dBm. Can be an integer 0-25 for static power configuration, or `null` or unset for auto power mode
+          contentEncoding: int32
+          examples:
+          - 7
+        power_max:
+          maximum: 17
+          minimum: 5
+          type:
+          - integer
+          - 'null'
+          description: When power=null/unset, max tx power to use, HW-specific values will be used if not set
+          contentEncoding: int32
+        power_min:
+          maximum: 18
+          minimum: 5
+          type:
+          - integer
+          - 'null'
+          description: When power=null/unset, min tx power to use, HW-specific values will be used if not set
+          contentEncoding: int32
+        preamble:
+          allOf:
+          - $ref: '#/components/schemas/radio_band_preamble2'
+          - description: '802.11 preamble mode used by the 6 GHz radio. enum: `auto`, `long`, `short`.'
+        standard_power:
+          type: boolean
+          description: For 6GHz Only, standard-power operation, AFC (Automatic Frequency Coordination) will be performed, and we'll fall back to Low Power Indoor if AFC failed
+          default: false
+      description: 6 GHz radio settings in this RF template
+    radio_band_antenna_mode2:
+      title: radio_band_antenna_mode2
+      enum:
+      - 1x1
+      - 2x2
+      - 3x3
+      - 4x4
+      - default
+      type: string
+      description: 'Radio chain mode for the 6 GHz radio. enum: `1x1`, `2x2`, `3x3`, `4x4`, `default`.'
+      examples:
+      - default
+    rrm_event_pre_bandwidth2:
+      title: rrm_event_pre_bandwidth2
+      enum:
+      - 0
+      - 20
+      - 40
+      - 80
+      - 160
+      type: integer
+      description: 'Channel width before the RRM event, in MHz. enum: `0`, `20`, `40`, `80`, `160`.'
+    dot11_bandwidth62:
+      title: dot11_bandwidth62
+      enum:
+      - 0
+      - 20
+      - 40
+      - 80
+      - 160
+      type: integer
+      description: 'Channel width configured for the 6 GHz radio. enum: `0`, `20`, `40`, `80`, `160`.'
+      examples:
+      - 80
+    radio_band_24_usage2:
+      title: radio_band_24_usage2
+      enum:
+      - '24'
+      - '5'
+      - '6'
+      - auto
+      type: string
+      description: 'Radio usage mode for the 2.4 GHz-capable radio in this RF template. enum: `24`, `5`, `6`, `auto`.'
+    dot11_bandwidth4:
+      title: dot11_bandwidth4
+      enum:
+      - 0
+      - 20
+      - 40
+      - 80
+      - 160
+      type: integer
+      description: 'Proposed channel width for the radio band, in MHz. enum: `0`, `20`, `40`, `80`, `160`.'
+      examples:
+      - 20
+    rrm_channel_score:
+      title: rrm_channel_score
+      required:
+      - channel
+      - util_score
+      - util_score_noise_floor
+      - util_score_non_wifi
+      - util_score_other
+      - util_score_radar
+      - util_score_undecodable_wifi
+      - util_score_unknown_wifi
+      type: object
+      properties:
+        channel:
+          type: integer
+          description: RF channel number represented by this score record
+          contentEncoding: int32
+        util_score:
+          type: number
+          description: Utilization score for the channel, 0-1, lower means cleaner RF
+        util_score_noise_floor:
+          type: number
+          description: Score contribution from noise, 0-1, lower means cleaner RF
+        util_score_non_wifi:
+          type: number
+          description: Score contribution from non-wifi utilization, 0-1, lower means cleaner RF
+        util_score_other:
+          type: number
+          description: Score contribution from RxOtherBss utilization (wifi packets destined for other radios), 0-1, lower means cleaner RF
+        util_score_radar:
+          type: number
+          description: Score contribution from radar detections, 0-1, lower means cleaner RF
+        util_score_undecodable_wifi:
+          type: number
+          description: Score contribution from undecodable wifi utilization (wifi packets which can't be decoded), 0-1, lower means cleaner RF
+        util_score_unknown_wifi:
+          type: number
+          description: Score contribution from unknown wifi utilization (wifi packets of unknown type), 0-1, lower means cleaner RF
+      description: RRM utilization score for a channel
+    radio_band_preamble4:
+      title: radio_band_preamble4
+      enum:
+      - auto
+      - long
+      - short
+      type: string
+      description: '802.11 preamble mode used by the 2.4 GHz radio. enum: `auto`, `long`, `short`.'
+    radio_band_preamble2:
+      title: radio_band_preamble2
+      enum:
+      - auto
+      - long
+      - short
+      type: string
+      description: '802.11 preamble mode used by the 6 GHz radio. enum: `auto`, `long`, `short`.'
+    rrm_band:
+      title: rrm_band
+      type: object
+      properties:
+        bandwidth:
+          allOf:
+          - $ref: '#/components/schemas/dot11_bandwidth4'
+          - description: 'Proposed channel width for the radio band, in MHz. enum: `0`, `20`, `40`, `80`, `160`.'
+            examples:
+            - 20
+        channel:
+          type: integer
+          description: Proposed RF channel for the radio band
+          contentEncoding: int32
+        curr_bandwidth:
+          allOf:
+          - $ref: '#/components/schemas/dot11_bandwidth7'
+          - description: 'Current channel width for the radio band, in MHz. enum: `0`, `20`, `40`, `80`, `160`.'
+            examples:
+            - 20
+        curr_channel:
+          type: integer
+          description: Current RF channel for the radio band
+          contentEncoding: int32
+        curr_power:
+          type: integer
+          description: Current transmit power for the radio band
+          contentEncoding: int32
+        curr_usage:
+          minLength: 1
+          type: string
+          description: Current radio usage band for the AP radio
+        power:
+          type: integer
+          description: Proposed transmit power for the radio band
+          contentEncoding: int32
+        usage:
+          minLength: 1
+          type: string
+          description: Proposed radio usage band for the AP radio
+      description: RRM proposed and current radio settings for an AP band
+    rrm_neighbors_neighbor:
+      title: rrm_neighbors_neighbor
+      type: object
+      properties:
+        mac:
+          type: string
+          description: Neighbor AP MAC address observed by RRM
+          examples:
+          - 5c5b35000311
+        rssi:
+          type: integer
+          description: Observed RSSI for the neighbor AP, in dBm
+          contentEncoding: int32
+          examples:
+          - -66
+      description: Neighbor AP observed by RRM
+    rrm_band_metric4:
+      title: rrm_band_metric4
+      required:
+      - cochannel_neighbors
+      - density
+      - neighbors
+      - noise
+      type: object
+      properties:
+        avg_aps_per_channel:
+          type: number
+          description: Average number of APs per channel
+        channel_distribution_uniformity:
+          type: number
+          description: Distribution of channel across the Access Points
+        cochannel_neighbors:
+          type: number
+          description: Average number of co-channel neighbors
+        density:
+          maximum: 1
+          minimum: 0
+          type: number
+          description: defined by how APs can hear from one and another, 0 - 1 (everyone can hear everyone)
+        interferences:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/rrm_band_metric_interference'
+          description: Property key is the channel number
+          examples:
+          - '149':
+              radar: 0.3
+            '153':
+              radar: 0.2
+        naps_by_channel:
+          type: object
+          additionalProperties:
+            type: number
+          description: Number of APs grouped by channel for this band
+        naps_by_power:
+          type: object
+          additionalProperties:
+            type: number
+          description: Number of APs grouped by transmit power for this band
+        neighbors:
+          type: number
+          description: Average number of neighbors
+        noise:
+          type: number
+          description: Average noise in dBm
+      description: Aggregate RRM metrics for the 2.4 GHz band
+    rftemplate_radio_band51:
+      title: rftemplate_radio_band51
+      type: object
+      properties:
+        allow_rrm_disable:
+          type: boolean
+          description: Whether RRM may disable the 5 GHz radio when optimizing RF settings
+          default: false
+        ant_gain:
+          maximum: 10
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: External antenna gain for the 5 GHz radio
+          contentEncoding: int32
+          default: 0
+        antenna_mode:
+          allOf:
+          - $ref: '#/components/schemas/radio_band_antenna_mode1'
+          - description: 'Radio chain mode for the 5 GHz radio. enum: `1x1`, `2x2`, `3x3`, `4x4`, `default`.'
+            examples:
+            - default
+        bandwidth:
+          allOf:
+          - $ref: '#/components/schemas/dot11_bandwidth52'
+          - description: 'Channel width configured for the 5 GHz radio. enum: `0`, `20`, `40`, `80`.'
+            examples:
+            - 40
+        channels:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            contentEncoding: int32
+          description: Allowed channel list for the 5 GHz radio; null or an empty array uses automatic selection
+          default: []
+        disabled:
+          type: boolean
+          description: Whether to disable the radio
+          default: false
+        power:
+          maximum: 25
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: Radio Tx power, in dBm. Can be an integer 0-25 for static power configuration, or `null` or unset for auto power mode
+          contentEncoding: int32
+          examples:
+          - 6
+        power_max:
+          maximum: 17
+          minimum: 5
+          type:
+          - integer
+          - 'null'
+          description: When power=null/unset, max tx power to use, HW-specific values will be used if not set
+          contentEncoding: int32
+        power_min:
+          maximum: 17
+          minimum: 5
+          type:
+          - integer
+          - 'null'
+          description: When power=null/unset, min tx power to use, HW-specific values will be used if not set
+          contentEncoding: int32
+        preamble:
+          allOf:
+          - $ref: '#/components/schemas/radio_band_preamble1'
+          - description: '802.11 preamble mode used by the 5 GHz radio. enum: `auto`, `long`, `short`.'
+      description: 5 GHz settings used when the 2.4 GHz radio operates in 5 GHz mode
+    response_rrm_channel_scores:
+      title: response_rrm_channel_scores
+      required:
+      - results
+      type: object
+      properties:
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/rrm_channel_score'
+          description: Per-channel RRM score records for the requested band
+      description: Response containing RRM channel score records
+    rrm_event_type2:
+      title: rrm_event_type2
+      enum:
+      - interference-ap-co-channel
+      - interference-ap-non-wifi
+      - neighbor-ap-down
+      - neighbor-ap-recovered
+      - radar-detected
+      - rrm-radar
+      - scheduled-site_rrm
+      - triggered-site_rrm
+      type: string
+      description: 'RRM event type that caused or records the change. enum: `interference-ap-co-channel`, `interference-ap-non-wifi`, `neighbor-ap-down`, `neighbor-ap-recovered`, `radar-detected`, `rrm-radar`, `scheduled-site_rrm`, `triggered-site_rrm`.'
+    rrm_band_metric2:
+      title: rrm_band_metric2
+      required:
+      - cochannel_neighbors
+      - density
+      - neighbors
+      - noise
+      type: object
+      properties:
+        avg_aps_per_channel:
+          type: number
+          description: Average number of APs per channel
+        channel_distribution_uniformity:
+          type: number
+          description: Distribution of channel across the Access Points
+        cochannel_neighbors:
+          type: number
+          description: Average number of co-channel neighbors
+        density:
+          maximum: 1
+          minimum: 0
+          type: number
+          description: defined by how APs can hear from one and another, 0 - 1 (everyone can hear everyone)
+        interferences:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/rrm_band_metric_interference'
+          description: Property key is the channel number
+          examples:
+          - '149':
+              radar: 0.3
+            '153':
+              radar: 0.2
+        naps_by_channel:
+          type: object
+          additionalProperties:
+            type: number
+          description: Number of APs grouped by channel for this band
+        naps_by_power:
+          type: object
+          additionalProperties:
+            type: number
+          description: Number of APs grouped by transmit power for this band
+        neighbors:
+          type: number
+          description: Average number of neighbors
+        noise:
+          type: number
+          description: Average noise in dBm
+      description: Aggregate RRM metrics for the 6 GHz band
+    radio_band_24_usage3:
+      title: radio_band_24_usage3
+      enum:
+      - '24'
+      - '5'
+      - '6'
+      - auto
+      type: string
+      description: 'Model-specific radio usage mode for the 2.4 GHz-capable radio. enum: `24`, `5`, `6`, `auto`.'
+    rftemplate_radio_band53:
+      title: rftemplate_radio_band53
+      type: object
+      properties:
+        allow_rrm_disable:
+          type: boolean
+          description: Whether RRM may disable the 5 GHz radio when optimizing RF settings
+          default: false
+        ant_gain:
+          maximum: 10
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: External antenna gain for the 5 GHz radio
+          contentEncoding: int32
+          default: 0
+        antenna_mode:
+          allOf:
+          - $ref: '#/components/schemas/radio_band_antenna_mode1'
+          - description: 'Radio chain mode for the 5 GHz radio. enum: `1x1`, `2x2`, `3x3`, `4x4`, `default`.'
+            examples:
+            - default
+        bandwidth:
+          allOf:
+          - $ref: '#/components/schemas/dot11_bandwidth52'
+          - description: 'Channel width configured for the 5 GHz radio. enum: `0`, `20`, `40`, `80`.'
+            examples:
+            - 40
+        channels:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            contentEncoding: int32
+          description: Allowed channel list for the 5 GHz radio; null or an empty array uses automatic selection
+          default: []
+        disabled:
+          type: boolean
+          description: Whether to disable the radio
+          default: false
+        power:
+          maximum: 25
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: Radio Tx power, in dBm. Can be an integer 0-25 for static power configuration, or `null` or unset for auto power mode
+          contentEncoding: int32
+          examples:
+          - 6
+        power_max:
+          maximum: 17
+          minimum: 5
+          type:
+          - integer
+          - 'null'
+          description: When power=null/unset, max tx power to use, HW-specific values will be used if not set
+          contentEncoding: int32
+        power_min:
+          maximum: 17
+          minimum: 5
+          type:
+          - integer
+          - 'null'
+          description: When power=null/unset, min tx power to use, HW-specific values will be used if not set
+          contentEncoding: int32
+        preamble:
+          allOf:
+          - $ref: '#/components/schemas/radio_band_preamble1'
+          - description: '802.11 preamble mode used by the 5 GHz radio. enum: `auto`, `long`, `short`.'
+      description: Model-specific 5 GHz settings used when the 2.4 GHz radio operates in 5 GHz mode
+    rrm_consideration:
+      title: rrm_consideration
+      required:
+      - channel
+      - noise
+      - util_score
+      - util_score_non_wifi
+      - util_score_other
+      type: object
+      properties:
+        channel:
+          type: integer
+          description: Candidate RF channel evaluated by RRM
+          contentEncoding: int32
+        noise:
+          type: number
+          description: Observed noise floor for the candidate channel, in dBm
+        other_rssi:
+          type: number
+          description: Avg RSSI heard from other APs (that does NOT belongs to the same site)
+        other_ssid:
+          type: string
+          description: SSID from other AP that we heard from with the max RSSI
+        rssi:
+          type: number
+          description: Avg RSSI heard from APs (that belongs to the same site)
+        util_score:
+          type: number
+          description: utilization score, 0-1, lower means less utilization (cleaner RF)
+        util_score_non_wifi:
+          type: number
+          description: non-Wi-Fi utilization score, 0-1, lower means less utilization (cleaner RF)
+        util_score_other:
+          type: number
+          description: other utilization score, 0-1, lower means less utilization (cleaner RF)
+      description: RRM consideration metrics for one candidate channel
+    response_rrm_neighbors:
+      title: response_rrm_neighbors
+      required:
+      - end
+      - limit
+      - results
+      - start
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Epoch timestamp, in seconds, for the end of the RRM neighbor observation window
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of RRM neighbor records returned in this page
+          contentEncoding: int32
+        next:
+          type: string
+          description: Link to query next set of results. value is null if no next page exists.
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/rrm_neighbors'
+          description: RRM neighbor records observed for the requested site and band
+        start:
+          type: integer
+          description: Epoch timestamp, in seconds, for the start of the RRM neighbor observation window
+          contentEncoding: int32
+      description: Paginated response for current RRM neighbor observations
+    rf_template_model_specific_property:
+      title: rf_template_model_specific_property
+      type: object
+      properties:
+        ant_gain_24:
+          type: integer
+          description: Model-specific external antenna gain for the 2.4 GHz radio
+          contentEncoding: int32
+          default: 0
+        ant_gain_5:
+          type: integer
+          description: Model-specific external antenna gain for the 5 GHz radio
+          contentEncoding: int32
+          default: 0
+        ant_gain_6:
+          type: integer
+          description: Model-specific external antenna gain for the 6 GHz radio
+          contentEncoding: int32
+          default: 0
+        band_24:
+          allOf:
+          - $ref: '#/components/schemas/rftemplate_radio_band241'
+          - description: Model-specific 2.4 GHz radio settings that override RF template defaults
+        band_24_usage:
+          allOf:
+          - $ref: '#/components/schemas/radio_band_24_usage3'
+          - description: 'Model-specific radio usage mode for the 2.4 GHz-capable radio. enum: `24`, `5`, `6`, `auto`.'
+        band_5:
+          allOf:
+          - $ref: '#/components/schemas/rftemplate_radio_band52'
+          - description: Model-specific 5 GHz radio settings that override RF template defaults
+        band_5_on_24_radio:
+          allOf:
+          - $ref: '#/components/schemas/rftemplate_radio_band53'
+          - description: Model-specific 5 GHz settings used when the 2.4 GHz radio operates in 5 GHz mode
+        band_6:
+          allOf:
+          - $ref: '#/components/schemas/rftemplate_radio_band61'
+          - description: Model-specific 6 GHz radio settings that override RF template defaults
+      description: AP model-specific RF overrides for an RF template
+    dot11_bandwidth242:
+      title: dot11_bandwidth242
+      enum:
+      - 0
+      - 20
+      - 40
+      type: integer
+      description: 'Channel width configured for the 2.4 GHz radio. enum: `0`, `20`, `40`.'
+      examples:
+      - 20
+    radio_band_antenna_mode4:
+      title: radio_band_antenna_mode4
+      enum:
+      - 1x1
+      - 2x2
+      - 3x3
+      - 4x4
+      - default
+      type: string
+      description: 'Radio chain mode for the 2.4 GHz radio. enum: `1x1`, `2x2`, `3x3`, `4x4`, `default`.'
+      examples:
+      - default
+    rrm_band_metric_interference:
+      title: rrm_band_metric_interference
+      type: object
+      properties:
+        radar:
+          type: number
+          description: Interference value attributed to radar on the channel
+      description: Interference metrics observed for one channel
+    dot11_bandwidth7:
+      title: dot11_bandwidth7
+      enum:
+      - 0
+      - 20
+      - 40
+      - 80
+      - 160
+      type: integer
+      description: 'Current channel width for the radio band, in MHz. enum: `0`, `20`, `40`, `80`, `160`.'
+      examples:
+      - 20
+    rf_template:
+      title: rf_template
+      required:
+      - name
+      type: object
+      properties:
+        ant_gain_24:
+          type: integer
+          description: External antenna gain for the 2.4 GHz radio
+          contentEncoding: int32
+        ant_gain_5:
+          type: integer
+          description: External antenna gain for the 5 GHz radio
+          contentEncoding: int32
+        ant_gain_6:
+          type: integer
+          description: External antenna gain for the 6 GHz radio
+          contentEncoding: int32
+        band_24:
+          allOf:
+          - $ref: '#/components/schemas/rftemplate_radio_band243'
+          - description: 2.4 GHz radio settings in this RF template
+        band_24_usage:
+          allOf:
+          - $ref: '#/components/schemas/radio_band_24_usage2'
+          - description: 'Radio usage mode for the 2.4 GHz-capable radio in this RF template. enum: `24`, `5`, `6`, `auto`.'
+        band_5:
+          allOf:
+          - $ref: '#/components/schemas/rftemplate_radio_band55'
+          - description: 5 GHz radio settings in this RF template
+        band_5_on_24_radio:
+          allOf:
+          - $ref: '#/components/schemas/rftemplate_radio_band51'
+          - description: 5 GHz settings used when the 2.4 GHz radio operates in 5 GHz mode
+        band_6:
+          allOf:
+          - $ref: '#/components/schemas/rftemplate_radio_band63'
+          - description: 6 GHz radio settings in this RF template
+        country_code:
+          type: string
+          description: Optional, country code to use. If specified, this gets applied to all sites using the RF Template
+        created_time:
+          type: number
+          description: Timestamp when the RF template was created
+          readOnly: true
+        enable_unii_4:
+          type: boolean
+          description: Whether U-NII-4 channels (169, 173, 177) are enabled
+          default: false
+        for_site:
+          type: boolean
+          description: Whether the RF template is scoped to a site rather than the organization
+          readOnly: true
+        id:
+          type: string
+          description: Unique identifier of the RF template
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        model_specific:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/rf_template_model_specific_property'
+          description: overwrites for a specific model. If a band is specified, it will shadow the default. Property key is the model name (e.g. "AP63")
+        modified_time:
+          type: number
+          description: Timestamp when the RF template was last modified
+          readOnly: true
+        name:
+          type: string
+          description: The name of the RF template
+        org_id:
+          type: string
+          description: Organization that owns this RF template
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        scanning_enabled:
+          type: boolean
+          description: Whether scanning radio is enabled
+      description: RF template used by the current RRM calculation
+    rftemplate_radio_band243:
+      title: rftemplate_radio_band243
+      type: object
+      properties:
+        allow_rrm_disable:
+          type: boolean
+          description: Whether RRM may disable the 2.4 GHz radio when optimizing RF settings
+          default: false
+        ant_gain:
+          maximum: 10
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: External antenna gain for the 2.4 GHz radio
+          contentEncoding: int32
+          default: 0
+        antenna_mode:
+          allOf:
+          - $ref: '#/components/schemas/radio_band_antenna_mode4'
+          - description: 'Radio chain mode for the 2.4 GHz radio. enum: `1x1`, `2x2`, `3x3`, `4x4`, `default`.'
+            examples:
+            - default
+        bandwidth:
+          allOf:
+          - $ref: '#/components/schemas/dot11_bandwidth242'
+          - description: 'Channel width configured for the 2.4 GHz radio. enum: `0`, `20`, `40`.'
+            examples:
+            - 20
+        channels:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            contentEncoding: int32
+          description: Allowed channel list for the 2.4 GHz radio; null or an empty array uses automatic selection
+          default: []
+        disabled:
+          type: boolean
+          description: Whether to disable the radio
+          default: false
+        power:
+          maximum: 25
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: Radio Tx power, in dBm. Can be an integer 0-25 for static power configuration, or `null` or unset for auto power mode
+          contentEncoding: int32
+          examples:
+          - 3
+        power_max:
+          maximum: 18
+          minimum: 3
+          type:
+          - integer
+          - 'null'
+          description: When power=null/unset, max tx power to use, HW-specific values will be used if not set
+          contentEncoding: int32
+        power_min:
+          maximum: 18
+          minimum: 3
+          type:
+          - integer
+          - 'null'
+          description: When power=null/unset, min tx power to use, HW-specific values will be used if not set
+          contentEncoding: int32
+        preamble:
+          allOf:
+          - $ref: '#/components/schemas/radio_band_preamble4'
+          - description: '802.11 preamble mode used by the 2.4 GHz radio. enum: `auto`, `long`, `short`.'
+      description: 2.4 GHz radio settings in this RF template
+    dot11_bandwidth52:
+      title: dot11_bandwidth52
+      enum:
+      - 0
+      - 20
+      - 40
+      - 80
+      type: integer
+      description: 'Channel width configured for the 5 GHz radio. enum: `0`, `20`, `40`, `80`.'
+      examples:
+      - 40
+    rrm_neighbors:
+      title: rrm_neighbors
+      type: object
+      properties:
+        mac:
+          type: string
+          description: AP MAC address whose neighbors are reported
+          examples:
+          - 5c5b35000001
+        neighbors:
+          type: array
+          items:
+            $ref: '#/components/schemas/rrm_neighbors_neighbor'
+          description: Neighbor AP observations heard by this AP
+      description: RRM neighbor observations for one AP
+    dot11_band:
+      title: dot11_band
+      enum:
+      - '24'
+      - '5'
+      - 5-dedicated
+      - 5-selectable
+      - '6'
+      - 6-dedicated
+      - 6-selectable
+      type: string
+      description: 'enum: `24`, `5`, `5-dedicated`, `5-selectable`, `6`, `6-dedicated`, `6-selectable`'
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    radio_band_preamble1:
+      title: radio_band_preamble1
+      enum:
+      - auto
+      - long
+      - short
+      type: string
+      description: '802.11 preamble mode used by the 5 GHz radio. enum: `auto`, `long`, `short`.'
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

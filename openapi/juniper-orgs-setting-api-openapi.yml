@@ -1,0 +1,3413 @@
+openapi: 3.2.0
+info:
+  title: Mist Orgs Setting API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Orgs Setting
+  description: API Calls to manage the Mist Organization Settings
+paths:
+  /api/v1/orgs/{org_id}/setting:
+    parameters: []
+    get:
+      tags:
+      - Orgs Setting
+      summary: getOrgSettings
+      description: Return organization-wide settings, including feature flags, automatic device assignment rules, management connectivity, packet capture, security controls, and integration configuration.
+      operationId: getOrgSettings
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/org_setting'
+                - description: Organization-wide feature, integration, management, and security settings
+                  examples:
+                  - '{"auto_device_naming":{"enable":true,"rules":[{"match_device":"ap","prefix":"MIST-","src":"lldp_port_desc"}]},"auto_deviceprofile_assignment":{"enable":true,"rules":[{"expression":"string","model":"string","prefix":"string","src":"name","subnet":"string","suffix":"string","value":"string"}]},"auto_site_assignment":{"enable":true,"rules":[{"expression":"string","model":"string","prefix":"string","src":"name","subnet":"string","suffix":"string","value":"string"}]},"cacerts":["string"],"cloudshark":{"apitoken":"string","url":"string"},"created_time":0,"device_cert":{"cert":"string","key":"string"},"device_updown_threshold":0,"disable_pcap":true,"id":"b069b358-4c97-5319-1f8c-7c5ca64d6ab1","installer":{"allow_all_sites":true,"extra_site_ids":["b069b358-4c97-5319-1f8c-7c5ca64d6ab1"],"grace_period":0},"mgmt":{"mxtunnel_ids":["b069b358-4c97-5319-1f8c-7c5ca64d6ab1"],"use_mxtunnel":true,"use_wxtunnel":true},"modified_time":0,"msp_id":"b069b358-4c97-5319-1f8c-7c5ca64d6ab1","name":"string","password_policy":{"enabled":true,"expiry_in_days":180,"min_length":8,"requires_special_char":true,"requires_two_factor_auth":true},"pcap":{"bucket":"string","max_pkt_len":0},"pcap_bucket_verified":true,"remote_syslog":{"enabled":true,"send_to_all_servers":true,"servers":[{"facility":"conflict-log","host":"string","port":0,"protocol":"udp","severity":"any","tag":"string"}]},"security":{"disable_local_ssh":true,"fips_zeroize_password":"string","limit_ssh_access":true},"tags":["string"],"ui_idle_timeout":0}'
+                  - '{"auto_device_naming":{"enable":true,"rules":[{"expression":"...","src":"lldp_port_desc"}]},"auto_deviceprofile_assignment":{"enable":true},"auto_site_assignment":{"enable":true,"rules":[{"expression":"[0:3]","prefix":"XX-","src":"name","suffix":"-YY"},{"src":"subnet","subnet":"10.1.2.0/18","value":"s1351"},{"expression":"...","src":"lldp_system_name"},{"expression":"...","src":"dns_suffix"},{"model":"AP41","src":"model","value":"s1351"}]},"cacerts":["-----BEGIN CERTIFICATE-----\nMIIFZjCCA06gAwIBAgIIP61/1qm/uDowDQYJKoZIhvcNAQELBQE\n-----END CERTIFICATE-----","-----BEGIN CERTIFICATE-----\nBhMCRVMxFDASBgNVBAoMC1N0YXJ0Q29tIENBMSwwKgYDVn-----END CERTIFICATE-----"],"cloudshark":{"apitoken":"accbd6f10c6d05c3","url":"https://cloudshark.hosted.domain"},"device_cert":{"cert":"-----BEGIN CERTIFICATE-----\nMIIFZjCCA06gAwIBAgIIP61/1qm/uDowDQYJKoZIhvcNAQELBQE\n-----END CERTIFICATE-----","key":"-----BEGIN PRI..."},"device_updown_threshold":0,"disable_pcap":false,"installer":{"allow_all_sites":false,"extra_site_ids":["4ac1dcf4-9d8b-7211-65c4-057819f0862b","52f4347e-3e4b-186c-21ca-ad5b70eb23d6"],"grace_period":14},"mgmt":{"mxtunnel_ids":["08cd7499-5841-51c8-e663-fb16b6f3b45e"],"use_mxtunnel":true,"use_wxtunnel":false},"password_policy":{"enabled":true,"expiry_in_days":60,"min_length":8,"requires_special_char":false,"requires_two_factor_auth":true},"pcap":{"bucket":"myorg_pcap","max_pkt_len":128},"pcap_bucket_verified":true,"remote_syslog":{"enabled":true,"send_to_all_servers":true,"servers":[{"facility":"any","host":"syslogd.internal","port":514,"protocol":"udp","severity":"info","tag":""}]},"security":{"disable_local_ssh":false,"fips_zeroize_password":"NUKETHESITE","limit_ssh_access":false},"tags":["beta"],"ui_idle_timeout":10}'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    auto_device_naming:
+                      enable: true
+                      rules:
+                      - match_device: ap
+                        prefix: MIST-
+                        src: lldp_port_desc
+                    auto_deviceprofile_assignment:
+                      enable: true
+                      rules:
+                      - expression: string
+                        model: string
+                        prefix: string
+                        src: name
+                        subnet: string
+                        suffix: string
+                        value: string
+                    auto_site_assignment:
+                      enable: true
+                      rules:
+                      - expression: string
+                        model: string
+                        prefix: string
+                        src: name
+                        subnet: string
+                        suffix: string
+                        value: string
+                    cacerts:
+                    - string
+                    cloudshark:
+                      apitoken: string
+                      url: string
+                    created_time: 0
+                    device_cert:
+                      cert: string
+                      key: string
+                    device_updown_threshold: 0
+                    disable_pcap: true
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    installer:
+                      allow_all_sites: true
+                      extra_site_ids:
+                      - b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      grace_period: 0
+                    mgmt:
+                      mxtunnel_ids:
+                      - b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      use_mxtunnel: true
+                      use_wxtunnel: true
+                    modified_time: 0
+                    msp_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    name: string
+                    password_policy:
+                      enabled: true
+                      expiry_in_days: 180
+                      min_length: 8
+                      requires_special_char: true
+                      requires_two_factor_auth: true
+                    pcap:
+                      bucket: string
+                      max_pkt_len: 0
+                    pcap_bucket_verified: true
+                    remote_syslog:
+                      enabled: true
+                      send_to_all_servers: true
+                      servers:
+                      - facility: conflict-log
+                        host: string
+                        port: 0
+                        protocol: udp
+                        severity: any
+                        tag: string
+                    security:
+                      disable_local_ssh: true
+                      fips_zeroize_password: string
+                      limit_ssh_access: true
+                    tags:
+                    - string
+                    ui_idle_timeout: 0
+                Example2:
+                  value:
+                    auto_device_naming:
+                      enable: true
+                      rules:
+                      - expression: '...'
+                        src: lldp_port_desc
+                    auto_deviceprofile_assignment:
+                      enable: true
+                    auto_site_assignment:
+                      enable: true
+                      rules:
+                      - expression: '[0:3]'
+                        prefix: XX-
+                        src: name
+                        suffix: -YY
+                      - src: subnet
+                        subnet: 10.1.2.0/18
+                        value: s1351
+                      - expression: '...'
+                        src: lldp_system_name
+                      - expression: '...'
+                        src: dns_suffix
+                      - model: AP41
+                        src: model
+                        value: s1351
+                    cacerts:
+                    - '-----BEGIN CERTIFICATE-----
+
+                      MIIFZjCCA06gAwIBAgIIP61/1qm/uDowDQYJKoZIhvcNAQELBQE
+
+                      -----END CERTIFICATE-----'
+                    - '-----BEGIN CERTIFICATE-----
+
+                      BhMCRVMxFDASBgNVBAoMC1N0YXJ0Q29tIENBMSwwKgYDVn-----END CERTIFICATE-----'
+                    cloudshark:
+                      apitoken: accbd6f10c6d05c3
+                      url: https://cloudshark.hosted.domain
+                    device_cert:
+                      cert: '-----BEGIN CERTIFICATE-----
+
+                        MIIFZjCCA06gAwIBAgIIP61/1qm/uDowDQYJKoZIhvcNAQELBQE
+
+                        -----END CERTIFICATE-----'
+                      key: '-----BEGIN PRI...'
+                    device_updown_threshold: 0
+                    disable_pcap: false
+                    installer:
+                      allow_all_sites: false
+                      extra_site_ids:
+                      - 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                      - 52f4347e-3e4b-186c-21ca-ad5b70eb23d6
+                      grace_period: 14
+                    mgmt:
+                      mxtunnel_ids:
+                      - 08cd7499-5841-51c8-e663-fb16b6f3b45e
+                      use_mxtunnel: true
+                      use_wxtunnel: false
+                    password_policy:
+                      enabled: true
+                      expiry_in_days: 60
+                      min_length: 8
+                      requires_special_char: false
+                      requires_two_factor_auth: true
+                    pcap:
+                      bucket: myorg_pcap
+                      max_pkt_len: 128
+                    pcap_bucket_verified: true
+                    remote_syslog:
+                      enabled: true
+                      send_to_all_servers: true
+                      servers:
+                      - facility: any
+                        host: syslogd.internal
+                        port: 514
+                        protocol: udp
+                        severity: info
+                        tag: ''
+                    security:
+                      disable_local_ssh: false
+                      fips_zeroize_password: NUKETHESITE
+                      limit_ssh_access: false
+                    tags:
+                    - beta
+                    ui_idle_timeout: 10
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/org_setting'
+                - description: Organization-wide feature, integration, management, and security settings
+                  examples:
+                  - '{"auto_device_naming":{"enable":true,"rules":[{"match_device":"ap","prefix":"MIST-","src":"lldp_port_desc"}]},"auto_deviceprofile_assignment":{"enable":true,"rules":[{"expression":"string","model":"string","prefix":"string","src":"name","subnet":"string","suffix":"string","value":"string"}]},"auto_site_assignment":{"enable":true,"rules":[{"expression":"string","model":"string","prefix":"string","src":"name","subnet":"string","suffix":"string","value":"string"}]},"cacerts":["string"],"cloudshark":{"apitoken":"string","url":"string"},"created_time":0,"device_cert":{"cert":"string","key":"string"},"device_updown_threshold":0,"disable_pcap":true,"id":"b069b358-4c97-5319-1f8c-7c5ca64d6ab1","installer":{"allow_all_sites":true,"extra_site_ids":["b069b358-4c97-5319-1f8c-7c5ca64d6ab1"],"grace_period":0},"mgmt":{"mxtunnel_ids":["b069b358-4c97-5319-1f8c-7c5ca64d6ab1"],"use_mxtunnel":true,"use_wxtunnel":true},"modified_time":0,"msp_id":"b069b358-4c97-5319-1f8c-7c5ca64d6ab1","name":"string","password_policy":{"enabled":true,"expiry_in_days":180,"min_length":8,"requires_special_char":true,"requires_two_factor_auth":true},"pcap":{"bucket":"string","max_pkt_len":0},"pcap_bucket_verified":true,"remote_syslog":{"enabled":true,"send_to_all_servers":true,"servers":[{"facility":"conflict-log","host":"string","port":0,"protocol":"udp","severity":"any","tag":"string"}]},"security":{"disable_local_ssh":true,"fips_zeroize_password":"string","limit_ssh_access":true},"tags":["string"],"ui_idle_timeout":0}'
+                  - '{"auto_device_naming":{"enable":true,"rules":[{"expression":"...","src":"lldp_port_desc"}]},"auto_deviceprofile_assignment":{"enable":true},"auto_site_assignment":{"enable":true,"rules":[{"expression":"[0:3]","prefix":"XX-","src":"name","suffix":"-YY"},{"src":"subnet","subnet":"10.1.2.0/18","value":"s1351"},{"expression":"...","src":"lldp_system_name"},{"expression":"...","src":"dns_suffix"},{"model":"AP41","src":"model","value":"s1351"}]},"cacerts":["-----BEGIN CERTIFICATE-----\nMIIFZjCCA06gAwIBAgIIP61/1qm/uDowDQYJKoZIhvcNAQELBQE\n-----END CERTIFICATE-----","-----BEGIN CERTIFICATE-----\nBhMCRVMxFDASBgNVBAoMC1N0YXJ0Q29tIENBMSwwKgYDVn-----END CERTIFICATE-----"],"cloudshark":{"apitoken":"accbd6f10c6d05c3","url":"https://cloudshark.hosted.domain"},"device_cert":{"cert":"-----BEGIN CERTIFICATE-----\nMIIFZjCCA06gAwIBAgIIP61/1qm/uDowDQYJKoZIhvcNAQELBQE\n-----END CERTIFICATE-----","key":"-----BEGIN PRI..."},"device_updown_threshold":0,"disable_pcap":false,"installer":{"allow_all_sites":false,"extra_site_ids":["4ac1dcf4-9d8b-7211-65c4-057819f0862b","52f4347e-3e4b-186c-21ca-ad5b70eb23d6"],"grace_period":14},"mgmt":{"mxtunnel_ids":["08cd7499-5841-51c8-e663-fb16b6f3b45e"],"use_mxtunnel":true,"use_wxtunnel":false},"password_policy":{"enabled":true,"expiry_in_days":60,"min_length":8,"requires_special_char":false,"requires_two_factor_auth":true},"pcap":{"bucket":"myorg_pcap","max_pkt_len":128},"pcap_bucket_verified":true,"remote_syslog":{"enabled":true,"send_to_all_servers":true,"servers":[{"facility":"any","host":"syslogd.internal","port":514,"protocol":"udp","severity":"info","tag":""}]},"security":{"disable_local_ssh":false,"fips_zeroize_password":"NUKETHESITE","limit_ssh_access":false},"tags":["beta"],"ui_idle_timeout":10}'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    auto_device_naming:
+                      enable: true
+                      rules:
+                      - match_device: ap
+                        prefix: MIST-
+                        src: lldp_port_desc
+                    auto_deviceprofile_assignment:
+                      enable: true
+                      rules:
+                      - expression: string
+                        model: string
+                        prefix: string
+                        src: name
+                        subnet: string
+                        suffix: string
+                        value: string
+                    auto_site_assignment:
+                      enable: true
+                      rules:
+                      - expression: string
+                        model: string
+                        prefix: string
+                        src: name
+                        subnet: string
+                        suffix: string
+                        value: string
+                    cacerts:
+                    - string
+                    cloudshark:
+                      apitoken: string
+                      url: string
+                    created_time: 0
+                    device_cert:
+                      cert: string
+                      key: string
+                    device_updown_threshold: 0
+                    disable_pcap: true
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    installer:
+                      allow_all_sites: true
+                      extra_site_ids:
+                      - b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      grace_period: 0
+                    mgmt:
+                      mxtunnel_ids:
+                      - b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      use_mxtunnel: true
+                      use_wxtunnel: true
+                    modified_time: 0
+                    msp_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    name: string
+                    password_policy:
+                      enabled: true
+                      expiry_in_days: 180
+                      min_length: 8
+                      requires_special_char: true
+                      requires_two_factor_auth: true
+                    pcap:
+                      bucket: string
+                      max_pkt_len: 0
+                    pcap_bucket_verified: true
+                    remote_syslog:
+                      enabled: true
+                      send_to_all_servers: true
+                      servers:
+                      - facility: conflict-log
+                        host: string
+                        port: 0
+                        protocol: udp
+                        severity: any
+                        tag: string
+                    security:
+                      disable_local_ssh: true
+                      fips_zeroize_password: string
+                      limit_ssh_access: true
+                    tags:
+                    - string
+                    ui_idle_timeout: 0
+                Example2:
+                  value:
+                    auto_device_naming:
+                      enable: true
+                      rules:
+                      - expression: '...'
+                        src: lldp_port_desc
+                    auto_deviceprofile_assignment:
+                      enable: true
+                    auto_site_assignment:
+                      enable: true
+                      rules:
+                      - expression: '[0:3]'
+                        prefix: XX-
+                        src: name
+                        suffix: -YY
+                      - src: subnet
+                        subnet: 10.1.2.0/18
+                        value: s1351
+                      - expression: '...'
+                        src: lldp_system_name
+                      - expression: '...'
+                        src: dns_suffix
+                      - model: AP41
+                        src: model
+                        value: s1351
+                    cacerts:
+                    - '-----BEGIN CERTIFICATE-----
+
+                      MIIFZjCCA06gAwIBAgIIP61/1qm/uDowDQYJKoZIhvcNAQELBQE
+
+                      -----END CERTIFICATE-----'
+                    - '-----BEGIN CERTIFICATE-----
+
+                      BhMCRVMxFDASBgNVBAoMC1N0YXJ0Q29tIENBMSwwKgYDVn-----END CERTIFICATE-----'
+                    cloudshark:
+                      apitoken: accbd6f10c6d05c3
+                      url: https://cloudshark.hosted.domain
+                    device_cert:
+                      cert: '-----BEGIN CERTIFICATE-----
+
+                        MIIFZjCCA06gAwIBAgIIP61/1qm/uDowDQYJKoZIhvcNAQELBQE
+
+                        -----END CERTIFICATE-----'
+                      key: '-----BEGIN PRI...'
+                    device_updown_threshold: 0
+                    disable_pcap: false
+                    installer:
+                      allow_all_sites: false
+                      extra_site_ids:
+                      - 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                      - 52f4347e-3e4b-186c-21ca-ad5b70eb23d6
+                      grace_period: 14
+                    mgmt:
+                      mxtunnel_ids:
+                      - 08cd7499-5841-51c8-e663-fb16b6f3b45e
+                      use_mxtunnel: true
+                      use_wxtunnel: false
+                    password_policy:
+                      enabled: true
+                      expiry_in_days: 60
+                      min_length: 8
+                      requires_special_char: false
+                      requires_two_factor_auth: true
+                    pcap:
+                      bucket: myorg_pcap
+                      max_pkt_len: 128
+                    pcap_bucket_verified: true
+                    remote_syslog:
+                      enabled: true
+                      send_to_all_servers: true
+                      servers:
+                      - facility: any
+                        host: syslogd.internal
+                        port: 514
+                        protocol: udp
+                        severity: info
+                        tag: ''
+                    security:
+                      disable_local_ssh: false
+                      fips_zeroize_password: NUKETHESITE
+                      limit_ssh_access: false
+                    tags:
+                    - beta
+                    ui_idle_timeout: 10
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    put:
+      tags:
+      - Orgs Setting
+      summary: updateOrgSettings
+      description: Update organization-wide settings such as automatic device assignment rules, management connectivity, packet capture, password policy, security controls, tags, and integration options.
+      operationId: updateOrgSettings
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/org_setting'
+              - description: Request Body
+              contentMediaType: application/json
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/org_setting'
+                - description: Organization-wide feature, integration, management, and security settings
+                  examples:
+                  - auto_device_naming:
+                      enable: true
+                      rules:
+                      - match_device: ap
+                        prefix: MIST-
+                        src: lldp_port_desc
+                    auto_deviceprofile_assignment:
+                      enable: true
+                      rules:
+                      - expression: string
+                        model: string
+                        prefix: string
+                        src: name
+                        subnet: string
+                        suffix: string
+                        value: string
+                    auto_site_assignment:
+                      enable: true
+                      rules:
+                      - expression: string
+                        model: string
+                        prefix: string
+                        src: name
+                        subnet: string
+                        suffix: string
+                        value: string
+                    cacerts:
+                    - string
+                    cloudshark:
+                      apitoken: string
+                      url: string
+                    device_cert:
+                      cert: string
+                      key: string
+                    disable_pcap: true
+                    installer:
+                      allow_all_sites: true
+                      extra_site_ids:
+                      - b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      grace_period: 0
+                    mgmt:
+                      mxtunnel_ids:
+                      - b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      use_mxtunnel: true
+                      use_wxtunnel: true
+                    modified_time: 0
+                    msp_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    name: string
+                    password_policy:
+                      enabled: true
+                      expiry_in_days: 365
+                      min_length: 8
+                      requires_special_char: true
+                      requires_two_factor_auth: true
+                    pcap:
+                      bucket: string
+                      max_pkt_len: 0
+                    pcap_bucket_verified: true
+                    remote_syslog:
+                      enabled: true
+                      send_to_all_servers: true
+                      servers:
+                      - facility: change-log
+                        host: string
+                        port: 0
+                        protocol: udp
+                        severity: critical
+                        tag: string
+                    security:
+                      disable_local_ssh: true
+                      fips_zeroize_password: string
+                      limit_ssh_access: true
+                    tags:
+                    - string
+                    ui_idle_timeout: 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    auto_device_naming:
+                      enable: true
+                      rules:
+                      - match_device: ap
+                        prefix: MIST-
+                        src: lldp_port_desc
+                    auto_deviceprofile_assignment:
+                      enable: true
+                      rules:
+                      - expression: string
+                        model: string
+                        prefix: string
+                        src: name
+                        subnet: string
+                        suffix: string
+                        value: string
+                    auto_site_assignment:
+                      enable: true
+                      rules:
+                      - expression: string
+                        model: string
+                        prefix: string
+                        src: name
+                        subnet: string
+                        suffix: string
+                        value: string
+                    cacerts:
+                    - string
+                    cloudshark:
+                      apitoken: string
+                      url: string
+                    device_cert:
+                      cert: string
+                      key: string
+                    disable_pcap: true
+                    installer:
+                      allow_all_sites: true
+                      extra_site_ids:
+                      - b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      grace_period: 0
+                    mgmt:
+                      mxtunnel_ids:
+                      - b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      use_mxtunnel: true
+                      use_wxtunnel: true
+                    modified_time: 0
+                    msp_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    name: string
+                    password_policy:
+                      enabled: true
+                      expiry_in_days: 365
+                      min_length: 8
+                      requires_special_char: true
+                      requires_two_factor_auth: true
+                    pcap:
+                      bucket: string
+                      max_pkt_len: 0
+                    pcap_bucket_verified: true
+                    remote_syslog:
+                      enabled: true
+                      send_to_all_servers: true
+                      servers:
+                      - facility: change-log
+                        host: string
+                        port: 0
+                        protocol: udp
+                        severity: critical
+                        tag: string
+                    security:
+                      disable_local_ssh: true
+                      fips_zeroize_password: string
+                      limit_ssh_access: true
+                    tags:
+                    - string
+                    ui_idle_timeout: 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/setting/blacklist:
+    parameters: []
+    delete:
+      tags:
+      - Orgs Setting
+      summary: deleteOrgWirelessClientsBlocklist
+      description: Clear the organization wireless client blocklist by removing all blocked client MAC addresses.
+      operationId: deleteOrgWirelessClientsBlocklist
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    post:
+      tags:
+      - Orgs Setting
+      summary: createOrgWirelessClientsBlocklist
+      description: Replace the organization wireless client blocklist with the supplied client MAC addresses. The list can contain up to 1000 MAC addresses; retrieve the current list from the `blacklist_url` field in organization settings.
+      operationId: createOrgWirelessClientsBlocklist
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/mac_addresses'
+              - description: Request Body
+                examples:
+                - macs:
+                  - 18-65-90-de-f4-c6
+                  - 84-89-ad-5d-69-0d
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  macs:
+                  - 18-65-90-de-f4-c6
+                  - 84-89-ad-5d-69-0d
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/mac_addresses'
+                - description: Request containing one or more MAC addresses
+                  examples:
+                  - macs:
+                    - 18-65-90-de-f4-c6
+                    - 84-89-ad-5d-69-0d
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    macs:
+                    - 18-65-90-de-f4-c6
+                    - 84-89-ad-5d-69-0d
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/mac_addresses'
+                - description: Request containing one or more MAC addresses
+                  examples:
+                  - macs:
+                    - 18-65-90-de-f4-c6
+                    - 84-89-ad-5d-69-0d
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    macs:
+                    - 18-65-90-de-f4-c6
+                    - 84-89-ad-5d-69-0d
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/setting/pcap_bucket/setup:
+    parameters: []
+    post:
+      tags:
+      - Orgs Setting
+      summary: setOrgCustomBucket
+      description: Start custom packet capture bucket setup by saving the bucket name and having Mist write a `MIST_TOKEN` file to the bucket. Complete ownership verification with the verify endpoint by submitting the token contents.
+      operationId: setOrgCustomBucket
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/pcap_bucket'
+              - description: Request Body
+                examples:
+                - bucket: company-private-pcap
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  bucket: company-private-pcap
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_pcap_bucket_config'
+                - description: Result of a custom packet capture bucket setup or verification operation
+                  examples:
+                  - '{"bucket":"company-private-pcap","detail":"failed to write bucket - 403 AccessDenied"}'
+                  - '{}'
+                contentMediaType: application/json
+              examples:
+                Failed:
+                  value:
+                    bucket: company-private-pcap
+                    detail: failed to write bucket - 403 AccessDenied
+                Success:
+                  value: {}
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_pcap_bucket_config'
+                - description: Result of a custom packet capture bucket setup or verification operation
+                  examples:
+                  - '{"bucket":"company-private-pcap","detail":"failed to write bucket - 403 AccessDenied"}'
+                  - '{}'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Failed:
+                  value:
+                    bucket: company-private-pcap
+                    detail: failed to write bucket - 403 AccessDenied
+                Success:
+                  value: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/setting/pcap_bucket/verify:
+    parameters: []
+    post:
+      tags:
+      - Orgs Setting
+      summary: verifyOrgCustomBucket
+      description: Verify ownership of a custom packet capture bucket by submitting the token read from the `MIST_TOKEN` file. If verification succeeds, Mist creates a `VERIFIED` file in the bucket.
+      operationId: verifyOrgCustomBucket
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/pcap_bucket_verify'
+              - description: Request Body
+                examples:
+                - bucket: company-private-pcap
+                  verify_token: eyJhbGciOiJIUzI1J9.eyJzdWIiOiIxMjM0joiMjgxOG5MDIyfQ.2rzcRvMA3Eg09NnjCAC-1EWMRtxAnFDM
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  bucket: company-private-pcap
+                  verify_token: eyJhbGciOiJIUzI1J9.eyJzdWIiOiIxMjM0joiMjgxOG5MDIyfQ.2rzcRvMA3Eg09NnjCAC-1EWMRtxAnFDM
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    nac_coa_type2:
+      title: nac_coa_type2
+      enum:
+      - reauth
+      - disconnect
+      type: string
+      description: 'Change of Authorization action sent for MDM posture changes. enum: `reauth`, `disconnect`.'
+    org_setting_wan_pma:
+      title: org_setting_wan_pma
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether PMA is enabled for WAN Assurance
+          default: false
+      description: PMA feature settings for WAN Assurance
+    org_setting_device_cert2:
+      title: org_setting_device_cert2
+      type: object
+      properties:
+        cert:
+          type: string
+          description: PEM-encoded common device certificate used by organization settings
+          examples:
+          - '-----BEGIN CERTIFICATE-----\nMIIFZjCCA06gAwIBAgIIP61/1qm/uDowDQYJKoZIhvcNAQELBQE\n-----END CERTIFICATE-----'
+        key:
+          type: string
+          description: Private key paired with the common device certificate
+          examples:
+          - '-----BEGIN PRI...'
+      description: Common device certificate used by organization settings
+    mxedge_mgmt3:
+      title: mxedge_mgmt3
+      type: object
+      properties:
+        config_auto_revert:
+          type: boolean
+          description: Whether the Mist Edge automatically reverts configuration changes if connectivity is lost
+          default: false
+        fips_enabled:
+          type: boolean
+          description: Whether FIPS mode is enabled on the Mist Edge
+          default: false
+        mist_password:
+          type: string
+          description: Password for the Mist service account on the Mist Edge
+          examples:
+          - MIST_PASSWORD
+        oob_ip_type:
+          allOf:
+          - $ref: '#/components/schemas/mxedge_mgmt_oob_ip_type2'
+          - description: 'IPv4 address assignment mode for out-of-band management. enum: `dhcp`, `disabled`, `static`.'
+        oob_ip_type6:
+          allOf:
+          - $ref: '#/components/schemas/mxedge_mgmt_oob_ip_type62'
+          - description: 'IPv6 address assignment mode for out-of-band management. enum: `autoconf`, `dhcp`, `disabled`, `static`.'
+        root_password:
+          type: string
+          description: Root account password for the Mist Edge
+          contentEncoding: password
+          examples:
+          - ROOT_PASSWORD
+      description: Management settings for Mist Edge devices
+    org_setting_mist_nac_idp:
+      title: org_setting_mist_nac_idp
+      type: object
+      properties:
+        exclude_realms:
+          type: array
+          items:
+            type: string
+          description: When the IDP is `mxedge_proxy` type, realms excluded from proxying in addition to other valid home realms in this org
+        id:
+          type: string
+          description: Unique identifier of the identity provider referenced by this Mist NAC mapping
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        user_realms:
+          type: array
+          items:
+            type: string
+          description: User realms that select this identity provider
+      description: Mist NAC identity provider realm mapping
+    gateway_mgmt_host_out_policy_syslog1:
+      title: gateway_mgmt_host_out_policy_syslog1
+      type: object
+      properties:
+        path_preference:
+          type: string
+          description: Preferred path name used by default for gateway syslog traffic
+          examples:
+          - broadband_wans
+        servers:
+          type: array
+          items:
+            $ref: '#/components/schemas/gateway_mgmt_host_out_policy_syslog_server'
+          description: Per-server host-out path policies for gateway syslog traffic
+      description: Path preference policy for gateway-originated syslog traffic
+    setting_ssr3:
+      title: setting_ssr3
+      type: object
+      properties:
+        auto_upgrade:
+          allOf:
+          - $ref: '#/components/schemas/setting_ssr_auto_upgrade2'
+          - description: Automatic SSR firmware upgrade settings for newly onboarded devices
+        conductor_hosts:
+          type: array
+          items:
+            type: string
+          description: IP addresses or hostnames of conductors used by SSR devices
+        conductor_token:
+          type: string
+          description: Registration token used by SSR devices to connect to the conductor
+        disable_stats:
+          type: boolean
+          description: Whether stats collection is disabled on SSR devices
+        proxy:
+          allOf:
+          - $ref: '#/components/schemas/ssr_proxy2'
+          - description: Network proxy settings used by SSR devices to reach Mist
+      description: Session Smart Router settings for the organization
+    org_setting_auto_upgrade2:
+      title: org_setting_auto_upgrade2
+      type: object
+      properties:
+        custom_versions:
+          type: object
+          additionalProperties:
+            type: string
+          description: Per-AP-model firmware versions or channels used for auto-upgrade
+          examples:
+          - AP21: alpha
+            AP41: 0.1.5135
+            AP61: 0.1.7215
+        day_of_week:
+          allOf:
+          - $ref: '#/components/schemas/day_of_week3'
+          - description: 'Day of the week for the AP auto-upgrade maintenance window. enum: `any`, `fri`, `mon`, `sat`, `sun`, `thu`, `tue`, `wed`.'
+        enabled:
+          type: boolean
+          description: Whether AP auto-upgrade is enabled. Note that Mist may auto-upgrade APs if the running version is no longer supported.
+          default: false
+        time_of_day:
+          type: string
+          description: '`any` or HH:MM (24-hour format). Upgrade will happen within up to 1 hour from this time.'
+          examples:
+          - 720
+        version:
+          allOf:
+          - $ref: '#/components/schemas/site_auto_upgrade_version3'
+          - description: 'Firmware release channel or specific version used for AP auto-upgrade. enum: `beta`, `custom`, `stable`.'
+            examples:
+            - beta
+      description: AP automatic firmware upgrade policy for the organization
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    org_setting_switch_mgmt2:
+      title: org_setting_switch_mgmt2
+      type: object
+      properties:
+        ap_affinity_threshold:
+          type: integer
+          description: If the field is set in both site/setting and org/setting, the value from site/setting will be used.
+          contentEncoding: int32
+          default: 12
+          examples:
+          - 10
+      description: Management settings for switches in this organization
+    org_setting_mist_nac_fingerprinting_wireless_coa2:
+      title: org_setting_mist_nac_fingerprinting_wireless_coa2
+      enum:
+      - reauth
+      - disconnect
+      type: string
+      description: 'Change of Authorization action sent to wireless clients when fingerprints change. enum: `reauth`, `disconnect`.'
+    org_setting_vpn_options2:
+      title: org_setting_vpn_options2
+      type: object
+      properties:
+        as_base:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          description: Base BGP autonomous system number used for generated VPN configurations
+          contentEncoding: int32
+        enable_ipv6:
+          type: boolean
+          description: Whether IPv6 is enabled for organization VPN configuration
+          default: false
+        st_subnet:
+          type: string
+          description: requiring /12 or bigger to support 16 private IPs for 65535 gateways
+          default: 10.224.0.0/12
+      description: Options for organization VPN behavior
+    org_setting_junos_shell_access_helpdesk2:
+      title: org_setting_junos_shell_access_helpdesk2
+      enum:
+      - admin
+      - none
+      - viewer
+      type: string
+      description: 'Shell access level used for helpdesk web-shell sessions. enum: `admin`, `none`, `viewer`.'
+    simple_alert_dns_failure:
+      title: simple_alert_dns_failure
+      type: object
+      properties:
+        client_count:
+          type: integer
+          description: Number of distinct clients that must encounter DNS failures before alerting
+          contentEncoding: int32
+          default: 20
+        duration:
+          maximum: 60
+          minimum: 5
+          type: integer
+          description: Time window in minutes for evaluating DNS failures
+          contentEncoding: int32
+          default: 10
+        incident_count:
+          type: integer
+          description: Number of DNS failure incidents required within the duration window
+          contentEncoding: int32
+          default: 30
+      description: Thresholds for DNS failure heuristic alerts
+    gateway_mgmt_host_out_policy_syslog_server:
+      title: gateway_mgmt_host_out_policy_syslog_server
+      type: object
+      properties:
+        host:
+          type: string
+          description: Syslog server hostname or IP address
+          examples:
+          - 103.35.3.5
+        path_preference:
+          type: string
+          description: Preferred path name used for this syslog server
+          examples:
+          - dc_only
+        server_name:
+          type: string
+          description: Remote syslog server name referenced by the policy
+          examples:
+          - dc_syslog_server
+      description: Per-syslog-server host-out path policy override
+    org_setting_wireless_pma:
+      title: org_setting_wireless_pma
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether PMA is enabled for Wireless Assurance
+          default: true
+      description: PMA feature settings for Wireless Assurance
+    device_type_default_ap6:
+      title: device_type_default_ap6
+      enum:
+      - ap
+      - gateway
+      - switch
+      type: string
+      description: 'Device type filter that limits which claimed devices this rule applies to. enum: `ap`, `gateway`, `switch`.'
+    org_setting_celona:
+      title: org_setting_celona
+      type: object
+      properties:
+        api_key:
+          type: string
+          description: Credential used by Mist for the Celona integration
+          examples:
+          - $2a$04$OkaLCoJn6rDjR8ha.oduQVDST3.kJNIrte
+        api_prefix:
+          type: string
+          description: Celona API prefix configured for the integration
+          examples:
+          - cc3273fcb016470e
+      description: Integration settings for Celona
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    juniper_srx_auto_upgrade1:
+      title: juniper_srx_auto_upgrade1
+      type: object
+      properties:
+        custom_versions:
+          type: object
+          additionalProperties:
+            type: string
+          description: Per-SRX-model firmware versions to deploy instead of the default version
+        enabled:
+          type: boolean
+          description: Whether SRX auto-upgrade is enabled for newly onboarded devices
+          default: false
+        snapshot:
+          type: boolean
+          description: Whether to take a snapshot during the SRX upgrade process
+          default: false
+        version:
+          type: string
+          description: Firmware version to deploy (e.g. 23.4R2-S5.5). Optional, used when custom_versions not specified
+          examples:
+          - 23.4R2-S5.5
+      description: SRX auto-upgrade settings applied when Juniper SRX devices are first onboarded
+    org_setting_cacerts_config:
+      title: org_setting_cacerts_config
+      required:
+      - cert
+      type: object
+      properties:
+        cert:
+          type: string
+          description: PEM-encoded CA certificate
+          examples:
+          - '-----BEGIN CERTIFICATE-----\nMIIFZjCCA06gAwIBAgIIP61/1qm/uDowDQYJKoZIhvcNAQELBQE\n-----END CERTIFICATE-----'
+        crl_enabled:
+          type: boolean
+          description: Whether CRL checks are enabled. When true, CRL from AIA is used if available unless `crl_url` is set.
+          default: true
+        crl_url:
+          type: string
+          description: Optional override URL for the certificate CRL distribution point
+          examples:
+          - https://crl.example.com/issuer1.crl
+        name:
+          type: string
+          description: Optional user-friendly label for the CA issuer configuration
+          examples:
+          - Issuer 1
+        ocsp_enabled:
+          type: boolean
+          description: Whether OCSP checks are enabled. When true, OCSP responder from AIA is used if available unless `ocsp_url` is set.
+          default: true
+        ocsp_url:
+          type: string
+          description: Optional override URL for the OCSP responder
+          examples:
+          - https://ocsp.example.com
+      description: Per-issuer CA certificate configuration used to verify client certificates
+    day_of_week3:
+      title: day_of_week3
+      enum:
+      - any
+      - fri
+      - mon
+      - sat
+      - sun
+      - thu
+      - tue
+      - wed
+      type: string
+      description: 'Day of the week for the AP auto-upgrade maintenance window. enum: `any`, `fri`, `mon`, `sat`, `sun`, `thu`, `tue`, `wed`.'
+    org_setting_auto_deviceprofile_assignment2:
+      title: org_setting_auto_deviceprofile_assignment2
+      type: object
+      properties:
+        enable:
+          type: boolean
+          description: Whether automatic device profile assignment is enabled
+        rules:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/org_setting_auto_assignment_rule'
+          description: Assignment rules evaluated for automatic device profile selection
+      description: Automatic device profile assignment rules for claimed devices
+    pcap_bucket:
+      title: pcap_bucket
+      required:
+      - bucket
+      type: object
+      properties:
+        bucket:
+          type: string
+          description: Customer bucket name to use for packet capture files
+          examples:
+          - company-private-pcap
+      description: Request to configure a custom packet capture bucket
+    org_setting_mist_nac2:
+      title: org_setting_mist_nac2
+      type: object
+      properties:
+        allow_teap_machine_auth_only:
+          type: boolean
+          description: allow clients to connect even when the user cert failed. TEAP authenticates both Machine Cert and User Cert. When enabled, clients who only succeed Machine Cert authentication will be accepted.
+          default: false
+        cacerts:
+          type: array
+          items:
+            type: string
+          description: CA certificates trusted by Mist NAC for certificate-based authentication
+        default_idp_id:
+          type: string
+          description: use this IDP when no explicit realm present in the incoming username/CN OR when no IDP is explicitly mapped to the incoming realm.
+        disable_rsae_algorithms:
+          type: boolean
+          description: to disable RSAE_PSS_SHA256, RSAE_PSS_SHA384, RSAE_PSS_SHA512 from server side. see https://www.openssl.org/docs/man3.0/man1/openssl-ciphers.html
+          default: false
+        eap_ssl_security_level:
+          maximum: 4
+          minimum: 1
+          type: integer
+          description: eap ssl security level, see https://www.openssl.org/docs/man1.1.1/man3/SSL_CTX_set_security_level.html#DEFAULT-CALLBACK-BEHAVIOUR
+          contentEncoding: int32
+          default: 2
+        enable_eap_md5_for_mab:
+          type: boolean
+          description: 'Enable EAP-MD5 for MAB. WARNING: Not FIPS compliant, use only if required for legacy device support.'
+          default: false
+        eu_only:
+          type: boolean
+          description: By default, NAC POD failover considers all NAC pods available around the globe, i.e. EU, US, or APAC based, failover happens based on geo IP of the originating site. For strict GDPR compliance NAC POD failover would only happen between the PODs located within the EU environment, and no authentication would take place outside of EU. This is an org setting that is applicable to WLANs, switch templates, Mist Edge clusters that have mist_nac enabled
+          default: false
+        fingerprinting:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_mist_nac_fingerprinting2'
+          - description: Client fingerprinting settings used by Mist NAC
+        idp_machine_cert_lookup_field:
+          allOf:
+          - $ref: '#/components/schemas/idp_machine_cert_lookup_field1'
+          - description: 'Client certificate field used to look up machine groups in identity providers. enum: `automatic`, `cn`, `dns`.'
+        idp_user_cert_lookup_field:
+          allOf:
+          - $ref: '#/components/schemas/idp_user_cert_lookup_field1'
+          - description: 'Client certificate field used to look up user groups in identity providers. enum: `automatic`, `cn`, `email`, `upn`.'
+        idps:
+          type: array
+          items:
+            $ref: '#/components/schemas/org_setting_mist_nac_idp'
+          description: Identity provider mappings used by Mist NAC realm matching
+        mdm:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_mist_nac_mdm2'
+          - description: Mobile Device Management CoA settings for Mist NAC
+        server_cert:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_mist_nac_server_cert'
+          - description: RADIUS server certificate presented by Mist NAC during EAP-TLS
+        use_ip_version:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_mist_nac_ip_version2'
+          - description: 'IP version used by NAS devices and Mist Edge proxies to reach Mist NAC. enum: `v4`, `v6`.'
+        use_ssl_port:
+          type: boolean
+          description: By default, NAS devices (switches/aps) and proxies(mxedge) are configured to use port TCP2083(RadSec) to reach mist-nac. Set `use_ssl_port`==`true` to override that port with TCP43 (ssl), This is an org level setting that is applicable to wlans, switch_templates, and mxedge_clusters that have mist-nac enabled
+          default: false
+        usermac_expiry:
+          maximum: 1095
+          minimum: 0
+          type: integer
+          description: Allow customer to configure an expiry time for usermacs by attaching an `inactive_endpoint` label to those which have been inactive for the configured period of time (in days). 0 means no expiry
+          contentEncoding: int32
+          default: 0
+          examples:
+          - 30
+      description: NAC settings for Mist Access Assurance
+    org_setting_mist_nac_mdm2:
+      title: org_setting_mist_nac_mdm2
+      type: object
+      properties:
+        coa_type:
+          allOf:
+          - $ref: '#/components/schemas/nac_coa_type2'
+          - description: 'Change of Authorization action sent for MDM posture changes. enum: `reauth`, `disconnect`.'
+      description: Mobile Device Management CoA settings for Mist NAC
+    mxedge_mgmt_oob_ip_type62:
+      title: mxedge_mgmt_oob_ip_type62
+      enum:
+      - autoconf
+      - dhcp
+      - disabled
+      - static
+      type: string
+      description: 'IPv6 address assignment mode for out-of-band management. enum: `autoconf`, `dhcp`, `disabled`, `static`.'
+    idp_machine_cert_lookup_field1:
+      title: idp_machine_cert_lookup_field1
+      enum:
+      - automatic
+      - cn
+      - dns
+      type: string
+      description: 'Client certificate field used to look up machine groups in identity providers. enum: `automatic`, `cn`, `dns`.'
+    synthetictest_config_lan_network:
+      title: synthetictest_config_lan_network
+      type: object
+      properties:
+        networks:
+          type: array
+          items:
+            type: string
+          description: LAN network names where synthetic probes are run
+          examples:
+          - - pos-stations
+            - pos-machines
+        probes:
+          type: array
+          items:
+            type: string
+          description: Synthetic probe names to run on the listed LAN networks
+      description: configure minis probes to be tested on lan networks of gateways
+    org_setting_jcloud_ra2:
+      title: org_setting_jcloud_ra2
+      type: object
+      properties:
+        org_apitoken:
+          type: string
+          description: JCloud Routing Assurance Org Token
+        org_apitoken_name:
+          type: string
+          description: JCloud Routing Assurance Org Token Name
+        org_id:
+          type: string
+          description: JCloud Routing Assurance Org ID
+      description: Routing Assurance integration settings for JCloud
+    synthetictest_config_aggressiveness3:
+      title: synthetictest_config_aggressiveness3
+      enum:
+      - auto
+      - high
+      - med
+      - low
+      type: string
+      description: 'Overall aggressiveness level for synthetic test probes. enum: `auto`, `high`, `med`, `low`.'
+    org_setting_gateway_mgmt_host_out_policies2:
+      title: org_setting_gateway_mgmt_host_out_policies2
+      type: object
+      properties:
+        dns:
+          allOf:
+          - $ref: '#/components/schemas/gateway_mgmt_host_out_policy1'
+          - description: Path preference policy for gateway-originated DNS traffic
+        ntp:
+          allOf:
+          - $ref: '#/components/schemas/gateway_mgmt_host_out_policy2'
+          - description: Path preference policy for gateway-originated NTP traffic
+        syslog:
+          allOf:
+          - $ref: '#/components/schemas/gateway_mgmt_host_out_policy_syslog1'
+          - description: Path preference policy for gateway-originated syslog traffic
+      description: Path preference policies for gateway-originated management traffic
+    org_setting_installer2:
+      title: org_setting_installer2
+      type: object
+      properties:
+        allow_all_devices:
+          type: boolean
+          description: Whether installers may work with all eligible devices
+        allow_all_sites:
+          type: boolean
+          description: Whether installers may work with all sites
+        extra_site_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: Additional site IDs that installers may access
+        grace_period:
+          type: integer
+          description: Grace period, in days, during which installers can modify recent sites or devices
+          contentEncoding: int32
+      description: Access settings for organization installer workflows
+    synthetictest_config_custom_probe_type3:
+      title: synthetictest_config_custom_probe_type3
+      enum:
+      - application
+      - curl
+      - icmp
+      - reachability
+      - tcp
+      type: string
+      description: 'Probe type used by this custom synthetic probe. enum: `application`, `curl`, `icmp`, `reachability`, `tcp`.'
+    marvis_self_driving_domain1:
+      title: marvis_self_driving_domain1
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether self-driving automation is enabled for this domain
+          default: false
+      description: Self-driving automation settings for the wired domain
+    account_juniper_info1:
+      title: account_juniper_info1
+      type: object
+      properties:
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/juniper_account'
+          description: List of linked Juniper account records
+      description: Linked Juniper account information for this organization
+    org_setting_auto_device_naming_rule:
+      title: org_setting_auto_device_naming_rule
+      type: object
+      properties:
+        expression:
+          type: string
+          description: "\"[0:3]\"            // \"abcdef\" -> \"abc\"  \n      \"split(.)[1]\"      // \"a.b.c\" -> \"b\"  \n      \"split(-)[1][0:3]\" // \"a1234-b5678-c90\" -> \"b56\"'"
+          examples:
+          - split(.)[1]
+        match_device:
+          allOf:
+          - $ref: '#/components/schemas/device_type_default_ap5'
+          - description: 'Device type filter for this naming rule. enum: `ap`, `gateway`, `switch`.'
+        prefix:
+          type: string
+          description: Text prepended to the generated device name
+        src:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_auto_device_naming_rule_src2'
+          - description: 'Device attribute used to generate the name. enum: `lldp_port_desc`, `mac`.'
+        suffix:
+          type: string
+          description: Text appended to the generated device name
+      description: Automatic device naming rule
+    org_setting_auto_site_assignment_src2:
+      title: org_setting_auto_site_assignment_src2
+      enum:
+      - ext_ip
+      - dns_suffix
+      - geoip
+      - lldp_port_desc
+      - lldp_system_name
+      - model
+      - name
+      - subnet
+      type: string
+      description: 'Source attribute used to evaluate the automatic assignment rule. enum: `ext_ip`, `dns_suffix`, `geoip`, `lldp_port_desc`, `lldp_system_name`, `model`, `name`, `subnet`.'
+    pcap_bucket_verify:
+      title: pcap_bucket_verify
+      required:
+      - bucket
+      - verify_token
+      type: object
+      properties:
+        bucket:
+          type: string
+          description: Customer bucket name being verified for packet capture storage
+          examples:
+          - company-private-pcap
+        verify_token:
+          type: string
+          description: Token read from the MIST_TOKEN file written during bucket setup
+          examples:
+          - eyJhbGciOiJIUzI1J9.eyJzdWIiOiIxMjM0joiMjgxOG5MDIyfQ.2rzcRvMA3Eg09NnjCAC-1EWMRtxAnFDM
+      description: Request to verify ownership of a custom packet capture bucket
+    response_pcap_bucket_config:
+      title: response_pcap_bucket_config
+      type: object
+      properties:
+        bucket:
+          type: string
+          description: Custom bucket name used for packet capture storage
+        detail:
+          type: string
+          description: Status or error detail returned for the bucket operation
+      description: Result of a custom packet capture bucket setup or verification operation
+    site_auto_upgrade_version3:
+      title: site_auto_upgrade_version3
+      enum:
+      - beta
+      - custom
+      - stable
+      type: string
+      description: 'Firmware release channel or specific version used for AP auto-upgrade. enum: `beta`, `custom`, `stable`.'
+      examples:
+      - beta
+    synthetictest_config3:
+      title: synthetictest_config3
+      type: object
+      properties:
+        aggressiveness:
+          allOf:
+          - $ref: '#/components/schemas/synthetictest_config_aggressiveness3'
+          - description: 'Overall aggressiveness level for synthetic test probes. enum: `auto`, `high`, `med`, `low`.'
+        custom_probes:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/synthetictest_config_custom_probe'
+          description: Custom synthetic probe definitions keyed by probe name
+        disabled:
+          type: boolean
+          description: Whether synthetic tests are disabled
+          default: false
+        lan_networks:
+          type: array
+          items:
+            $ref: '#/components/schemas/synthetictest_config_lan_network'
+          description: LAN network probe groups used by synthetic tests
+        vlans:
+          type: array
+          items:
+            $ref: '#/components/schemas/synthetictest_config_vlan'
+          description: Deprecated VLAN-based synthetic test settings
+          deprecated: true
+        wan_speedtest:
+          allOf:
+          - $ref: '#/components/schemas/synthetictest_config_wan_speedtest2'
+          - description: WAN speedtest settings for synthetic tests
+      description: Configuration for organization synthetic tests
+    gateway_mgmt_host_out_policy2:
+      title: gateway_mgmt_host_out_policy2
+      type: object
+      properties:
+        path_preference:
+          type: string
+          description: Preferred path name for this gateway-originated service traffic
+      description: Path preference policy for gateway-originated NTP traffic
+    synthetictest_config_wan_speedtest2:
+      title: synthetictest_config_wan_speedtest2
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether scheduled WAN speedtests are enabled
+        time_of_day:
+          type: string
+          description: Scheduled time of day for WAN speedtests
+          default: any
+          examples:
+          - 720
+      description: WAN speedtest settings for synthetic tests
+    simple_alert_dhcp_failure:
+      title: simple_alert_dhcp_failure
+      type: object
+      properties:
+        client_count:
+          type: integer
+          description: Number of distinct clients that must encounter DHCP failures before alerting
+          contentEncoding: int32
+          default: 10
+        duration:
+          maximum: 60
+          minimum: 5
+          type: integer
+          description: Time window in minutes for evaluating DHCP failures
+          contentEncoding: int32
+          default: 10
+        incident_count:
+          type: integer
+          description: Number of DHCP failure incidents required within the duration window
+          contentEncoding: int32
+          default: 20
+      description: Thresholds for DHCP failure heuristic alerts
+    org_setting_switch:
+      title: org_setting_switch
+      type: object
+      properties:
+        auto_upgrade:
+          allOf:
+          - $ref: '#/components/schemas/switch_auto_upgrade3'
+          - description: Auto-upgrade defaults for switches in this organization
+      description: Configuration defaults for switches in this organization
+    org_setting_mist_nac_ip_version2:
+      title: org_setting_mist_nac_ip_version2
+      enum:
+      - v4
+      - v6
+      type: string
+      description: 'IP version used by NAS devices and Mist Edge proxies to reach Mist NAC. enum: `v4`, `v6`.'
+    mac_addresses:
+      title: mac_addresses
+      required:
+      - macs
+      type: object
+      properties:
+        macs:
+          minItems: 1
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: List of MAC addresses included in the request
+          examples:
+          - - 683b679ac024
+      description: Request containing one or more MAC addresses
+    switch_auto_upgrade3:
+      title: switch_auto_upgrade3
+      type: object
+      properties:
+        custom_versions:
+          type: object
+          additionalProperties:
+            type: string
+          description: Per-model switch firmware versions to use for auto-upgrade
+          examples:
+          - QFX5120-32C: 23.4R2-S2.1
+            QFX5130-32CD: 23.4R2-S2.3
+        enabled:
+          type: boolean
+          description: Whether switch auto-upgrade is enabled
+        snapshot:
+          type: boolean
+          description: Whether to create a recovery snapshot during the upgrade process
+          default: false
+      description: Auto-upgrade defaults for switches in this organization
+    org_setting_gateway_mgmt_host_in_policies2:
+      title: org_setting_gateway_mgmt_host_in_policies2
+      type: object
+      properties:
+        icmp:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_gateway_mgmt_host_in_policy3'
+          - description: Host-in access policy for ICMP traffic to managed gateways
+        snmp:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_gateway_mgmt_host_in_policy1'
+          - description: Host-in access policy for SNMP traffic to managed gateways
+      description: Host-in access policies for gateway management services such as ICMP and SNMP
+    idp_user_cert_lookup_field1:
+      title: idp_user_cert_lookup_field1
+      enum:
+      - automatic
+      - cn
+      - email
+      - upn
+      type: string
+      description: 'Client certificate field used to look up user groups in identity providers. enum: `automatic`, `cn`, `email`, `upn`.'
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    simple_alert_arp_failure:
+      title: simple_alert_arp_failure
+      type: object
+      properties:
+        client_count:
+          type: integer
+          description: Number of distinct clients that must encounter ARP failures before alerting
+          contentEncoding: int32
+          default: 10
+        duration:
+          maximum: 60
+          minimum: 5
+          type: integer
+          description: Time window in minutes for evaluating ARP failures
+          contentEncoding: int32
+          default: 20
+        incident_count:
+          type: integer
+          description: Number of ARP failure incidents required within the duration window
+          contentEncoding: int32
+          default: 10
+      description: Thresholds for ARP failure heuristic alerts
+    org_setting_junos_shell_access2:
+      title: org_setting_junos_shell_access2
+      type: object
+      properties:
+        admin:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_junos_shell_access_admin2'
+          - description: 'Shell access level used for administrator web-shell sessions. enum: `admin`, `none`, `viewer`.'
+        helpdesk:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_junos_shell_access_helpdesk2'
+          - description: 'Shell access level used for helpdesk web-shell sessions. enum: `admin`, `none`, `viewer`.'
+        read:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_junos_shell_access_read2'
+          - description: 'Shell access level used for read-only web-shell sessions. enum: `admin`, `none`, `viewer`.'
+        write:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_junos_shell_access_write2'
+          - description: 'Shell access level used for write-role web-shell sessions. enum: `admin`, `none`, `viewer`.'
+      description: Role-based Junos web-shell access settings
+    marvis_self_driving_domain4:
+      title: marvis_self_driving_domain4
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether self-driving automation is enabled for this domain
+          default: false
+      description: Self-driving automation settings for the WAN domain
+    ssr_proxy2:
+      title: ssr_proxy2
+      type: object
+      properties:
+        disabled:
+          type: boolean
+          description: Whether the SSR proxy configuration is disabled
+          default: false
+          examples:
+          - true
+        url:
+          type: string
+          description: Proxy URL that SSR devices use to reach Mist
+          examples:
+          - https://proxy.corp.com:8080/
+      description: Network proxy settings used by SSR devices to reach Mist
+    org_setting_gateway_mgmt_overlay_ip2:
+      title: org_setting_gateway_mgmt_overlay_ip2
+      type: object
+      properties:
+        ip:
+          type: string
+          description: When it's going overlay, a routable IP to overlay will be required
+        node1_ip:
+          type: string
+          description: For SSR HA cluster, another IP for node1 will be required, too
+      description: Overlay IP addresses used when gateway management traffic uses the overlay
+    org_setting_jcloud2:
+      title: org_setting_jcloud2
+      type: object
+      properties:
+        org_apitoken:
+          type: string
+          description: JCloud organization API token used by this Mist organization
+        org_apitoken_name:
+          type: string
+          description: Display name for the JCloud organization API token
+        org_id:
+          type: string
+          description: JCloud organization identifier linked to this Mist organization
+      description: Integration settings for JCloud
+    org_setting_gateway_mgmt_host_in_policy1:
+      title: org_setting_gateway_mgmt_host_in_policy1
+      type: object
+      properties:
+        tenants:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Tenant names this host-in policy applies to
+      description: Host-in access policy for SNMP traffic to managed gateways
+    marvis_self_driving_domain2:
+      title: marvis_self_driving_domain2
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether self-driving automation is enabled for this domain
+          default: false
+      description: Self-driving automation settings for the wireless domain
+    simple_alert3:
+      title: simple_alert3
+      type: object
+      properties:
+        arp_failure:
+          allOf:
+          - $ref: '#/components/schemas/simple_alert_arp_failure'
+          - description: Thresholds for ARP failure heuristic alerts
+        dhcp_failure:
+          allOf:
+          - $ref: '#/components/schemas/simple_alert_dhcp_failure'
+          - description: Thresholds for DHCP failure heuristic alerts
+        dns_failure:
+          allOf:
+          - $ref: '#/components/schemas/simple_alert_dns_failure'
+          - description: Thresholds for DNS failure heuristic alerts
+      description: Basic alert delivery settings for the organization
+    org_setting_juniper_srx2:
+      title: org_setting_juniper_srx2
+      type: object
+      properties:
+        auto_upgrade:
+          allOf:
+          - $ref: '#/components/schemas/juniper_srx_auto_upgrade1'
+          - description: SRX auto-upgrade settings applied when Juniper SRX devices are first onboarded
+      description: SRX integration settings for Juniper devices
+    org_setting_auto_device_naming2:
+      title: org_setting_auto_device_naming2
+      type: object
+      properties:
+        enable:
+          type: boolean
+          description: Whether automatic device naming is enabled
+        rules:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/org_setting_auto_device_naming_rule'
+          description: List of rules used to derive device names automatically
+      description: Automatic device naming rules for claimed devices
+    org_setting_cloudshark:
+      title: org_setting_cloudshark
+      type: object
+      properties:
+        apitoken:
+          type: string
+          description: Token used by Mist to access the CloudShark integration
+          examples:
+          - accbd6f10c6d05c3
+        url:
+          type: string
+          description: CloudShark Enterprise URL, if using a self-hosted CS Enterprise instance
+          examples:
+          - https://cloudshark.hosted.domain
+      description: Packet capture integration settings for CloudShark
+    org_setting_mist_nac_server_cert:
+      title: org_setting_mist_nac_server_cert
+      type: object
+      properties:
+        cert:
+          type: string
+          description: PEM-encoded RADIUS server certificate presented during EAP-TLS
+          examples:
+          - '-----BEGIN CERTIFICATE-----\nMIIFZjCCA06gAwIBAgIIP61/1qm/uDowDQYJKoZIhvcNAQELBQE\n-----END CERTIFICATE-----'
+        key:
+          type: string
+          description: Private key paired with the Mist NAC RADIUS server certificate
+          contentEncoding: password
+          examples:
+          - '-----BEGIN PRI...'
+        password:
+          type: string
+          description: Optional password for the private key
+          contentEncoding: password
+      description: RADIUS server certificate presented by Mist NAC during EAP-TLS
+    synthetictest_config_aggressiveness1:
+      title: synthetictest_config_aggressiveness1
+      enum:
+      - auto
+      - high
+      - med
+      - low
+      type: string
+      description: 'Probe aggressiveness level for this custom synthetic probe. enum: `auto`, `high`, `med`, `low`.'
+    org_setting_wired_pma:
+      title: org_setting_wired_pma
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether PMA is enabled for Wired Assurance
+          default: false
+      description: PMA feature settings for Wired Assurance
+    setting_ssr_auto_upgrade2:
+      title: setting_ssr_auto_upgrade2
+      type: object
+      properties:
+        channel:
+          allOf:
+          - $ref: '#/components/schemas/ssr_upgrade_channel4'
+          - description: 'Firmware release channel used for SSR auto-upgrade. enum: `alpha`, `beta`, `stable`.'
+        custom_versions:
+          type: object
+          additionalProperties:
+            type: string
+          description: Per-model SSR firmware versions used for auto-upgrade
+        enabled:
+          type: boolean
+          description: Whether SSR auto-upgrade is enabled for newly onboarded devices
+          default: false
+        version:
+          type: string
+          description: Firmware version to deploy (e.g. 6.3.0-107.r1). Optional, used when custom_versions not specified
+          examples:
+          - 6.3.0-107.r1
+      description: Automatic SSR firmware upgrade settings for newly onboarded devices
+    org_setting_api_policy2:
+      title: org_setting_api_policy2
+      type: object
+      properties:
+        enforce_src_ips_for_tokens:
+          type: boolean
+          description: Optional. When `true`, Org API tokens without their own `src_ips` also respect the org policy `src_ips`. Default is `false`.
+          default: false
+        no_reveal:
+          type: boolean
+          description: "By default, API hides password/secrets when the user doesn't have write access\n  * `true`: API will hide passwords/secrets for all users\n  * `false`: API will hide passwords/secrets for read-only users"
+          default: false
+        src_ips:
+          maxItems: 10
+          type: array
+          items:
+            type: string
+          description: Optional list of IP addresses or CIDR subnets from which org API access is allowed. At most 10 entries. The source IP of the request making this update must be within one of the specified subnets.
+          examples:
+          - - 63.3.56.0/24
+            - 63.3.55.4
+      description: Policy for hiding API secrets and passwords in responses
+    org_setting_auto_assignment_rule:
+      title: org_setting_auto_assignment_rule
+      required:
+      - src
+      type: object
+      properties:
+        create_new_site_if_needed:
+          type: boolean
+          description: If `src`==`geoip`. By default, a claimed device only gets assigned if the site exists to auto-create the site, enable this
+          default: false
+        expression:
+          type:
+          - string
+          - 'null'
+          description: "If `src`==`name`, `src`==`lldp_system_name`, `src`==`dns_suffix`  \n      \"[0:3]\"            // \"abcdef\" -> \"abc\"  \n      \"split(.)[1]\"      // \"a.b.c\" -> \"b\"  \n      \"split(-)[1][0:3]\" // \"a1234-b5678-c90\" -> \"b56\"'"
+          examples:
+          - split(.)[1]
+        gatewaytemplate_id:
+          type: string
+          description: If `src`==`geoip` and `create_new_site_if_needed`==`true`. If a gateway template is desired for this newly created site
+        match_country:
+          type: string
+          description: If `src`==`geoip`, country or region value that must match the device location
+        match_device_type:
+          allOf:
+          - $ref: '#/components/schemas/device_type_default_ap6'
+          - description: 'Device type filter that limits which claimed devices this rule applies to. enum: `ap`, `gateway`, `switch`.'
+        match_model:
+          type: string
+          description: Optional additional device model filter for this assignment rule
+        model:
+          type: string
+          description: If `src`==`model`, device model value to match
+        prefix:
+          type:
+          - string
+          - 'null'
+          description: If `src`==`name`, prefix that must be present in the device name
+          examples:
+          - XX-
+        src:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_auto_site_assignment_src2'
+          - description: 'Source attribute used to evaluate the automatic assignment rule. enum: `ext_ip`, `dns_suffix`, `geoip`, `lldp_port_desc`, `lldp_system_name`, `model`, `name`, `subnet`.'
+        subnet:
+          type: string
+          description: If `src`==`subnet` or `ext_ip`==`ext_ip`
+        suffix:
+          type:
+          - string
+          - 'null'
+          description: If `src`==`name`, suffix that must be present in the device name
+          examples:
+          - -YY
+        value:
+          type: string
+          description: "If \n  * `src`==`ext_ip`, `src`==`subnet` or `src`==`model`, the site name\n  * `src`==`geoip`: site name for the device to be assigned to (\\\"city\\\" / \\\"city+country\\\" / ...)\""
+      description: Automatic assignment rule used by org settings
+    org_setting_password_policy:
+      title: org_setting_password_policy
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether the policy is enabled
+          default: false
+        expiry_in_days:
+          maximum: 365
+          minimum: 1
+          type: integer
+          description: Password expiry in days. Password Expiry Notice banner will display in the UI 14 days before expiration
+          contentEncoding: int32
+          examples:
+          - 60
+        min_length:
+          type: integer
+          description: Minimum number of characters required for passwords
+          contentEncoding: int32
+          default: 8
+        requires_special_char:
+          type: boolean
+          description: Whether to require special character
+          default: false
+        requires_two_factor_auth:
+          type: boolean
+          description: Whether to require two-factor auth
+          default: false
+      description: Admin credential policy settings for the organization
+    device_type_default_ap5:
+      title: device_type_default_ap5
+      enum:
+      - ap
+      - gateway
+      - switch
+      type: string
+      description: 'Device type filter for this naming rule. enum: `ap`, `gateway`, `switch`.'
+    org_setting:
+      title: org_setting
+      type: object
+      properties:
+        allow_mist:
+          type: boolean
+          description: whether to allow Mist to look at this org
+          default: false
+        ap_updown_threshold:
+          maximum: 240
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: Enable threshold-based device down delivery for AP devices only. When configured it takes effect for AP devices and `device_updown_threshold` is ignored.
+          contentEncoding: int32
+          default: 0
+        api_policy:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_api_policy2'
+          - description: Policy for hiding API secrets and passwords in responses
+        auto_device_naming:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_auto_device_naming2'
+          - description: Automatic device naming rules for claimed devices
+        auto_deviceprofile_assignment:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_auto_deviceprofile_assignment2'
+          - description: Automatic device profile assignment rules for claimed devices
+        auto_site_assignment:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_auto_site_assignment2'
+          - description: Automatic site assignment rules for claimed devices
+        auto_upgrade:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_auto_upgrade2'
+          - description: AP automatic firmware upgrade policy for the organization
+        blacklist_url:
+          type: string
+          description: Read-only URL for the organization blacklist file
+          readOnly: true
+          examples:
+          - https://papi.s3.amazonaws.com/blacklist/xxx...
+        cacerts:
+          type: array
+          items:
+            type: string
+          description: Legacy CA certificate list used to verify client certificates. If `cacerts_configs` is provided and non-empty, this field is ignored.
+        cacerts_configs:
+          type: array
+          items:
+            $ref: '#/components/schemas/org_setting_cacerts_config'
+          description: Preferred per-issuer CA certificate configuration with optional OCSP and CRL settings. When provided and non-empty, `cacerts` is ignored.
+        celona:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_celona'
+          - description: Integration settings for Celona
+        cloudshark:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_cloudshark'
+          - description: Packet capture integration settings for CloudShark
+        created_time:
+          type: number
+          description: Epoch timestamp when the organization settings were created
+          readOnly: true
+        device_cert:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_device_cert2'
+          - description: Common device certificate used by organization settings
+        device_updown_threshold:
+          maximum: 240
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: "Enable threshold-based device down delivery via\n  * device-updowns webhooks topic, \n  * Mist Alert Framework; e.g. send AP/SW/GW down event only if AP/SW/GW Up is not seen within the threshold in minutes; 0 - 240, default is 0 (trigger immediate)"
+          contentEncoding: int32
+          default: 0
+        disable_pcap:
+          type: boolean
+          description: Whether to disallow Mist to analyze pcap files (this is required for marvis pcap)
+          default: false
+        disable_remote_shell:
+          type: boolean
+          description: Whether to disable remote shell access for an entire org
+          default: false
+        for_site:
+          type: boolean
+          description: Read-only indicator that the settings object is scoped to a site
+          readOnly: true
+        gateway_mgmt:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_gateway_mgmt2'
+          - description: Gateway management defaults for the organization
+        gateway_tunnel_updown_threshold:
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: enable threshold-based gateway tunnel (secure edge tunnels) up-down delivery.
+          contentEncoding: int32
+        gateway_updown_threshold:
+          maximum: 240
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: Enable threshold-based device down delivery for Gateway devices only. When configured it takes effect for GW devices and `device_updown_threshold` is ignored.
+          contentEncoding: int32
+          default: 0
+          examples:
+          - 10
+        id:
+          type: string
+          description: Unique identifier of the organization settings object
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        installer:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_installer2'
+          - description: Access settings for organization installer workflows
+        jcloud:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_jcloud2'
+          - description: Integration settings for JCloud
+        jcloud_ra:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_jcloud_ra2'
+          - description: Routing Assurance integration settings for JCloud
+        juniper:
+          allOf:
+          - $ref: '#/components/schemas/account_juniper_info1'
+          - description: Linked Juniper account information for this organization
+        juniper_srx:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_juniper_srx2'
+          - description: SRX integration settings for Juniper devices
+        junos_shell_access:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_junos_shell_access2'
+          - description: Role-based Junos web-shell access settings
+        marvis:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_marvis2'
+          - description: AI assistant and self-driving feature settings for Marvis
+        mgmt:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_mgmt2'
+          - description: Tunnel settings for organization management connectivity
+        mist_nac:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_mist_nac2'
+          - description: NAC settings for Mist Access Assurance
+        modified_time:
+          type: number
+          description: Epoch timestamp when the organization settings were last modified
+          readOnly: true
+        msp_id:
+          type: string
+          description: Managed service provider account associated with these settings
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - b9d42c2e-88ee-41f8-b798-f009ce7fe909
+        mxedge_mgmt:
+          allOf:
+          - $ref: '#/components/schemas/mxedge_mgmt3'
+          - description: Management settings for Mist Edge devices
+        optic_port_config:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/optic_port_config_port'
+          description: Configuration defaults for optic ports
+        org_id:
+          type: string
+          description: Organization that owns these settings
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        password_policy:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_password_policy'
+          - description: Admin credential policy settings for the organization
+        pcap:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_pcap2'
+          - description: Packet capture settings for the organization
+        pcap_bucket_verified:
+          type: boolean
+          description: Whether the configured packet capture bucket has been verified
+          readOnly: true
+        security:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_security2'
+          - description: Organization security controls such as local SSH restrictions
+        simple_alert:
+          allOf:
+          - $ref: '#/components/schemas/simple_alert3'
+          - description: Basic alert delivery settings for the organization
+        ssr:
+          allOf:
+          - $ref: '#/components/schemas/setting_ssr3'
+          - description: Session Smart Router settings for the organization
+        switch:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_switch'
+          - description: Configuration defaults for switches in this organization
+        switch_mgmt:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_switch_mgmt2'
+          - description: Management settings for switches in this organization
+        switch_updown_threshold:
+          type:
+          - integer
+          - 'null'
+          description: Enable threshold-based device down delivery for Switch devices only. When configured it takes effect for SW devices and `device_updown_threshold` is ignored.
+          contentEncoding: int32
+          default: 0
+          examples:
+          - 0
+        synthetic_test:
+          allOf:
+          - $ref: '#/components/schemas/synthetictest_config3'
+          - description: Configuration for organization synthetic tests
+        tags:
+          type: array
+          items:
+            type: string
+          description: Labels associated with these organization settings
+        ui_idle_timeout:
+          maximum: 480
+          minimum: 0
+          type: integer
+          description: Automatically logout the user when UI session is inactive. `0` means disabled
+          contentEncoding: int32
+          default: 0
+          examples:
+          - 10
+        ui_no_tracking:
+          type: boolean
+          description: Whether UI usage tracking is disabled for the organization
+          default: false
+        vpn_options:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_vpn_options2'
+          - description: Options for organization VPN behavior
+        wan_pma:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_wan_pma'
+          - description: PMA feature settings for WAN Assurance
+        wired_pma:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_wired_pma'
+          - description: PMA feature settings for Wired Assurance
+        wireless_pma:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_wireless_pma'
+          - description: PMA feature settings for Wireless Assurance
+      description: Organization-wide feature, integration, management, and security settings
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    org_setting_marvis2:
+      title: org_setting_marvis2
+      type: object
+      properties:
+        disable_proactive_monitoring:
+          type: boolean
+          description: 'Disable proactive monitoring in Marvis. NOTE: support access must be enabled for the org (`allow_mist`=`true`) for proactive monitoring to function.'
+          default: false
+        self_driving:
+          allOf:
+          - $ref: '#/components/schemas/marvis_self_driving1'
+          - description: Self-driving network automation settings by domain
+      description: AI assistant and self-driving feature settings for Marvis
+    org_setting_junos_shell_access_read2:
+      title: org_setting_junos_shell_access_read2
+      enum:
+      - admin
+      - none
+      - viewer
+      type: string
+      description: 'Shell access level used for read-only web-shell sessions. enum: `admin`, `none`, `viewer`.'
+    org_setting_auto_device_naming_rule_src2:
+      title: org_setting_auto_device_naming_rule_src2
+      enum:
+      - lldp_port_desc
+      - mac
+      type: string
+      description: 'Device attribute used to generate the name. enum: `lldp_port_desc`, `mac`.'
+    vlan_id_with_variable:
+      oneOf:
+      - type: string
+      - maximum: 4094
+        minimum: 1
+        type: integer
+        contentEncoding: int32
+      description: VLAN ID, either numeric or expressed as a template variable string
+    org_setting_security2:
+      title: org_setting_security2
+      type: object
+      properties:
+        disable_local_ssh:
+          type: boolean
+          description: Whether to disable local SSH (by default, local SSH is enabled with allow_mist in Org is enabled
+        fips_zeroize_password:
+          type: string
+          description: password required to zeroize devices (FIPS) on site level
+          examples:
+          - NUKETHESITE
+        limit_ssh_access:
+          type: boolean
+          description: Whether to allow certain SSH keys to SSH into the AP (see Site:Setting)
+          default: false
+      description: Organization security controls such as local SSH restrictions
+    org_setting_junos_shell_access_write2:
+      title: org_setting_junos_shell_access_write2
+      enum:
+      - admin
+      - none
+      - viewer
+      type: string
+      description: 'Shell access level used for write-role web-shell sessions. enum: `admin`, `none`, `viewer`.'
+    mxedge_mgmt_oob_ip_type2:
+      title: mxedge_mgmt_oob_ip_type2
+      enum:
+      - dhcp
+      - disabled
+      - static
+      type: string
+      description: 'IPv4 address assignment mode for out-of-band management. enum: `dhcp`, `disabled`, `static`.'
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    org_setting_gateway_mgmt2:
+      title: org_setting_gateway_mgmt2
+      type: object
+      properties:
+        app_probing:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_gateway_mgmt_app_probing2'
+          - description: Application probing configuration applied to managed gateways
+        app_usage:
+          type: boolean
+          description: For SRX only, whether gateway application usage collection is enabled; requires App Track license
+        fips_enabled:
+          type: boolean
+          description: Whether FIPS mode is enabled for managed gateways
+          default: false
+        host_in_policies:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_gateway_mgmt_host_in_policies2'
+          - description: Host-in access policies for gateway management services such as ICMP and SNMP
+        host_out_policies:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_gateway_mgmt_host_out_policies2'
+          - description: Path preference policies for gateway-originated management traffic
+        overlay_ip:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_gateway_mgmt_overlay_ip2'
+          - description: Overlay IP addresses used when gateway management traffic uses the overlay
+      description: Gateway management defaults for the organization
+    synthetictest_config_custom_probe:
+      title: synthetictest_config_custom_probe
+      type: object
+      properties:
+        aggressiveness:
+          allOf:
+          - $ref: '#/components/schemas/synthetictest_config_aggressiveness1'
+          - description: 'Probe aggressiveness level for this custom synthetic probe. enum: `auto`, `high`, `med`, `low`.'
+        target:
+          type: string
+          description: Can be URL (e.g. http://x.com, https://x.com:8080/path/to/resource), IP address, or IP:port combination
+          examples:
+          - 10.3.5.3:8080
+        threshold:
+          type: integer
+          description: Response-time threshold for this custom probe, in milliseconds
+          contentEncoding: int32
+          examples:
+          - 100
+        type:
+          allOf:
+          - $ref: '#/components/schemas/synthetictest_config_custom_probe_type3'
+          - description: 'Probe type used by this custom synthetic probe. enum: `application`, `curl`, `icmp`, `reachability`, `tcp`.'
+      description: Custom probe definition for synthetic tests
+    org_setting_mist_nac_fingerprinting2:
+      title: org_setting_mist_nac_fingerprinting2
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: enable/disable writes to NAC DDB fingerprint table
+          default: false
+        generate_coa:
+          type: boolean
+          description: enable/disable CoA triggers on fingerprint change for wired clients, always port-bounce
+          default: false
+        generate_wireless_coa:
+          type: boolean
+          description: enable/disable CoA triggers on fingerprint change for wireless clients
+          default: false
+        wireless_coa_type:
+          allOf:
+          - $ref: '#/components/schemas/org_setting_mist_nac_fingerprinting_wireless_coa2'
+          - description: 'Change of Authorization action sent to wireless clients when fingerprints change. enum: `reauth`, `disconnect`.'
+      description: Client fingerprinting settings used by Mist NAC
+    org_setting_gateway_mgmt_app_probing2:
+      title: org_setting_gateway_mgmt_app_probing2
+      type: object
+      properties:
+        apps:
+          type: array
+          items:
+            type: string
+          description: Predefined application keys to probe from managed gateways
+          examples:
+          - - facebook
+      description: Application probing configuration applied to managed gateways
+    org_setting_pcap2:
+      title: org_setting_pcap2
+      type: object
+      properties:
+        bucket:
+          type: string
+          description: Storage bucket name used for organization packet capture files
+          examples:
+          - myorg_pcap
+        max_pkt_len:
+          maximum: 128
+          type: integer
+          description: Maximum length of non-management packets to capture, in bytes
+          contentEncoding: int32
+          default: 128
+          examples:
+          - 128
+      description: Packet capture settings for the organization
+    org_setting_auto_site_assignment2:
+      title: org_setting_auto_site_assignment2
+      type: object
+      properties:
+        enable:
+          type: boolean
+          description: Whether automatic site assignment is enabled
+        rules:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/org_setting_auto_assignment_rule'
+          description: Assignment rules evaluated for automatic site selection
+      description: Automatic site assignment rules for claimed devices
+    optic_port_config_port:
+      title: optic_port_config_port
+      type: object
+      properties:
+        channelized:
+          type: boolean
+          description: Whether channelization is enabled on this optic port
+          default: false
+        speed:
+          type: string
+          description: Interface speed (e.g. `25g`, `50g`), use the chassis speed by default
+          examples:
+          - 25g
+      description: Per-interface optic port override settings
+    ssr_upgrade_channel4:
+      title: ssr_upgrade_channel4
+      enum:
+      - alpha
+      - beta
+      - stable
+      type: string
+      description: 'Firmware release channel used for SSR auto-upgrade. enum: `alpha`, `beta`, `stable`.'
+    org_setting_junos_shell_access_admin2:
+      title: org_setting_junos_shell_access_admin2
+      enum:
+      - admin
+      - none
+      - viewer
+      type: string
+      description: 'Shell access level used for administrator web-shell sessions. enum: `admin`, `none`, `viewer`.'
+    org_setting_mgmt2:
+      title: org_setting_mgmt2
+      type: object
+      properties:
+        mxtunnel_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: Mist Tunnel IDs selected for management connectivity
+        use_mxtunnel:
+          type: boolean
+          description: Whether to use Mist Tunnel for mgmt connectivity, this takes precedence over use_wxtunnel
+          default: false
+        use_wxtunnel:
+          type: boolean
+          description: Whether to use wxtunnel for mgmt connectivity
+          default: false
+      description: Tunnel settings for organization management connectivity
+    synthetictest_config_vlan:
+      title: synthetictest_config_vlan
+      type: object
+      properties:
+        custom_test_urls:
+          type: array
+          items:
+            type: string
+          description: Deprecated custom URLs tested by VLAN-based synthetic probes
+          examples:
+          - - https://www.abc.com/
+            - https://10.3.5.1:8080/about
+          deprecated: true
+        disabled:
+          type: boolean
+          description: For some vlans where we don't want this to run
+          default: false
+        probes:
+          type: array
+          items:
+            type: string
+          description: Synthetic probe names to run for the listed VLANs
+        vlan_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/vlan_id_with_variable'
+          description: VLAN identifiers where synthetic probes are run
+          examples:
+          - - 10
+            - 20
+            - '{{vlan}}'
+      description: Deprecated VLAN-based synthetic test settings
+    juniper_account:
+      title: juniper_account
+      type: object
+      properties:
+        linked_by:
+          type: string
+          description: User who linked this Juniper account
+          readOnly: true
+          examples:
+          - John Smith (john@abccorp.com)
+        name:
+          type: string
+          description: Display name of the linked Juniper account
+          readOnly: true
+          examples:
+          - ABC Corp
+      description: Linked Juniper account available to the organization
+    org_setting_gateway_mgmt_host_in_policy3:
+      title: org_setting_gateway_mgmt_host_in_policy3
+      type: object
+      properties:
+        tenants:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Tenant names this host-in policy applies to
+      description: Host-in access policy for ICMP traffic to managed gateways
+    marvis_self_driving1:
+      title: marvis_self_driving1
+      type: object
+      properties:
+        wan:
+          allOf:
+          - $ref: '#/components/schemas/marvis_self_driving_domain4'
+          - description: Self-driving automation settings for the WAN domain
+        wired:
+          allOf:
+          - $ref: '#/components/schemas/marvis_self_driving_domain1'
+          - description: Self-driving automation settings for the wired domain
+        wireless:
+          allOf:
+          - $ref: '#/components/schemas/marvis_self_driving_domain2'
+          - description: Self-driving automation settings for the wireless domain
+      description: Self-driving network automation settings by domain
+    gateway_mgmt_host_out_policy1:
+      title: gateway_mgmt_host_out_policy1
+      type: object
+      properties:
+        path_preference:
+          type: string
+          description: Preferred path name for this gateway-originated service traffic
+      description: Path preference policy for gateway-originated DNS traffic
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

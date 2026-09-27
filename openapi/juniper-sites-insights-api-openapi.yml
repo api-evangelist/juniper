@@ -1,0 +1,3080 @@
+openapi: 3.2.0
+info:
+  title: Mist Sites Insights API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Sites Insights
+  description: 'Insights is a feature that provides an overview of network experience across the entire site, access points, or clients.
+
+
+    It offers useful information about current conditions, such as telemetry data from wired switches, edge devices, wireless clients, access points, network applications, and bluetooth low energy (ble) tags.
+
+
+    These insights can be used to correct issues, make changes, and ensure a good network experience for users.'
+paths:
+  /api/v1/sites/{site_id}/insights:
+    parameters: []
+    get:
+      tags:
+      - Sites Insights
+      summary: getSiteInsightMetrics
+      description: Get Site Insight Metrics
+      operationId: getSiteInsightMetrics
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: metrics
+        in: query
+        description: Comma separated Metric names, e.g. `num_clients,num_aps`. See possible values at [List Insight Metrics](/#operations/listInsightMetrics)
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - num_clients,num_aps
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: interval
+        in: query
+        description: Aggregation works by giving a time range plus interval (e.g. 1d, 1h, 10m) where aggregation function would be applied to.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 10m
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: page
+        in: query
+        description: Select the page number to return when using page-based pagination; starts at `1`
+        style: form
+        explode: true
+        schema:
+          minimum: 1
+          type: integer
+          contentEncoding: int32
+          default: 1
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/insight_metrics'
+                - description: Insight metric response for a requested time range and aggregation interval
+                  examples:
+                  - end: 0
+                    interval: 0
+                    results:
+                    - {}
+                    start: 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    end: 0
+                    interval: 0
+                    results:
+                    - {}
+                    start: 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/insight_metrics'
+                - description: Insight metric response for a requested time range and aggregation interval
+                  examples:
+                  - end: 0
+                    interval: 0
+                    results:
+                    - {}
+                    start: 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    end: 0
+                    interval: 0
+                    results:
+                    - {}
+                    start: 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/insights/ap/{device_id}/stats:
+    parameters: []
+    get:
+      tags:
+      - Sites Insights
+      summary: getSiteInsightMetricsForAP
+      description: Get AP Insight Metrics
+      operationId: getSiteInsightMetricsForAP
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: device_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: metrics
+        in: query
+        description: Comma separated Metric names, e.g. `num_clients,num_stressed_clients`. See possible values at [List Insight Metrics](/#operations/listInsightMetrics)
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - num_clients,num_stressed_clients
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: interval
+        in: query
+        description: Aggregation works by giving a time range plus interval (e.g. 1d, 1h, 10m) where aggregation function would be applied to.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 10m
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: page
+        in: query
+        description: Select the page number to return when using page-based pagination; starts at `1`
+        style: form
+        explode: true
+        schema:
+          minimum: 1
+          type: integer
+          contentEncoding: int32
+          default: 1
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_device_metrics'
+                - description: Time-series insight metric response for a device
+                  examples:
+                  - end: 1604347200
+                    interval: 3600
+                    limit: 168
+                    page: 1
+                    results:
+                    - 10
+                    - 11
+                    - 12
+                    - 12
+                    - 10
+                    - 9
+                    - 9
+                    - 9
+                    - 10
+                    - 10
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    rt:
+                    - 2020-11-01 20:00:00+00:00
+                    - 2020-11-01 21:00:00+00:00
+                    - 2020-11-01 22:00:00+00:00
+                    - 2020-11-01 23:00:00+00:00
+                    - 2020-11-02 00:00:00+00:00
+                    - 2020-11-02 01:00:00+00:00
+                    - 2020-11-02 02:00:00+00:00
+                    - 2020-11-02 03:00:00+00:00
+                    - 2020-11-02 04:00:00+00:00
+                    - 2020-11-02 05:00:00+00:00
+                    - 2020-11-02 06:00:00+00:00
+                    - 2020-11-02 07:00:00+00:00
+                    - 2020-11-02 08:00:00+00:00
+                    - 2020-11-02 09:00:00+00:00
+                    - 2020-11-02 10:00:00+00:00
+                    - 2020-11-02 11:00:00+00:00
+                    - 2020-11-02 12:00:00+00:00
+                    - 2020-11-02 13:00:00+00:00
+                    - 2020-11-02 14:00:00+00:00
+                    - 2020-11-02 15:00:00+00:00
+                    - 2020-11-02 16:00:00+00:00
+                    - 2020-11-02 17:00:00+00:00
+                    - 2020-11-02 18:00:00+00:00
+                    - 2020-11-02 19:00:00+00:00
+                    start: 1604260800
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    end: 1604347200
+                    interval: 3600
+                    limit: 168
+                    page: 1
+                    results:
+                    - 10
+                    - 11
+                    - 12
+                    - 12
+                    - 10
+                    - 9
+                    - 9
+                    - 9
+                    - 10
+                    - 10
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    rt:
+                    - 2020-11-01 20:00:00+00:00
+                    - 2020-11-01 21:00:00+00:00
+                    - 2020-11-01 22:00:00+00:00
+                    - 2020-11-01 23:00:00+00:00
+                    - 2020-11-02 00:00:00+00:00
+                    - 2020-11-02 01:00:00+00:00
+                    - 2020-11-02 02:00:00+00:00
+                    - 2020-11-02 03:00:00+00:00
+                    - 2020-11-02 04:00:00+00:00
+                    - 2020-11-02 05:00:00+00:00
+                    - 2020-11-02 06:00:00+00:00
+                    - 2020-11-02 07:00:00+00:00
+                    - 2020-11-02 08:00:00+00:00
+                    - 2020-11-02 09:00:00+00:00
+                    - 2020-11-02 10:00:00+00:00
+                    - 2020-11-02 11:00:00+00:00
+                    - 2020-11-02 12:00:00+00:00
+                    - 2020-11-02 13:00:00+00:00
+                    - 2020-11-02 14:00:00+00:00
+                    - 2020-11-02 15:00:00+00:00
+                    - 2020-11-02 16:00:00+00:00
+                    - 2020-11-02 17:00:00+00:00
+                    - 2020-11-02 18:00:00+00:00
+                    - 2020-11-02 19:00:00+00:00
+                    start: 1604260800
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_device_metrics'
+                - description: Time-series insight metric response for a device
+                  examples:
+                  - end: 1604347200
+                    interval: 3600
+                    limit: 168
+                    page: 1
+                    results:
+                    - 10
+                    - 11
+                    - 12
+                    - 12
+                    - 10
+                    - 9
+                    - 9
+                    - 9
+                    - 10
+                    - 10
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    rt:
+                    - 2020-11-01 20:00:00+00:00
+                    - 2020-11-01 21:00:00+00:00
+                    - 2020-11-01 22:00:00+00:00
+                    - 2020-11-01 23:00:00+00:00
+                    - 2020-11-02 00:00:00+00:00
+                    - 2020-11-02 01:00:00+00:00
+                    - 2020-11-02 02:00:00+00:00
+                    - 2020-11-02 03:00:00+00:00
+                    - 2020-11-02 04:00:00+00:00
+                    - 2020-11-02 05:00:00+00:00
+                    - 2020-11-02 06:00:00+00:00
+                    - 2020-11-02 07:00:00+00:00
+                    - 2020-11-02 08:00:00+00:00
+                    - 2020-11-02 09:00:00+00:00
+                    - 2020-11-02 10:00:00+00:00
+                    - 2020-11-02 11:00:00+00:00
+                    - 2020-11-02 12:00:00+00:00
+                    - 2020-11-02 13:00:00+00:00
+                    - 2020-11-02 14:00:00+00:00
+                    - 2020-11-02 15:00:00+00:00
+                    - 2020-11-02 16:00:00+00:00
+                    - 2020-11-02 17:00:00+00:00
+                    - 2020-11-02 18:00:00+00:00
+                    - 2020-11-02 19:00:00+00:00
+                    start: 1604260800
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    end: 1604347200
+                    interval: 3600
+                    limit: 168
+                    page: 1
+                    results:
+                    - 10
+                    - 11
+                    - 12
+                    - 12
+                    - 10
+                    - 9
+                    - 9
+                    - 9
+                    - 10
+                    - 10
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    rt:
+                    - 2020-11-01 20:00:00+00:00
+                    - 2020-11-01 21:00:00+00:00
+                    - 2020-11-01 22:00:00+00:00
+                    - 2020-11-01 23:00:00+00:00
+                    - 2020-11-02 00:00:00+00:00
+                    - 2020-11-02 01:00:00+00:00
+                    - 2020-11-02 02:00:00+00:00
+                    - 2020-11-02 03:00:00+00:00
+                    - 2020-11-02 04:00:00+00:00
+                    - 2020-11-02 05:00:00+00:00
+                    - 2020-11-02 06:00:00+00:00
+                    - 2020-11-02 07:00:00+00:00
+                    - 2020-11-02 08:00:00+00:00
+                    - 2020-11-02 09:00:00+00:00
+                    - 2020-11-02 10:00:00+00:00
+                    - 2020-11-02 11:00:00+00:00
+                    - 2020-11-02 12:00:00+00:00
+                    - 2020-11-02 13:00:00+00:00
+                    - 2020-11-02 14:00:00+00:00
+                    - 2020-11-02 15:00:00+00:00
+                    - 2020-11-02 16:00:00+00:00
+                    - 2020-11-02 17:00:00+00:00
+                    - 2020-11-02 18:00:00+00:00
+                    - 2020-11-02 19:00:00+00:00
+                    start: 1604260800
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/insights/client/{client_mac}:
+    parameters: []
+    get:
+      tags:
+      - Sites Insights
+      summary: getSiteInsightMetricsForClient
+      description: Get Client Insight Metrics
+      operationId: getSiteInsightMetricsForClient
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: client_mac
+        in: path
+        description: ''
+        required: true
+        schema:
+          pattern: ^[0-9a-fA-F]{12}$
+          type: string
+          examples:
+          - 0000000000ab
+      - name: metrics
+        in: query
+        description: Comma separated Metric names, e.g. `top-app-by-num_client,top-app-by-bytes`. See possible values at [List Insight Metrics](/#operations/listInsightMetrics)
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - top-app-by-num_client,top-app-by-bytes
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: interval
+        in: query
+        description: Aggregation works by giving a time range plus interval (e.g. 1d, 1h, 10m) where aggregation function would be applied to.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 10m
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: page
+        in: query
+        description: Select the page number to return when using page-based pagination; starts at `1`
+        style: form
+        explode: true
+        schema:
+          minimum: 1
+          type: integer
+          contentEncoding: int32
+          default: 1
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/insight_metrics'
+                - description: Insight metric response for a requested time range and aggregation interval
+                  examples:
+                  - end: 0
+                    interval: 0
+                    results:
+                    - {}
+                    start: 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    end: 0
+                    interval: 0
+                    results:
+                    - {}
+                    start: 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/insight_metrics'
+                - description: Insight metric response for a requested time range and aggregation interval
+                  examples:
+                  - end: 0
+                    interval: 0
+                    results:
+                    - {}
+                    start: 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    end: 0
+                    interval: 0
+                    results:
+                    - {}
+                    start: 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/insights/device/{device_mac}/{metric}:
+    parameters: []
+    get:
+      tags:
+      - Sites Insights
+      summary: getSiteInsightMetricsForDevice
+      description: 'Get AP Insight Metrics
+
+        See metrics possibilities at List Insight Metrics'
+      operationId: getSiteInsightMetricsForDevice
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: metric
+        in: path
+        description: See [List Insight Metrics]($e/Constants%20Definitions/listInsightMetrics) for available metrics
+        required: true
+        schema:
+          type: string
+      - name: device_mac
+        in: path
+        description: ''
+        required: true
+        schema:
+          pattern: ^[0-9a-fA-F]{12}$
+          type: string
+          examples:
+          - 0000000000ab
+      - name: port_id
+        in: query
+        description: Port ID of the device, e.g. `ge-0/0/1`. Can be used with metrics related to interfaces, e.g. `rx_bytes`.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - ge-0/0/1
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: interval
+        in: query
+        description: Aggregation works by giving a time range plus interval (e.g. 1d, 1h, 10m) where aggregation function would be applied to.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 10m
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: page
+        in: query
+        description: Select the page number to return when using page-based pagination; starts at `1`
+        style: form
+        explode: true
+        schema:
+          minimum: 1
+          type: integer
+          contentEncoding: int32
+          default: 1
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_device_metrics'
+                - description: Time-series insight metric response for a device
+                  examples:
+                  - end: 1604347200
+                    interval: 3600
+                    limit: 168
+                    page: 1
+                    results:
+                    - 10
+                    - 11
+                    - 12
+                    - 12
+                    - 10
+                    - 9
+                    - 9
+                    - 9
+                    - 10
+                    - 10
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    rt:
+                    - 2020-11-01 20:00:00+00:00
+                    - 2020-11-01 21:00:00+00:00
+                    - 2020-11-01 22:00:00+00:00
+                    - 2020-11-01 23:00:00+00:00
+                    - 2020-11-02 00:00:00+00:00
+                    - 2020-11-02 01:00:00+00:00
+                    - 2020-11-02 02:00:00+00:00
+                    - 2020-11-02 03:00:00+00:00
+                    - 2020-11-02 04:00:00+00:00
+                    - 2020-11-02 05:00:00+00:00
+                    - 2020-11-02 06:00:00+00:00
+                    - 2020-11-02 07:00:00+00:00
+                    - 2020-11-02 08:00:00+00:00
+                    - 2020-11-02 09:00:00+00:00
+                    - 2020-11-02 10:00:00+00:00
+                    - 2020-11-02 11:00:00+00:00
+                    - 2020-11-02 12:00:00+00:00
+                    - 2020-11-02 13:00:00+00:00
+                    - 2020-11-02 14:00:00+00:00
+                    - 2020-11-02 15:00:00+00:00
+                    - 2020-11-02 16:00:00+00:00
+                    - 2020-11-02 17:00:00+00:00
+                    - 2020-11-02 18:00:00+00:00
+                    - 2020-11-02 19:00:00+00:00
+                    start: 1604260800
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    end: 1604347200
+                    interval: 3600
+                    limit: 168
+                    page: 1
+                    results:
+                    - 10
+                    - 11
+                    - 12
+                    - 12
+                    - 10
+                    - 9
+                    - 9
+                    - 9
+                    - 10
+                    - 10
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    rt:
+                    - 2020-11-01 20:00:00+00:00
+                    - 2020-11-01 21:00:00+00:00
+                    - 2020-11-01 22:00:00+00:00
+                    - 2020-11-01 23:00:00+00:00
+                    - 2020-11-02 00:00:00+00:00
+                    - 2020-11-02 01:00:00+00:00
+                    - 2020-11-02 02:00:00+00:00
+                    - 2020-11-02 03:00:00+00:00
+                    - 2020-11-02 04:00:00+00:00
+                    - 2020-11-02 05:00:00+00:00
+                    - 2020-11-02 06:00:00+00:00
+                    - 2020-11-02 07:00:00+00:00
+                    - 2020-11-02 08:00:00+00:00
+                    - 2020-11-02 09:00:00+00:00
+                    - 2020-11-02 10:00:00+00:00
+                    - 2020-11-02 11:00:00+00:00
+                    - 2020-11-02 12:00:00+00:00
+                    - 2020-11-02 13:00:00+00:00
+                    - 2020-11-02 14:00:00+00:00
+                    - 2020-11-02 15:00:00+00:00
+                    - 2020-11-02 16:00:00+00:00
+                    - 2020-11-02 17:00:00+00:00
+                    - 2020-11-02 18:00:00+00:00
+                    - 2020-11-02 19:00:00+00:00
+                    start: 1604260800
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_device_metrics'
+                - description: Time-series insight metric response for a device
+                  examples:
+                  - end: 1604347200
+                    interval: 3600
+                    limit: 168
+                    page: 1
+                    results:
+                    - 10
+                    - 11
+                    - 12
+                    - 12
+                    - 10
+                    - 9
+                    - 9
+                    - 9
+                    - 10
+                    - 10
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    rt:
+                    - 2020-11-01 20:00:00+00:00
+                    - 2020-11-01 21:00:00+00:00
+                    - 2020-11-01 22:00:00+00:00
+                    - 2020-11-01 23:00:00+00:00
+                    - 2020-11-02 00:00:00+00:00
+                    - 2020-11-02 01:00:00+00:00
+                    - 2020-11-02 02:00:00+00:00
+                    - 2020-11-02 03:00:00+00:00
+                    - 2020-11-02 04:00:00+00:00
+                    - 2020-11-02 05:00:00+00:00
+                    - 2020-11-02 06:00:00+00:00
+                    - 2020-11-02 07:00:00+00:00
+                    - 2020-11-02 08:00:00+00:00
+                    - 2020-11-02 09:00:00+00:00
+                    - 2020-11-02 10:00:00+00:00
+                    - 2020-11-02 11:00:00+00:00
+                    - 2020-11-02 12:00:00+00:00
+                    - 2020-11-02 13:00:00+00:00
+                    - 2020-11-02 14:00:00+00:00
+                    - 2020-11-02 15:00:00+00:00
+                    - 2020-11-02 16:00:00+00:00
+                    - 2020-11-02 17:00:00+00:00
+                    - 2020-11-02 18:00:00+00:00
+                    - 2020-11-02 19:00:00+00:00
+                    start: 1604260800
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    end: 1604347200
+                    interval: 3600
+                    limit: 168
+                    page: 1
+                    results:
+                    - 10
+                    - 11
+                    - 12
+                    - 12
+                    - 10
+                    - 9
+                    - 9
+                    - 9
+                    - 10
+                    - 10
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    rt:
+                    - 2020-11-01 20:00:00+00:00
+                    - 2020-11-01 21:00:00+00:00
+                    - 2020-11-01 22:00:00+00:00
+                    - 2020-11-01 23:00:00+00:00
+                    - 2020-11-02 00:00:00+00:00
+                    - 2020-11-02 01:00:00+00:00
+                    - 2020-11-02 02:00:00+00:00
+                    - 2020-11-02 03:00:00+00:00
+                    - 2020-11-02 04:00:00+00:00
+                    - 2020-11-02 05:00:00+00:00
+                    - 2020-11-02 06:00:00+00:00
+                    - 2020-11-02 07:00:00+00:00
+                    - 2020-11-02 08:00:00+00:00
+                    - 2020-11-02 09:00:00+00:00
+                    - 2020-11-02 10:00:00+00:00
+                    - 2020-11-02 11:00:00+00:00
+                    - 2020-11-02 12:00:00+00:00
+                    - 2020-11-02 13:00:00+00:00
+                    - 2020-11-02 14:00:00+00:00
+                    - 2020-11-02 15:00:00+00:00
+                    - 2020-11-02 16:00:00+00:00
+                    - 2020-11-02 17:00:00+00:00
+                    - 2020-11-02 18:00:00+00:00
+                    - 2020-11-02 19:00:00+00:00
+                    start: 1604260800
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/insights/gateway/{device_id}/stats:
+    parameters: []
+    get:
+      tags:
+      - Sites Insights
+      summary: getSiteInsightMetricsForGateway
+      description: Get Gateway Insight Metrics
+      operationId: getSiteInsightMetricsForGateway
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: device_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: metrics
+        in: query
+        description: Comma separated Metric names, e.g. `tx_bps,rx_bps`. See possible values at [List Insight Metrics](/#operations/listInsightMetrics)
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - tx_bps,rx_bps
+      - name: port_id
+        in: query
+        description: Port ID of the gateway device, e.g. `ge-0/0/1`
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - ge-0/0/1
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: interval
+        in: query
+        description: Aggregation works by giving a time range plus interval (e.g. 1d, 1h, 10m) where aggregation function would be applied to.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 10m
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: page
+        in: query
+        description: Select the page number to return when using page-based pagination; starts at `1`
+        style: form
+        explode: true
+        schema:
+          minimum: 1
+          type: integer
+          contentEncoding: int32
+          default: 1
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_device_metrics'
+                - description: Time-series insight metric response for a device
+                  examples:
+                  - end: 1604347200
+                    interval: 3600
+                    limit: 168
+                    page: 1
+                    results:
+                    - 10
+                    - 11
+                    - 12
+                    - 12
+                    - 10
+                    - 9
+                    - 9
+                    - 9
+                    - 10
+                    - 10
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    rt:
+                    - 2020-11-01 20:00:00+00:00
+                    - 2020-11-01 21:00:00+00:00
+                    - 2020-11-01 22:00:00+00:00
+                    - 2020-11-01 23:00:00+00:00
+                    - 2020-11-02 00:00:00+00:00
+                    - 2020-11-02 01:00:00+00:00
+                    - 2020-11-02 02:00:00+00:00
+                    - 2020-11-02 03:00:00+00:00
+                    - 2020-11-02 04:00:00+00:00
+                    - 2020-11-02 05:00:00+00:00
+                    - 2020-11-02 06:00:00+00:00
+                    - 2020-11-02 07:00:00+00:00
+                    - 2020-11-02 08:00:00+00:00
+                    - 2020-11-02 09:00:00+00:00
+                    - 2020-11-02 10:00:00+00:00
+                    - 2020-11-02 11:00:00+00:00
+                    - 2020-11-02 12:00:00+00:00
+                    - 2020-11-02 13:00:00+00:00
+                    - 2020-11-02 14:00:00+00:00
+                    - 2020-11-02 15:00:00+00:00
+                    - 2020-11-02 16:00:00+00:00
+                    - 2020-11-02 17:00:00+00:00
+                    - 2020-11-02 18:00:00+00:00
+                    - 2020-11-02 19:00:00+00:00
+                    start: 1604260800
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    end: 1604347200
+                    interval: 3600
+                    limit: 168
+                    page: 1
+                    results:
+                    - 10
+                    - 11
+                    - 12
+                    - 12
+                    - 10
+                    - 9
+                    - 9
+                    - 9
+                    - 10
+                    - 10
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    rt:
+                    - 2020-11-01 20:00:00+00:00
+                    - 2020-11-01 21:00:00+00:00
+                    - 2020-11-01 22:00:00+00:00
+                    - 2020-11-01 23:00:00+00:00
+                    - 2020-11-02 00:00:00+00:00
+                    - 2020-11-02 01:00:00+00:00
+                    - 2020-11-02 02:00:00+00:00
+                    - 2020-11-02 03:00:00+00:00
+                    - 2020-11-02 04:00:00+00:00
+                    - 2020-11-02 05:00:00+00:00
+                    - 2020-11-02 06:00:00+00:00
+                    - 2020-11-02 07:00:00+00:00
+                    - 2020-11-02 08:00:00+00:00
+                    - 2020-11-02 09:00:00+00:00
+                    - 2020-11-02 10:00:00+00:00
+                    - 2020-11-02 11:00:00+00:00
+                    - 2020-11-02 12:00:00+00:00
+                    - 2020-11-02 13:00:00+00:00
+                    - 2020-11-02 14:00:00+00:00
+                    - 2020-11-02 15:00:00+00:00
+                    - 2020-11-02 16:00:00+00:00
+                    - 2020-11-02 17:00:00+00:00
+                    - 2020-11-02 18:00:00+00:00
+                    - 2020-11-02 19:00:00+00:00
+                    start: 1604260800
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_device_metrics'
+                - description: Time-series insight metric response for a device
+                  examples:
+                  - end: 1604347200
+                    interval: 3600
+                    limit: 168
+                    page: 1
+                    results:
+                    - 10
+                    - 11
+                    - 12
+                    - 12
+                    - 10
+                    - 9
+                    - 9
+                    - 9
+                    - 10
+                    - 10
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    rt:
+                    - 2020-11-01 20:00:00+00:00
+                    - 2020-11-01 21:00:00+00:00
+                    - 2020-11-01 22:00:00+00:00
+                    - 2020-11-01 23:00:00+00:00
+                    - 2020-11-02 00:00:00+00:00
+                    - 2020-11-02 01:00:00+00:00
+                    - 2020-11-02 02:00:00+00:00
+                    - 2020-11-02 03:00:00+00:00
+                    - 2020-11-02 04:00:00+00:00
+                    - 2020-11-02 05:00:00+00:00
+                    - 2020-11-02 06:00:00+00:00
+                    - 2020-11-02 07:00:00+00:00
+                    - 2020-11-02 08:00:00+00:00
+                    - 2020-11-02 09:00:00+00:00
+                    - 2020-11-02 10:00:00+00:00
+                    - 2020-11-02 11:00:00+00:00
+                    - 2020-11-02 12:00:00+00:00
+                    - 2020-11-02 13:00:00+00:00
+                    - 2020-11-02 14:00:00+00:00
+                    - 2020-11-02 15:00:00+00:00
+                    - 2020-11-02 16:00:00+00:00
+                    - 2020-11-02 17:00:00+00:00
+                    - 2020-11-02 18:00:00+00:00
+                    - 2020-11-02 19:00:00+00:00
+                    start: 1604260800
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    end: 1604347200
+                    interval: 3600
+                    limit: 168
+                    page: 1
+                    results:
+                    - 10
+                    - 11
+                    - 12
+                    - 12
+                    - 10
+                    - 9
+                    - 9
+                    - 9
+                    - 10
+                    - 10
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    rt:
+                    - 2020-11-01 20:00:00+00:00
+                    - 2020-11-01 21:00:00+00:00
+                    - 2020-11-01 22:00:00+00:00
+                    - 2020-11-01 23:00:00+00:00
+                    - 2020-11-02 00:00:00+00:00
+                    - 2020-11-02 01:00:00+00:00
+                    - 2020-11-02 02:00:00+00:00
+                    - 2020-11-02 03:00:00+00:00
+                    - 2020-11-02 04:00:00+00:00
+                    - 2020-11-02 05:00:00+00:00
+                    - 2020-11-02 06:00:00+00:00
+                    - 2020-11-02 07:00:00+00:00
+                    - 2020-11-02 08:00:00+00:00
+                    - 2020-11-02 09:00:00+00:00
+                    - 2020-11-02 10:00:00+00:00
+                    - 2020-11-02 11:00:00+00:00
+                    - 2020-11-02 12:00:00+00:00
+                    - 2020-11-02 13:00:00+00:00
+                    - 2020-11-02 14:00:00+00:00
+                    - 2020-11-02 15:00:00+00:00
+                    - 2020-11-02 16:00:00+00:00
+                    - 2020-11-02 17:00:00+00:00
+                    - 2020-11-02 18:00:00+00:00
+                    - 2020-11-02 19:00:00+00:00
+                    start: 1604260800
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/insights/mxedge/{device_mac}/{metric}:
+    parameters: []
+    get:
+      tags:
+      - Sites Insights
+      summary: getSiteInsightMetricsForMxEdge
+      description: 'Get MxEdge Insight Metrics
+
+        See metrics possibilities at List Insight Metrics'
+      operationId: getSiteInsightMetricsForMxEdge
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: metric
+        in: path
+        description: See [List Insight Metrics]($e/Constants%20Definitions/listInsightMetrics) for available metrics
+        required: true
+        schema:
+          type: string
+      - name: device_mac
+        in: path
+        description: ''
+        required: true
+        schema:
+          pattern: ^[0-9a-fA-F]{12}$
+          type: string
+          examples:
+          - 0000000000ab
+      - name: port_id
+        in: query
+        description: Port ID of the MxEdge device, e.g. `port0`. Can be used with metrics related to interfaces, e.g. `rx_bytes`.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - port0
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: interval
+        in: query
+        description: Aggregation works by giving a time range plus interval (e.g. 1d, 1h, 10m) where aggregation function would be applied to.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 10m
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: page
+        in: query
+        description: Select the page number to return when using page-based pagination; starts at `1`
+        style: form
+        explode: true
+        schema:
+          minimum: 1
+          type: integer
+          contentEncoding: int32
+          default: 1
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_device_metrics'
+                - description: Time-series insight metric response for a device
+                  examples:
+                  - end: 1604347200
+                    interval: 3600
+                    limit: 168
+                    page: 1
+                    results:
+                    - 10
+                    - 11
+                    - 12
+                    - 12
+                    - 10
+                    - 9
+                    - 9
+                    - 9
+                    - 10
+                    - 10
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    rt:
+                    - 2020-11-01 20:00:00+00:00
+                    - 2020-11-01 21:00:00+00:00
+                    - 2020-11-01 22:00:00+00:00
+                    - 2020-11-01 23:00:00+00:00
+                    - 2020-11-02 00:00:00+00:00
+                    - 2020-11-02 01:00:00+00:00
+                    - 2020-11-02 02:00:00+00:00
+                    - 2020-11-02 03:00:00+00:00
+                    - 2020-11-02 04:00:00+00:00
+                    - 2020-11-02 05:00:00+00:00
+                    - 2020-11-02 06:00:00+00:00
+                    - 2020-11-02 07:00:00+00:00
+                    - 2020-11-02 08:00:00+00:00
+                    - 2020-11-02 09:00:00+00:00
+                    - 2020-11-02 10:00:00+00:00
+                    - 2020-11-02 11:00:00+00:00
+                    - 2020-11-02 12:00:00+00:00
+                    - 2020-11-02 13:00:00+00:00
+                    - 2020-11-02 14:00:00+00:00
+                    - 2020-11-02 15:00:00+00:00
+                    - 2020-11-02 16:00:00+00:00
+                    - 2020-11-02 17:00:00+00:00
+                    - 2020-11-02 18:00:00+00:00
+                    - 2020-11-02 19:00:00+00:00
+                    start: 1604260800
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    end: 1604347200
+                    interval: 3600
+                    limit: 168
+                    page: 1
+                    results:
+                    - 10
+                    - 11
+                    - 12
+                    - 12
+                    - 10
+                    - 9
+                    - 9
+                    - 9
+                    - 10
+                    - 10
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    rt:
+                    - 2020-11-01 20:00:00+00:00
+                    - 2020-11-01 21:00:00+00:00
+                    - 2020-11-01 22:00:00+00:00
+                    - 2020-11-01 23:00:00+00:00
+                    - 2020-11-02 00:00:00+00:00
+                    - 2020-11-02 01:00:00+00:00
+                    - 2020-11-02 02:00:00+00:00
+                    - 2020-11-02 03:00:00+00:00
+                    - 2020-11-02 04:00:00+00:00
+                    - 2020-11-02 05:00:00+00:00
+                    - 2020-11-02 06:00:00+00:00
+                    - 2020-11-02 07:00:00+00:00
+                    - 2020-11-02 08:00:00+00:00
+                    - 2020-11-02 09:00:00+00:00
+                    - 2020-11-02 10:00:00+00:00
+                    - 2020-11-02 11:00:00+00:00
+                    - 2020-11-02 12:00:00+00:00
+                    - 2020-11-02 13:00:00+00:00
+                    - 2020-11-02 14:00:00+00:00
+                    - 2020-11-02 15:00:00+00:00
+                    - 2020-11-02 16:00:00+00:00
+                    - 2020-11-02 17:00:00+00:00
+                    - 2020-11-02 18:00:00+00:00
+                    - 2020-11-02 19:00:00+00:00
+                    start: 1604260800
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_device_metrics'
+                - description: Time-series insight metric response for a device
+                  examples:
+                  - end: 1604347200
+                    interval: 3600
+                    limit: 168
+                    page: 1
+                    results:
+                    - 10
+                    - 11
+                    - 12
+                    - 12
+                    - 10
+                    - 9
+                    - 9
+                    - 9
+                    - 10
+                    - 10
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    rt:
+                    - 2020-11-01 20:00:00+00:00
+                    - 2020-11-01 21:00:00+00:00
+                    - 2020-11-01 22:00:00+00:00
+                    - 2020-11-01 23:00:00+00:00
+                    - 2020-11-02 00:00:00+00:00
+                    - 2020-11-02 01:00:00+00:00
+                    - 2020-11-02 02:00:00+00:00
+                    - 2020-11-02 03:00:00+00:00
+                    - 2020-11-02 04:00:00+00:00
+                    - 2020-11-02 05:00:00+00:00
+                    - 2020-11-02 06:00:00+00:00
+                    - 2020-11-02 07:00:00+00:00
+                    - 2020-11-02 08:00:00+00:00
+                    - 2020-11-02 09:00:00+00:00
+                    - 2020-11-02 10:00:00+00:00
+                    - 2020-11-02 11:00:00+00:00
+                    - 2020-11-02 12:00:00+00:00
+                    - 2020-11-02 13:00:00+00:00
+                    - 2020-11-02 14:00:00+00:00
+                    - 2020-11-02 15:00:00+00:00
+                    - 2020-11-02 16:00:00+00:00
+                    - 2020-11-02 17:00:00+00:00
+                    - 2020-11-02 18:00:00+00:00
+                    - 2020-11-02 19:00:00+00:00
+                    start: 1604260800
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    end: 1604347200
+                    interval: 3600
+                    limit: 168
+                    page: 1
+                    results:
+                    - 10
+                    - 11
+                    - 12
+                    - 12
+                    - 10
+                    - 9
+                    - 9
+                    - 9
+                    - 10
+                    - 10
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    rt:
+                    - 2020-11-01 20:00:00+00:00
+                    - 2020-11-01 21:00:00+00:00
+                    - 2020-11-01 22:00:00+00:00
+                    - 2020-11-01 23:00:00+00:00
+                    - 2020-11-02 00:00:00+00:00
+                    - 2020-11-02 01:00:00+00:00
+                    - 2020-11-02 02:00:00+00:00
+                    - 2020-11-02 03:00:00+00:00
+                    - 2020-11-02 04:00:00+00:00
+                    - 2020-11-02 05:00:00+00:00
+                    - 2020-11-02 06:00:00+00:00
+                    - 2020-11-02 07:00:00+00:00
+                    - 2020-11-02 08:00:00+00:00
+                    - 2020-11-02 09:00:00+00:00
+                    - 2020-11-02 10:00:00+00:00
+                    - 2020-11-02 11:00:00+00:00
+                    - 2020-11-02 12:00:00+00:00
+                    - 2020-11-02 13:00:00+00:00
+                    - 2020-11-02 14:00:00+00:00
+                    - 2020-11-02 15:00:00+00:00
+                    - 2020-11-02 16:00:00+00:00
+                    - 2020-11-02 17:00:00+00:00
+                    - 2020-11-02 18:00:00+00:00
+                    - 2020-11-02 19:00:00+00:00
+                    start: 1604260800
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/insights/switch/{device_mac}/{metric}:
+    parameters: []
+    get:
+      tags:
+      - Sites Insights
+      summary: getSiteInsightMetricsForSwitch
+      description: 'Get Switch Insight Metrics
+
+        See metrics possibilities at List Insight Metrics'
+      operationId: getSiteInsightMetricsForSwitch
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: metric
+        in: path
+        description: See [List Insight Metrics]($e/Constants%20Definitions/listInsightMetrics) for available metrics
+        required: true
+        schema:
+          type: string
+      - name: device_mac
+        in: path
+        description: ''
+        required: true
+        schema:
+          pattern: ^[0-9a-fA-F]{12}$
+          type: string
+          examples:
+          - 0000000000ab
+      - name: port_id
+        in: query
+        description: Port ID of the switch device, e.g. `ge-0/0/1`. Can be used with metrics related to interfaces, e.g. `rx_bytes`.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - ge-0/0/1
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: interval
+        in: query
+        description: Aggregation works by giving a time range plus interval (e.g. 1d, 1h, 10m) where aggregation function would be applied to.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 10m
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: page
+        in: query
+        description: Select the page number to return when using page-based pagination; starts at `1`
+        style: form
+        explode: true
+        schema:
+          minimum: 1
+          type: integer
+          contentEncoding: int32
+          default: 1
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_device_metrics'
+                - description: Time-series insight metric response for a device
+                  examples:
+                  - end: 1604347200
+                    interval: 3600
+                    limit: 168
+                    page: 1
+                    results:
+                    - 10
+                    - 11
+                    - 12
+                    - 12
+                    - 10
+                    - 9
+                    - 9
+                    - 9
+                    - 10
+                    - 10
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    rt:
+                    - 2020-11-01 20:00:00+00:00
+                    - 2020-11-01 21:00:00+00:00
+                    - 2020-11-01 22:00:00+00:00
+                    - 2020-11-01 23:00:00+00:00
+                    - 2020-11-02 00:00:00+00:00
+                    - 2020-11-02 01:00:00+00:00
+                    - 2020-11-02 02:00:00+00:00
+                    - 2020-11-02 03:00:00+00:00
+                    - 2020-11-02 04:00:00+00:00
+                    - 2020-11-02 05:00:00+00:00
+                    - 2020-11-02 06:00:00+00:00
+                    - 2020-11-02 07:00:00+00:00
+                    - 2020-11-02 08:00:00+00:00
+                    - 2020-11-02 09:00:00+00:00
+                    - 2020-11-02 10:00:00+00:00
+                    - 2020-11-02 11:00:00+00:00
+                    - 2020-11-02 12:00:00+00:00
+                    - 2020-11-02 13:00:00+00:00
+                    - 2020-11-02 14:00:00+00:00
+                    - 2020-11-02 15:00:00+00:00
+                    - 2020-11-02 16:00:00+00:00
+                    - 2020-11-02 17:00:00+00:00
+                    - 2020-11-02 18:00:00+00:00
+                    - 2020-11-02 19:00:00+00:00
+                    start: 1604260800
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    end: 1604347200
+                    interval: 3600
+                    limit: 168
+                    page: 1
+                    results:
+                    - 10
+                    - 11
+                    - 12
+                    - 12
+                    - 10
+                    - 9
+                    - 9
+                    - 9
+                    - 10
+                    - 10
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    rt:
+                    - 2020-11-01 20:00:00+00:00
+                    - 2020-11-01 21:00:00+00:00
+                    - 2020-11-01 22:00:00+00:00
+                    - 2020-11-01 23:00:00+00:00
+                    - 2020-11-02 00:00:00+00:00
+                    - 2020-11-02 01:00:00+00:00
+                    - 2020-11-02 02:00:00+00:00
+                    - 2020-11-02 03:00:00+00:00
+                    - 2020-11-02 04:00:00+00:00
+                    - 2020-11-02 05:00:00+00:00
+                    - 2020-11-02 06:00:00+00:00
+                    - 2020-11-02 07:00:00+00:00
+                    - 2020-11-02 08:00:00+00:00
+                    - 2020-11-02 09:00:00+00:00
+                    - 2020-11-02 10:00:00+00:00
+                    - 2020-11-02 11:00:00+00:00
+                    - 2020-11-02 12:00:00+00:00
+                    - 2020-11-02 13:00:00+00:00
+                    - 2020-11-02 14:00:00+00:00
+                    - 2020-11-02 15:00:00+00:00
+                    - 2020-11-02 16:00:00+00:00
+                    - 2020-11-02 17:00:00+00:00
+                    - 2020-11-02 18:00:00+00:00
+                    - 2020-11-02 19:00:00+00:00
+                    start: 1604260800
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_device_metrics'
+                - description: Time-series insight metric response for a device
+                  examples:
+                  - end: 1604347200
+                    interval: 3600
+                    limit: 168
+                    page: 1
+                    results:
+                    - 10
+                    - 11
+                    - 12
+                    - 12
+                    - 10
+                    - 9
+                    - 9
+                    - 9
+                    - 10
+                    - 10
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    rt:
+                    - 2020-11-01 20:00:00+00:00
+                    - 2020-11-01 21:00:00+00:00
+                    - 2020-11-01 22:00:00+00:00
+                    - 2020-11-01 23:00:00+00:00
+                    - 2020-11-02 00:00:00+00:00
+                    - 2020-11-02 01:00:00+00:00
+                    - 2020-11-02 02:00:00+00:00
+                    - 2020-11-02 03:00:00+00:00
+                    - 2020-11-02 04:00:00+00:00
+                    - 2020-11-02 05:00:00+00:00
+                    - 2020-11-02 06:00:00+00:00
+                    - 2020-11-02 07:00:00+00:00
+                    - 2020-11-02 08:00:00+00:00
+                    - 2020-11-02 09:00:00+00:00
+                    - 2020-11-02 10:00:00+00:00
+                    - 2020-11-02 11:00:00+00:00
+                    - 2020-11-02 12:00:00+00:00
+                    - 2020-11-02 13:00:00+00:00
+                    - 2020-11-02 14:00:00+00:00
+                    - 2020-11-02 15:00:00+00:00
+                    - 2020-11-02 16:00:00+00:00
+                    - 2020-11-02 17:00:00+00:00
+                    - 2020-11-02 18:00:00+00:00
+                    - 2020-11-02 19:00:00+00:00
+                    start: 1604260800
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    end: 1604347200
+                    interval: 3600
+                    limit: 168
+                    page: 1
+                    results:
+                    - 10
+                    - 11
+                    - 12
+                    - 12
+                    - 10
+                    - 9
+                    - 9
+                    - 9
+                    - 10
+                    - 10
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    - 11
+                    - 11
+                    - 10
+                    rt:
+                    - 2020-11-01 20:00:00+00:00
+                    - 2020-11-01 21:00:00+00:00
+                    - 2020-11-01 22:00:00+00:00
+                    - 2020-11-01 23:00:00+00:00
+                    - 2020-11-02 00:00:00+00:00
+                    - 2020-11-02 01:00:00+00:00
+                    - 2020-11-02 02:00:00+00:00
+                    - 2020-11-02 03:00:00+00:00
+                    - 2020-11-02 04:00:00+00:00
+                    - 2020-11-02 05:00:00+00:00
+                    - 2020-11-02 06:00:00+00:00
+                    - 2020-11-02 07:00:00+00:00
+                    - 2020-11-02 08:00:00+00:00
+                    - 2020-11-02 09:00:00+00:00
+                    - 2020-11-02 10:00:00+00:00
+                    - 2020-11-02 11:00:00+00:00
+                    - 2020-11-02 12:00:00+00:00
+                    - 2020-11-02 13:00:00+00:00
+                    - 2020-11-02 14:00:00+00:00
+                    - 2020-11-02 15:00:00+00:00
+                    - 2020-11-02 16:00:00+00:00
+                    - 2020-11-02 17:00:00+00:00
+                    - 2020-11-02 18:00:00+00:00
+                    - 2020-11-02 19:00:00+00:00
+                    start: 1604260800
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    insight_metrics_results_item:
+      anyOf:
+      - type: number
+      - type: object
+      description: Insight metric result item, returned either as a number or an object depending on the requested metric
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    response_device_metrics:
+      title: response_device_metrics
+      required:
+      - end
+      - interval
+      - results
+      - start
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Epoch timestamp for the end of the metric query window
+          contentEncoding: int32
+        interval:
+          type: integer
+          description: Aggregation interval in seconds for each metric sample
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of metric samples returned in this page
+          contentEncoding: int32
+        page:
+          type: integer
+          description: Returned page number for paginated metric samples
+          contentEncoding: int32
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/response_device_metrics_results_items'
+          description: Metric values for the requested insight metric, aligned by position with the `rt` timestamps
+        rt:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Timestamps for the metric samples, aligned by position with the `results` values
+        start:
+          type: integer
+          description: Epoch timestamp for the start of the metric query window
+          contentEncoding: int32
+      description: Time-series insight metric response for a device
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_device_metrics_results_items:
+      oneOf:
+      - type: string
+      - type: integer
+        contentEncoding: int32
+      description: Device metric result value, returned as a string or integer
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    insight_metrics:
+      title: insight_metrics
+      required:
+      - end
+      - interval
+      - start
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Window end timestamp for the returned insight metrics
+          contentEncoding: int32
+        interval:
+          type: integer
+          description: Aggregation interval used for the metric results
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of insight metric result items returned
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/insight_metrics_results_item'
+          description: Metric result values for the requested insight metric
+        start:
+          type: integer
+          description: Window start timestamp for the returned insight metrics
+          contentEncoding: int32
+      description: Insight metric response for a requested time range and aggregation interval
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

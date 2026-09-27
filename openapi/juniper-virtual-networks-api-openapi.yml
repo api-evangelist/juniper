@@ -128,7 +128,7 @@ paths:
           description: Hostname or IP of the Apstra server
   /virtual-networks:
     get:
-      operationId: listVirtualNetworks
+      operationId: getVirtualNetworks
       summary: Juniper Networks List virtual networks
       description: Returns all virtual networks.
       tags:
@@ -150,8 +150,10 @@ paths:
                       $ref: '#/components/schemas/ResourceRef'
       security:
       - keystoneAuth: []
+      x-operation-id-source: normalized
+      x-operation-id-original: listVirtualNetworks
     post:
-      operationId: createVirtualNetwork
+      operationId: postVirtualNetworks
       summary: Juniper Networks Create virtual network
       description: Creates a new virtual network.
       tags:
@@ -177,6 +179,8 @@ paths:
                     $ref: '#/components/schemas/VirtualNetwork_2'
       security:
       - keystoneAuth: []
+      x-operation-id-source: normalized
+      x-operation-id-original: createVirtualNetwork
     servers:
     - url: https://{contrail_controller}:8082
       description: Contrail API Server
@@ -272,13 +276,6 @@ components:
       schema:
         type: string
         format: uuid
-    DetailParam:
-      name: detail
-      in: query
-      description: Return full object details instead of references
-      schema:
-        type: boolean
-        default: false
     ParentId:
       name: parent_id
       in: query
@@ -286,6 +283,13 @@ components:
       schema:
         type: string
         format: uuid
+    DetailParam:
+      name: detail
+      in: query
+      description: Return full object details instead of references
+      schema:
+        type: boolean
+        default: false
   schemas:
     VirtualNetwork:
       type: object

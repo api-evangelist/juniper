@@ -1,0 +1,1411 @@
+openapi: 3.2.0
+info:
+  title: Mist Orgs IDP Profiles API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Orgs IDP Profiles
+  description: An IDP profile is a set of predefined rules and actions that determine how the Intrusion Detection and Prevention (IDP) system handles network traffic.
+paths:
+  /api/v1/orgs/{org_id}/idpprofiles:
+    parameters: []
+    get:
+      tags:
+      - Orgs IDP Profiles
+      summary: listOrgIdpProfiles
+      description: List organization Intrusion Detection and Prevention (IDP) profiles, including their base profile and signature overwrite rules.
+      operationId: listOrgIdpProfiles
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: page
+        in: query
+        description: Select the page number to return when using page-based pagination; starts at `1`
+        style: form
+        explode: true
+        schema:
+          minimum: 1
+          type: integer
+          contentEncoding: int32
+          default: 1
+      responses:
+        '200':
+          description: Example response
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/idp_profile'
+                description: IDP profile records returned for an organization
+                examples:
+                - - base_profile: strict
+                    created_time: 0
+                    id: 874ca978-d736-4d4b-bc90-a49a29eec133
+                    modified_time: 0
+                    name: relaxed
+                    overwrites:
+                    - action: alert
+                      matching:
+                        attack_name:
+                        - HTTP:INVALID:HDR-FIELD
+                        dst_subnet:
+                        - 63.1.2.0/24
+                        severity:
+                        - major
+                contentMediaType: application/json
+              examples:
+                Idpprofiles:
+                  value:
+                  - base_profile: strict
+                    created_time: 0
+                    id: 874ca978-d736-4d4b-bc90-a49a29eec133
+                    modified_time: 0
+                    name: relaxed
+                    overwrites:
+                    - action: alert
+                      matching:
+                        attack_name:
+                        - HTTP:INVALID:HDR-FIELD
+                        dst_subnet:
+                        - 63.1.2.0/24
+                        severity:
+                        - major
+            application/vnd.api+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/idp_profile'
+                description: IDP profile records returned for an organization
+                examples:
+                - - base_profile: strict
+                    created_time: 0
+                    id: 874ca978-d736-4d4b-bc90-a49a29eec133
+                    modified_time: 0
+                    name: relaxed
+                    overwrites:
+                    - action: alert
+                      matching:
+                        attack_name:
+                        - HTTP:INVALID:HDR-FIELD
+                        dst_subnet:
+                        - 63.1.2.0/24
+                        severity:
+                        - major
+                contentMediaType: application/vnd.api+json
+              examples:
+                Idpprofiles:
+                  value:
+                  - base_profile: strict
+                    created_time: 0
+                    id: 874ca978-d736-4d4b-bc90-a49a29eec133
+                    modified_time: 0
+                    name: relaxed
+                    overwrites:
+                    - action: alert
+                      matching:
+                        attack_name:
+                        - HTTP:INVALID:HDR-FIELD
+                        dst_subnet:
+                        - 63.1.2.0/24
+                        severity:
+                        - major
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    post:
+      tags:
+      - Orgs IDP Profiles
+      summary: createOrgIdpProfile
+      description: Create an organization Intrusion Detection and Prevention (IDP) profile with a built-in base profile and optional signature overwrite rules.
+      operationId: createOrgIdpProfile
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/idp_profile'
+              - examples:
+                - base_profile: strict
+                  name: relaxed
+                  overwrites:
+                  - action: alert
+                    matching:
+                      attack_name:
+                      - HTTP:INVALID:HDR-FIELD
+                      dst_subnet:
+                      - 63.1.2.0/24
+                      severity:
+                      - major
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  base_profile: strict
+                  name: relaxed
+                  overwrites:
+                  - action: alert
+                    matching:
+                      attack_name:
+                      - HTTP:INVALID:HDR-FIELD
+                      dst_subnet:
+                      - 63.1.2.0/24
+                      severity:
+                      - major
+        required: false
+      responses:
+        '200':
+          description: Example response
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/idp_profile'
+                - description: Organization IDP profile with a base profile and targeted overwrite rules
+                  examples:
+                  - base_profile: strict
+                    created_time: 0
+                    id: 874ca978-d736-4d4b-bc90-a49a29eec133
+                    modified_time: 0
+                    name: relaxed
+                    overwrites:
+                    - action: alert
+                      matching:
+                        attack_name:
+                        - HTTP:INVALID:HDR-FIELD
+                        dst_subnet:
+                        - 63.1.2.0/24
+                        severity:
+                        - major
+                contentMediaType: application/json
+              examples:
+                Idpprofile:
+                  value:
+                    base_profile: strict
+                    created_time: 0
+                    id: 874ca978-d736-4d4b-bc90-a49a29eec133
+                    modified_time: 0
+                    name: relaxed
+                    overwrites:
+                    - action: alert
+                      matching:
+                        attack_name:
+                        - HTTP:INVALID:HDR-FIELD
+                        dst_subnet:
+                        - 63.1.2.0/24
+                        severity:
+                        - major
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/idp_profile'
+                - description: Organization IDP profile with a base profile and targeted overwrite rules
+                  examples:
+                  - base_profile: strict
+                    created_time: 0
+                    id: 874ca978-d736-4d4b-bc90-a49a29eec133
+                    modified_time: 0
+                    name: relaxed
+                    overwrites:
+                    - action: alert
+                      matching:
+                        attack_name:
+                        - HTTP:INVALID:HDR-FIELD
+                        dst_subnet:
+                        - 63.1.2.0/24
+                        severity:
+                        - major
+                contentMediaType: application/vnd.api+json
+              examples:
+                Idpprofile:
+                  value:
+                    base_profile: strict
+                    created_time: 0
+                    id: 874ca978-d736-4d4b-bc90-a49a29eec133
+                    modified_time: 0
+                    name: relaxed
+                    overwrites:
+                    - action: alert
+                      matching:
+                        attack_name:
+                        - HTTP:INVALID:HDR-FIELD
+                        dst_subnet:
+                        - 63.1.2.0/24
+                        severity:
+                        - major
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/idpprofiles/{idpprofile_id}:
+    parameters: []
+    delete:
+      tags:
+      - Orgs IDP Profiles
+      summary: deleteOrgIdpProfile
+      description: Delete an organization Intrusion Detection and Prevention (IDP) profile by profile ID.
+      operationId: deleteOrgIdpProfile
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: idpprofile_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    get:
+      tags:
+      - Orgs IDP Profiles
+      summary: getOrgIdpProfile
+      description: Retrieve the base profile and signature overwrite rules for a specific organization IDP profile.
+      operationId: getOrgIdpProfile
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: idpprofile_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: Example response
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/idp_profile'
+                - description: Organization IDP profile with a base profile and targeted overwrite rules
+                  examples:
+                  - base_profile: strict
+                    created_time: 0
+                    id: 874ca978-d736-4d4b-bc90-a49a29eec133
+                    modified_time: 0
+                    name: relaxed
+                    overwrites:
+                    - action: alert
+                      matching:
+                        attack_name:
+                        - HTTP:INVALID:HDR-FIELD
+                        dst_subnet:
+                        - 63.1.2.0/24
+                        severity:
+                        - major
+                contentMediaType: application/json
+              examples:
+                Idpprofile:
+                  value:
+                    base_profile: strict
+                    created_time: 0
+                    id: 874ca978-d736-4d4b-bc90-a49a29eec133
+                    modified_time: 0
+                    name: relaxed
+                    overwrites:
+                    - action: alert
+                      matching:
+                        attack_name:
+                        - HTTP:INVALID:HDR-FIELD
+                        dst_subnet:
+                        - 63.1.2.0/24
+                        severity:
+                        - major
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/idp_profile'
+                - description: Organization IDP profile with a base profile and targeted overwrite rules
+                  examples:
+                  - base_profile: strict
+                    created_time: 0
+                    id: 874ca978-d736-4d4b-bc90-a49a29eec133
+                    modified_time: 0
+                    name: relaxed
+                    overwrites:
+                    - action: alert
+                      matching:
+                        attack_name:
+                        - HTTP:INVALID:HDR-FIELD
+                        dst_subnet:
+                        - 63.1.2.0/24
+                        severity:
+                        - major
+                contentMediaType: application/vnd.api+json
+              examples:
+                Idpprofile:
+                  value:
+                    base_profile: strict
+                    created_time: 0
+                    id: 874ca978-d736-4d4b-bc90-a49a29eec133
+                    modified_time: 0
+                    name: relaxed
+                    overwrites:
+                    - action: alert
+                      matching:
+                        attack_name:
+                        - HTTP:INVALID:HDR-FIELD
+                        dst_subnet:
+                        - 63.1.2.0/24
+                        severity:
+                        - major
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    put:
+      tags:
+      - Orgs IDP Profiles
+      summary: updateOrgIdpProfile
+      description: Update an organization IDP profile, including its base profile and signature overwrite rules.
+      operationId: updateOrgIdpProfile
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: idpprofile_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/idp_profile'
+              - examples:
+                - base_profile: strict
+                  name: relaxed
+                  overwrites:
+                  - action: alert
+                    matching:
+                      attack_name:
+                      - HTTP:INVALID:HDR-FIELD
+                      dst_subnet:
+                      - 63.1.2.0/24
+                      severity:
+                      - major
+              contentMediaType: application/json
+            examples:
+              idpprofile:
+                value:
+                  base_profile: strict
+                  name: relaxed
+                  overwrites:
+                  - action: alert
+                    matching:
+                      attack_name:
+                      - HTTP:INVALID:HDR-FIELD
+                      dst_subnet:
+                      - 63.1.2.0/24
+                      severity:
+                      - major
+        required: false
+      responses:
+        '200':
+          description: Example response
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/idp_profile'
+                - description: Organization IDP profile with a base profile and targeted overwrite rules
+                  examples:
+                  - base_profile: strict
+                    created_time: 0
+                    id: 874ca978-d736-4d4b-bc90-a49a29eec133
+                    modified_time: 0
+                    name: relaxed
+                    overwrites:
+                    - action: alert
+                      matching:
+                        attack_name:
+                        - HTTP:INVALID:HDR-FIELD
+                        dst_subnet:
+                        - 63.1.2.0/24
+                        severity:
+                        - major
+                contentMediaType: application/json
+              examples:
+                Idpprofile:
+                  value:
+                    base_profile: strict
+                    created_time: 0
+                    id: 874ca978-d736-4d4b-bc90-a49a29eec133
+                    modified_time: 0
+                    name: relaxed
+                    overwrites:
+                    - action: alert
+                      matching:
+                        attack_name:
+                        - HTTP:INVALID:HDR-FIELD
+                        dst_subnet:
+                        - 63.1.2.0/24
+                        severity:
+                        - major
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/idp_profile'
+                - description: Organization IDP profile with a base profile and targeted overwrite rules
+                  examples:
+                  - base_profile: strict
+                    created_time: 0
+                    id: 874ca978-d736-4d4b-bc90-a49a29eec133
+                    modified_time: 0
+                    name: relaxed
+                    overwrites:
+                    - action: alert
+                      matching:
+                        attack_name:
+                        - HTTP:INVALID:HDR-FIELD
+                        dst_subnet:
+                        - 63.1.2.0/24
+                        severity:
+                        - major
+                contentMediaType: application/vnd.api+json
+              examples:
+                Idpprofile:
+                  value:
+                    base_profile: strict
+                    created_time: 0
+                    id: 874ca978-d736-4d4b-bc90-a49a29eec133
+                    modified_time: 0
+                    name: relaxed
+                    overwrites:
+                    - action: alert
+                      matching:
+                        attack_name:
+                        - HTTP:INVALID:HDR-FIELD
+                        dst_subnet:
+                        - 63.1.2.0/24
+                        severity:
+                        - major
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    idp_profile_matching_severity_value:
+      title: idp_profile_matching_severity_value
+      enum:
+      - critical
+      - info
+      - major
+      - minor
+      type: string
+      description: 'enum: `critical`, `info`, `major`, `minor`'
+      examples:
+      - major
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    idp_profile_base_profile2:
+      title: idp_profile_base_profile2
+      enum:
+      - critical
+      - standard
+      - strict
+      type: string
+      description: 'Built-in IDP baseline profile inherited before applying overwrites. enum: `critical`, `standard`, `strict`.'
+      examples:
+      - strict
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    idp_profile_matching2:
+      title: idp_profile_matching2
+      type: object
+      properties:
+        attack_name:
+          type: array
+          items:
+            type: string
+          description: Signature names matched by the IDP profile overwrite
+        dst_subnet:
+          type: array
+          items:
+            type: string
+          description: Destination subnets matched by the IDP profile overwrite
+        severity:
+          type: array
+          items:
+            $ref: '#/components/schemas/idp_profile_matching_severity_value'
+          description: Threat levels matched by the IDP profile overwrite
+      description: Criteria that select signatures for this overwrite rule
+    idp_profile_action2:
+      title: idp_profile_action2
+      enum:
+      - alert
+      - close
+      - drop
+      type: string
+      description: 'Enforcement action applied when this overwrite rule matches. enum: `alert`, `close`, `drop`.'
+      examples:
+      - alert
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    idp_profile:
+      title: idp_profile
+      type: object
+      properties:
+        base_profile:
+          allOf:
+          - $ref: '#/components/schemas/idp_profile_base_profile2'
+          - description: 'Built-in IDP baseline profile inherited before applying overwrites. enum: `critical`, `standard`, `strict`.'
+            examples:
+            - strict
+        created_time:
+          type: number
+          description: Timestamp when the IDP profile was created
+          readOnly: true
+        id:
+          type: string
+          description: Unique identifier of the IDP profile
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        modified_time:
+          type: number
+          description: Timestamp when the IDP profile was last modified
+          readOnly: true
+        name:
+          type: string
+          description: Display name of the IDP profile
+          examples:
+          - relaxed
+        org_id:
+          type: string
+          description: Owning organization for the IDP profile
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        overwrites:
+          type: array
+          items:
+            $ref: '#/components/schemas/idp_profile_overwrite'
+          description: IDP signature override rules applied on top of the base profile
+      description: Organization IDP profile with a base profile and targeted overwrite rules
+    idp_profile_overwrite:
+      title: idp_profile_overwrite
+      type: object
+      properties:
+        action:
+          allOf:
+          - $ref: '#/components/schemas/idp_profile_action2'
+          - description: 'Enforcement action applied when this overwrite rule matches. enum: `alert`, `close`, `drop`.'
+            examples:
+            - alert
+        matching:
+          allOf:
+          - $ref: '#/components/schemas/idp_profile_matching2'
+          - description: Criteria that select signatures for this overwrite rule
+        name:
+          type: string
+          description: Display name for this IDP profile overwrite rule
+      description: Override rule that changes the IDP action for matching signatures
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

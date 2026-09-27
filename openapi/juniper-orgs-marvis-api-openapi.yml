@@ -1,0 +1,426 @@
+openapi: 3.2.0
+info:
+  title: Mist Orgs Marvis API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Orgs Marvis
+  description: Marvis is an AI-driven, interactive virtual network assistant that streamlines network operations, simplifies troubleshooting, and provides an enhanced user experience.
+paths:
+  /api/v1/orgs/{org_id}/troubleshoot:
+    parameters: []
+    get:
+      tags:
+      - Orgs Marvis
+      summary: troubleshootOrg
+      description: 'Troubleshoot sites, devices, clients, and wired clients for maximum of last 7 days from current time. See search APIs for device information:
+
+        - search Device
+
+        - search Wireless Client
+
+        - search Wired Client
+
+        - search Wan Client
+
+
+        **NOTE**: requires Marvis subscription license'
+      operationId: troubleshootOrg
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: mac
+        in: query
+        description: '**required** when troubleshooting device or a client'
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: site_id
+        in: query
+        description: '**required** when troubleshooting site'
+        style: form
+        explode: true
+        schema:
+          type: string
+          contentEncoding: uuid
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: type
+        in: query
+        description: 'When troubleshooting site, type of network to troubleshoot. enum: `wan`, `wired`, `wireless`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/troubleshoot_type'
+          - description: 'When troubleshooting site, type of network to troubleshoot. enum: `wan`, `wired`, `wireless`'
+      responses:
+        '200':
+          description: Troubleshoot Response
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_troubleshoot'
+                - description: Organization troubleshooting response for the requested time window
+                  examples:
+                  - end: 1655151856
+                    results:
+                    - category: client
+                      reason: slow association
+                      recommendation: Ensure the IP helper-address is configured on the VLAN interface.
+                      text: Clients of the AP had slow association 8% of the time on Bhavabhi and 5 GHz. ...
+                    start: 1655065456
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    end: 1655151856
+                    results:
+                    - category: client
+                      reason: slow association
+                      recommendation: Ensure the IP helper-address is configured on the VLAN interface.
+                      text: Clients of the AP had slow association 8% of the time on Bhavabhi and 5 GHz. ...
+                    start: 1655065456
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_troubleshoot'
+                - description: Organization troubleshooting response for the requested time window
+                  examples:
+                  - end: 1655151856
+                    results:
+                    - category: client
+                      reason: slow association
+                      recommendation: Ensure the IP helper-address is configured on the VLAN interface.
+                      text: Clients of the AP had slow association 8% of the time on Bhavabhi and 5 GHz. ...
+                    start: 1655065456
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    end: 1655151856
+                    results:
+                    - category: client
+                      reason: slow association
+                      recommendation: Ensure the IP helper-address is configured on the VLAN interface.
+                      text: Clients of the AP had slow association 8% of the time on Bhavabhi and 5 GHz. ...
+                    start: 1655065456
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    response_troubleshoot:
+      title: response_troubleshoot
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Epoch timestamp, in seconds, for the end of the troubleshooting window
+          contentEncoding: int32
+          examples:
+          - 1655151856
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/response_troubleshoot_item'
+          description: Troubleshooting findings returned for the requested target and window
+        start:
+          type: integer
+          description: Epoch timestamp, in seconds, for the start of the troubleshooting window
+          contentEncoding: int32
+          examples:
+          - 1655065456
+      description: Organization troubleshooting response for the requested time window
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    troubleshoot_type:
+      title: troubleshoot_type
+      enum:
+      - wan
+      - wired
+      - wireless
+      type: string
+      description: 'enum: `wan`, `wired`, `wireless`'
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_troubleshoot_item:
+      title: response_troubleshoot_item
+      type: object
+      properties:
+        category:
+          type: string
+          description: Entity category associated with the troubleshooting finding
+          examples:
+          - client
+        reason:
+          type: string
+          description: Issue reason identified by the troubleshooting analysis
+          examples:
+          - slow association
+        recommendation:
+          type: string
+          description: Recommended remediation guidance for the troubleshooting finding
+          examples:
+          - Ensure the IP helper-address is configured on the VLAN interface.
+        text:
+          type: string
+          description: Human-readable explanation of the troubleshooting finding
+          examples:
+          - Clients of the AP had slow association 8% of the time on Bhavabhi and 5 GHz. ...
+      description: Troubleshooting finding with reason and remediation guidance
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

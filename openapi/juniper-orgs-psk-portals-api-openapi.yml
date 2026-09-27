@@ -1,0 +1,3253 @@
+openapi: 3.2.0
+info:
+  title: Mist Orgs Psk Portals API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Orgs Psk Portals
+  description: 'PSK Self-Service Portals are for
+
+    1. **Wi-Fi users** who want to connect to a WLAN with personal PSK, they''re told to connect to a URL where they can login (likely through company\u2019s SSO) and get the Wi-Fi Name / Passphrase - required input fields name, email so we can generate PSK
+
+    2. **PSK Admins** (they don''t have access to normal Network Admin Portal)
+
+
+    When a PSK portal is created, an unique URL will be generated (e.g. https://psk.mist.com/xxxxxx)'
+paths:
+  /api/v1/orgs/{org_id}/pskportals:
+    parameters: []
+    get:
+      tags:
+      - Orgs Psk Portals
+      summary: listOrgPskPortals
+      description: List self-service PSK Portal configurations in the organization, including portal mode, SSID, authentication, expiry, and passphrase rules.
+      operationId: listOrgPskPortals
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: page
+        in: query
+        description: Select the page number to return when using page-based pagination; starts at `1`
+        style: form
+        explode: true
+        schema:
+          minimum: 1
+          type: integer
+          contentEncoding: int32
+          default: 1
+      responses:
+        '200':
+          description: Example response
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/psk_portal'
+                description: List of PSK portal configurations
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/psk_portal'
+                description: List of PSK portal configurations
+                contentMediaType: application/vnd.api+json
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    post:
+      tags:
+      - Orgs Psk Portals
+      summary: createOrgPskPortal
+      description: Create a self-service PSK Portal configuration for issuing personal PSKs, including SSID, BYOD or admin mode, SSO or sponsor authentication, passphrase rules, and expiry settings.
+      operationId: createOrgPskPortal
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/psk_portal'
+              - examples:
+                - auth: sso
+                  expire_time: 262800
+                  expiry_notification_time: 2
+                  hide_psks_created_by_other_admins: false
+                  max_usage: 1
+                  name: USR-test
+                  notify_expiry: false
+                  passphrase_rules:
+                    alphabets_enabled: true
+                    length: 8
+                    numerics_enabled: true
+                    symbols: ()[]{}_%@#&$
+                    symbols_enabled: true
+                  ssid: USR-test
+                  sso:
+                    idp_cert: '-----BEGIN CERTIFICATE-----
+
+                      MIIDqDCCApCgA...-----END CERTIFICATE-----'
+                    idp_sign_algo: sha256
+                    idp_sso_url: https://dev-00000000.okta.com/app/dev-00000000/a6b88bec5ab7/sso/saml
+                    issuer: http://www.okta.com/a6b88bec5ab7
+                    nameid_format: email
+                  type: byod
+                  vlan_id: 42
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  auth: sso
+                  expire_time: 262800
+                  expiry_notification_time: 2
+                  hide_psks_created_by_other_admins: false
+                  max_usage: 1
+                  name: USR-test
+                  notify_expiry: false
+                  passphrase_rules:
+                    alphabets_enabled: true
+                    length: 8
+                    numerics_enabled: true
+                    symbols: ()[]{}_%@#&$
+                    symbols_enabled: true
+                  ssid: USR-test
+                  sso:
+                    idp_cert: '-----BEGIN CERTIFICATE-----
+
+                      MIIDqDCCApCgA...-----END CERTIFICATE-----'
+                    idp_sign_algo: sha256
+                    idp_sso_url: https://dev-00000000.okta.com/app/dev-00000000/a6b88bec5ab7/sso/saml
+                    issuer: http://www.okta.com/a6b88bec5ab7
+                    nameid_format: email
+                  type: byod
+                  vlan_id: 42
+        required: false
+      responses:
+        '200':
+          description: Example response
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/psk_portal'
+                - description: Self-service portal configuration for issuing personal PSKs
+                  examples:
+                  - auth: sso
+                    created_time: 1727272316
+                    expire_time: 262800
+                    expiry_notification_time: 2
+                    hide_psks_created_by_other_admins: false
+                    id: 86ef73e5-e360-4e33-abd8-c2da7b11cbd6
+                    max_usage: 1
+                    modified_time: 1727272316
+                    name: USR-test
+                    notify_expiry: false
+                    org_id: 8f6c24d5-b618-4c30-b6ff-b2febc1078ab
+                    passphrase_rules:
+                      alphabets_enabled: true
+                      length: 8
+                      numerics_enabled: true
+                      symbols: ()[]{}_%@#&$
+                      symbols_enabled: true
+                    role: ''
+                    ssid: USR-test
+                    sso:
+                      idp_cert: '-----BEGIN CERTIFICATE-----
+
+                        MIIDqDCCApCgA...-----END CERTIFICATE-----'
+                      idp_sign_algo: sha256
+                      idp_sso_url: https://dev-00000000.okta.com/app/dev-00000000/a6b88bec5ab7/sso/saml
+                      issuer: http://www.okta.com/a6b88bec5ab7
+                      nameid_format: email
+                    type: byod
+                    ui_url: https://pskportal.gc1.mist.com/#!byod/a6b88bec-5ab7-41ae-a34c-44ff52a8b81d
+                    vlan_id: 123
+                contentMediaType: application/json
+              examples:
+                PSK Portal:
+                  value:
+                    auth: sso
+                    created_time: 1727272316
+                    expire_time: 262800
+                    expiry_notification_time: 2
+                    hide_psks_created_by_other_admins: false
+                    id: 86ef73e5-e360-4e33-abd8-c2da7b11cbd6
+                    max_usage: 1
+                    modified_time: 1727272316
+                    name: USR-test
+                    notify_expiry: false
+                    org_id: 8f6c24d5-b618-4c30-b6ff-b2febc1078ab
+                    passphrase_rules:
+                      alphabets_enabled: true
+                      length: 8
+                      numerics_enabled: true
+                      symbols: ()[]{}_%@#&$
+                      symbols_enabled: true
+                    role: ''
+                    ssid: USR-test
+                    sso:
+                      idp_cert: '-----BEGIN CERTIFICATE-----
+
+                        MIIDqDCCApCgA...-----END CERTIFICATE-----'
+                      idp_sign_algo: sha256
+                      idp_sso_url: https://dev-00000000.okta.com/app/dev-00000000/a6b88bec5ab7/sso/saml
+                      issuer: http://www.okta.com/a6b88bec5ab7
+                      nameid_format: email
+                    type: byod
+                    ui_url: https://pskportal.gc1.mist.com/#!byod/a6b88bec-5ab7-41ae-a34c-44ff52a8b81d
+                    vlan_id: 123
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/psk_portal'
+                - description: Self-service portal configuration for issuing personal PSKs
+                  examples:
+                  - auth: sso
+                    created_time: 1727272316
+                    expire_time: 262800
+                    expiry_notification_time: 2
+                    hide_psks_created_by_other_admins: false
+                    id: 86ef73e5-e360-4e33-abd8-c2da7b11cbd6
+                    max_usage: 1
+                    modified_time: 1727272316
+                    name: USR-test
+                    notify_expiry: false
+                    org_id: 8f6c24d5-b618-4c30-b6ff-b2febc1078ab
+                    passphrase_rules:
+                      alphabets_enabled: true
+                      length: 8
+                      numerics_enabled: true
+                      symbols: ()[]{}_%@#&$
+                      symbols_enabled: true
+                    role: ''
+                    ssid: USR-test
+                    sso:
+                      idp_cert: '-----BEGIN CERTIFICATE-----
+
+                        MIIDqDCCApCgA...-----END CERTIFICATE-----'
+                      idp_sign_algo: sha256
+                      idp_sso_url: https://dev-00000000.okta.com/app/dev-00000000/a6b88bec5ab7/sso/saml
+                      issuer: http://www.okta.com/a6b88bec5ab7
+                      nameid_format: email
+                    type: byod
+                    ui_url: https://pskportal.gc1.mist.com/#!byod/a6b88bec-5ab7-41ae-a34c-44ff52a8b81d
+                    vlan_id: 123
+                contentMediaType: application/vnd.api+json
+              examples:
+                PSK Portal:
+                  value:
+                    auth: sso
+                    created_time: 1727272316
+                    expire_time: 262800
+                    expiry_notification_time: 2
+                    hide_psks_created_by_other_admins: false
+                    id: 86ef73e5-e360-4e33-abd8-c2da7b11cbd6
+                    max_usage: 1
+                    modified_time: 1727272316
+                    name: USR-test
+                    notify_expiry: false
+                    org_id: 8f6c24d5-b618-4c30-b6ff-b2febc1078ab
+                    passphrase_rules:
+                      alphabets_enabled: true
+                      length: 8
+                      numerics_enabled: true
+                      symbols: ()[]{}_%@#&$
+                      symbols_enabled: true
+                    role: ''
+                    ssid: USR-test
+                    sso:
+                      idp_cert: '-----BEGIN CERTIFICATE-----
+
+                        MIIDqDCCApCgA...-----END CERTIFICATE-----'
+                      idp_sign_algo: sha256
+                      idp_sso_url: https://dev-00000000.okta.com/app/dev-00000000/a6b88bec5ab7/sso/saml
+                      issuer: http://www.okta.com/a6b88bec5ab7
+                      nameid_format: email
+                    type: byod
+                    ui_url: https://pskportal.gc1.mist.com/#!byod/a6b88bec-5ab7-41ae-a34c-44ff52a8b81d
+                    vlan_id: 123
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/pskportals/logs:
+    parameters: []
+    get:
+      tags:
+      - Orgs Psk Portals
+      summary: listOrgPskPortalLogs
+      description: List PSK Portal log entries in the organization for the selected time range.
+      operationId: listOrgPskPortalLogs
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: page
+        in: query
+        description: Select the page number to return when using page-based pagination; starts at `1`
+        style: form
+        explode: true
+        schema:
+          minimum: 1
+          type: integer
+          contentEncoding: int32
+          default: 1
+      responses:
+        '200':
+          description: Example response
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_psk_portal_logs_search'
+                - description: Paginated response for organization PSK Portal log search results
+                  examples:
+                  - end: 1428954000
+                    limit: 100
+                    results:
+                    - id: 8a3dcaa7-80e3-4bb0-a75b-7bc6322cfd09
+                      message: Rotate PSK test@mist.com
+                      name_id: test@mist.com
+                      org_id: 2818e386-8dec-2562-9ede-5b8a0fbbdc71
+                      psk_id: 608fe603-f9f0-4ce9-9473-04ef6c6ea749
+                      psk_name: test@mist.com
+                      pskportal_id: c1742c09-af35-4161-96ef-7dc65c6d5674
+                      timestamp: 1686346104.096
+                    start: 1428939600
+                    total: 135
+                contentMediaType: application/json
+              examples:
+                PSK Portal Logs:
+                  value:
+                    end: 1428954000
+                    limit: 100
+                    results:
+                    - id: 8a3dcaa7-80e3-4bb0-a75b-7bc6322cfd09
+                      message: Rotate PSK test@mist.com
+                      name_id: test@mist.com
+                      org_id: 2818e386-8dec-2562-9ede-5b8a0fbbdc71
+                      psk_id: 608fe603-f9f0-4ce9-9473-04ef6c6ea749
+                      psk_name: test@mist.com
+                      pskportal_id: c1742c09-af35-4161-96ef-7dc65c6d5674
+                      timestamp: 1686346104.096
+                    start: 1428939600
+                    total: 135
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_psk_portal_logs_search'
+                - description: Paginated response for organization PSK Portal log search results
+                  examples:
+                  - end: 1428954000
+                    limit: 100
+                    results:
+                    - id: 8a3dcaa7-80e3-4bb0-a75b-7bc6322cfd09
+                      message: Rotate PSK test@mist.com
+                      name_id: test@mist.com
+                      org_id: 2818e386-8dec-2562-9ede-5b8a0fbbdc71
+                      psk_id: 608fe603-f9f0-4ce9-9473-04ef6c6ea749
+                      psk_name: test@mist.com
+                      pskportal_id: c1742c09-af35-4161-96ef-7dc65c6d5674
+                      timestamp: 1686346104.096
+                    start: 1428939600
+                    total: 135
+                contentMediaType: application/vnd.api+json
+              examples:
+                PSK Portal Logs:
+                  value:
+                    end: 1428954000
+                    limit: 100
+                    results:
+                    - id: 8a3dcaa7-80e3-4bb0-a75b-7bc6322cfd09
+                      message: Rotate PSK test@mist.com
+                      name_id: test@mist.com
+                      org_id: 2818e386-8dec-2562-9ede-5b8a0fbbdc71
+                      psk_id: 608fe603-f9f0-4ce9-9473-04ef6c6ea749
+                      psk_name: test@mist.com
+                      pskportal_id: c1742c09-af35-4161-96ef-7dc65c6d5674
+                      timestamp: 1686346104.096
+                    start: 1428939600
+                    total: 135
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/pskportals/logs/count:
+    parameters: []
+    get:
+      tags:
+      - Orgs Psk Portals
+      summary: countOrgPskPortalLogs
+      description: Count PSK Portal log entries across the organization, optionally grouped by `distinct` and filtered by time range.
+      operationId: countOrgPskPortalLogs
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: distinct
+        in: query
+        description: 'Field used to group this count response. enum: `admin_id`, `admin_name`, `psk_id`, `psk_name`, `pskportal_id`, `user_id`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/org_psk_portal_logs_count_distinct'
+          - description: 'Field used to group this count response. enum: `admin_id`, `admin_name`, `psk_id`, `psk_name`, `pskportal_id`, `user_id`'
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      responses:
+        '200':
+          description: Result of Count
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_count'
+                - description: Distinct count response for time-bounded search results
+                  examples:
+                  - distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_count'
+                - description: Distinct count response for time-bounded search results
+                  examples:
+                  - distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/pskportals/logs/search:
+    parameters: []
+    get:
+      tags:
+      - Orgs Psk Portals
+      summary: searchOrgPskPortalLogs
+      description: Search PSK Portal log entries across the organization with filters for PSK, portal, admin, SSO NameID, and time range.
+      operationId: searchOrgPskPortalLogs
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: psk_name
+        in: query
+        description: Filter PSK portal log results by PSK name
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: psk_id
+        in: query
+        description: Filter PSK portal log results by PSK identifier
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: pskportal_id
+        in: query
+        description: Filter PSK portal log results by PSK portal identifier
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: id
+        in: query
+        description: Filter results by identifier
+        style: form
+        explode: true
+        schema:
+          type: string
+          contentEncoding: uuid
+      - name: admin_name
+        in: query
+        description: Filter audit log results by administrator name
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: admin_id
+        in: query
+        description: Filter audit log results by administrator identifier
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: name_id
+        in: query
+        description: Filter results by name id
+        style: form
+        explode: true
+        schema:
+          type: string
+          contentEncoding: uuid
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: sort
+        in: query
+        description: On which field the list should be sorted, -prefix represents DESC order
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: timestamp
+          examples:
+          - -site_id
+      - name: search_after
+        in: query
+        description: Pagination cursor for retrieving subsequent pages of results. This value is automatically populated by Mist in the `next` URL from the previous response and should not be manually constructed.
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Example response
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_psk_portal_logs_search'
+                - description: Paginated response for organization PSK Portal log search results
+                  examples:
+                  - end: 1428954000
+                    limit: 100
+                    results:
+                    - id: 8a3dcaa7-80e3-4bb0-a75b-7bc6322cfd09
+                      message: Rotate PSK test@mist.com
+                      name_id: test@mist.com
+                      org_id: 2818e386-8dec-2562-9ede-5b8a0fbbdc71
+                      psk_id: 608fe603-f9f0-4ce9-9473-04ef6c6ea749
+                      psk_name: test@mist.com
+                      pskportal_id: c1742c09-af35-4161-96ef-7dc65c6d5674
+                      timestamp: 1686346104.096
+                    start: 1428939600
+                    total: 135
+                contentMediaType: application/json
+              examples:
+                PSK Portal Logs:
+                  value:
+                    end: 1428954000
+                    limit: 100
+                    results:
+                    - id: 8a3dcaa7-80e3-4bb0-a75b-7bc6322cfd09
+                      message: Rotate PSK test@mist.com
+                      name_id: test@mist.com
+                      org_id: 2818e386-8dec-2562-9ede-5b8a0fbbdc71
+                      psk_id: 608fe603-f9f0-4ce9-9473-04ef6c6ea749
+                      psk_name: test@mist.com
+                      pskportal_id: c1742c09-af35-4161-96ef-7dc65c6d5674
+                      timestamp: 1686346104.096
+                    start: 1428939600
+                    total: 135
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_psk_portal_logs_search'
+                - description: Paginated response for organization PSK Portal log search results
+                  examples:
+                  - end: 1428954000
+                    limit: 100
+                    results:
+                    - id: 8a3dcaa7-80e3-4bb0-a75b-7bc6322cfd09
+                      message: Rotate PSK test@mist.com
+                      name_id: test@mist.com
+                      org_id: 2818e386-8dec-2562-9ede-5b8a0fbbdc71
+                      psk_id: 608fe603-f9f0-4ce9-9473-04ef6c6ea749
+                      psk_name: test@mist.com
+                      pskportal_id: c1742c09-af35-4161-96ef-7dc65c6d5674
+                      timestamp: 1686346104.096
+                    start: 1428939600
+                    total: 135
+                contentMediaType: application/vnd.api+json
+              examples:
+                PSK Portal Logs:
+                  value:
+                    end: 1428954000
+                    limit: 100
+                    results:
+                    - id: 8a3dcaa7-80e3-4bb0-a75b-7bc6322cfd09
+                      message: Rotate PSK test@mist.com
+                      name_id: test@mist.com
+                      org_id: 2818e386-8dec-2562-9ede-5b8a0fbbdc71
+                      psk_id: 608fe603-f9f0-4ce9-9473-04ef6c6ea749
+                      psk_name: test@mist.com
+                      pskportal_id: c1742c09-af35-4161-96ef-7dc65c6d5674
+                      timestamp: 1686346104.096
+                    start: 1428939600
+                    total: 135
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/pskportals/{pskportal_id}:
+    parameters: []
+    delete:
+      tags:
+      - Orgs Psk Portals
+      summary: deleteOrgPskPortal
+      description: Delete a PSK Portal configuration by portal ID, removing the self-service entry point for issuing PSKs through that portal.
+      operationId: deleteOrgPskPortal
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: pskportal_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    get:
+      tags:
+      - Orgs Psk Portals
+      summary: getOrgPskPortal
+      description: Retrieve PSK Portal configuration details, including SSID, mode, authentication, SSO, passphrase, expiry, notification, and template URLs.
+      operationId: getOrgPskPortal
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: pskportal_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: Example response
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/psk_portal'
+                - description: Self-service portal configuration for issuing personal PSKs
+                  examples:
+                  - auth: sso
+                    created_time: 1727272316
+                    expire_time: 262800
+                    expiry_notification_time: 2
+                    hide_psks_created_by_other_admins: false
+                    id: 86ef73e5-e360-4e33-abd8-c2da7b11cbd6
+                    max_usage: 1
+                    modified_time: 1727272316
+                    name: USR-test
+                    notify_expiry: false
+                    org_id: 8f6c24d5-b618-4c30-b6ff-b2febc1078ab
+                    passphrase_rules:
+                      alphabets_enabled: true
+                      length: 8
+                      numerics_enabled: true
+                      symbols: ()[]{}_%@#&$
+                      symbols_enabled: true
+                    role: ''
+                    ssid: USR-test
+                    sso:
+                      idp_cert: '-----BEGIN CERTIFICATE-----
+
+                        MIIDqDCCApCgA...-----END CERTIFICATE-----'
+                      idp_sign_algo: sha256
+                      idp_sso_url: https://dev-00000000.okta.com/app/dev-00000000/a6b88bec5ab7/sso/saml
+                      issuer: http://www.okta.com/a6b88bec5ab7
+                      nameid_format: email
+                    type: byod
+                    ui_url: https://pskportal.gc1.mist.com/#!byod/a6b88bec-5ab7-41ae-a34c-44ff52a8b81d
+                    vlan_id: 123
+                contentMediaType: application/json
+              examples:
+                PSK Portal:
+                  value:
+                    auth: sso
+                    created_time: 1727272316
+                    expire_time: 262800
+                    expiry_notification_time: 2
+                    hide_psks_created_by_other_admins: false
+                    id: 86ef73e5-e360-4e33-abd8-c2da7b11cbd6
+                    max_usage: 1
+                    modified_time: 1727272316
+                    name: USR-test
+                    notify_expiry: false
+                    org_id: 8f6c24d5-b618-4c30-b6ff-b2febc1078ab
+                    passphrase_rules:
+                      alphabets_enabled: true
+                      length: 8
+                      numerics_enabled: true
+                      symbols: ()[]{}_%@#&$
+                      symbols_enabled: true
+                    role: ''
+                    ssid: USR-test
+                    sso:
+                      idp_cert: '-----BEGIN CERTIFICATE-----
+
+                        MIIDqDCCApCgA...-----END CERTIFICATE-----'
+                      idp_sign_algo: sha256
+                      idp_sso_url: https://dev-00000000.okta.com/app/dev-00000000/a6b88bec5ab7/sso/saml
+                      issuer: http://www.okta.com/a6b88bec5ab7
+                      nameid_format: email
+                    type: byod
+                    ui_url: https://pskportal.gc1.mist.com/#!byod/a6b88bec-5ab7-41ae-a34c-44ff52a8b81d
+                    vlan_id: 123
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/psk_portal'
+                - description: Self-service portal configuration for issuing personal PSKs
+                  examples:
+                  - auth: sso
+                    created_time: 1727272316
+                    expire_time: 262800
+                    expiry_notification_time: 2
+                    hide_psks_created_by_other_admins: false
+                    id: 86ef73e5-e360-4e33-abd8-c2da7b11cbd6
+                    max_usage: 1
+                    modified_time: 1727272316
+                    name: USR-test
+                    notify_expiry: false
+                    org_id: 8f6c24d5-b618-4c30-b6ff-b2febc1078ab
+                    passphrase_rules:
+                      alphabets_enabled: true
+                      length: 8
+                      numerics_enabled: true
+                      symbols: ()[]{}_%@#&$
+                      symbols_enabled: true
+                    role: ''
+                    ssid: USR-test
+                    sso:
+                      idp_cert: '-----BEGIN CERTIFICATE-----
+
+                        MIIDqDCCApCgA...-----END CERTIFICATE-----'
+                      idp_sign_algo: sha256
+                      idp_sso_url: https://dev-00000000.okta.com/app/dev-00000000/a6b88bec5ab7/sso/saml
+                      issuer: http://www.okta.com/a6b88bec5ab7
+                      nameid_format: email
+                    type: byod
+                    ui_url: https://pskportal.gc1.mist.com/#!byod/a6b88bec-5ab7-41ae-a34c-44ff52a8b81d
+                    vlan_id: 123
+                contentMediaType: application/vnd.api+json
+              examples:
+                PSK Portal:
+                  value:
+                    auth: sso
+                    created_time: 1727272316
+                    expire_time: 262800
+                    expiry_notification_time: 2
+                    hide_psks_created_by_other_admins: false
+                    id: 86ef73e5-e360-4e33-abd8-c2da7b11cbd6
+                    max_usage: 1
+                    modified_time: 1727272316
+                    name: USR-test
+                    notify_expiry: false
+                    org_id: 8f6c24d5-b618-4c30-b6ff-b2febc1078ab
+                    passphrase_rules:
+                      alphabets_enabled: true
+                      length: 8
+                      numerics_enabled: true
+                      symbols: ()[]{}_%@#&$
+                      symbols_enabled: true
+                    role: ''
+                    ssid: USR-test
+                    sso:
+                      idp_cert: '-----BEGIN CERTIFICATE-----
+
+                        MIIDqDCCApCgA...-----END CERTIFICATE-----'
+                      idp_sign_algo: sha256
+                      idp_sso_url: https://dev-00000000.okta.com/app/dev-00000000/a6b88bec5ab7/sso/saml
+                      issuer: http://www.okta.com/a6b88bec5ab7
+                      nameid_format: email
+                    type: byod
+                    ui_url: https://pskportal.gc1.mist.com/#!byod/a6b88bec-5ab7-41ae-a34c-44ff52a8b81d
+                    vlan_id: 123
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    put:
+      tags:
+      - Orgs Psk Portals
+      summary: updateOrgPskPortal
+      description: Update a PSK Portal configuration, including SSID, mode, authentication, SSO, passphrase, expiry, notification, and template settings.
+      operationId: updateOrgPskPortal
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: pskportal_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/psk_portal'
+              - examples:
+                - auth: sso
+                  expire_time: 262800
+                  expiry_notification_time: 2
+                  hide_psks_created_by_other_admins: false
+                  max_usage: 1
+                  name: USR-test
+                  notify_expiry: false
+                  passphrase_rules:
+                    alphabets_enabled: true
+                    length: 8
+                    numerics_enabled: true
+                    symbols: ()[]{}_%@#&$
+                    symbols_enabled: true
+                  sponsors:
+                    idp_cert: '-----BEGIN CERTIFICATE-----
+
+                      MIIDqDCCApCgA...-----END CERTIFICATE-----'
+                    idp_sign_algo: sha256
+                    idp_sso_url: https://dev-00000000.okta.com/app/dev-00000000/a6b88bec5ab7/sso/saml
+                    issuer: http://www.okta.com/a6b88bec5ab7
+                    nameid_format: email
+                  ssid: USR-test
+                  type: byod
+                  vlan_id: nu42ll
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  auth: sso
+                  expire_time: 262800
+                  expiry_notification_time: 2
+                  hide_psks_created_by_other_admins: false
+                  max_usage: 1
+                  name: USR-test
+                  notify_expiry: false
+                  passphrase_rules:
+                    alphabets_enabled: true
+                    length: 8
+                    numerics_enabled: true
+                    symbols: ()[]{}_%@#&$
+                    symbols_enabled: true
+                  sponsors:
+                    idp_cert: '-----BEGIN CERTIFICATE-----
+
+                      MIIDqDCCApCgA...-----END CERTIFICATE-----'
+                    idp_sign_algo: sha256
+                    idp_sso_url: https://dev-00000000.okta.com/app/dev-00000000/a6b88bec5ab7/sso/saml
+                    issuer: http://www.okta.com/a6b88bec5ab7
+                    nameid_format: email
+                  ssid: USR-test
+                  type: byod
+                  vlan_id: nu42ll
+        required: false
+      responses:
+        '200':
+          description: Example response
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/psk_portal'
+                - description: Self-service portal configuration for issuing personal PSKs
+                  examples:
+                  - auth: sso
+                    created_time: 1727272316
+                    expire_time: 262800
+                    expiry_notification_time: 2
+                    hide_psks_created_by_other_admins: false
+                    id: 86ef73e5-e360-4e33-abd8-c2da7b11cbd6
+                    max_usage: 1
+                    modified_time: 1727272316
+                    name: USR-test
+                    notify_expiry: false
+                    org_id: 8f6c24d5-b618-4c30-b6ff-b2febc1078ab
+                    passphrase_rules:
+                      alphabets_enabled: true
+                      length: 8
+                      numerics_enabled: true
+                      symbols: ()[]{}_%@#&$
+                      symbols_enabled: true
+                    role: ''
+                    ssid: USR-test
+                    sso:
+                      idp_cert: '-----BEGIN CERTIFICATE-----
+
+                        MIIDqDCCApCgA...-----END CERTIFICATE-----'
+                      idp_sign_algo: sha256
+                      idp_sso_url: https://dev-00000000.okta.com/app/dev-00000000/a6b88bec5ab7/sso/saml
+                      issuer: http://www.okta.com/a6b88bec5ab7
+                      nameid_format: email
+                    type: byod
+                    ui_url: https://pskportal.gc1.mist.com/#!byod/a6b88bec-5ab7-41ae-a34c-44ff52a8b81d
+                    vlan_id: 123
+                contentMediaType: application/json
+              examples:
+                PSK Portal:
+                  value:
+                    auth: sso
+                    created_time: 1727272316
+                    expire_time: 262800
+                    expiry_notification_time: 2
+                    hide_psks_created_by_other_admins: false
+                    id: 86ef73e5-e360-4e33-abd8-c2da7b11cbd6
+                    max_usage: 1
+                    modified_time: 1727272316
+                    name: USR-test
+                    notify_expiry: false
+                    org_id: 8f6c24d5-b618-4c30-b6ff-b2febc1078ab
+                    passphrase_rules:
+                      alphabets_enabled: true
+                      length: 8
+                      numerics_enabled: true
+                      symbols: ()[]{}_%@#&$
+                      symbols_enabled: true
+                    role: ''
+                    ssid: USR-test
+                    sso:
+                      idp_cert: '-----BEGIN CERTIFICATE-----
+
+                        MIIDqDCCApCgA...-----END CERTIFICATE-----'
+                      idp_sign_algo: sha256
+                      idp_sso_url: https://dev-00000000.okta.com/app/dev-00000000/a6b88bec5ab7/sso/saml
+                      issuer: http://www.okta.com/a6b88bec5ab7
+                      nameid_format: email
+                    type: byod
+                    ui_url: https://pskportal.gc1.mist.com/#!byod/a6b88bec-5ab7-41ae-a34c-44ff52a8b81d
+                    vlan_id: 123
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/psk_portal'
+                - description: Self-service portal configuration for issuing personal PSKs
+                  examples:
+                  - auth: sso
+                    created_time: 1727272316
+                    expire_time: 262800
+                    expiry_notification_time: 2
+                    hide_psks_created_by_other_admins: false
+                    id: 86ef73e5-e360-4e33-abd8-c2da7b11cbd6
+                    max_usage: 1
+                    modified_time: 1727272316
+                    name: USR-test
+                    notify_expiry: false
+                    org_id: 8f6c24d5-b618-4c30-b6ff-b2febc1078ab
+                    passphrase_rules:
+                      alphabets_enabled: true
+                      length: 8
+                      numerics_enabled: true
+                      symbols: ()[]{}_%@#&$
+                      symbols_enabled: true
+                    role: ''
+                    ssid: USR-test
+                    sso:
+                      idp_cert: '-----BEGIN CERTIFICATE-----
+
+                        MIIDqDCCApCgA...-----END CERTIFICATE-----'
+                      idp_sign_algo: sha256
+                      idp_sso_url: https://dev-00000000.okta.com/app/dev-00000000/a6b88bec5ab7/sso/saml
+                      issuer: http://www.okta.com/a6b88bec5ab7
+                      nameid_format: email
+                    type: byod
+                    ui_url: https://pskportal.gc1.mist.com/#!byod/a6b88bec-5ab7-41ae-a34c-44ff52a8b81d
+                    vlan_id: 123
+                contentMediaType: application/vnd.api+json
+              examples:
+                PSK Portal:
+                  value:
+                    auth: sso
+                    created_time: 1727272316
+                    expire_time: 262800
+                    expiry_notification_time: 2
+                    hide_psks_created_by_other_admins: false
+                    id: 86ef73e5-e360-4e33-abd8-c2da7b11cbd6
+                    max_usage: 1
+                    modified_time: 1727272316
+                    name: USR-test
+                    notify_expiry: false
+                    org_id: 8f6c24d5-b618-4c30-b6ff-b2febc1078ab
+                    passphrase_rules:
+                      alphabets_enabled: true
+                      length: 8
+                      numerics_enabled: true
+                      symbols: ()[]{}_%@#&$
+                      symbols_enabled: true
+                    role: ''
+                    ssid: USR-test
+                    sso:
+                      idp_cert: '-----BEGIN CERTIFICATE-----
+
+                        MIIDqDCCApCgA...-----END CERTIFICATE-----'
+                      idp_sign_algo: sha256
+                      idp_sso_url: https://dev-00000000.okta.com/app/dev-00000000/a6b88bec5ab7/sso/saml
+                      issuer: http://www.okta.com/a6b88bec5ab7
+                      nameid_format: email
+                    type: byod
+                    ui_url: https://pskportal.gc1.mist.com/#!byod/a6b88bec-5ab7-41ae-a34c-44ff52a8b81d
+                    vlan_id: 123
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/pskportals/{pskportal_id}/portal_image:
+    parameters: []
+    delete:
+      tags:
+      - Orgs Psk Portals
+      summary: deleteOrgPskPortalImage
+      description: Delete the custom background image for a PSK Portal. If no image is configured, the PSK Portal uses the default background image.
+      operationId: deleteOrgPskPortalImage
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: pskportal_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    post:
+      tags:
+      - Orgs Psk Portals
+      summary: uploadOrgPskPortalImage
+      description: Upload a custom background image for a PSK Portal.
+      operationId: uploadOrgPskPortalImage
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: pskportal_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        content:
+          multipart/form-data:
+            encoding: {}
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  description: Image binary payload to upload for the PSK portal
+                  contentEncoding: base64
+                json:
+                  type: string
+                  description: Metadata JSON string describing the PSK portal image upload
+              contentMediaType: multipart/form-data
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/pskportals/{pskportal_id}/portal_template:
+    parameters: []
+    put:
+      tags:
+      - Orgs Psk Portals
+      summary: updateOrgPskPortalTemplate
+      description: Update PSK Portal UI template settings, including alignment, color, logo, Powered by visibility, and Terms of Service text.
+      operationId: updateOrgPskPortalTemplate
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: pskportal_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/psk_portal_template'
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    count_result:
+      title: count_result
+      required:
+      - count
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of matching items for the distinct value or values in this result
+          contentEncoding: int32
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    portal_template_alignment2:
+      title: portal_template_alignment2
+      enum:
+      - center
+      - left
+      - right
+      type: string
+      description: 'Logo and text alignment for the PSK portal template. enum: `center`, `left`, `right`.'
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    psk_portal_template:
+      title: psk_portal_template
+      type: object
+      properties:
+        portal_template:
+          allOf:
+          - $ref: '#/components/schemas/psk_portal_template_setting2'
+          - description: Template settings for customizing the PSK portal UI
+      description: Portal UI customization payload
+    response_psk_portal_logs_search:
+      title: response_psk_portal_logs_search
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Epoch timestamp, in seconds, for the end of the PSK Portal log search window
+          contentEncoding: int32
+          examples:
+          - 1428954000
+        limit:
+          type: integer
+          description: Maximum number of PSK Portal log entries returned in this page
+          contentEncoding: int32
+          examples:
+          - 100
+        next:
+          type: string
+          description: URL for retrieving the next page of PSK Portal log search results
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/response_psk_portal_logs_search_item'
+          description: PSK Portal log entries matching the search filters
+        start:
+          type: integer
+          description: Epoch timestamp, in seconds, for the start of the PSK Portal log search window
+          contentEncoding: int32
+          examples:
+          - 1428939600
+        total:
+          type: integer
+          description: Number of PSK Portal log entries matching the search filters across all pages
+          contentEncoding: int32
+          examples:
+          - 135
+      description: Paginated response for organization PSK Portal log search results
+    psk_portal_passphrase_rules2:
+      title: psk_portal_passphrase_rules2
+      type: object
+      properties:
+        alphabets_enabled:
+          type: boolean
+          description: Whether generated passphrases may include alphabetic characters
+          default: true
+        length:
+          maximum: 63
+          minimum: 8
+          type: integer
+          description: Fixed generated passphrase length used when min and max length are not both valid
+          contentEncoding: int32
+        max_length:
+          maximum: 63
+          minimum: 8
+          type: integer
+          description: Maximum generated passphrase length when paired with a valid `min_length`. If `max_length` or `min_length` is invalid, the portal uses `length`; if `length` is unset or invalid, it uses 8. Valid values are integers from 8 through 63, and `max_length` must be greater than `min_length`
+          contentEncoding: int32
+        min_length:
+          maximum: 63
+          minimum: 8
+          type: integer
+          description: Minimum generated passphrase length when paired with a valid `max_length`. If `max_length` or `min_length` is invalid, the portal uses `length`; if `length` is unset or invalid, it uses 8. Valid values are integers from 8 through 63, and `max_length` must be greater than `min_length`
+          contentEncoding: int32
+        numerics_enabled:
+          type: boolean
+          description: Whether generated passphrases may include numeric characters
+          default: true
+        symbols:
+          type: string
+          description: Allowed symbol characters for generated passphrases
+          examples:
+          - ()[]{}_%@#&$
+        symbols_enabled:
+          type: boolean
+          description: Whether generated passphrases may include symbols
+          default: true
+      description: Generation rules for PSK passphrases created through this portal
+    psk_portal:
+      title: psk_portal
+      required:
+      - name
+      - ssid
+      type: object
+      properties:
+        auth:
+          allOf:
+          - $ref: '#/components/schemas/psk_portal_auth2'
+          - description: 'Portal access method, enum: `sponsor`, `sso`'
+        bg_image_url:
+          type: string
+          description: URL of the background image used by the PSK portal
+        cleanup_psk:
+          type: boolean
+          description: Whether to clean up existing PSKs when the portal is deleted or its SSID changes
+          default: false
+        created_time:
+          type: number
+          description: Epoch timestamp when the PSK portal was created
+          readOnly: true
+        expire_time:
+          type: integer
+          description: PSK lifetime, in minutes, for keys created through this portal
+          contentEncoding: int32
+        expiry_notification_time:
+          type: integer
+          description: Number of days before PSK expiration to start sending reminder notifications
+          contentEncoding: int32
+        hide_psks_created_by_other_admins:
+          type: boolean
+          description: Only if `type`==`admin`, hide PSKs created by other PSK admins
+          default: false
+        id:
+          type: string
+          description: Unique identifier of the PSK portal
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        max_usage:
+          minimum: 0
+          type: integer
+          description: Maximum concurrent clients for each PSK created through this portal; `0` means unlimited
+          contentEncoding: int32
+          default: 0
+        modified_time:
+          type: number
+          description: Epoch timestamp when the PSK portal was last modified
+          readOnly: true
+        name:
+          type: string
+          description: Display name of the PSK portal
+        notification_renew_url:
+          type: string
+          description: Optional renewal URL included in notification emails. Use a custom URL, a Mist-generated URL, or a shortened URL pointing to either
+          examples:
+          - https://custom-sso/url
+        notify_expiry:
+          type: boolean
+          description: Whether to send reminder notifications before PSKs created through this portal expire
+        notify_on_create_or_edit:
+          type: boolean
+          description: Whether to send notifications when a PSK is created or edited through this portal
+          default: false
+        org_id:
+          type: string
+          description: Organization that owns the PSK portal
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        passphrase_rules:
+          allOf:
+          - $ref: '#/components/schemas/psk_portal_passphrase_rules2'
+          - description: Generation rules for PSK passphrases created through this portal
+        required_fields:
+          type: array
+          items:
+            type: string
+          description: User information fields requested by the portal when generating a PSK
+        role:
+          type: string
+          description: Client role assigned to PSKs created through this portal
+        ssid:
+          type: string
+          description: WLAN SSID for PSKs created through this portal
+        sso:
+          allOf:
+          - $ref: '#/components/schemas/psk_portal_sso2'
+          - description: Single sign-on configuration used when `auth`==`sso`
+        template_url:
+          type: string
+          description: URL of the UI customization template for this portal
+        thumbnail_url:
+          type: string
+          description: URL of the thumbnail image used by the PSK portal
+        type:
+          allOf:
+          - $ref: '#/components/schemas/psk_portal_type2'
+          - description: Portal mode for personal PSK onboarding, either admin or BYOD
+        ui_url:
+          type: string
+          description: Public URL where users access the PSK portal
+        vlan_id:
+          oneOf:
+          - type: string
+          - maximum: 4094
+            minimum: 1
+            type: integer
+            contentEncoding: int32
+          description: VLAN ID returned for clients using PSKs from this portal
+      description: Self-service portal configuration for issuing personal PSKs
+    org_psk_portal_logs_count_distinct:
+      title: org_psk_portal_logs_count_distinct
+      enum:
+      - admin_id
+      - admin_name
+      - psk_id
+      - psk_name
+      - pskportal_id
+      - user_id
+      type: string
+      description: 'enum: `admin_id`, `admin_name`, `psk_id`, `psk_name`, `pskportal_id`, `user_id`'
+    psk_portal_sso_idp_sign_algo2:
+      title: psk_portal_sso_idp_sign_algo2
+      enum:
+      - sha1
+      - sha256
+      - sha384
+      - sha512
+      type: string
+      description: 'SAML assertion signing algorithm expected from the identity provider. enum: `sha1`, `sha256`, `sha384`, `sha512`.'
+    psk_portal_auth2:
+      title: psk_portal_auth2
+      enum:
+      - sponsor
+      - sso
+      type: string
+      description: 'Portal access method, enum: `sponsor`, `sso`'
+    psk_portal_template_setting2:
+      title: psk_portal_template_setting2
+      type: object
+      properties:
+        alignment:
+          allOf:
+          - $ref: '#/components/schemas/portal_template_alignment2'
+          - description: 'Logo and text alignment for the PSK portal template. enum: `center`, `left`, `right`.'
+        color:
+          type: string
+          description: Primary hex color used by the portal template
+          default: '#1074bc'
+        logo:
+          type:
+          - string
+          - 'null'
+          description: Custom logo with "data:image/png;base64," format. default null, uses Juniper Mist Logo
+        poweredBy:
+          type: boolean
+          description: Whether to hide "Powered by Juniper Mist" and email footers
+          default: false
+        tos:
+          type: boolean
+          description: Whether to show Terms of Service
+        tosAcceptLabel:
+          type: string
+          description: Terms of Service accept button label
+          default: I accept the Terms of Service
+        tosError:
+          type: string
+          description: Error message shown when the user has not accepted the Terms of Service
+          default: Please review and accept the Terms of Service
+        tosLink:
+          type: string
+          description: Terms of Service link label displayed in the portal footer
+          default: Terms of Service
+        tosText:
+          type: string
+          description: Terms of Service text displayed in the footer when Terms are enabled
+          default: << provide your Terms of Service here >>
+        tosUrl:
+          type: string
+          description: Custom URL for the Terms of Service policy
+          examples:
+          - https://company.com/wifi-policy
+      description: Template settings for customizing the PSK portal UI
+    psk_portal_sso2:
+      title: psk_portal_sso2
+      type: object
+      properties:
+        allowed_roles:
+          type: array
+          items:
+            type: string
+          description: SSO roles allowed to access the PSK portal; if empty, any role is permitted
+        idp_cert:
+          type: string
+          description: Identity provider signing certificate in PEM format
+        idp_sign_algo:
+          allOf:
+          - $ref: '#/components/schemas/psk_portal_sso_idp_sign_algo2'
+          - description: 'SAML assertion signing algorithm expected from the identity provider. enum: `sha1`, `sha256`, `sha384`, `sha512`.'
+        idp_sso_url:
+          type: string
+          description: Identity provider SSO URL for SAML login
+        issuer:
+          type: string
+          description: SAML issuer value for the identity provider
+        nameid_format:
+          type: string
+          description: SAML NameID format used for the portal login
+        role_mapping:
+          type: object
+          additionalProperties:
+            type: string
+          description: Maps PSK portal role names to SSO attribute values
+        use_sso_role_for_psk_role:
+          type: boolean
+          description: Whether to use SSO role mapping for the PSK role and ignore the portal-level `role` field
+      description: Single sign-on configuration used when `auth`==`sso`
+    response_psk_portal_logs_search_item:
+      title: response_psk_portal_logs_search_item
+      type: object
+      properties:
+        id:
+          type: string
+          description: Audit log identifier for this PSK Portal log entry
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        message:
+          type: string
+          description: Human-readable message describing the PSK Portal action
+          examples:
+          - Rotate PSK test@mist.com
+        name_id:
+          type: string
+          description: SSO NameID value associated with the PSK Portal action
+          examples:
+          - test@mist.com
+        org_id:
+          type: string
+          description: Organization associated with the PSK Portal log entry
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        psk_id:
+          type: string
+          description: Identifier of the PSK associated with the log entry
+          contentEncoding: uuid
+          examples:
+          - 608fe603-f9f0-4ce9-9473-04ef6c6ea749
+        psk_name:
+          type: string
+          description: Display name of the PSK associated with the log entry
+          examples:
+          - test@mist.com
+        pskportal_id:
+          type: string
+          description: Identifier of the PSK Portal associated with the log entry
+          contentEncoding: uuid
+          examples:
+          - c1742c09-af35-4161-96ef-7dc65c6d5674
+        timestamp:
+          type: number
+          description: Epoch timestamp, in seconds, when the PSK Portal log entry was recorded
+          readOnly: true
+      description: PSK Portal log entry returned by organization log search
+    psk_portal_type2:
+      title: psk_portal_type2
+      enum:
+      - admin
+      - byod
+      type: string
+      description: Portal mode for personal PSK onboarding, either admin or BYOD
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_count:
+      title: response_count
+      required:
+      - distinct
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        distinct:
+          type: string
+          description: Field used to group the count results
+        end:
+          type: integer
+          description: Search window end timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of distinct count results requested
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/count_result'
+          description: Count results grouped by the distinct field
+        start:
+          type: integer
+          description: Search window start timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of distinct result buckets returned
+          contentEncoding: int32
+      description: Distinct count response for time-bounded search results
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

@@ -1,0 +1,533 @@
+openapi: 3.2.0
+info:
+  title: Mist Self Audit Logs API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Self Audit Logs
+  description: API calls related to the audit logs subscriptions for the currently connected user account.
+paths:
+  /api/v1/self/logs:
+    parameters: []
+    get:
+      tags:
+      - Self Audit Logs
+      summary: listSelfAuditLogs
+      description: 'Get List of change logs across all Orgs for current admin
+
+        Audit logs records all administrative activities done by current admin across all orgs'
+      operationId: listSelfAuditLogs
+      parameters:
+      - name: message
+        in: query
+        description: Filter results by message text
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - Created a new site
+      - name: sort
+        in: query
+        description: 'Field used to sort results; a leading `-` indicates descending order. enum: `-timestamp`, `admin_id`, `site_id`, `timestamp`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/list_org_logs_sort'
+          - description: 'Field used to sort results; a leading `-` indicates descending order. enum: `-timestamp`, `admin_id`, `site_id`, `timestamp`'
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: page
+        in: query
+        description: Select the page number to return when using page-based pagination; starts at `1`
+        style: form
+        explode: true
+        schema:
+          minimum: 1
+          type: integer
+          contentEncoding: int32
+          default: 1
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_self_audit_logs'
+                - description: Paginated response for audit logs for the current admin across organizations
+                  examples:
+                  - end: 1428954000
+                    limit: 100
+                    page: 1
+                    results:
+                    - admin_id: 72bfa2bd-e58a-4670-9d20-a1468f7a6f58
+                      admin_name: test@mistsys.com
+                      after:
+                        auth:
+                          type: open
+                      before:
+                        auth:
+                          type: psk
+                      id: c6f9347b-b0a4-4a23-b927-fa9249f2ffb2
+                      message: Update WLAN "Corporate"
+                      org_id: 423f6eca-6276-4994-bfeb-53cbbbba6f04
+                      site_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                      timestamp: 1431382121
+                    start: 1428939600
+                    total: 135
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    end: 1428954000
+                    limit: 100
+                    page: 1
+                    results:
+                    - admin_id: 72bfa2bd-e58a-4670-9d20-a1468f7a6f58
+                      admin_name: test@mistsys.com
+                      after:
+                        auth:
+                          type: open
+                      before:
+                        auth:
+                          type: psk
+                      id: c6f9347b-b0a4-4a23-b927-fa9249f2ffb2
+                      message: Update WLAN "Corporate"
+                      org_id: 423f6eca-6276-4994-bfeb-53cbbbba6f04
+                      site_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                      timestamp: 1431382121
+                    start: 1428939600
+                    total: 135
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_self_audit_logs'
+                - description: Paginated response for audit logs for the current admin across organizations
+                  examples:
+                  - end: 1428954000
+                    limit: 100
+                    page: 1
+                    results:
+                    - admin_id: 72bfa2bd-e58a-4670-9d20-a1468f7a6f58
+                      admin_name: test@mistsys.com
+                      after:
+                        auth:
+                          type: open
+                      before:
+                        auth:
+                          type: psk
+                      id: c6f9347b-b0a4-4a23-b927-fa9249f2ffb2
+                      message: Update WLAN "Corporate"
+                      org_id: 423f6eca-6276-4994-bfeb-53cbbbba6f04
+                      site_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                      timestamp: 1431382121
+                    start: 1428939600
+                    total: 135
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    end: 1428954000
+                    limit: 100
+                    page: 1
+                    results:
+                    - admin_id: 72bfa2bd-e58a-4670-9d20-a1468f7a6f58
+                      admin_name: test@mistsys.com
+                      after:
+                        auth:
+                          type: open
+                      before:
+                        auth:
+                          type: psk
+                      id: c6f9347b-b0a4-4a23-b927-fa9249f2ffb2
+                      message: Update WLAN "Corporate"
+                      org_id: 423f6eca-6276-4994-bfeb-53cbbbba6f04
+                      site_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                      timestamp: 1431382121
+                    start: 1428939600
+                    total: 135
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    list_org_logs_sort:
+      title: list_org_logs_sort
+      enum:
+      - -timestamp
+      - admin_id
+      - site_id
+      - timestamp
+      type: string
+      description: 'enum: `-timestamp`, `admin_id`, `site_id`, `timestamp`'
+    audit_log:
+      title: audit_log
+      required:
+      - admin_id
+      - admin_name
+      - id
+      - message
+      - org_id
+      - site_id
+      - timestamp
+      type: object
+      properties:
+        admin_id:
+          type: string
+          description: Identifier of the administrator associated with the audited action
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 456b7016-a916-a4b1-78dd-72b947c152b7
+        admin_name:
+          type: string
+          description: Name or email of the administrator associated with the audited action
+        after:
+          type: object
+          description: Field values after the audited change
+        before:
+          type: object
+          description: Field values before the audited change
+        for_site:
+          type: boolean
+          description: Whether this audit log entry is scoped to a site
+          readOnly: true
+        id:
+          type: string
+          description: Unique identifier of the audit log entry
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        message:
+          type: string
+          description: Human-readable audit message describing the action
+        org_id:
+          type: string
+          description: Owning organization identifier for this audit log entry
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        site_id:
+          type: string
+          description: Associated site identifier for this audit log entry
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        timestamp:
+          type: number
+          description: Time when the audited action occurred
+          readOnly: true
+      description: Administrative audit log entry
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_self_audit_logs:
+      title: response_self_audit_logs
+      required:
+      - end
+      - limit
+      - page
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Epoch timestamp, in seconds, for the end of the self audit log search window
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of self audit log entries returned in this page
+          contentEncoding: int32
+        page:
+          type: integer
+          description: Current page number returned for self audit log results
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/audit_log'
+          description: Audit log entries for the current admin matching the filters
+        start:
+          type: integer
+          description: Epoch timestamp, in seconds, for the start of the self audit log search window
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of self audit log entries matching the filters across all pages
+          contentEncoding: int32
+      description: Paginated response for audit logs for the current admin across organizations
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

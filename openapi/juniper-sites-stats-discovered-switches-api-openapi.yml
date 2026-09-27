@@ -1,0 +1,1857 @@
+openapi: 3.2.0
+info:
+  title: Mist Sites Stats - Discovered Switches API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Sites Stats - Discovered Switches
+  description: API Calls to retrieve statistics about the Discovered Switches at the Site level
+paths:
+  /api/v1/sites/{site_id}/stats/discovered_switch_metrics/search:
+    parameters: []
+    get:
+      tags:
+      - Sites Stats - Discovered Switches
+      summary: searchSiteDiscoveredSwitchesMetrics
+      description: Search Discovered Switch Metrics
+      operationId: searchSiteDiscoveredSwitchesMetrics
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: scope
+        in: query
+        description: 'Filter results by scope. enum: `site`, `switch`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/discovered_switches_metric_scope'
+          - description: 'Filter results by scope. enum: `site`, `switch`'
+      - name: type
+        in: query
+        description: 'Metric type. enum: `inactive_wired_vlans`, `poe_compliance`, `switch_ap_affinity`, `version_compliance`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/discovered_switch_metric_type'
+          - description: 'Metric type. enum: `inactive_wired_vlans`, `poe_compliance`, `switch_ap_affinity`, `version_compliance`'
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: sort
+        in: query
+        description: On which field the list should be sorted, -prefix represents DESC order
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: timestamp
+          examples:
+          - -site_id
+      - name: search_after
+        in: query
+        description: Pagination cursor for retrieving subsequent pages of results. This value is automatically populated by Mist in the `next` URL from the previous response and should not be manually constructed.
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_discovered_switch_metrics'
+                - description: Paginated response for discovered switch metric search results
+                  examples:
+                  - end: 1675193686.0191767
+                    limit: 1
+                    next: /api/v1/sites/f5fcbee5-fbca-45b3-8bf1-1619ede87879/stats/discovered_switch_metrics/search?end=1675193686.0191767&limit=1&search_after=%5B1675193400000%5D&start=1675107286.0191767
+                    results:
+                    - org_id: 203d3d02-dbc0-4c1b-9f41-76896a3330f4
+                      scope: site
+                      score: 100
+                      site_id: f5fcbee5-fbca-45b3-8bf1-1619ede87879
+                      timestamp: 1675193400
+                      type: inactive_wired_vlans
+                    start: 1675107286.0191767
+                    total: 3
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    end: 1675193686.0191767
+                    limit: 1
+                    next: /api/v1/sites/f5fcbee5-fbca-45b3-8bf1-1619ede87879/stats/discovered_switch_metrics/search?end=1675193686.0191767&limit=1&search_after=%5B1675193400000%5D&start=1675107286.0191767
+                    results:
+                    - org_id: 203d3d02-dbc0-4c1b-9f41-76896a3330f4
+                      scope: site
+                      score: 100
+                      site_id: f5fcbee5-fbca-45b3-8bf1-1619ede87879
+                      timestamp: 1675193400
+                      type: inactive_wired_vlans
+                    start: 1675107286.0191767
+                    total: 3
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_discovered_switch_metrics'
+                - description: Paginated response for discovered switch metric search results
+                  examples:
+                  - end: 1675193686.0191767
+                    limit: 1
+                    next: /api/v1/sites/f5fcbee5-fbca-45b3-8bf1-1619ede87879/stats/discovered_switch_metrics/search?end=1675193686.0191767&limit=1&search_after=%5B1675193400000%5D&start=1675107286.0191767
+                    results:
+                    - org_id: 203d3d02-dbc0-4c1b-9f41-76896a3330f4
+                      scope: site
+                      score: 100
+                      site_id: f5fcbee5-fbca-45b3-8bf1-1619ede87879
+                      timestamp: 1675193400
+                      type: inactive_wired_vlans
+                    start: 1675107286.0191767
+                    total: 3
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    end: 1675193686.0191767
+                    limit: 1
+                    next: /api/v1/sites/f5fcbee5-fbca-45b3-8bf1-1619ede87879/stats/discovered_switch_metrics/search?end=1675193686.0191767&limit=1&search_after=%5B1675193400000%5D&start=1675107286.0191767
+                    results:
+                    - org_id: 203d3d02-dbc0-4c1b-9f41-76896a3330f4
+                      scope: site
+                      score: 100
+                      site_id: f5fcbee5-fbca-45b3-8bf1-1619ede87879
+                      timestamp: 1675193400
+                      type: inactive_wired_vlans
+                    start: 1675107286.0191767
+                    total: 3
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/stats/discovered_switches/count:
+    parameters: []
+    get:
+      tags:
+      - Sites Stats - Discovered Switches
+      summary: countSiteDiscoveredSwitches
+      description: Count Discovered Switches
+      operationId: countSiteDiscoveredSwitches
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: distinct
+        in: query
+        description: 'Field used to group this count response. enum: `mgmt_addr`, `model`, `system_name`, `version`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/site_discovered_switches_count_distinct'
+          - description: 'Field used to group this count response. enum: `mgmt_addr`, `model`, `system_name`, `version`'
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      responses:
+        '200':
+          description: Result of Count
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_count'
+                - description: Distinct count response for time-bounded search results
+                  examples:
+                  - distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_count'
+                - description: Distinct count response for time-bounded search results
+                  examples:
+                  - distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/stats/discovered_switches/metrics:
+    parameters: []
+    get:
+      tags:
+      - Sites Stats - Discovered Switches
+      summary: listSiteDiscoveredSwitchesMetrics
+      description: Discovered switches related metrics, lists related switch system names & details if not compliant
+      operationId: listSiteDiscoveredSwitchesMetrics
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: threshold
+        in: query
+        description: 'Configurable # ap per switch threshold, default 12'
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - '12'
+      - name: system_name
+        in: query
+        description: System name for switch level metrics, optional
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - switch1.example.com
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_dswitches_metrics'
+                - description: Metrics summary returned for discovered switch compliance checks
+                  examples:
+                  - inactive_wired_vlans:
+                      details: {}
+                      score: 100
+                    poe_compliance:
+                      details:
+                        total_aps: 63
+                        total_power: 981500
+                      score: 100
+                    switch_ap_affinity:
+                      details:
+                        system_name:
+                        - mist-lab-ex2300c
+                        - switch1
+                        threshold: 12
+                      score: 33.3333
+                    version_compliance:
+                      details:
+                        major_versions:
+                        - major_count: 2
+                          model: EX2300-C-12P
+                          system_names:
+                          - switch1
+                          - mist-lab-ex2300c
+                        - major_count: 1
+                          model: EX4300-48P
+                          system_names: []
+                        total_switch_count: 5
+                      score: 75
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    inactive_wired_vlans:
+                      details: {}
+                      score: 100
+                    poe_compliance:
+                      details:
+                        total_aps: 63
+                        total_power: 981500
+                      score: 100
+                    switch_ap_affinity:
+                      details:
+                        system_name:
+                        - mist-lab-ex2300c
+                        - switch1
+                        threshold: 12
+                      score: 33.3333
+                    version_compliance:
+                      details:
+                        major_versions:
+                        - major_count: 2
+                          model: EX2300-C-12P
+                          system_names:
+                          - switch1
+                          - mist-lab-ex2300c
+                        - major_count: 1
+                          model: EX4300-48P
+                          system_names: []
+                        total_switch_count: 5
+                      score: 75
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_dswitches_metrics'
+                - description: Metrics summary returned for discovered switch compliance checks
+                  examples:
+                  - inactive_wired_vlans:
+                      details: {}
+                      score: 100
+                    poe_compliance:
+                      details:
+                        total_aps: 63
+                        total_power: 981500
+                      score: 100
+                    switch_ap_affinity:
+                      details:
+                        system_name:
+                        - mist-lab-ex2300c
+                        - switch1
+                        threshold: 12
+                      score: 33.3333
+                    version_compliance:
+                      details:
+                        major_versions:
+                        - major_count: 2
+                          model: EX2300-C-12P
+                          system_names:
+                          - switch1
+                          - mist-lab-ex2300c
+                        - major_count: 1
+                          model: EX4300-48P
+                          system_names: []
+                        total_switch_count: 5
+                      score: 75
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    inactive_wired_vlans:
+                      details: {}
+                      score: 100
+                    poe_compliance:
+                      details:
+                        total_aps: 63
+                        total_power: 981500
+                      score: 100
+                    switch_ap_affinity:
+                      details:
+                        system_name:
+                        - mist-lab-ex2300c
+                        - switch1
+                        threshold: 12
+                      score: 33.3333
+                    version_compliance:
+                      details:
+                        major_versions:
+                        - major_count: 2
+                          model: EX2300-C-12P
+                          system_names:
+                          - switch1
+                          - mist-lab-ex2300c
+                        - major_count: 1
+                          model: EX4300-48P
+                          system_names: []
+                        total_switch_count: 5
+                      score: 75
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/stats/discovered_switches/search:
+    parameters: []
+    get:
+      tags:
+      - Sites Stats - Discovered Switches
+      summary: searchSiteDiscoveredSwitches
+      description: Search Discovered Switches
+      operationId: searchSiteDiscoveredSwitches
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: adopted
+        in: query
+        description: Filter results by whether the device is adopted
+        style: form
+        explode: true
+        schema:
+          type: boolean
+          examples:
+          - true
+      - name: system_name
+        in: query
+        description: Filter discovered switch results by system name
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - switch1.example.com
+      - name: hostname
+        in: query
+        description: Filter results by hostname
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - switch1
+      - name: vendor
+        in: query
+        description: Filter results by vendor
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - Cisco
+      - name: model
+        in: query
+        description: Filter results by device model
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - WS-C3850-24P
+      - name: version
+        in: query
+        description: Filter results by software version
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 1.0.0
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: sort
+        in: query
+        description: On which field the list should be sorted, -prefix represents DESC order
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: timestamp
+          examples:
+          - -site_id
+      - name: search_after
+        in: query
+        description: Pagination cursor for retrieving subsequent pages of results. This value is automatically populated by Mist in the `next` URL from the previous response and should not be manually constructed.
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_discovered_switches'
+                - description: Paginated response for discovered switch search results
+                  examples:
+                  - end: 1604496474.8978634
+                    limit: 1000
+                    results:
+                    - aps:
+                      - hostname: ap41nearlab
+                        inactive_wired_vlans: []
+                        mac: 5c5b352e2001
+                        poe_status: true
+                        when: 2019-06-13T19:53:16.870+0000
+                      mgmt_addr: 10.1.1.1
+                      model: EX2300-C-12P
+                      org_id: 6748cfa6-4e12-11e6-9188-0242ac110007
+                      site_id: 67970e46-4e12-11e6-9188-0242ac110007
+                      system_desc: 'Juniper Networks, Inc. ex2300-c-12p Ethernet Switch, kernel JUNOS 18.2R2.6, Build date: 2018-12-07 13:19:04 UTC Copyright (c) 1996-2018 Juniper Networks, Inc.'
+                      system_name: mist-lab-ex2300c
+                      timestamp: 1560457177.037
+                      vendor: Juniper Networks
+                      version: 18.2R2.6
+                    start: 1604410074.8978484
+                    total: 1
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    end: 1604496474.8978634
+                    limit: 1000
+                    results:
+                    - aps:
+                      - hostname: ap41nearlab
+                        inactive_wired_vlans: []
+                        mac: 5c5b352e2001
+                        poe_status: true
+                        when: 2019-06-13T19:53:16.870+0000
+                      mgmt_addr: 10.1.1.1
+                      model: EX2300-C-12P
+                      org_id: 6748cfa6-4e12-11e6-9188-0242ac110007
+                      site_id: 67970e46-4e12-11e6-9188-0242ac110007
+                      system_desc: 'Juniper Networks, Inc. ex2300-c-12p Ethernet Switch, kernel JUNOS 18.2R2.6, Build date: 2018-12-07 13:19:04 UTC Copyright (c) 1996-2018 Juniper Networks, Inc.'
+                      system_name: mist-lab-ex2300c
+                      timestamp: 1560457177.037
+                      vendor: Juniper Networks
+                      version: 18.2R2.6
+                    start: 1604410074.8978484
+                    total: 1
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_discovered_switches'
+                - description: Paginated response for discovered switch search results
+                  examples:
+                  - end: 1604496474.8978634
+                    limit: 1000
+                    results:
+                    - aps:
+                      - hostname: ap41nearlab
+                        inactive_wired_vlans: []
+                        mac: 5c5b352e2001
+                        poe_status: true
+                        when: 2019-06-13T19:53:16.870+0000
+                      mgmt_addr: 10.1.1.1
+                      model: EX2300-C-12P
+                      org_id: 6748cfa6-4e12-11e6-9188-0242ac110007
+                      site_id: 67970e46-4e12-11e6-9188-0242ac110007
+                      system_desc: 'Juniper Networks, Inc. ex2300-c-12p Ethernet Switch, kernel JUNOS 18.2R2.6, Build date: 2018-12-07 13:19:04 UTC Copyright (c) 1996-2018 Juniper Networks, Inc.'
+                      system_name: mist-lab-ex2300c
+                      timestamp: 1560457177.037
+                      vendor: Juniper Networks
+                      version: 18.2R2.6
+                    start: 1604410074.8978484
+                    total: 1
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    end: 1604496474.8978634
+                    limit: 1000
+                    results:
+                    - aps:
+                      - hostname: ap41nearlab
+                        inactive_wired_vlans: []
+                        mac: 5c5b352e2001
+                        poe_status: true
+                        when: 2019-06-13T19:53:16.870+0000
+                      mgmt_addr: 10.1.1.1
+                      model: EX2300-C-12P
+                      org_id: 6748cfa6-4e12-11e6-9188-0242ac110007
+                      site_id: 67970e46-4e12-11e6-9188-0242ac110007
+                      system_desc: 'Juniper Networks, Inc. ex2300-c-12p Ethernet Switch, kernel JUNOS 18.2R2.6, Build date: 2018-12-07 13:19:04 UTC Copyright (c) 1996-2018 Juniper Networks, Inc.'
+                      system_name: mist-lab-ex2300c
+                      timestamp: 1560457177.037
+                      vendor: Juniper Networks
+                      version: 18.2R2.6
+                    start: 1604410074.8978484
+                    total: 1
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    response_dswitches_metrics:
+      title: response_dswitches_metrics
+      required:
+      - inactive_wired_vlans
+      - poe_compliance
+      - switch_ap_affinity
+      - version_compliance
+      type: object
+      properties:
+        inactive_wired_vlans:
+          allOf:
+          - $ref: '#/components/schemas/dswitches_metrics_inactive_wired_vlans1'
+          - description: Metric for inactive wired VLANs on discovered switches
+        poe_compliance:
+          allOf:
+          - $ref: '#/components/schemas/dswitches_metrics_poe_compliance1'
+          - description: Metric for PoE compliance across APs connected to discovered switches
+        switch_ap_affinity:
+          allOf:
+          - $ref: '#/components/schemas/dswitches_metrics_switch_ap_affinity1'
+          - description: Metric comparing AP counts against the switch affinity threshold
+        version_compliance:
+          allOf:
+          - $ref: '#/components/schemas/dswitches_metrics_version_compliance1'
+          - description: Metric for discovered switch software version compliance
+      description: Metrics summary returned for discovered switch compliance checks
+    discovered_switch_metric_ap:
+      title: discovered_switch_metric_ap
+      type: object
+      properties:
+        hostname:
+          type: string
+          description: AP hostname included in the discovered switch metric
+        mac:
+          type: string
+          description: AP MAC address included in the discovered switch metric
+        poe_status:
+          type: boolean
+          description: Whether the upstream switch port provides PoE for this AP
+        port:
+          type: string
+          description: Switch port name connected to this AP
+        port_id:
+          type: string
+          description: LLDP port identifier for this AP uplink
+        power_draw:
+          type: integer
+          description: Power draw reported for this AP connection
+          contentEncoding: int32
+        when:
+          type: string
+          description: Timestamp when this AP attachment metric was observed
+      description: AP attachment details included in a discovered switch metric
+    discovered_switch_metric_type:
+      title: discovered_switch_metric_type
+      enum:
+      - inactive_wired_vlans
+      - poe_compliance
+      - switch_ap_affinity
+      - version_compliance
+      type: string
+      description: 'enum: `inactive_wired_vlans`, `poe_compliance`, `switch_ap_affinity`, `version_compliance`'
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    count_result:
+      title: count_result
+      required:
+      - count
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of matching items for the distinct value or values in this result
+          contentEncoding: int32
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
+    response_discovered_switches:
+      title: response_discovered_switches
+      required:
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        end:
+          type: number
+          description: Epoch timestamp, in seconds, for the end of the discovered switch search window
+        limit:
+          type: integer
+          description: Maximum number of discovered switch records returned in this page
+          contentEncoding: int32
+        next:
+          type: string
+          description: Pagination cursor or URL for retrieving the next page of discovered switch records
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/discovered_switch'
+          description: Discovered switch records matching the search filters
+        start:
+          type: number
+          description: Epoch timestamp, in seconds, for the start of the discovered switch search window
+        total:
+          type: integer
+          description: Number of discovered switch records matching the search filters across all pages
+          contentEncoding: int32
+      description: Paginated response for discovered switch search results
+    dswitches_metrics_switch_ap_affinity_details2:
+      title: dswitches_metrics_switch_ap_affinity_details2
+      required:
+      - system_name
+      - threshold
+      type: object
+      properties:
+        system_name:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Discovered switch system names reported for the affinity metric
+        threshold:
+          type: number
+          description: APs-per-switch threshold used for the affinity metric
+      description: Switch names and threshold used to calculate the affinity score
+    dswitches_metrics_version_compliance1:
+      title: dswitches_metrics_version_compliance1
+      required:
+      - details
+      - score
+      type: object
+      properties:
+        details:
+          allOf:
+          - $ref: '#/components/schemas/dswitches_metrics_version_compliance_details2'
+          - description: Version grouping details used to calculate the compliance score
+        score:
+          type: number
+          description: Compliance score for the discovered-switch version metric
+      description: Metric for discovered switch software version compliance
+    discovered_switches_metric_scope:
+      title: discovered_switches_metric_scope
+      enum:
+      - site
+      - switch
+      type: string
+      description: 'Scope level used when querying discovered switch metrics. enum: `site`, `switch`'
+    discovered_switch_metric:
+      title: discovered_switch_metric
+      type: object
+      properties:
+        adopted:
+          type: boolean
+          description: Whether the discovered switch in this metric has been adopted into Mist management
+        aps:
+          type: array
+          items:
+            $ref: '#/components/schemas/discovered_switch_metric_ap'
+          description: AP attachment details included with this discovered switch metric
+        chassis_id:
+          type: array
+          items:
+            type: string
+          description: LLDP chassis identifiers associated with this metric result
+        hostname:
+          type: string
+          description: Switch hostname associated with this metric result
+          examples:
+          - SW-HLAB-ea2e00
+        mgmt_addr:
+          type: string
+          description: Management IP address associated with this metric result
+          examples:
+          - 10.10.20.42
+        model:
+          type: string
+          description: Switch model associated with this metric result
+        org_id:
+          type: string
+          description: Organization that contains the discovered switch metric
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        scope:
+          type: string
+          description: Aggregation scope for the discovered switch metric result
+          examples:
+          - site
+        score:
+          type: integer
+          description: Compliance or health score for the discovered switch metric
+          contentEncoding: int32
+          examples:
+          - 100
+        site_id:
+          type: string
+          description: Site associated with the discovered switch metric
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        system_desc:
+          type: string
+          description: LLDP system description associated with this metric result
+          examples:
+          - 'Juniper Networks, Inc. ex4100-f-12p Ethernet Switch, kernel JUNOS 22.4R3.25, Build date: 2024-02-10 00:49:09 UTC Copyright (c) 1996-2024 Juniper Networks, Inc.'
+        system_name:
+          type: string
+          description: LLDP system name associated with this metric result
+          examples:
+          - SW-HLAB-ea2e00
+        timestamp:
+          type: number
+          description: Time bucket for the discovered switch metric result
+          readOnly: true
+        type:
+          type: string
+          description: Metric category represented by this discovered switch metric
+          examples:
+          - inactive_wired_vlans
+        vendor:
+          type: string
+          description: Switch vendor associated with this metric result
+        version:
+          type: string
+          description: Software version associated with this metric result
+      description: Time-series metric result for discovered switch health or compliance
+    ap_redundancy1:
+      title: ap_redundancy1
+      type: object
+      properties:
+        modules:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ap_redundancy_module'
+          description: Per-module AP redundancy counts keyed by switch node ID
+        num_aps:
+          type: integer
+          description: Total number of APs considered for switch redundancy
+          contentEncoding: int32
+          examples:
+          - 15
+        num_aps_with_switch_redundancy:
+          type: integer
+          description: Number of APs that have switch redundancy coverage
+          contentEncoding: int32
+          examples:
+          - 8
+      description: AP switch redundancy summary for APs connected through the discovered switch
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    ap_redundancy_module:
+      title: ap_redundancy_module
+      type: object
+      properties:
+        num_aps:
+          type: integer
+          description: Total number of APs connected through this VC member
+          contentEncoding: int32
+          examples:
+          - 15
+        num_aps_with_switch_redundancy:
+          type: integer
+          description: Number of APs on this VC member with switch redundancy coverage
+          contentEncoding: int32
+          examples:
+          - 8
+      description: AP switch redundancy counts for one VC member
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    dswitches_metrics_poe_compliance1:
+      title: dswitches_metrics_poe_compliance1
+      required:
+      - details
+      - score
+      type: object
+      properties:
+        details:
+          allOf:
+          - $ref: '#/components/schemas/dswitches_metrics_poe_compliance_details2'
+          - description: Counts and power totals used to calculate the PoE compliance score
+        score:
+          type: number
+          description: Compliance score for the PoE compliance metric
+      description: Metric for PoE compliance across APs connected to discovered switches
+    dswitches_metrics_version_compliance_details2:
+      title: dswitches_metrics_version_compliance_details2
+      required:
+      - major_versions
+      - total_switch_count
+      type: object
+      properties:
+        major_versions:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/dswitches_compliance_major_version'
+          description: Per-model major version groupings used for version compliance
+        total_switch_count:
+          type: integer
+          description: Number of discovered switches evaluated for version compliance
+          contentEncoding: int32
+      description: Version grouping details used to calculate the compliance score
+    discovered_switch:
+      title: discovered_switch
+      type: object
+      properties:
+        adopted:
+          type: boolean
+          description: Whether the discovered switch has been adopted into Mist management
+        ap_redundancy:
+          allOf:
+          - $ref: '#/components/schemas/ap_redundancy1'
+          - description: AP switch redundancy summary for APs connected through the discovered switch
+        aps:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/discovered_switch_ap'
+          description: Connected APs observed on ports of the discovered switch
+        chassis_id:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: LLDP chassis identifier reported by the discovered switch
+        for_site:
+          type: boolean
+          description: Whether the discovered switch is associated with the requested site
+          readOnly: true
+        mgmt_addr:
+          type: string
+          description: Management IP address advertised by the discovered switch
+        model:
+          type: string
+          description: Switch model reported for the discovered switch
+        org_id:
+          type: string
+          description: Organization that contains the discovered switch record
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        site_id:
+          type: string
+          description: Site where the switch was discovered
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        system_desc:
+          type: string
+          description: LLDP system description advertised by the discovered switch
+        system_name:
+          type: string
+          description: LLDP system name advertised by the discovered switch
+        timestamp:
+          type: number
+          description: Time when the discovered switch data was observed
+          readOnly: true
+        vendor:
+          type: string
+          description: Switch vendor reported for the discovered switch
+        version:
+          type: string
+          description: Software version reported for the discovered switch
+      description: Switch discovered from AP uplink LLDP data and site switch discovery
+    site_discovered_switches_count_distinct:
+      title: site_discovered_switches_count_distinct
+      enum:
+      - mgmt_addr
+      - model
+      - system_name
+      - version
+      type: string
+      description: 'enum: `mgmt_addr`, `model`, `system_name`, `version`'
+    dswitches_metrics_poe_compliance_details2:
+      title: dswitches_metrics_poe_compliance_details2
+      required:
+      - total_aps
+      - total_power
+      type: object
+      properties:
+        total_aps:
+          type: integer
+          description: Number of APs evaluated for PoE compliance
+          contentEncoding: int32
+        total_power:
+          type: number
+          description: Aggregate AP PoE power demand across evaluated APs, in mW
+      description: Counts and power totals used to calculate the PoE compliance score
+    response_discovered_switch_metrics:
+      title: response_discovered_switch_metrics
+      required:
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        end:
+          type: number
+          description: Epoch timestamp, in seconds, for the end of the metric search window
+        limit:
+          type: integer
+          description: Maximum number of discovered switch metric records returned in this page
+          contentEncoding: int32
+        next:
+          type: string
+          description: Pagination cursor or URL for retrieving the next page of discovered switch metric records
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/discovered_switch_metric'
+          description: Discovered switch metric records matching the search filters
+        start:
+          type: number
+          description: Epoch timestamp, in seconds, for the start of the metric search window
+        total:
+          type: integer
+          description: Number of discovered switch metric records matching the search filters across all pages
+          contentEncoding: int32
+      description: Paginated response for discovered switch metric search results
+    dswitches_compliance_major_version:
+      title: dswitches_compliance_major_version
+      required:
+      - major_count
+      - model
+      type: object
+      properties:
+        major_count:
+          type: number
+          description: Number of major software versions observed for this switch model
+        model:
+          type: string
+          description: Switch model represented by this version-compliance grouping
+        system_names:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Discovered switch system names included in this version-compliance grouping
+      description: Version-compliance grouping for one discovered switch model
+    discovered_switch_ap:
+      title: discovered_switch_ap
+      type: object
+      properties:
+        hostname:
+          type: string
+          description: AP hostname observed on the discovered switch
+        inactive_wired_vlans:
+          type: array
+          items:
+            type: integer
+            contentEncoding: int32
+          description: Inactive wired VLAN IDs reported for the AP attachment
+        mac:
+          type: string
+          description: AP MAC address observed on the discovered switch
+        poe_status:
+          type: boolean
+          description: Whether the upstream switch port provides PoE for the AP
+        port:
+          type: string
+          description: Switch port name connected to the AP
+        port_id:
+          type: string
+          description: LLDP port identifier for the AP uplink
+        power_draw:
+          type: number
+          description: Power draw reported for the AP connection
+        when:
+          type: string
+          description: Timestamp when this AP attachment was last observed
+      description: AP attachment details observed on a discovered switch
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    dswitches_metrics_inactive_wired_vlans1:
+      title: dswitches_metrics_inactive_wired_vlans1
+      required:
+      - details
+      - score
+      type: object
+      properties:
+        details:
+          type: object
+          description: Metric-specific details for inactive wired VLAN findings
+        score:
+          type: number
+          description: Compliance score for the inactive wired VLAN metric
+      description: Metric for inactive wired VLANs on discovered switches
+    response_count:
+      title: response_count
+      required:
+      - distinct
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        distinct:
+          type: string
+          description: Field used to group the count results
+        end:
+          type: integer
+          description: Search window end timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of distinct count results requested
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/count_result'
+          description: Count results grouped by the distinct field
+        start:
+          type: integer
+          description: Search window start timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of distinct result buckets returned
+          contentEncoding: int32
+      description: Distinct count response for time-bounded search results
+    dswitches_metrics_switch_ap_affinity1:
+      title: dswitches_metrics_switch_ap_affinity1
+      required:
+      - details
+      - score
+      type: object
+      properties:
+        details:
+          allOf:
+          - $ref: '#/components/schemas/dswitches_metrics_switch_ap_affinity_details2'
+          - description: Switch names and threshold used to calculate the affinity score
+        score:
+          type: number
+          description: Compliance score for the switch/AP affinity metric
+      description: Metric comparing AP counts against the switch affinity threshold
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

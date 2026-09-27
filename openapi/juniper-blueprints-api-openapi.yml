@@ -194,19 +194,6 @@ paths:
                     additionalProperties:
                       $ref: '#/components/schemas/BlueprintNode'
 components:
-  responses:
-    NotFound:
-      description: Resource not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   parameters:
     BlueprintId:
       name: blueprint_id
@@ -216,24 +203,26 @@ components:
       schema:
         type: string
         format: uuid
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
-    BlueprintNode:
+    Error:
       type: object
       properties:
-        id:
-          type: string
-        type:
-          type: string
-        label:
-          type: string
-        role:
-          type: string
-        system_id:
-          type: string
-        system_type:
-          type: string
-        deploy_mode:
-          type: string
+        errors:
+          type: object
+          description: Error details
     Blueprint:
       type: object
       properties:
@@ -264,12 +253,23 @@ components:
         last_modified_at:
           type: string
           format: date-time
-    Error:
+    BlueprintNode:
       type: object
       properties:
-        errors:
-          type: object
-          description: Error details
+        id:
+          type: string
+        type:
+          type: string
+        label:
+          type: string
+        role:
+          type: string
+        system_id:
+          type: string
+        system_type:
+          type: string
+        deploy_mode:
+          type: string
   securitySchemes:
     authToken:
       type: apiKey

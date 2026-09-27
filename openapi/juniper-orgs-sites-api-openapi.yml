@@ -1,0 +1,1700 @@
+openapi: 3.2.0
+info:
+  title: Mist Orgs Sites API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Orgs Sites
+  description: 'API Calls to Create or Get the Organization Sites.
+
+
+    Use the Site Settings to configure or update the Site information.'
+paths:
+  /api/v1/orgs/{org_id}/sites:
+    parameters: []
+    get:
+      tags:
+      - Orgs Sites
+      summary: listOrgSites
+      description: List sites in the organization. Site records include location metadata, timezone, site group membership, and template or policy associations.
+      operationId: listOrgSites
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: page
+        in: query
+        description: Select the page number to return when using page-based pagination; starts at `1`
+        style: form
+        explode: true
+        schema:
+          minimum: 1
+          type: integer
+          contentEncoding: int32
+          default: 1
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/site'
+                description: Site records returned by a list response
+                examples:
+                - - address: 1601 S. Deanza Blvd., Cupertino, CA, 95014
+                    alarmtemplate_id: 684dfc5c-fe77-2290-eb1d-ef3d677fe168
+                    aptemplate_id: 16bdf952-ade2-4491-80b0-85ce506c760b
+                    country_code: US
+                    created_time: 0
+                    gatewaytemplate_id: 6f9b2e75-9b2f-b5ae-81e3-e14c76f1a90f
+                    id: 497f6eca-6276-5007-bfeb-53cbbbba6f19
+                    latlng:
+                      lat: 37.295833
+                      lng: -122.032946
+                    modified_time: 0
+                    name: Mist Office
+                    networktemplate_id: 12ae9bd2-e0ab-107b-72e8-a7a005565ec2
+                    notes: string
+                    org_id: a40f5d1f-d889-42e9-94ea-b9b33585fc6b
+                    rftemplate_id: bb8a9017-1e36-5d6c-6f2b-551abe8a76a2
+                    secpolicy_id: 3bcd0beb-5d0a-4cbd-92c1-14aea91e98ef
+                    sitegroup_ids:
+                    - 497f6eca-6276-5008-bfeb-53cbbbba6f1a
+                    timezone: America/Los_Angeles
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                  - address: 1601 S. Deanza Blvd., Cupertino, CA, 95014
+                    alarmtemplate_id: 684dfc5c-fe77-2290-eb1d-ef3d677fe168
+                    aptemplate_id: 16bdf952-ade2-4491-80b0-85ce506c760b
+                    country_code: US
+                    created_time: 0
+                    gatewaytemplate_id: 6f9b2e75-9b2f-b5ae-81e3-e14c76f1a90f
+                    id: 497f6eca-6276-5007-bfeb-53cbbbba6f19
+                    latlng:
+                      lat: 37.295833
+                      lng: -122.032946
+                    modified_time: 0
+                    name: Mist Office
+                    networktemplate_id: 12ae9bd2-e0ab-107b-72e8-a7a005565ec2
+                    notes: string
+                    org_id: a40f5d1f-d889-42e9-94ea-b9b33585fc6b
+                    rftemplate_id: bb8a9017-1e36-5d6c-6f2b-551abe8a76a2
+                    secpolicy_id: 3bcd0beb-5d0a-4cbd-92c1-14aea91e98ef
+                    sitegroup_ids:
+                    - 497f6eca-6276-5008-bfeb-53cbbbba6f1a
+                    timezone: America/Los_Angeles
+            application/vnd.api+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/site'
+                description: Site records returned by a list response
+                examples:
+                - - address: 1601 S. Deanza Blvd., Cupertino, CA, 95014
+                    alarmtemplate_id: 684dfc5c-fe77-2290-eb1d-ef3d677fe168
+                    aptemplate_id: 16bdf952-ade2-4491-80b0-85ce506c760b
+                    country_code: US
+                    created_time: 0
+                    gatewaytemplate_id: 6f9b2e75-9b2f-b5ae-81e3-e14c76f1a90f
+                    id: 497f6eca-6276-5007-bfeb-53cbbbba6f19
+                    latlng:
+                      lat: 37.295833
+                      lng: -122.032946
+                    modified_time: 0
+                    name: Mist Office
+                    networktemplate_id: 12ae9bd2-e0ab-107b-72e8-a7a005565ec2
+                    notes: string
+                    org_id: a40f5d1f-d889-42e9-94ea-b9b33585fc6b
+                    rftemplate_id: bb8a9017-1e36-5d6c-6f2b-551abe8a76a2
+                    secpolicy_id: 3bcd0beb-5d0a-4cbd-92c1-14aea91e98ef
+                    sitegroup_ids:
+                    - 497f6eca-6276-5008-bfeb-53cbbbba6f1a
+                    timezone: America/Los_Angeles
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                  - address: 1601 S. Deanza Blvd., Cupertino, CA, 95014
+                    alarmtemplate_id: 684dfc5c-fe77-2290-eb1d-ef3d677fe168
+                    aptemplate_id: 16bdf952-ade2-4491-80b0-85ce506c760b
+                    country_code: US
+                    created_time: 0
+                    gatewaytemplate_id: 6f9b2e75-9b2f-b5ae-81e3-e14c76f1a90f
+                    id: 497f6eca-6276-5007-bfeb-53cbbbba6f19
+                    latlng:
+                      lat: 37.295833
+                      lng: -122.032946
+                    modified_time: 0
+                    name: Mist Office
+                    networktemplate_id: 12ae9bd2-e0ab-107b-72e8-a7a005565ec2
+                    notes: string
+                    org_id: a40f5d1f-d889-42e9-94ea-b9b33585fc6b
+                    rftemplate_id: bb8a9017-1e36-5d6c-6f2b-551abe8a76a2
+                    secpolicy_id: 3bcd0beb-5d0a-4cbd-92c1-14aea91e98ef
+                    sitegroup_ids:
+                    - 497f6eca-6276-5008-bfeb-53cbbbba6f1a
+                    timezone: America/Los_Angeles
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    post:
+      tags:
+      - Orgs Sites
+      summary: createOrgSite
+      description: Create a site in the organization with location metadata, timezone, site group membership, and optional template or policy associations.
+      operationId: createOrgSite
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/site'
+              - description: Request Body
+                examples:
+                - address: 1601 S. Deanza Blvd., Cupertino, CA, 95014
+                  alarmtemplate_id: 684dfc5c-fe77-2290-eb1d-ef3d677fe168
+                  aptemplate_id: 16bdf952-ade2-4491-80b0-85ce506c760b
+                  country_code: US
+                  gatewaytemplate_id: 6f9b2e75-9b2f-b5ae-81e3-e14c76f1a90f
+                  latlng:
+                    lat: 37.295833
+                    lng: -122.032946
+                  name: Mist Office
+                  networktemplate_id: 12ae9bd2-e0ab-107b-72e8-a7a005565ec2
+                  notes: string
+                  rftemplate_id: bb8a9017-1e36-5d6c-6f2b-551abe8a76a2
+                  secpolicy_id: 3bcd0beb-5d0a-4cbd-92c1-14aea91e98ef
+                  sitegroup_ids:
+                  - 497f6eca-6276-4997-bfeb-53cbbbba6f3b
+                  timezone: America/Los_Angeles
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  address: 1601 S. Deanza Blvd., Cupertino, CA, 95014
+                  alarmtemplate_id: 684dfc5c-fe77-2290-eb1d-ef3d677fe168
+                  aptemplate_id: 16bdf952-ade2-4491-80b0-85ce506c760b
+                  country_code: US
+                  gatewaytemplate_id: 6f9b2e75-9b2f-b5ae-81e3-e14c76f1a90f
+                  latlng:
+                    lat: 37.295833
+                    lng: -122.032946
+                  name: Mist Office
+                  networktemplate_id: 12ae9bd2-e0ab-107b-72e8-a7a005565ec2
+                  notes: string
+                  rftemplate_id: bb8a9017-1e36-5d6c-6f2b-551abe8a76a2
+                  secpolicy_id: 3bcd0beb-5d0a-4cbd-92c1-14aea91e98ef
+                  sitegroup_ids:
+                  - 497f6eca-6276-4997-bfeb-53cbbbba6f3b
+                  timezone: America/Los_Angeles
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/site'
+                - description: Site configuration and metadata within an organization
+                  examples:
+                  - address: 1601 S. Deanza Blvd., Cupertino, CA, 95014
+                    alarmtemplate_id: 684dfc5c-fe77-2290-eb1d-ef3d677fe168
+                    aptemplate_id: 16bdf952-ade2-4491-80b0-85ce506c760b
+                    country_code: US
+                    created_time: 0
+                    gatewaytemplate_id: 6f9b2e75-9b2f-b5ae-81e3-e14c76f1a90f
+                    id: 497f6eca-6276-5005-bfeb-53cbbbba6f17
+                    latlng:
+                      lat: 37.295833
+                      lng: -122.032946
+                    modified_time: 0
+                    name: Mist Office
+                    networktemplate_id: 12ae9bd2-e0ab-107b-72e8-a7a005565ec2
+                    notes: string
+                    org_id: a40f5d1f-d889-42e9-94ea-b9b33585fc6b
+                    rftemplate_id: bb8a9017-1e36-5d6c-6f2b-551abe8a76a2
+                    secpolicy_id: 3bcd0beb-5d0a-4cbd-92c1-14aea91e98ef
+                    sitegroup_ids:
+                    - 497f6eca-6276-5006-bfeb-53cbbbba6f18
+                    timezone: America/Los_Angeles
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    address: 1601 S. Deanza Blvd., Cupertino, CA, 95014
+                    alarmtemplate_id: 684dfc5c-fe77-2290-eb1d-ef3d677fe168
+                    aptemplate_id: 16bdf952-ade2-4491-80b0-85ce506c760b
+                    country_code: US
+                    created_time: 0
+                    gatewaytemplate_id: 6f9b2e75-9b2f-b5ae-81e3-e14c76f1a90f
+                    id: 497f6eca-6276-5005-bfeb-53cbbbba6f17
+                    latlng:
+                      lat: 37.295833
+                      lng: -122.032946
+                    modified_time: 0
+                    name: Mist Office
+                    networktemplate_id: 12ae9bd2-e0ab-107b-72e8-a7a005565ec2
+                    notes: string
+                    org_id: a40f5d1f-d889-42e9-94ea-b9b33585fc6b
+                    rftemplate_id: bb8a9017-1e36-5d6c-6f2b-551abe8a76a2
+                    secpolicy_id: 3bcd0beb-5d0a-4cbd-92c1-14aea91e98ef
+                    sitegroup_ids:
+                    - 497f6eca-6276-5006-bfeb-53cbbbba6f18
+                    timezone: America/Los_Angeles
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/site'
+                - description: Site configuration and metadata within an organization
+                  examples:
+                  - address: 1601 S. Deanza Blvd., Cupertino, CA, 95014
+                    alarmtemplate_id: 684dfc5c-fe77-2290-eb1d-ef3d677fe168
+                    aptemplate_id: 16bdf952-ade2-4491-80b0-85ce506c760b
+                    country_code: US
+                    created_time: 0
+                    gatewaytemplate_id: 6f9b2e75-9b2f-b5ae-81e3-e14c76f1a90f
+                    id: 497f6eca-6276-5005-bfeb-53cbbbba6f17
+                    latlng:
+                      lat: 37.295833
+                      lng: -122.032946
+                    modified_time: 0
+                    name: Mist Office
+                    networktemplate_id: 12ae9bd2-e0ab-107b-72e8-a7a005565ec2
+                    notes: string
+                    org_id: a40f5d1f-d889-42e9-94ea-b9b33585fc6b
+                    rftemplate_id: bb8a9017-1e36-5d6c-6f2b-551abe8a76a2
+                    secpolicy_id: 3bcd0beb-5d0a-4cbd-92c1-14aea91e98ef
+                    sitegroup_ids:
+                    - 497f6eca-6276-5006-bfeb-53cbbbba6f18
+                    timezone: America/Los_Angeles
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    address: 1601 S. Deanza Blvd., Cupertino, CA, 95014
+                    alarmtemplate_id: 684dfc5c-fe77-2290-eb1d-ef3d677fe168
+                    aptemplate_id: 16bdf952-ade2-4491-80b0-85ce506c760b
+                    country_code: US
+                    created_time: 0
+                    gatewaytemplate_id: 6f9b2e75-9b2f-b5ae-81e3-e14c76f1a90f
+                    id: 497f6eca-6276-5005-bfeb-53cbbbba6f17
+                    latlng:
+                      lat: 37.295833
+                      lng: -122.032946
+                    modified_time: 0
+                    name: Mist Office
+                    networktemplate_id: 12ae9bd2-e0ab-107b-72e8-a7a005565ec2
+                    notes: string
+                    org_id: a40f5d1f-d889-42e9-94ea-b9b33585fc6b
+                    rftemplate_id: bb8a9017-1e36-5d6c-6f2b-551abe8a76a2
+                    secpolicy_id: 3bcd0beb-5d0a-4cbd-92c1-14aea91e98ef
+                    sitegroup_ids:
+                    - 497f6eca-6276-5006-bfeb-53cbbbba6f18
+                    timezone: America/Los_Angeles
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/sites/count:
+    parameters: []
+    get:
+      tags:
+      - Orgs Sites
+      summary: countOrgSites
+      description: Count organization sites grouped by a distinct site attribute, such as country code, site name, feature flags, or enabled services.
+      operationId: countOrgSites
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: distinct
+        in: query
+        description: 'Field used to group this count response. enum: `analytic_enabled`, `app_waking`, `asset_enabled`, `auto_upgrade_enabled`, `auto_upgrade_version`, `country_code`, `honeypot_enabled`, `id`, `locate_unconnected`, `mesh_enabled`, `name`, `remote_syslog_enabled`, `rogue_enabled`, `rtsa_enabled`, `vna_enabled`, `wifi_enabled`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/org_sites_count_distinct'
+          - description: 'Field used to group this count response. enum: `analytic_enabled`, `app_waking`, `asset_enabled`, `auto_upgrade_enabled`, `auto_upgrade_version`, `country_code`, `honeypot_enabled`, `id`, `locate_unconnected`, `mesh_enabled`, `name`, `remote_syslog_enabled`, `rogue_enabled`, `rtsa_enabled`, `vna_enabled`, `wifi_enabled`'
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      responses:
+        '200':
+          description: Result of Count
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_count'
+                - description: Distinct count response for time-bounded search results
+                  examples:
+                  - distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_count'
+                - description: Distinct count response for time-bounded search results
+                  examples:
+                  - distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/sites/search:
+    parameters: []
+    get:
+      tags:
+      - Orgs Sites
+      summary: searchOrgSites
+      description: Search organization sites with filters for feature flags, country code, identifiers, names, upgrade settings, and other site attributes. Supports pagination and sorting.
+      operationId: searchOrgSites
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: analytic_enabled
+        in: query
+        description: If Advanced Analytic feature is enabled. Accepts multiple comma-separated boolean values.
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: app_waking
+        in: query
+        description: If App Waking feature is enabled
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: asset_enabled
+        in: query
+        description: If Asset Tracking is enabled. Accepts multiple comma-separated boolean values.
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: auto_upgrade_enabled
+        in: query
+        description: Filter results by whether automatic upgrades are enabled
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: auto_upgrade_version
+        in: query
+        description: Filter results by automatic upgrade version. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - custom,stable
+      - name: country_code
+        in: query
+        description: Filter results by country code. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - CA,FR
+      - name: honeypot_enabled
+        in: query
+        description: If Honeypot detection is enabled. Accepts multiple comma-separated boolean values.
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: id
+        in: query
+        description: Filter results by identifier. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 00000000-0000-0000-0000-000000000001,00000000-0000-0000-0000-000000000002
+      - name: locate_unconnected
+        in: query
+        description: If unconnected client are located. Accepts multiple comma-separated boolean values.
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: mesh_enabled
+        in: query
+        description: If Mesh feature is enabled. Accepts multiple comma-separated boolean values.
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: name
+        in: query
+        description: Partial / full Site name. Case insensitive. Use `prefix*` for prefix search or `*substring*` for contains search (e.g. `my-site*` and `*site*` match `my-site-01`). Suffix-only wildcards (e.g. `*site-01`) are not supported. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - my-site-01,my-site*
+          - my-site-01
+          - my-site*
+          - '*site*'
+        examples:
+          Untitled Example1:
+            value: my-site-01,my-site*
+          Untitled Example2:
+            value: my-site-01
+          Untitled Example3:
+            value: my-site*
+          Untitled Example4:
+            value: '*site*'
+      - name: rogue_enabled
+        in: query
+        description: If Rogue detection is enabled. Accepts multiple comma-separated boolean values.
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: remote_syslog_enabled
+        in: query
+        description: If Remote Syslog is enabled
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: rtsa_enabled
+        in: query
+        description: If managed mobility feature is enabled. Accepts multiple comma-separated boolean values.
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: vna_enabled
+        in: query
+        description: If Virtual Network Assistant is enabled. Accepts multiple comma-separated boolean values.
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: wifi_enabled
+        in: query
+        description: If Wi-Fi feature is enabled
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: sort
+        in: query
+        description: On which field the list should be sorted, -prefix represents DESC order
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: timestamp
+          examples:
+          - -site_id
+      - name: search_after
+        in: query
+        description: Pagination cursor for retrieving subsequent pages of results. This value is automatically populated by Mist in the `next` URL from the previous response and should not be manually constructed.
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_site_search'
+                - description: Paginated response for organization site search results
+                  examples:
+                  - end: 0
+                    limit: 0
+                    next: string
+                    results:
+                    - auto_upgrade_enabled: true
+                      auto_upgrade_version: string
+                      country_code: string
+                      honeypot_enabled: true
+                      id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      name: string
+                      org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      timestamp: 0
+                      timezone: string
+                      vna_enabled: true
+                      wifi_enabled: true
+                    start: 0
+                    total: 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    end: 0
+                    limit: 0
+                    next: string
+                    results:
+                    - auto_upgrade_enabled: true
+                      auto_upgrade_version: string
+                      country_code: string
+                      honeypot_enabled: true
+                      id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      name: string
+                      org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      timestamp: 0
+                      timezone: string
+                      vna_enabled: true
+                      wifi_enabled: true
+                    start: 0
+                    total: 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_site_search'
+                - description: Paginated response for organization site search results
+                  examples:
+                  - end: 0
+                    limit: 0
+                    next: string
+                    results:
+                    - auto_upgrade_enabled: true
+                      auto_upgrade_version: string
+                      country_code: string
+                      honeypot_enabled: true
+                      id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      name: string
+                      org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      timestamp: 0
+                      timezone: string
+                      vna_enabled: true
+                      wifi_enabled: true
+                    start: 0
+                    total: 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    end: 0
+                    limit: 0
+                    next: string
+                    results:
+                    - auto_upgrade_enabled: true
+                      auto_upgrade_version: string
+                      country_code: string
+                      honeypot_enabled: true
+                      id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      name: string
+                      org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      timestamp: 0
+                      timezone: string
+                      vna_enabled: true
+                      wifi_enabled: true
+                    start: 0
+                    total: 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    response_site_search:
+      title: response_site_search
+      required:
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Epoch timestamp, in seconds, for the end of the site search window
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of site records returned in this page
+          contentEncoding: int32
+        next:
+          type: string
+          description: URL for retrieving the next page of site search results
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/response_site_search_item'
+          description: Site records matching the organization search filters
+        start:
+          type: integer
+          description: Epoch timestamp, in seconds, for the start of the site search window
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of site records matching the search filters across all pages
+          contentEncoding: int32
+      description: Paginated response for organization site search results
+    response_site_search_item:
+      title: response_site_search_item
+      required:
+      - auto_upgrade_enabled
+      - auto_upgrade_version
+      - honeypot_enabled
+      - id
+      - name
+      - org_id
+      - site_id
+      - timestamp
+      - timezone
+      - vna_enabled
+      - wifi_enabled
+      type: object
+      properties:
+        auto_upgrade_enabled:
+          type: boolean
+          description: Whether automatic firmware upgrade is enabled for the site
+        auto_upgrade_version:
+          type: string
+          description: Desired automatic firmware upgrade version track for the site
+          readOnly: true
+        country_code:
+          type:
+          - string
+          - 'null'
+          description: Country code configured for the site, or null if unset
+          readOnly: true
+        honeypot_enabled:
+          type: boolean
+          description: Whether honeypot detection is enabled for the site
+        id:
+          type: string
+          description: Unique identifier for the site search result
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        name:
+          type: string
+          description: Display name of the site
+          readOnly: true
+        org_id:
+          type: string
+          description: Organization that owns the site
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        site_id:
+          type: string
+          description: Site identifier for this search result
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        timestamp:
+          type: number
+          description: Epoch timestamp, in seconds, for this site search result
+          readOnly: true
+        timezone:
+          type: string
+          description: Time zone configured for the site
+          readOnly: true
+        vna_enabled:
+          type: boolean
+          description: Whether Virtual Network Assistant is enabled for the site
+        wifi_enabled:
+          type: boolean
+          description: Whether Wi-Fi service is enabled for the site
+      description: Site record returned by organization site search
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    lat_lng2:
+      title: lat_lng2
+      required:
+      - lat
+      - lng
+      type: object
+      properties:
+        lat:
+          type: number
+          description: Geographic latitude in decimal degrees
+          examples:
+          - 37.295833
+        lng:
+          type: number
+          description: Geographic longitude in decimal degrees
+          examples:
+          - -122.032946
+      description: Latitude and longitude for the site location
+    org_sites_count_distinct:
+      title: org_sites_count_distinct
+      enum:
+      - analytic_enabled
+      - app_waking
+      - asset_enabled
+      - auto_upgrade_enabled
+      - auto_upgrade_version
+      - country_code
+      - honeypot_enabled
+      - id
+      - locate_unconnected
+      - mesh_enabled
+      - name
+      - remote_syslog_enabled
+      - rogue_enabled
+      - rtsa_enabled
+      - vna_enabled
+      - wifi_enabled
+      type: string
+      description: 'enum: `analytic_enabled`, `app_waking`, `asset_enabled`, `auto_upgrade_enabled`, `auto_upgrade_version`, `country_code`, `honeypot_enabled`, `id`, `locate_unconnected`, `mesh_enabled`, `name`, `remote_syslog_enabled`, `rogue_enabled`, `rtsa_enabled`, `vna_enabled`, `wifi_enabled`'
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    count_result:
+      title: count_result
+      required:
+      - count
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of matching items for the distinct value or values in this result
+          contentEncoding: int32
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    site:
+      title: site
+      required:
+      - name
+      type: object
+      properties:
+        address:
+          type:
+          - string
+          - 'null'
+          description: full address of the site
+          examples:
+          - 1601 S. Deanza Blvd., Cupertino, CA, 95014
+        alarmtemplate_id:
+          type:
+          - string
+          - 'null'
+          description: Alarm Template ID, this takes precedence over the Org-level alarmtemplate_id
+          contentEncoding: uuid
+          examples:
+          - 684dfc5c-fe77-2290-eb1d-ef3d677fe168
+        aptemplate_id:
+          type:
+          - string
+          - 'null'
+          description: AP Template ID, used by APs
+          contentEncoding: uuid
+          examples:
+          - 16bdf952-ade2-4491-80b0-85ce506c760b
+        country_code:
+          type: string
+          description: Country code for the site (for AP config generation), in two-character
+          examples:
+          - US
+        created_time:
+          type: number
+          description: Timestamp when the site was created, in epoch seconds
+          readOnly: true
+        gatewaytemplate_id:
+          type:
+          - string
+          - 'null'
+          description: Gateway Template ID, used by gateways
+          contentEncoding: uuid
+          examples:
+          - 6f9b2e75-9b2f-b5ae-81e3-e14c76f1a90f
+        id:
+          type: string
+          description: Unique value identifying the site
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        latlng:
+          allOf:
+          - $ref: '#/components/schemas/lat_lng2'
+          - description: Latitude and longitude for the site location
+        modified_time:
+          type: number
+          description: Timestamp when the site was last modified, in epoch seconds
+          readOnly: true
+        name:
+          type: string
+          description: Display name of the site
+          examples:
+          - Mist Office
+        networktemplate_id:
+          type:
+          - string
+          - 'null'
+          description: Network Template ID, this takes precedence over Site Settings
+          contentEncoding: uuid
+          examples:
+          - 12ae9bd2-e0ab-107b-72e8-a7a005565ec2
+        notes:
+          type:
+          - string
+          - 'null'
+          description: Optional, any notes about the site
+        org_id:
+          type: string
+          description: Organization identifier associated with the site
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        rftemplate_id:
+          type:
+          - string
+          - 'null'
+          description: RF Template ID, this takes precedence over Site Settings
+          contentEncoding: uuid
+          examples:
+          - bb8a9017-1e36-5d6c-6f2b-551abe8a76a2
+        routertemplate_id:
+          type:
+          - string
+          - 'null'
+          description: Router Template ID, used by gateways
+          contentEncoding: uuid
+          examples:
+          - 6f9b2e75-9b2f-b5ae-81e3-e14c76f1a90f
+        secpolicy_id:
+          type:
+          - string
+          - 'null'
+          description: Security policy identifier applied to this site
+          contentEncoding: uuid
+          examples:
+          - 3bcd0beb-5d0a-4cbd-92c1-14aea91e98ef
+        sitegroup_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: Site group identifiers for groups that include this site
+        sitetemplate_id:
+          type:
+          - string
+          - 'null'
+          description: Site template identifier applied to this site
+          contentEncoding: uuid
+        timezone:
+          type: string
+          description: IANA time zone name for the site
+          default: UTC
+          examples:
+          - America/Los_Angeles
+        tzoffset:
+          type: integer
+          description: Time zone offset value derived from the site's timezone
+          contentEncoding: int32
+          default: 0
+      description: Site configuration and metadata within an organization
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_count:
+      title: response_count
+      required:
+      - distinct
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        distinct:
+          type: string
+          description: Field used to group the count results
+        end:
+          type: integer
+          description: Search window end timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of distinct count results requested
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/count_result'
+          description: Count results grouped by the distinct field
+        start:
+          type: integer
+          description: Search window start timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of distinct result buckets returned
+          contentEncoding: int32
+      description: Distinct count response for time-bounded search results
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

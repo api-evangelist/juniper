@@ -1,0 +1,2667 @@
+openapi: 3.2.0
+info:
+  title: Mist Sites Webhooks API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Sites Webhooks
+  description: 'A Site Webhook is a configuration that allows real-time events and data from a specific site to be pushed to a provided url.
+
+
+    It enables the collection of information about various topics such as device events, alarms, audits, client sessions and location updates at the site level.
+
+
+    The Webhook can be set up and customized using the Mist API, allowing users to receive and analyze specific data from a particular site.'
+paths:
+  /api/v1/sites/{site_id}/webhooks:
+    parameters: []
+    get:
+      tags:
+      - Sites Webhooks
+      summary: listSiteWebhooks
+      description: Get List of Site Webhooks
+      operationId: listSiteWebhooks
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: page
+        in: query
+        description: Select the page number to return when using page-based pagination; starts at `1`
+        style: form
+        explode: true
+        schema:
+          minimum: 1
+          type: integer
+          contentEncoding: int32
+          default: 1
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/webhook'
+                description: Webhook configuration records returned by a list response
+                examples:
+                - - created_time: 0
+                    enabled: true
+                    headers: {}
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    modified_time: 0
+                    name: string
+                    org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    secret: string
+                    site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    splunk_token: string
+                    topics:
+                    - location
+                    type: http-post
+                    url: string
+                    verify_cert: true
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                  - created_time: 0
+                    enabled: true
+                    headers: {}
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    modified_time: 0
+                    name: string
+                    org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    secret: string
+                    site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    splunk_token: string
+                    topics:
+                    - location
+                    type: http-post
+                    url: string
+                    verify_cert: true
+            application/vnd.api+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/webhook'
+                description: Webhook configuration records returned by a list response
+                examples:
+                - - created_time: 0
+                    enabled: true
+                    headers: {}
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    modified_time: 0
+                    name: string
+                    org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    secret: string
+                    site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    splunk_token: string
+                    topics:
+                    - location
+                    type: http-post
+                    url: string
+                    verify_cert: true
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                  - created_time: 0
+                    enabled: true
+                    headers: {}
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    modified_time: 0
+                    name: string
+                    org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    secret: string
+                    site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    splunk_token: string
+                    topics:
+                    - location
+                    type: http-post
+                    url: string
+                    verify_cert: true
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    post:
+      tags:
+      - Sites Webhooks
+      summary: createSiteWebhook
+      description: 'Webhook defines a webhook, modeled after github\u2019s model.
+
+
+        There is two types of webhooks:
+
+        * webhooks (examples)
+
+        * raw data webhooks (examples)
+
+
+        ##### Webhooks
+
+        Webhooks can be configured at the org level (subset of topics only) and at the site level. It is possible to have multiple topics in the same webhook configuration and/or to have multiple webhooks configured at the same time.
+
+
+        ##### Client Raw Data Webhooks
+
+        Raw data webhooks are a special subset of webhooks that provide insight into raw data packets emitted by a client, identified by their advertising MAC address (assets, discovered BLE, connected Wi-Fi, unconnected Wi-Fi). The data that client raw data webhooks encompasses are reporting AP information, RSSI Data, and any special packets/telemetry packets that the client may emit. Note that client raw webhooks are the raw data coming from the client and do not contain the X,Y location data of the client. In order to get the location data for a client please see our location webhooks. Clients can be identified uniquely across these client raw data topics and location webhook topic using MAC address as the Unique identifier (client identifier).
+
+
+        ###### Client Raw Data Webhooks Topics
+
+        Topics that correspond to client raw data for different client types.
+
+        * `asset-raw-rssi` - Raw data from packets emitted by named and filtered assets
+
+        * `discovered-raw-rssi` - Raw data from packets emitted by passive BLE devices
+
+        * `wifi-conn-raw` - Raw data from packets emitted by connected devices
+
+        * `wifi-unconn-raw` - Raw data from packets emitted by unconnected devices (passive)
+
+
+        ### Asset Filtering for Client Raw Data Webhooks
+
+
+        The `asset-raw-rssi` webhook topic supports filtering of raw data by incorporating asset filters in the webhook payload.
+
+        The filter topic allows multiple Webhooks to receive a subset of the a`asset-raw-rssi` data by assigning asset filters to a given webhook. The `asset-raw-rssi` filter topic is filtered-asset-rssi.
+
+
+        A webhook assigned to a filter topic can take a list of AssetFilter IDs, which act as inclusive filters to determine which named asset and filtered asset data is sent to the assigned filter topic. Filters can be applied to multiple webhooks, and the same data can be sent to multiple filter topics.
+
+
+        ### Rules for Configuring Client Raw Data Webhooks
+
+
+        1. Only four instances of a webhook object can contain a specific filter topic. - A site-level entry will override an org-level entry for the same client raw data webhook topic.
+
+        2. An assigned asset filter must exist and belong to the same site as the webhook it is assigned to.'
+      operationId: createSiteWebhook
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/webhook'
+              - description: Request Body
+                examples:
+                - enabled: true
+                  headers: {}
+                  name: string
+                  secret: string
+                  splunk_token: string
+                  topics:
+                  - location
+                  type: http-post
+                  url: string
+                  verify_cert: true
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  enabled: true
+                  headers: {}
+                  name: string
+                  secret: string
+                  splunk_token: string
+                  topics:
+                  - location
+                  type: http-post
+                  url: string
+                  verify_cert: true
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/webhook'
+                - description: Webhook configuration for delivering selected Mist events to an external destination
+                  examples:
+                  - created_time: 0
+                    enabled: true
+                    headers: {}
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    modified_time: 0
+                    name: string
+                    org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    secret: string
+                    site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    splunk_token: string
+                    topics:
+                    - location
+                    type: http-post
+                    url: string
+                    verify_cert: true
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    created_time: 0
+                    enabled: true
+                    headers: {}
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    modified_time: 0
+                    name: string
+                    org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    secret: string
+                    site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    splunk_token: string
+                    topics:
+                    - location
+                    type: http-post
+                    url: string
+                    verify_cert: true
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/webhook'
+                - description: Webhook configuration for delivering selected Mist events to an external destination
+                  examples:
+                  - created_time: 0
+                    enabled: true
+                    headers: {}
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    modified_time: 0
+                    name: string
+                    org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    secret: string
+                    site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    splunk_token: string
+                    topics:
+                    - location
+                    type: http-post
+                    url: string
+                    verify_cert: true
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    created_time: 0
+                    enabled: true
+                    headers: {}
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    modified_time: 0
+                    name: string
+                    org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    secret: string
+                    site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    splunk_token: string
+                    topics:
+                    - location
+                    type: http-post
+                    url: string
+                    verify_cert: true
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400_webhook'
+                - description: Webhook-specific HTTP 400 bad request error response
+                  examples:
+                  - '{"detail":"invalid field: assetfilter_ids","reason":"contains duplicate uuids"}'
+                  - '{"detail":"invalid field: assetfilter_ids"}'
+                  - '{"detail":"invalid field: assetfilter_ids"}'
+                  - '{"detail":"Webhook already configured for special location topic"}'
+                  - '{"detail":"Only one location topic can be configured per URL"}'
+                  - '{"detail":"invalid field: topics","reason":"filtered asset webhooks must be associated with a site"}'
+                contentMediaType: application/json
+              examples:
+                Duplicate_assetfilter_id:
+                  value:
+                    detail: 'invalid field: assetfilter_ids'
+                    reason: contains duplicate uuids
+                Invalid_assetfilter_id:
+                  value:
+                    detail: 'invalid field: assetfilter_ids'
+                Malformed_assetfilter_id:
+                  value:
+                    detail: 'invalid field: assetfilter_ids'
+                RawDataWebhook_already_created:
+                  value:
+                    detail: Webhook already configured for special location topic
+                RawDataWebhook_multiple_topics:
+                  value:
+                    detail: Only one location topic can be configured per URL
+                org_level_filter_webhook:
+                  value:
+                    detail: 'invalid field: topics'
+                    reason: filtered asset webhooks must be associated with a site
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400_webhook'
+                - description: Webhook-specific HTTP 400 bad request error response
+                  examples:
+                  - '{"detail":"invalid field: assetfilter_ids","reason":"contains duplicate uuids"}'
+                  - '{"detail":"invalid field: assetfilter_ids"}'
+                  - '{"detail":"invalid field: assetfilter_ids"}'
+                  - '{"detail":"Webhook already configured for special location topic"}'
+                  - '{"detail":"Only one location topic can be configured per URL"}'
+                  - '{"detail":"invalid field: topics","reason":"filtered asset webhooks must be associated with a site"}'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Duplicate_assetfilter_id:
+                  value:
+                    detail: 'invalid field: assetfilter_ids'
+                    reason: contains duplicate uuids
+                Invalid_assetfilter_id:
+                  value:
+                    detail: 'invalid field: assetfilter_ids'
+                Malformed_assetfilter_id:
+                  value:
+                    detail: 'invalid field: assetfilter_ids'
+                RawDataWebhook_already_created:
+                  value:
+                    detail: Webhook already configured for special location topic
+                RawDataWebhook_multiple_topics:
+                  value:
+                    detail: Only one location topic can be configured per URL
+                org_level_filter_webhook:
+                  value:
+                    detail: 'invalid field: topics'
+                    reason: filtered asset webhooks must be associated with a site
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/webhooks/{webhook_id}:
+    parameters: []
+    delete:
+      tags:
+      - Sites Webhooks
+      summary: deleteSiteWebhook
+      description: Delete Site Webhook
+      operationId: deleteSiteWebhook
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: webhook_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    get:
+      tags:
+      - Sites Webhooks
+      summary: getSiteWebhook
+      description: Get Site Webhook Details
+      operationId: getSiteWebhook
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: webhook_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/webhook'
+                - description: Webhook configuration for delivering selected Mist events to an external destination
+                  examples:
+                  - created_time: 0
+                    enabled: true
+                    headers: {}
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    modified_time: 0
+                    name: string
+                    org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    secret: string
+                    site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    splunk_token: string
+                    topics:
+                    - location
+                    type: http-post
+                    url: string
+                    verify_cert: true
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    created_time: 0
+                    enabled: true
+                    headers: {}
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    modified_time: 0
+                    name: string
+                    org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    secret: string
+                    site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    splunk_token: string
+                    topics:
+                    - location
+                    type: http-post
+                    url: string
+                    verify_cert: true
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/webhook'
+                - description: Webhook configuration for delivering selected Mist events to an external destination
+                  examples:
+                  - created_time: 0
+                    enabled: true
+                    headers: {}
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    modified_time: 0
+                    name: string
+                    org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    secret: string
+                    site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    splunk_token: string
+                    topics:
+                    - location
+                    type: http-post
+                    url: string
+                    verify_cert: true
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    created_time: 0
+                    enabled: true
+                    headers: {}
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    modified_time: 0
+                    name: string
+                    org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    secret: string
+                    site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    splunk_token: string
+                    topics:
+                    - location
+                    type: http-post
+                    url: string
+                    verify_cert: true
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    put:
+      tags:
+      - Sites Webhooks
+      summary: updateSiteWebhook
+      description: Update Site Webhook
+      operationId: updateSiteWebhook
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: webhook_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/webhook'
+              - description: Request Body
+                examples:
+                - enabled: true
+                  headers: {}
+                  name: string
+                  secret: string
+                  splunk_token: string
+                  topics:
+                  - location
+                  type: http-post
+                  url: string
+                  verify_cert: true
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  enabled: true
+                  headers: {}
+                  name: string
+                  secret: string
+                  splunk_token: string
+                  topics:
+                  - location
+                  type: http-post
+                  url: string
+                  verify_cert: true
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/webhook'
+                - description: Webhook configuration for delivering selected Mist events to an external destination
+                  examples:
+                  - created_time: 0
+                    enabled: true
+                    headers: {}
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    modified_time: 0
+                    name: string
+                    org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    secret: string
+                    site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    splunk_token: string
+                    topics:
+                    - location
+                    type: http-post
+                    url: string
+                    verify_cert: true
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    created_time: 0
+                    enabled: true
+                    headers: {}
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    modified_time: 0
+                    name: string
+                    org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    secret: string
+                    site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    splunk_token: string
+                    topics:
+                    - location
+                    type: http-post
+                    url: string
+                    verify_cert: true
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/webhook'
+                - description: Webhook configuration for delivering selected Mist events to an external destination
+                  examples:
+                  - created_time: 0
+                    enabled: true
+                    headers: {}
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    modified_time: 0
+                    name: string
+                    org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    secret: string
+                    site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    splunk_token: string
+                    topics:
+                    - location
+                    type: http-post
+                    url: string
+                    verify_cert: true
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    created_time: 0
+                    enabled: true
+                    headers: {}
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    modified_time: 0
+                    name: string
+                    org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    secret: string
+                    site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    splunk_token: string
+                    topics:
+                    - location
+                    type: http-post
+                    url: string
+                    verify_cert: true
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/webhooks/{webhook_id}/events/count:
+    parameters: []
+    get:
+      tags:
+      - Sites Webhooks
+      summary: countSiteWebhooksDeliveries
+      description: 'Count Site Webhooks deliveries
+
+
+        Topics Supported:
+
+        - alarms
+
+        - audits
+
+        - device-updowns
+
+        - occupancy-alerts
+
+        - ping'
+      operationId: countSiteWebhooksDeliveries
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: webhook_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: error
+        in: query
+        description: Filter webhook delivery results by error message
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - Webhook delivery failed
+      - name: status_code
+        in: query
+        description: Filter webhook delivery results by HTTP status code
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+          examples:
+          - 200
+      - name: status
+        in: query
+        description: 'Webhook delivery status used to filter results. enum: `failure`, `success`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/webhook_delivery_status'
+          - description: 'Webhook delivery status used to filter results. enum: `failure`, `success`'
+            examples:
+            - failure
+      - name: topic
+        in: query
+        description: 'Webhook topic used to filter results. enum: `alarms`, `audits`, `device-updowns`, `occupancy-alerts`, `ping`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/webhook_delivery_topic'
+          - description: 'Webhook topic used to filter results. enum: `alarms`, `audits`, `device-updowns`, `occupancy-alerts`, `ping`'
+            examples:
+            - audits
+      - name: distinct
+        in: query
+        description: 'Field used to group this count response. enum: `status`, `status_code`, `topic`, `webhook_id`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/webhook_delivery_distinct'
+          - description: 'Field used to group this count response. enum: `status`, `status_code`, `topic`, `webhook_id`'
+            examples:
+            - webhook_id
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      responses:
+        '200':
+          description: Result of Count
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_count'
+                - description: Distinct count response for time-bounded search results
+                  examples:
+                  - distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_count'
+                - description: Distinct count response for time-bounded search results
+                  examples:
+                  - distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/webhooks/{webhook_id}/events/search:
+    parameters: []
+    get:
+      tags:
+      - Sites Webhooks
+      summary: searchSiteWebhooksDeliveries
+      description: 'Search Site Webhooks deliveries
+
+
+        Topics Supported:
+
+        - alarms
+
+        - audits
+
+        - device-updowns
+
+        - occupancy-alerts
+
+        - ping'
+      operationId: searchSiteWebhooksDeliveries
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: webhook_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: error
+        in: query
+        description: Filter webhook delivery results by error message
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - Webhook delivery failed
+      - name: status_code
+        in: query
+        description: Filter webhook delivery results by HTTP status code
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+          examples:
+          - 200
+      - name: status
+        in: query
+        description: 'Webhook delivery status used to filter results. enum: `failure`, `success`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/webhook_delivery_status'
+          - description: 'Webhook delivery status used to filter results. enum: `failure`, `success`'
+            examples:
+            - failure
+      - name: topic
+        in: query
+        description: 'Webhook topic used to filter results. enum: `alarms`, `audits`, `device-updowns`, `occupancy-alerts`, `ping`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/webhook_delivery_topic'
+          - description: 'Webhook topic used to filter results. enum: `alarms`, `audits`, `device-updowns`, `occupancy-alerts`, `ping`'
+            examples:
+            - audits
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: sort
+        in: query
+        description: On which field the list should be sorted, -prefix represents DESC order
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: timestamp
+          examples:
+          - -site_id
+      - name: search_after
+        in: query
+        description: Pagination cursor for retrieving subsequent pages of results. This value is automatically populated by Mist in the `next` URL from the previous response and should not be manually constructed.
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Example response
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/search_webhook_delivery'
+                - description: Paginated response for webhook delivery searches
+                  examples:
+                  - end: 1688035193
+                    limit: 10
+                    results:
+                    - error: string
+                      id: 55b0f02f-ebf6-4ad2-8b10-200508a97581
+                      org_id: fc7e2967-e7ef-41e6-b007-1217713de05a
+                      req_headers: '{\"Content-Type\":[\"application/json\"],\"User-Agent\":[\"Mist-webhook\"]}'
+                      req_payload: '{\"topic\":\"audits\",\"events\":[{\"admin_name\":\"John Doe john.doe@juniper.net\",\"after\":\"{\\"radio_config\\": {\\"band_24\\": {\\"disabled\\": false, \\"allow_rrm_disable\\": false, \\"power_min\\": null, \\"power_max\\": null, \\"power\\": 10, \\"preamble\\": \\"short\\", \\"channels\\": [1, 10], \\"bandwidth\\": 20}}}\",\"before\":\"{\\"radio_config\\": {\\"band_24\\": {\\"disabled\\": false, \\"allow_rrm_disable\\": false, \\"power_min\\": 8, \\"power_max\\": 18, \\"power\\": null, \\"preamble\\": \\"long\\", \\"channels\\": [1, 10], \\"bandwidth\\": 20}}}\",\"id\":\"737909a2-04ff-4aeb-b9da-cc924e74a4dd\",\"message\":\"Update Site Settings\",\"org_id\":\"fc7e2967-e7ef-41e6-b007-1217713de05a\",\"site_id\":\"256c3a35-9cb7-436e-bc6d-314972645d95\",\"site_name\":\"Test Site\",\"src_ip\":\"1.2.3.4\",\"timestamp\":1685956576.923601,\"user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36\"}]}'
+                      req_url: https://example.com
+                      resp_body: Ok
+                      resp_headers: string
+                      site_id: 256c3a35-9cb7-436e-bc6d-314972645d95
+                      status: success
+                      status_code: 200
+                      timestamp: 1687962508.583656
+                      topic: audits
+                      webhook_id: 7a11b901-f719-4c91-8aef-deb8699a6364
+                    start: 1687948793
+                    total: 0
+                contentMediaType: application/json
+              examples:
+                Webhook Deliveries:
+                  value:
+                    end: 1688035193
+                    limit: 10
+                    results:
+                    - error: string
+                      id: 55b0f02f-ebf6-4ad2-8b10-200508a97581
+                      org_id: fc7e2967-e7ef-41e6-b007-1217713de05a
+                      req_headers: '{\"Content-Type\":[\"application/json\"],\"User-Agent\":[\"Mist-webhook\"]}'
+                      req_payload: '{\"topic\":\"audits\",\"events\":[{\"admin_name\":\"John Doe john.doe@juniper.net\",\"after\":\"{\\"radio_config\\": {\\"band_24\\": {\\"disabled\\": false, \\"allow_rrm_disable\\": false, \\"power_min\\": null, \\"power_max\\": null, \\"power\\": 10, \\"preamble\\": \\"short\\", \\"channels\\": [1, 10], \\"bandwidth\\": 20}}}\",\"before\":\"{\\"radio_config\\": {\\"band_24\\": {\\"disabled\\": false, \\"allow_rrm_disable\\": false, \\"power_min\\": 8, \\"power_max\\": 18, \\"power\\": null, \\"preamble\\": \\"long\\", \\"channels\\": [1, 10], \\"bandwidth\\": 20}}}\",\"id\":\"737909a2-04ff-4aeb-b9da-cc924e74a4dd\",\"message\":\"Update Site Settings\",\"org_id\":\"fc7e2967-e7ef-41e6-b007-1217713de05a\",\"site_id\":\"256c3a35-9cb7-436e-bc6d-314972645d95\",\"site_name\":\"Test Site\",\"src_ip\":\"1.2.3.4\",\"timestamp\":1685956576.923601,\"user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36\"}]}'
+                      req_url: https://example.com
+                      resp_body: Ok
+                      resp_headers: string
+                      site_id: 256c3a35-9cb7-436e-bc6d-314972645d95
+                      status: success
+                      status_code: 200
+                      timestamp: 1687962508.583656
+                      topic: audits
+                      webhook_id: 7a11b901-f719-4c91-8aef-deb8699a6364
+                    start: 1687948793
+                    total: 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/search_webhook_delivery'
+                - description: Paginated response for webhook delivery searches
+                  examples:
+                  - end: 1688035193
+                    limit: 10
+                    results:
+                    - error: string
+                      id: 55b0f02f-ebf6-4ad2-8b10-200508a97581
+                      org_id: fc7e2967-e7ef-41e6-b007-1217713de05a
+                      req_headers: '{\"Content-Type\":[\"application/json\"],\"User-Agent\":[\"Mist-webhook\"]}'
+                      req_payload: '{\"topic\":\"audits\",\"events\":[{\"admin_name\":\"John Doe john.doe@juniper.net\",\"after\":\"{\\"radio_config\\": {\\"band_24\\": {\\"disabled\\": false, \\"allow_rrm_disable\\": false, \\"power_min\\": null, \\"power_max\\": null, \\"power\\": 10, \\"preamble\\": \\"short\\", \\"channels\\": [1, 10], \\"bandwidth\\": 20}}}\",\"before\":\"{\\"radio_config\\": {\\"band_24\\": {\\"disabled\\": false, \\"allow_rrm_disable\\": false, \\"power_min\\": 8, \\"power_max\\": 18, \\"power\\": null, \\"preamble\\": \\"long\\", \\"channels\\": [1, 10], \\"bandwidth\\": 20}}}\",\"id\":\"737909a2-04ff-4aeb-b9da-cc924e74a4dd\",\"message\":\"Update Site Settings\",\"org_id\":\"fc7e2967-e7ef-41e6-b007-1217713de05a\",\"site_id\":\"256c3a35-9cb7-436e-bc6d-314972645d95\",\"site_name\":\"Test Site\",\"src_ip\":\"1.2.3.4\",\"timestamp\":1685956576.923601,\"user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36\"}]}'
+                      req_url: https://example.com
+                      resp_body: Ok
+                      resp_headers: string
+                      site_id: 256c3a35-9cb7-436e-bc6d-314972645d95
+                      status: success
+                      status_code: 200
+                      timestamp: 1687962508.583656
+                      topic: audits
+                      webhook_id: 7a11b901-f719-4c91-8aef-deb8699a6364
+                    start: 1687948793
+                    total: 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Webhook Deliveries:
+                  value:
+                    end: 1688035193
+                    limit: 10
+                    results:
+                    - error: string
+                      id: 55b0f02f-ebf6-4ad2-8b10-200508a97581
+                      org_id: fc7e2967-e7ef-41e6-b007-1217713de05a
+                      req_headers: '{\"Content-Type\":[\"application/json\"],\"User-Agent\":[\"Mist-webhook\"]}'
+                      req_payload: '{\"topic\":\"audits\",\"events\":[{\"admin_name\":\"John Doe john.doe@juniper.net\",\"after\":\"{\\"radio_config\\": {\\"band_24\\": {\\"disabled\\": false, \\"allow_rrm_disable\\": false, \\"power_min\\": null, \\"power_max\\": null, \\"power\\": 10, \\"preamble\\": \\"short\\", \\"channels\\": [1, 10], \\"bandwidth\\": 20}}}\",\"before\":\"{\\"radio_config\\": {\\"band_24\\": {\\"disabled\\": false, \\"allow_rrm_disable\\": false, \\"power_min\\": 8, \\"power_max\\": 18, \\"power\\": null, \\"preamble\\": \\"long\\", \\"channels\\": [1, 10], \\"bandwidth\\": 20}}}\",\"id\":\"737909a2-04ff-4aeb-b9da-cc924e74a4dd\",\"message\":\"Update Site Settings\",\"org_id\":\"fc7e2967-e7ef-41e6-b007-1217713de05a\",\"site_id\":\"256c3a35-9cb7-436e-bc6d-314972645d95\",\"site_name\":\"Test Site\",\"src_ip\":\"1.2.3.4\",\"timestamp\":1685956576.923601,\"user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36\"}]}'
+                      req_url: https://example.com
+                      resp_body: Ok
+                      resp_headers: string
+                      site_id: 256c3a35-9cb7-436e-bc6d-314972645d95
+                      status: success
+                      status_code: 200
+                      timestamp: 1687962508.583656
+                      topic: audits
+                      webhook_id: 7a11b901-f719-4c91-8aef-deb8699a6364
+                    start: 1687948793
+                    total: 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/webhooks/{webhook_id}/ping:
+    parameters: []
+    post:
+      tags:
+      - Sites Webhooks
+      summary: pingSiteWebhook
+      description: Send a Ping event to the webhook
+      operationId: pingSiteWebhook
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: webhook_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    search_webhook_delivery:
+      title: search_webhook_delivery
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Upper bound timestamp of the webhook delivery search window, in epoch seconds
+          contentEncoding: int32
+          examples:
+          - 1688035193
+        limit:
+          type: integer
+          description: Maximum number of webhook delivery records returned by this page
+          contentEncoding: int32
+          examples:
+          - 10
+        next:
+          type: string
+          description: URL for the next page of webhook delivery records, when more results are available
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/webhook_delivery'
+          description: Webhook delivery records returned by the search response
+        start:
+          type: integer
+          description: Lower bound timestamp of the webhook delivery search window, in epoch seconds
+          contentEncoding: int32
+          examples:
+          - 1687948793
+        total:
+          type: integer
+          description: Count of webhook delivery records matching the search
+          contentEncoding: int32
+      description: Paginated response for webhook delivery searches
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    count_result:
+      title: count_result
+      required:
+      - count
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of matching items for the distinct value or values in this result
+          contentEncoding: int32
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
+    webhook_delivery:
+      title: webhook_delivery
+      type: object
+      properties:
+        error:
+          type: string
+          description: Message returned for a failed delivery attempt, when available
+        id:
+          type: string
+          description: Unique identifier of the webhook delivery attempt
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        org_id:
+          type: string
+          description: Organization associated with the webhook delivery attempt
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        req_headers:
+          type: string
+          description: HTTP headers sent with the webhook delivery request
+          examples:
+          - '{\"Content-Type\":[\"application/json\"],\"User-Agent\":[\"Mist-webhook\"]}'
+        req_payload:
+          type: string
+          description: JSON payload sent in the webhook delivery request
+          examples:
+          - '{\"topic\":\"audits\",\"events\":[{\"admin_name\":\"John Doe john.doe@juniper.net\",\"after\":\"{\\"radio_config\\": {\\"band_24\\": {\\"disabled\\": false, \\"allow_rrm_disable\\": false, \\"power_min\\": null, \\"power_max\\": null, \\"power\\": 10, \\"preamble\\": \\"short\\", \\"channels\\": [1, 10], \\"bandwidth\\": 20}}}\",\"before\":\"{\\"radio_config\\": {\\"band_24\\": {\\"disabled\\": false, \\"allow_rrm_disable\\": false, \\"power_min\\": 8, \\"power_max\\": 18, \\"power\\": null, \\"preamble\\": \\"long\\", \\"channels\\": [1, 10], \\"bandwidth\\": 20}}}\",\"id\":\"737909a2-04ff-4aeb-b9da-cc924e74a4dd\",\"message\":\"Update Site Settings\",\"org_id\":\"fc7e2967-e7ef-41e6-b007-1217713de05a\",\"site_id\":\"256c3a35-9cb7-436e-bc6d-314972645d95\",\"site_name\":\"Test Site\",\"src_ip\":\"1.2.3.4\",\"timestamp\":1685956576.923601,\"user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36\"}]}'
+        req_url:
+          type: string
+          description: Destination URL used for the webhook delivery request
+          examples:
+          - https://example.com
+        resp_body:
+          type: string
+          description: Response body returned by the webhook destination
+          examples:
+          - Ok
+        resp_headers:
+          type: string
+          description: Response headers returned by the webhook destination
+        site_id:
+          type: string
+          description: Site associated with the webhook delivery attempt, when applicable
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        status:
+          allOf:
+          - $ref: '#/components/schemas/webhook_delivery_status2'
+          - description: 'Delivery result for the webhook request. enum: `failure`, `success`.'
+            examples:
+            - failure
+        status_code:
+          type: integer
+          description: HTTP status code returned by the webhook destination
+          contentEncoding: int32
+          examples:
+          - 200
+        timestamp:
+          type: number
+          description: Time when the webhook delivery attempt occurred, in epoch seconds
+          readOnly: true
+        topic:
+          allOf:
+          - $ref: '#/components/schemas/webhook_delivery_topic2'
+          - description: 'Webhook topic delivered in this request. enum: `alarms`, `audits`, `device-updowns`, `occupancy-alerts`, `ping`.'
+            examples:
+            - audits
+        webhook_id:
+          type: string
+          description: Unique identifier of the configured webhook used for this delivery attempt
+          contentEncoding: uuid
+          examples:
+          - 7a11b901-f719-4c91-8aef-deb8699a6364
+      description: Record of a webhook delivery attempt and the destination response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http400_webhook:
+      title: response_http400_webhook
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the invalid webhook request
+          examples:
+          - 'invalid field: assetfilter_ids'
+        reason:
+          type: string
+          description: Additional reason explaining why the webhook request was invalid
+          examples:
+          - contains duplicate uuids
+      description: Webhook-specific HTTP 400 bad request error response
+    webhook_action3:
+      title: webhook_action3
+      enum:
+      - permit
+      - block
+      type: string
+      description: 'Default action applied when none of the `rules` match the incoming event. enum: `permit`, `block`.'
+    webhook:
+      title: webhook
+      type: object
+      properties:
+        assetfilter_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: Asset filter identifiers used to restrict `asset-raw-rssi` webhook events
+        created_time:
+          type: number
+          description: Epoch timestamp when the webhook was created
+          readOnly: true
+        default_action:
+          allOf:
+          - $ref: '#/components/schemas/webhook_action3'
+          - description: 'Default action applied when none of the `rules` match the incoming event. enum: `permit`, `block`.'
+        enabled:
+          type: boolean
+          description: Whether webhook is enabled
+          default: true
+        for_site:
+          type: boolean
+          description: Whether this webhook is scoped to a site rather than the organization
+          readOnly: true
+        headers:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          description: If `type`=`http-post`, additional custom HTTP headers to add. The headers name and value must be string, total bytes of headers name and value must be less than 1000
+          examples:
+          - x-custom-1: your_custom_header_value1
+            x-custom-2: your_custom_header_value2
+        id:
+          type: string
+          description: Unique identifier of the webhook
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        modified_time:
+          type: number
+          description: Epoch timestamp when the webhook was last modified
+          readOnly: true
+        name:
+          type:
+          - string
+          - 'null'
+          description: Display name of the webhook
+        oauth2_client_id:
+          type: string
+          description: Required when `oauth2_grant_type`==`client_credentials`; OAuth2 client identifier used to request an access token
+        oauth2_client_secret:
+          type: string
+          description: Required when `oauth2_grant_type`==`client_credentials`; OAuth2 client secret used to request an access token
+          contentEncoding: password
+        oauth2_grant_type:
+          allOf:
+          - $ref: '#/components/schemas/webhook_oauth2_grant_type2'
+          - description: 'OAuth2 grant type used when `type`==`oauth2`. enum: `client_credentials`, `password`.'
+        oauth2_password:
+          type: string
+          description: Required when `oauth2_grant_type`==`password`; password used for the OAuth2 token request
+          contentEncoding: password
+        oauth2_scopes:
+          type: array
+          items:
+            type: string
+          description: OAuth2 scopes included in the token request when `type`==`oauth2`
+        oauth2_token_url:
+          type: string
+          description: Required when `type`==`oauth2`; token endpoint URL used to obtain the OAuth2 access token
+        oauth2_username:
+          type: string
+          description: Required when `oauth2_grant_type`==`password`; username used for the OAuth2 token request
+        org_id:
+          type: string
+          description: Organization that owns the webhook
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        rules:
+          type: array
+          items:
+            $ref: '#/components/schemas/webhook_rule'
+          description: Optional filtering rules to override `topics`. Each rule permits or blocks events for a topic, optionally based on event payload matching criteria
+        secret:
+          type:
+          - string
+          - 'null'
+          description: "Only if `type`=`http-post` \n\nwhen `secret` is provided, two HTTP headers will be added: \n  * X-Mist-Signature-v2: HMAC_SHA256(secret, body)\n  * X-Mist-Signature: HMAC_SHA1(secret, body)"
+        single_event_per_message:
+          type: boolean
+          description: Some solutions may not be able to parse multiple events from a single message (e.g. IBM Qradar, DSM). When set to `true`, only a single event will be sent per message. this feature is only available on certain topics (see [List Webhook Topics]($e/Constants%20Definitions/listWebhookTopics))
+          default: false
+        site_id:
+          type: string
+          description: Site associated with this webhook when it is site-scoped
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        splunk_token:
+          type:
+          - string
+          - 'null'
+          description: Required if `type`=`splunk`. If splunk_token is not defined for a type Splunk webhook, it will not send, regardless if the webhook receiver is configured to accept it.
+        topics:
+          type: array
+          items:
+            type: string
+          description: Event topics delivered by this webhook
+        type:
+          allOf:
+          - $ref: '#/components/schemas/webhook_type2'
+          - description: 'Delivery mechanism used by this webhook. enum: `aws-sns`, `google-pubsub`, `http-post`, `oauth2`, `splunk`.'
+        url:
+          type: string
+          description: Destination URL that receives webhook deliveries
+        verify_cert:
+          type: boolean
+          description: When url uses HTTPS, whether to verify the certificate
+          default: true
+      description: Webhook configuration for delivering selected Mist events to an external destination
+    webhook_delivery_topic2:
+      title: webhook_delivery_topic2
+      enum:
+      - alarms
+      - audits
+      - device-updowns
+      - occupancy-alerts
+      - ping
+      type: string
+      description: 'Webhook topic delivered in this request. enum: `alarms`, `audits`, `device-updowns`, `occupancy-alerts`, `ping`.'
+      examples:
+      - audits
+    webhook_rule:
+      title: webhook_rule
+      required:
+      - topic
+      type: object
+      properties:
+        action:
+          allOf:
+          - $ref: '#/components/schemas/webhook_action1'
+          - description: 'Action applied when the rule matches the incoming event. enum: `permit`, `block`.'
+        matching:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+            description: Optional event payload matching criteria. Property key is the event field name and the value is the list of accepted values
+            example:
+              type:
+              - AP_DISCONNECTED
+          description: Optional event payload matching criteria. Property key is the event field name and the value is the list of accepted values
+          examples:
+          - type:
+            - AP_DISCONNECTED
+        topic:
+          type: string
+          description: Webhook topic this rule applies to
+      description: Filtering rule that permits or blocks webhook events for a topic
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    webhook_delivery_distinct:
+      title: webhook_delivery_distinct
+      enum:
+      - status
+      - status_code
+      - topic
+      - webhook_id
+      type: string
+      description: 'webhook topic. enum: `status`, `status_code`, `topic`, `webhook_id`'
+      examples:
+      - webhook_id
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    webhook_delivery_status2:
+      title: webhook_delivery_status2
+      enum:
+      - failure
+      - success
+      type: string
+      description: 'Delivery result for the webhook request. enum: `failure`, `success`.'
+      examples:
+      - failure
+    webhook_delivery_status:
+      title: webhook_delivery_status
+      enum:
+      - failure
+      - success
+      type: string
+      description: 'webhook delivery status. enum: `failure`, `success`'
+      examples:
+      - failure
+    webhook_delivery_topic:
+      title: webhook_delivery_topic
+      enum:
+      - alarms
+      - audits
+      - device-updowns
+      - occupancy-alerts
+      - ping
+      type: string
+      description: 'webhook topic. enum: `alarms`, `audits`, `device-updowns`, `occupancy-alerts`, `ping`'
+      examples:
+      - audits
+    webhook_oauth2_grant_type2:
+      title: webhook_oauth2_grant_type2
+      enum:
+      - client_credentials
+      - password
+      type: string
+      description: 'OAuth2 grant type used when `type`==`oauth2`. enum: `client_credentials`, `password`.'
+    webhook_action1:
+      title: webhook_action1
+      enum:
+      - permit
+      - block
+      type: string
+      description: 'Action applied when the rule matches the incoming event. enum: `permit`, `block`.'
+    webhook_type2:
+      title: webhook_type2
+      enum:
+      - aws-sns
+      - google-pubsub
+      - http-post
+      - oauth2
+      - splunk
+      type: string
+      description: 'Delivery mechanism used by this webhook. enum: `aws-sns`, `google-pubsub`, `http-post`, `oauth2`, `splunk`.'
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_count:
+      title: response_count
+      required:
+      - distinct
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        distinct:
+          type: string
+          description: Field used to group the count results
+        end:
+          type: integer
+          description: Search window end timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of distinct count results requested
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/count_result'
+          description: Count results grouped by the distinct field
+        start:
+          type: integer
+          description: Search window start timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of distinct result buckets returned
+          contentEncoding: int32
+      description: Distinct count response for time-bounded search results
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

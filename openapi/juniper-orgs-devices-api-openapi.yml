@@ -1,0 +1,4550 @@
+openapi: 3.2.0
+info:
+  title: Mist Orgs Devices API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Orgs Devices
+  description: Devices are any Network device managed or monitored by Juniper Mist. It can be * Wireless Access Points * Juniper Switch (EX, QFX) * Juniper WAN Gateway (SRX, SSR) * Mist Edges * Other or 3rd party devices, like Cradlepoint Devices
+paths:
+  /api/v1/orgs/{org_id}/devices:
+    parameters: []
+    get:
+      tags:
+      - Orgs Devices
+      summary: listOrgDevices
+      description: List devices in the organization, including APs, switches and gateways managed or monitored by Mist.
+      operationId: listOrgDevices
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_org_devices'
+                - description: Response containing organization device records
+                  examples:
+                  - results:
+                    - mac: string
+                      name: string
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    results:
+                    - mac: string
+                      name: string
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_org_devices'
+                - description: Response containing organization device records
+                  examples:
+                  - results:
+                    - mac: string
+                      name: string
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    results:
+                    - mac: string
+                      name: string
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/devices/count:
+    parameters: []
+    get:
+      tags:
+      - Orgs Devices
+      summary: countOrgDevices
+      description: Count organization device records, optionally grouped by `distinct` and filtered by device identifiers, model, LLDP attributes, Mist Edge, tunnel status, device type, and time range.
+      operationId: countOrgDevices
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: distinct
+        in: query
+        description: 'Field used to group this count response. enum: `hostname`, `ip`, `lldp_mgmt_addr`, `lldp_port_id`, `lldp_system_desc`, `lldp_system_name`, `mac`, `model`, `mxedge_id`, `mxtunnel_status`, `site_id`, `version`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/org_devices_count_distinct'
+          - description: 'Field used to group this count response. enum: `hostname`, `ip`, `lldp_mgmt_addr`, `lldp_port_id`, `lldp_system_desc`, `lldp_system_name`, `mac`, `model`, `mxedge_id`, `mxtunnel_status`, `site_id`, `version`'
+      - name: hostname
+        in: query
+        description: Partial / full hostname
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - my-hostname
+      - name: site_id
+        in: query
+        description: Filter results by site identifier
+        style: form
+        explode: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 7dae216d-7c98-a51b-e068-dd7d477b7216
+      - name: model
+        in: query
+        description: Filter results by device model. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - AP45,AP47D
+          - MR84
+        examples:
+          Untitled Example1:
+            value: AP45,AP47D
+          Untitled Example2:
+            value: MR84
+      - name: managed
+        in: query
+        description: 'for switches and gateways, to filter on managed/unmanaged devices. Deprecated in favour of mist_configured. enum: `true`, `false`'
+        deprecated: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 'true'
+          deprecated: true
+      - name: mac
+        in: query
+        description: Filter results by MAC address
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 5c5b53010101
+      - name: version
+        in: query
+        description: Filter results by software version
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 10.0.0
+      - name: ip
+        in: query
+        description: Filter results by IPv4 address
+        style: form
+        explode: true
+        schema:
+          type: string
+          contentEncoding: ipv4
+          examples:
+          - 192.168.1.1
+      - name: mxtunnel_status
+        in: query
+        description: 'MxTunnel status, enum: `up`, `down`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/count_org_devices_mxtunnel_status'
+          - description: 'MxTunnel status, enum: `up`, `down`'
+      - name: mxedge_id
+        in: query
+        description: Mist Edge id, if AP is connecting to a Mist Edge
+        style: form
+        explode: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 7dae216d-7c98-a51b-e068-dd7d477b7216
+      - name: lldp_system_name
+        in: query
+        description: Filter results by LLDP system name
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - my-lldp-system
+      - name: lldp_system_desc
+        in: query
+        description: Filter results by LLDP system description
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - my-lldp-system-description
+      - name: lldp_port_id
+        in: query
+        description: Filter results by LLDP port identifier
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - ge-0/0/1
+      - name: lldp_mgmt_addr
+        in: query
+        description: LLDP management IP address
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 10.4.2.3
+      - name: type
+        in: query
+        description: 'Filter results by type. enum: `ap`, `gateway`, `switch`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/device_type_default_ap'
+          - description: 'Filter results by type. enum: `ap`, `gateway`, `switch`'
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      responses:
+        '200':
+          description: Result of Count
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_count'
+                - description: Distinct count response for time-bounded search results
+                  examples:
+                  - distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_count'
+                - description: Distinct count response for time-bounded search results
+                  examples:
+                  - distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/devices/events/count:
+    parameters: []
+    get:
+      tags:
+      - Orgs Devices
+      summary: countOrgDeviceEvents
+      description: Count device event records across the organization, optionally grouped by `distinct` and filtered by site, AP, firmware, model, event text, event type, and time range.
+      operationId: countOrgDeviceEvents
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: distinct
+        in: query
+        description: 'Field used to group this count response. enum: `ap`, `apfw`, `model`, `org_id`, `site_id`, `status`, `text`, `timestamp`, `type`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/org_devices_events_count_distinct'
+          - description: 'Field used to group this count response. enum: `ap`, `apfw`, `model`, `org_id`, `site_id`, `status`, `text`, `timestamp`, `type`'
+      - name: site_id
+        in: query
+        description: Filter results by site identifier
+        style: form
+        explode: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 7dae216d-7c98-a51b-e068-dd7d477b7216
+      - name: ap
+        in: query
+        description: Filter results by AP MAC address
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 5c5b53010101
+      - name: apfw
+        in: query
+        description: Filter results by AP firmware version
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 10.0.0
+      - name: model
+        in: query
+        description: Filter results by device model
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - AP43
+      - name: text
+        in: query
+        description: Filter results by event message text
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - Device connected
+      - name: type
+        in: query
+        description: See [List Device Events Definitions]($e/Constants%20Events/listDeviceEventsDefinitions)
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: includes
+        in: query
+        description: Keyword to include events from additional indices (e.g. ext_tunnel for ext tunnel events)
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - ext_tunnel
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      responses:
+        '200':
+          description: Result of Count
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_count'
+                - description: Distinct count response for time-bounded search results
+                  examples:
+                  - distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_count'
+                - description: Distinct count response for time-bounded search results
+                  examples:
+                  - distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/devices/events/search:
+    parameters: []
+    get:
+      tags:
+      - Orgs Devices
+      summary: searchOrgDeviceEvents
+      description: Search device event records across the organization with filters for MAC address, model, device type, event text, event type, additional event indices, and time range.
+      operationId: searchOrgDeviceEvents
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: mac
+        in: query
+        description: Filter results by MAC address. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 5c5b53010101,5c5b53020202
+          - 5c5b53010101
+        examples:
+          Untitled Example1:
+            value: 5c5b53010101,5c5b53020202
+          Untitled Example2:
+            value: 5c5b53010101
+      - name: model
+        in: query
+        description: Filter results by device model. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - EX4100-48MP,AP17
+          - AP43
+        examples:
+          Untitled Example1:
+            value: EX4100-48MP,AP17
+          Untitled Example2:
+            value: AP43
+      - name: device_type
+        in: query
+        description: Filter results by device type. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: ap
+          examples:
+          - switch,ap
+      - name: text
+        in: query
+        description: Filter results by event message text
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - Device connected
+      - name: type
+        in: query
+        description: See [List Device Events Definitions]($e/Constants%20Events/listDeviceEventsDefinitions). Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - SW_PORT_DOWN,AP_CONFIGURED
+      - name: last_by
+        in: query
+        description: Return last/recent event for passed in field
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - port_id
+      - name: includes
+        in: query
+        description: Keyword to include events from additional indices (e.g. ext_tunnel for ext tunnel events)
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - ext_tunnel
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: sort
+        in: query
+        description: On which field the list should be sorted, -prefix represents DESC order
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: timestamp
+          examples:
+          - -site_id
+      - name: search_after
+        in: query
+        description: Pagination cursor for retrieving subsequent pages of results. This value is automatically populated by Mist in the `next` URL from the previous response and should not be manually constructed.
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_device_events_search'
+                - description: Paginated response for device or system event search results
+                  examples:
+                  - end: 0
+                    limit: 0
+                    next: string
+                    results:
+                    - ap: 5c5b351e13b5
+                      apfw: 5c5b351e13b5
+                      model: BT11-WW
+                      org_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862a
+                      site_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                      text: Succeeding DNS query from 172.29.101.134 to 172.29.101.7 for "portal.mistsys.com" on vlan 1, id 60224
+                      timestamp: 1547235620.89
+                      type: CLIENT_DNS_OK
+                    - device_type: gateway
+                      job_id: c2096de9-0ca4-4a8b-b500-d37cbe0f0baf
+                      mac: d007ca6c6ac0
+                      org_id: 86f0c649-06b1-4337-b3d4-25eeb887f732
+                      site_id: 9f8d28eb-77c7-44c7-a85b-4426bf291679
+                      status: PROVISION_IN_PROGRESS
+                      template_id: 660e8400-e29b-41d4-a716-446655440001
+                      timestamp: 1748987445.959
+                      tunnel_name: zs1
+                      type: NOTICE
+                    start: 0
+                    total: 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    end: 0
+                    limit: 0
+                    next: string
+                    results:
+                    - ap: 5c5b351e13b5
+                      apfw: 5c5b351e13b5
+                      model: BT11-WW
+                      org_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862a
+                      site_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                      text: Succeeding DNS query from 172.29.101.134 to 172.29.101.7 for "portal.mistsys.com" on vlan 1, id 60224
+                      timestamp: 1547235620.89
+                      type: CLIENT_DNS_OK
+                    - device_type: gateway
+                      job_id: c2096de9-0ca4-4a8b-b500-d37cbe0f0baf
+                      mac: d007ca6c6ac0
+                      org_id: 86f0c649-06b1-4337-b3d4-25eeb887f732
+                      site_id: 9f8d28eb-77c7-44c7-a85b-4426bf291679
+                      status: PROVISION_IN_PROGRESS
+                      template_id: 660e8400-e29b-41d4-a716-446655440001
+                      timestamp: 1748987445.959
+                      tunnel_name: zs1
+                      type: NOTICE
+                    start: 0
+                    total: 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_device_events_search'
+                - description: Paginated response for device or system event search results
+                  examples:
+                  - end: 0
+                    limit: 0
+                    next: string
+                    results:
+                    - ap: 5c5b351e13b5
+                      apfw: 5c5b351e13b5
+                      model: BT11-WW
+                      org_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862a
+                      site_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                      text: Succeeding DNS query from 172.29.101.134 to 172.29.101.7 for "portal.mistsys.com" on vlan 1, id 60224
+                      timestamp: 1547235620.89
+                      type: CLIENT_DNS_OK
+                    - device_type: gateway
+                      job_id: c2096de9-0ca4-4a8b-b500-d37cbe0f0baf
+                      mac: d007ca6c6ac0
+                      org_id: 86f0c649-06b1-4337-b3d4-25eeb887f732
+                      site_id: 9f8d28eb-77c7-44c7-a85b-4426bf291679
+                      status: PROVISION_IN_PROGRESS
+                      template_id: 660e8400-e29b-41d4-a716-446655440001
+                      timestamp: 1748987445.959
+                      tunnel_name: zs1
+                      type: NOTICE
+                    start: 0
+                    total: 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    end: 0
+                    limit: 0
+                    next: string
+                    results:
+                    - ap: 5c5b351e13b5
+                      apfw: 5c5b351e13b5
+                      model: BT11-WW
+                      org_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862a
+                      site_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                      text: Succeeding DNS query from 172.29.101.134 to 172.29.101.7 for "portal.mistsys.com" on vlan 1, id 60224
+                      timestamp: 1547235620.89
+                      type: CLIENT_DNS_OK
+                    - device_type: gateway
+                      job_id: c2096de9-0ca4-4a8b-b500-d37cbe0f0baf
+                      mac: d007ca6c6ac0
+                      org_id: 86f0c649-06b1-4337-b3d4-25eeb887f732
+                      site_id: 9f8d28eb-77c7-44c7-a85b-4426bf291679
+                      status: PROVISION_IN_PROGRESS
+                      template_id: 660e8400-e29b-41d4-a716-446655440001
+                      timestamp: 1748987445.959
+                      tunnel_name: zs1
+                      type: NOTICE
+                    start: 0
+                    total: 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/devices/last_config/count:
+    parameters: []
+    get:
+      tags:
+      - Orgs Devices
+      summary: countOrgDeviceLastConfigs
+      description: Count device config history records across the organization, optionally grouped by `distinct` and filtered by device type and time range.
+      operationId: countOrgDeviceLastConfigs
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: type
+        in: query
+        description: 'Filter results by type. enum: `ap`, `gateway`, `switch`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/device_type_default_ap'
+          - description: 'Filter results by type. enum: `ap`, `gateway`, `switch`'
+      - name: distinct
+        in: query
+        description: 'Field used to group this count response. enum: `mac`, `name`, `site_id`, `version`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/org_devices_last_configs_count_distinct'
+          - description: 'Field used to group this count response. enum: `mac`, `name`, `site_id`, `version`'
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      responses:
+        '200':
+          description: Result of Count
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_count'
+                - description: Distinct count response for time-bounded search results
+                  examples:
+                  - distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_count'
+                - description: Distinct count response for time-bounded search results
+                  examples:
+                  - distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/devices/last_config/search:
+    parameters: []
+    get:
+      tags:
+      - Orgs Devices
+      summary: searchOrgDeviceLastConfigs
+      description: Search device config history records across the organization with filters for device type, MAC address, name, software version, certificate-expiry duration, and time range.
+      operationId: searchOrgDeviceLastConfigs
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: device_type
+        in: query
+        description: 'Filter results by device type. enum: `ap`, `gateway`, `switch`, `mxedge`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/last_config_device_type'
+          - description: 'Filter results by device type. enum: `ap`, `gateway`, `switch`, `mxedge`'
+      - name: mac
+        in: query
+        description: Filter results by MAC address. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 5c5b53010101,5c5b53020202
+          - 5c5b53010101
+        examples:
+          Untitled Example1:
+            value: 5c5b53010101,5c5b53020202
+          Untitled Example2:
+            value: 5c5b53010101
+      - name: name
+        in: query
+        description: Filter results by name. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - name-a,name-b
+          - My AP
+        examples:
+          Untitled Example1:
+            value: name-a,name-b
+          Untitled Example2:
+            value: My AP
+      - name: version
+        in: query
+        description: Filter results by software version. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - apfw-0.15.34615-noro-0a3c,apfw-0.15.34436-noro-d810
+          - 10.0.0
+        examples:
+          Untitled Example1:
+            value: apfw-0.15.34615-noro-0a3c,apfw-0.15.34436-noro-d810
+          Untitled Example2:
+            value: 10.0.0
+      - name: cert_expiry_duration
+        in: query
+        description: 'Duration for expiring cert queries (format: 2d/3h/172800 seconds)'
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 2d
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: sort
+        in: query
+        description: On which field the list should be sorted, -prefix represents DESC order
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: timestamp
+          examples:
+          - -site_id
+      - name: search_after
+        in: query
+        description: Pagination cursor for retrieving subsequent pages of results. This value is automatically populated by Mist in the `next` URL from the previous response and should not be manually constructed.
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_config_history_search'
+                - description: Paginated device config history search response
+                  examples:
+                  - end: 1531862583
+                    limit: 10
+                    results:
+                    - channel_24: 11
+                      channel_5: 100
+                      radio_macs:
+                      - 5c5b352e000a
+                      - 5c5b352e000b
+                      - 5c5b352e000c
+                      radios:
+                      - band: '24'
+                        channel: 11
+                      - band: '5'
+                        channel: 100
+                      secpolicy_violated: false
+                      ssids:
+                      - test24
+                      - test5
+                      ssids_24:
+                      - test24
+                      ssids_5:
+                      - test5
+                      timestamp: 1531855856.643369
+                      version: apfw-0.2.14754-cersei-75c8
+                      wlans:
+                      - auth: psk
+                        bands:
+                        - '24'
+                        id: be22bba7-8e22-e1cf-5185-b880816fe2cf
+                        ssid: test24
+                        vlan_ids:
+                        - '1'
+                      - auth: psk
+                        bands:
+                        - '5'
+                        id: f8c18724-4118-3487-811a-f98964988604
+                        ssid: test5
+                        vlan_ids:
+                        - '1'
+                    start: 1531776183
+                    total: 1
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    end: 1531862583
+                    limit: 10
+                    results:
+                    - channel_24: 11
+                      channel_5: 100
+                      radio_macs:
+                      - 5c5b352e000a
+                      - 5c5b352e000b
+                      - 5c5b352e000c
+                      radios:
+                      - band: '24'
+                        channel: 11
+                      - band: '5'
+                        channel: 100
+                      secpolicy_violated: false
+                      ssids:
+                      - test24
+                      - test5
+                      ssids_24:
+                      - test24
+                      ssids_5:
+                      - test5
+                      timestamp: 1531855856.643369
+                      version: apfw-0.2.14754-cersei-75c8
+                      wlans:
+                      - auth: psk
+                        bands:
+                        - '24'
+                        id: be22bba7-8e22-e1cf-5185-b880816fe2cf
+                        ssid: test24
+                        vlan_ids:
+                        - '1'
+                      - auth: psk
+                        bands:
+                        - '5'
+                        id: f8c18724-4118-3487-811a-f98964988604
+                        ssid: test5
+                        vlan_ids:
+                        - '1'
+                    start: 1531776183
+                    total: 1
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_config_history_search'
+                - description: Paginated device config history search response
+                  examples:
+                  - end: 1531862583
+                    limit: 10
+                    results:
+                    - channel_24: 11
+                      channel_5: 100
+                      radio_macs:
+                      - 5c5b352e000a
+                      - 5c5b352e000b
+                      - 5c5b352e000c
+                      radios:
+                      - band: '24'
+                        channel: 11
+                      - band: '5'
+                        channel: 100
+                      secpolicy_violated: false
+                      ssids:
+                      - test24
+                      - test5
+                      ssids_24:
+                      - test24
+                      ssids_5:
+                      - test5
+                      timestamp: 1531855856.643369
+                      version: apfw-0.2.14754-cersei-75c8
+                      wlans:
+                      - auth: psk
+                        bands:
+                        - '24'
+                        id: be22bba7-8e22-e1cf-5185-b880816fe2cf
+                        ssid: test24
+                        vlan_ids:
+                        - '1'
+                      - auth: psk
+                        bands:
+                        - '5'
+                        id: f8c18724-4118-3487-811a-f98964988604
+                        ssid: test5
+                        vlan_ids:
+                        - '1'
+                    start: 1531776183
+                    total: 1
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    end: 1531862583
+                    limit: 10
+                    results:
+                    - channel_24: 11
+                      channel_5: 100
+                      radio_macs:
+                      - 5c5b352e000a
+                      - 5c5b352e000b
+                      - 5c5b352e000c
+                      radios:
+                      - band: '24'
+                        channel: 11
+                      - band: '5'
+                        channel: 100
+                      secpolicy_violated: false
+                      ssids:
+                      - test24
+                      - test5
+                      ssids_24:
+                      - test24
+                      ssids_5:
+                      - test5
+                      timestamp: 1531855856.643369
+                      version: apfw-0.2.14754-cersei-75c8
+                      wlans:
+                      - auth: psk
+                        bands:
+                        - '24'
+                        id: be22bba7-8e22-e1cf-5185-b880816fe2cf
+                        ssid: test24
+                        vlan_ids:
+                        - '1'
+                      - auth: psk
+                        bands:
+                        - '5'
+                        id: f8c18724-4118-3487-811a-f98964988604
+                        ssid: test5
+                        vlan_ids:
+                        - '1'
+                    start: 1531776183
+                    total: 1
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/devices/radio_macs:
+    parameters: []
+    get:
+      tags:
+      - Orgs Devices
+      summary: listOrgApsMacs
+      description: 'For some scenarios like E911 or security systems, the BSSIDs are required to identify which AP the client is connecting to. Then the location of the AP can be used as the approximate location of the client.
+
+
+        Each radio MAC can have up to 16 BSSIDs. These are derived by incrementing the least significant hexadecimal digit (last nibble) of the MAC address from 0 to F, while keeping the remaining bits unchanged.'
+      operationId: listOrgApsMacs
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: page
+        in: query
+        description: Select the page number to return when using page-based pagination; starts at `1`
+        style: form
+        explode: true
+        schema:
+          minimum: 1
+          type: integer
+          contentEncoding: int32
+          default: 1
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                minItems: 1
+                uniqueItems: true
+                type: array
+                items:
+                  $ref: '#/components/schemas/ap_radio_mac'
+                description: Access point radio MAC records supplied in an import payload
+                examples:
+                - - mac: 5c5b35000001
+                    radio_macs:
+                    - 5c5b35000040
+                    - 5c5b35000050
+                    - 5c5b35000060
+                  - mac: 5c5b45000001
+                    radio_macs:
+                    - 5c5b45000040
+                    - 5c5b45000050
+                    - 5c5b45000060
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                  - mac: 5c5b35000001
+                    radio_macs:
+                    - 5c5b35000040
+                    - 5c5b35000050
+                    - 5c5b35000060
+                  - mac: 5c5b45000001
+                    radio_macs:
+                    - 5c5b45000040
+                    - 5c5b45000050
+                    - 5c5b45000060
+            application/vnd.api+json:
+              schema:
+                minItems: 1
+                uniqueItems: true
+                type: array
+                items:
+                  $ref: '#/components/schemas/ap_radio_mac'
+                description: Access point radio MAC records supplied in an import payload
+                examples:
+                - - mac: 5c5b35000001
+                    radio_macs:
+                    - 5c5b35000040
+                    - 5c5b35000050
+                    - 5c5b35000060
+                  - mac: 5c5b45000001
+                    radio_macs:
+                    - 5c5b45000040
+                    - 5c5b45000050
+                    - 5c5b45000060
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                  - mac: 5c5b35000001
+                    radio_macs:
+                    - 5c5b35000040
+                    - 5c5b35000050
+                    - 5c5b35000060
+                  - mac: 5c5b45000001
+                    radio_macs:
+                    - 5c5b45000040
+                    - 5c5b45000050
+                    - 5c5b45000060
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/devices/search:
+    parameters: []
+    get:
+      tags:
+      - Orgs Devices
+      summary: searchOrgDevices
+      description: Search organization devices with filters for AP radio attributes, gateway HA attributes, switch EVPN attributes, LLDP data, MAC address, IP address, model, software version, site, Mist Edge, and time range. Set `stats=true` to include device stats in the response.
+      operationId: searchOrgDevices
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: band_24_channel
+        in: query
+        description: When `type`==`ap`, Channel of band_24. Accepts multiple comma-separated integer values.
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+      - name: band_5_channel
+        in: query
+        description: When `type`==`ap`, Channel of band_5. Accepts multiple comma-separated integer values.
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+      - name: band_6_channel
+        in: query
+        description: When `type`==`ap`, Channel of band_6. Accepts multiple comma-separated integer values.
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+      - name: band_24_bandwidth
+        in: query
+        description: When `type`==`ap`, Bandwidth of band_24. Accepts multiple comma-separated integer values.
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+      - name: band_5_bandwidth
+        in: query
+        description: When `type`==`ap`, Bandwidth of band_5. Accepts multiple comma-separated integer values.
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+      - name: band_6_bandwidth
+        in: query
+        description: When `type`==`ap`, Bandwidth of band_6. Accepts multiple comma-separated integer values.
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+      - name: band_24_power
+        in: query
+        description: When `type`==`ap`, Power of band_24. Accepts multiple comma-separated integer values.
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+      - name: band_5_power
+        in: query
+        description: When `type`==`ap`, Power of band_5. Accepts multiple comma-separated integer values.
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+      - name: band_6_power
+        in: query
+        description: When `type`==`ap`, Power of band_6. Accepts multiple comma-separated integer values.
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+      - name: clustered
+        in: query
+        description: When `type`==`gateway`, true / false
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: eth0_port_speed
+        in: query
+        description: When `type`==`ap`, Port speed of eth0. Accepts multiple comma-separated integer values.
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+          examples:
+          - '100'
+          - '1000'
+        examples:
+          Untitled Example2:
+            value: 100
+          Untitled Example3:
+            value: 1000
+      - name: evpntopo_id
+        in: query
+        description: When `type`==`switch`, EVPN topology id
+        style: form
+        explode: true
+        schema:
+          type: string
+          contentEncoding: uuid
+      - name: ext_ip
+        in: query
+        description: Partial / full Device external ip. Use `prefix*` for prefix search or `*substring*` for contains search (e.g. `1.2.3.*` and `*.2.3.*` match `1.2.3.4`). Suffix-only wildcards (e.g. `*.2.3.4`) are not supported. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 1.2.3.4,1.2.3.*
+          - 1.2.3.4
+          - 1.2.3.*
+          - '*2.3.*'
+        examples:
+          Untitled Example1:
+            value: 1.2.3.4,1.2.3.*
+          Untitled Example2:
+            value: 1.2.3.4
+          Untitled Example3:
+            value: 1.2.3.*
+          Untitled Example4:
+            value: '*2.3.*'
+      - name: hostname
+        in: query
+        description: Partial / full Device hostname. Use `prefix*` for prefix search or `*substring*` for contains search (e.g. `my-london*` and `*london*` match `my-london-1`). Suffix-only wildcards (e.g. `*london-1`) are not supported. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - my-london-1,my-london*
+          - my-london-1
+          - my-london*
+          - '*london*'
+        examples:
+          Untitled Example1:
+            value: my-london-1,my-london*
+          Untitled Example2:
+            value: my-london-1
+          Untitled Example3:
+            value: my-london*
+          Untitled Example4:
+            value: '*london*'
+      - name: ip
+        in: query
+        description: Partial / full Device IP address. Use `prefix*` for prefix search or `*substring*` for contains search (e.g. `10.100.10.*` and `*100.10.*` match `10.100.10.54`). Suffix-only wildcards (e.g. `*.54`) are not supported. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 10.100.10.54,10.100.10.*
+          - 10.100.10.54
+          - 10.100.10.*
+          - '*100.10.*'
+        examples:
+          Untitled Example1:
+            value: 10.100.10.54,10.100.10.*
+          Untitled Example2:
+            value: 10.100.10.54
+          Untitled Example3:
+            value: 10.100.10.*
+          Untitled Example4:
+            value: '*100.10.*'
+      - name: last_config_status
+        in: query
+        description: When `type`==`switch` or `type`==`gateway`, last configuration status
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - success
+      - name: last_hostname
+        in: query
+        description: Last hostname of the device. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - ap-01,ap-02
+      - name: lldp_mgmt_addr
+        in: query
+        description: When `type`==`ap`, LLDP management IP address. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 192.0.2.10,192.0.2.11
+      - name: lldp_port_id
+        in: query
+        description: When `type`==`ap`, LLDP port id. Use `prefix*` for prefix search or `*substring*` for contains search (e.g. `ge-0/0/*` and `*-0/0/*` match `ge-0/0/30`). Suffix-only wildcards (e.g. `*switch-01`) are not supported. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 00000000-0000-0000-0000-000000000001,00000000-0000-0000-0000-000000000002
+      - name: lldp_system_desc
+        in: query
+        description: When `type`==`ap`, LLDP system description. Use `prefix*` for prefix search or `*substring*` for contains search (e.g. `Juniper Networks*` and `*Networks*` match `Juniper Networks, Inc.`). Suffix-only wildcards (e.g. `*switch-01`) are not supported
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: lldp_system_name
+        in: query
+        description: When `type`==`ap`, LLDP system name. Use `prefix*` for prefix search or `*substring*` for contains search (e.g. `my-switch*` and `*switch*` match `my-switch-01`). Suffix-only wildcards (e.g. `*switch-01`) are not supported. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - richmond-hill-switch,Phoenix_Switch
+      - name: mac
+        in: query
+        description: Partial / full Device MAC address. Use `prefix*` for prefix search or `*substring*` for contains search (e.g. `001122*` and `*1122*` match `001122334455`). Suffix-only wildcards (e.g. `*4455`) are not supported. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - aabbccddeeff,aabbcc*
+          - aabbccddeeff
+          - aabbcc*
+          - '*bbcc*'
+        examples:
+          Untitled Example1:
+            value: aabbccddeeff,aabbcc*
+          Untitled Example2:
+            value: aabbccddeeff
+          Untitled Example3:
+            value: aabbcc*
+          Untitled Example4:
+            value: '*bbcc*'
+      - name: model
+        in: query
+        description: Partial / full Device model. Use `prefix*` for prefix search or `*substring*` for contains search (e.g. `AP4*` and `*P4*` match `AP43`). Suffix-only wildcards (e.g. `*43`) are not supported. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - AP43,AP4*
+          - AP43
+          - AP4*
+          - '*P4*'
+        examples:
+          Untitled Example1:
+            value: AP43,AP4*
+          Untitled Example2:
+            value: AP43
+          Untitled Example3:
+            value: AP4*
+          Untitled Example4:
+            value: '*P4*'
+      - name: mxedge_id
+        in: query
+        description: When `type`==`ap`, Mist Edge id, if AP is connecting to a Mist Edge. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          contentEncoding: uuid
+      - name: mxedge_ids
+        in: query
+        description: When `type`==`ap`, Comma separated list of Mist Edge id, if AP is connecting to a Mist Edge
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: mxtunnel_status
+        in: query
+        description: 'When `type`==`ap`, Mist Tunnel status used to filter results. enum: `down`, `up`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/search_org_devices_mxtunnel_status'
+          - description: 'When `type`==`ap`, Mist Tunnel status used to filter results. enum: `down`, `up`'
+      - name: node
+        in: query
+        description: 'When `type`==`gateway`. enum: `node0`, `node1`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/ha_cluster_node_enum'
+          - description: 'When `type`==`gateway`. enum: `node0`, `node1`'
+      - name: node0_mac
+        in: query
+        description: When `type`==`gateway`, node0 MAC address
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: node1_mac
+        in: query
+        description: When `type`==`gateway`, node1 MAC address
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: power_constrained
+        in: query
+        description: When `type`==`ap`, whether the AP is power constrained.
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: radius_stats
+        in: query
+        description: "When `type`==`switch` or `type`==`gateway`, Key-value pairs where the key\nis the RADIUS server address and the value contains authentication statistics:\n  * <server_address> (string): IP address of the RADIUS server as the key\n  * `auth_accepts` (long): Number of accepted authentication requests\n  * `auth_rejects` (long): Number of rejected authentication requests\n  * `auth_timeouts` (long): Number of authentication timeouts\n  * `auth_server_status` (string): Status of the server. Possible values: `up`, `down`, `unreachable`"
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: site_id
+        in: query
+        description: Filter results by site identifier
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 7dae216d-7c98-a51b-e068-dd7d477b7216
+      - name: stats
+        in: query
+        description: Whether to return device stats
+        style: form
+        explode: true
+        schema:
+          type: boolean
+          default: false
+      - name: t128agent_version
+        in: query
+        description: When `type`==`gateway` (SSR only), version of 128T agent
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: type
+        in: query
+        description: 'Device type used to filter results. enum: `ap`, `gateway`, `switch`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/device_type_default_ap'
+          - description: 'Device type used to filter results. enum: `ap`, `gateway`, `switch`'
+      - name: version
+        in: query
+        description: Filter results by software version. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 0.15.34615,0.14.29967
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: sort
+        in: query
+        description: On which field the list should be sorted, -prefix represents DESC order
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: timestamp
+          examples:
+          - -site_id
+      - name: search_after
+        in: query
+        description: Pagination cursor for retrieving subsequent pages of results. This value is automatically populated by Mist in the `next` URL from the previous response and should not be manually constructed.
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_device_search'
+                - description: Paginated response for organization or site device search results
+                  examples:
+                  - '{"end":0,"limit":0,"next":"string","results":[{"hostname":["AP41-STB-3E5299-WH-2001","AP41-STB-3E5299-WH-50","AP41-STB-3E5299","5c5b353e5299"],"ip":"10.2.16.205","lldp_mgmt_addr":"10.2.10.139","lldp_port_desc":"GigabitEthernet1/0/1","lldp_port_id":"Gi1/0/1","lldp_system_desc":"Cisco IOS Software, C2960S Software (C2960S-UNIVERSALK9-M), Version 15.2(1)E1, RELEASE SOFTWARE (fc2)\nTechnical Support: https://www.cisco.com/techsupport\nCopyright (c) 1986-2013 by Cisco Systems, Inc.\nCompiled Fri 22-Nov-13 07:10 by prod_rel_team","lldp_system_name":"ME-DC-1-ACC-SW","mac":"5c5b353e5299","model":"AP41","mxedge_id":"00000000-0000-0000-1000-43a81f238391","mxtunnel_status":"down","org_id":"6748cfa6-4e12-11e6-9188-0242ac110007","power_constrained":false,"power_opmode":"","site_id":"a8178443-ecb5-461c-b854-f16627619ab3","sku":"AP41-US","timestamp":1596588619.007,"uptime":85280,"version":"0.7.20216","wlans":[{"id":"28c36fc7-dc22-4960-9d81-34087511c2e5","ssid":"Live-Demo-NAC"},{"id":"51b82e2b-f9e8-470b-a32a-cecde5501b0f","ssid":"Live-Demo"}]}],"start":0,"total":0}'
+                  - '{"end":0,"limit":0,"next":"string","results":[{"clustered":true,"evpn_missing_links":false,"evpntopo_id":"","ext_ip":"250.242.0.102","hostname":["wan-teleworker","00ec77599d00","router"],"ip":"250.242.0.102","last_config_status":"success","last_hostname":"wan-teleworker","mac":"00ec77599d00","mist_configured":true,"model":"SSR120","node":"node1","node0_mac":"00ec77599d00","node1_mac":"00ec77599d01","num_members":0,"org_id":"6748cfa6-4e12-11e6-9188-0242ac110007","role":"","site_id":"a8178443-ecb5-461c-b854-f16627619ab3","t128agent_version":"3.8.0-201","time_drifted":false,"timestamp":1734001399.025,"type":"gateway","uptime":3586951,"version":"6.2.5-5.r2"}],"start":0,"total":0}'
+                  - '{"end":0,"limit":0,"next":"string","results":[{"clustered":false,"evpn_missing_links":false,"evpntopo_id":"","ext_ip":"0.0.0.0","hostname":["ld-cup-idf-bbb"],"ip":"10.0.0.217","last_config_status":"success","last_hostname":"ld-cup-idf-bbb","last_trouble_code":"106","last_trouble_timestamp":1719540,"mac":"00c78d939c00","mist_configured":true,"model":"EX4100-48MP","num_members":1,"org_id":"6748cfa6-4e12-11e6-9188-0242ac110007","role":"","site_id":"a8178443-ecb5-461c-b854-f16627619ab3","time_drifted":false,"timestamp":1733998766.256,"type":"switch","uptime":19287811,"version":"22.4R3.25"}],"start":0,"total":0}'
+                contentMediaType: application/json
+              examples:
+                Ap:
+                  value:
+                    end: 0
+                    limit: 0
+                    next: string
+                    results:
+                    - hostname:
+                      - AP41-STB-3E5299-WH-2001
+                      - AP41-STB-3E5299-WH-50
+                      - AP41-STB-3E5299
+                      - 5c5b353e5299
+                      ip: 10.2.16.205
+                      lldp_mgmt_addr: 10.2.10.139
+                      lldp_port_desc: GigabitEthernet1/0/1
+                      lldp_port_id: Gi1/0/1
+                      lldp_system_desc: 'Cisco IOS Software, C2960S Software (C2960S-UNIVERSALK9-M), Version 15.2(1)E1, RELEASE SOFTWARE (fc2)
+
+                        Technical Support: https://www.cisco.com/techsupport
+
+                        Copyright (c) 1986-2013 by Cisco Systems, Inc.
+
+                        Compiled Fri 22-Nov-13 07:10 by prod_rel_team'
+                      lldp_system_name: ME-DC-1-ACC-SW
+                      mac: 5c5b353e5299
+                      model: AP41
+                      mxedge_id: 00000000-0000-0000-1000-43a81f238391
+                      mxtunnel_status: down
+                      org_id: 6748cfa6-4e12-11e6-9188-0242ac110007
+                      power_constrained: false
+                      power_opmode: ''
+                      site_id: a8178443-ecb5-461c-b854-f16627619ab3
+                      sku: AP41-US
+                      timestamp: 1596588619.007
+                      uptime: 85280
+                      version: 0.7.20216
+                      wlans:
+                      - id: 28c36fc7-dc22-4960-9d81-34087511c2e5
+                        ssid: Live-Demo-NAC
+                      - id: 51b82e2b-f9e8-470b-a32a-cecde5501b0f
+                        ssid: Live-Demo
+                    start: 0
+                    total: 0
+                Gateway:
+                  value:
+                    end: 0
+                    limit: 0
+                    next: string
+                    results:
+                    - clustered: true
+                      evpn_missing_links: false
+                      evpntopo_id: ''
+                      ext_ip: 250.242.0.102
+                      hostname:
+                      - wan-teleworker
+                      - 00ec77599d00
+                      - router
+                      ip: 250.242.0.102
+                      last_config_status: success
+                      last_hostname: wan-teleworker
+                      mac: 00ec77599d00
+                      mist_configured: true
+                      model: SSR120
+                      node: node1
+                      node0_mac: 00ec77599d00
+                      node1_mac: 00ec77599d01
+                      num_members: 0
+                      org_id: 6748cfa6-4e12-11e6-9188-0242ac110007
+                      role: ''
+                      site_id: a8178443-ecb5-461c-b854-f16627619ab3
+                      t128agent_version: 3.8.0-201
+                      time_drifted: false
+                      timestamp: 1734001399.025
+                      type: gateway
+                      uptime: 3586951
+                      version: 6.2.5-5.r2
+                    start: 0
+                    total: 0
+                Switch:
+                  value:
+                    end: 0
+                    limit: 0
+                    next: string
+                    results:
+                    - clustered: false
+                      evpn_missing_links: false
+                      evpntopo_id: ''
+                      ext_ip: 0.0.0.0
+                      hostname:
+                      - ld-cup-idf-bbb
+                      ip: 10.0.0.217
+                      last_config_status: success
+                      last_hostname: ld-cup-idf-bbb
+                      last_trouble_code: '106'
+                      last_trouble_timestamp: 1719540
+                      mac: 00c78d939c00
+                      mist_configured: true
+                      model: EX4100-48MP
+                      num_members: 1
+                      org_id: 6748cfa6-4e12-11e6-9188-0242ac110007
+                      role: ''
+                      site_id: a8178443-ecb5-461c-b854-f16627619ab3
+                      time_drifted: false
+                      timestamp: 1733998766.256
+                      type: switch
+                      uptime: 19287811
+                      version: 22.4R3.25
+                    start: 0
+                    total: 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_device_search'
+                - description: Paginated response for organization or site device search results
+                  examples:
+                  - '{"end":0,"limit":0,"next":"string","results":[{"hostname":["AP41-STB-3E5299-WH-2001","AP41-STB-3E5299-WH-50","AP41-STB-3E5299","5c5b353e5299"],"ip":"10.2.16.205","lldp_mgmt_addr":"10.2.10.139","lldp_port_desc":"GigabitEthernet1/0/1","lldp_port_id":"Gi1/0/1","lldp_system_desc":"Cisco IOS Software, C2960S Software (C2960S-UNIVERSALK9-M), Version 15.2(1)E1, RELEASE SOFTWARE (fc2)\nTechnical Support: https://www.cisco.com/techsupport\nCopyright (c) 1986-2013 by Cisco Systems, Inc.\nCompiled Fri 22-Nov-13 07:10 by prod_rel_team","lldp_system_name":"ME-DC-1-ACC-SW","mac":"5c5b353e5299","model":"AP41","mxedge_id":"00000000-0000-0000-1000-43a81f238391","mxtunnel_status":"down","org_id":"6748cfa6-4e12-11e6-9188-0242ac110007","power_constrained":false,"power_opmode":"","site_id":"a8178443-ecb5-461c-b854-f16627619ab3","sku":"AP41-US","timestamp":1596588619.007,"uptime":85280,"version":"0.7.20216","wlans":[{"id":"28c36fc7-dc22-4960-9d81-34087511c2e5","ssid":"Live-Demo-NAC"},{"id":"51b82e2b-f9e8-470b-a32a-cecde5501b0f","ssid":"Live-Demo"}]}],"start":0,"total":0}'
+                  - '{"end":0,"limit":0,"next":"string","results":[{"clustered":true,"evpn_missing_links":false,"evpntopo_id":"","ext_ip":"250.242.0.102","hostname":["wan-teleworker","00ec77599d00","router"],"ip":"250.242.0.102","last_config_status":"success","last_hostname":"wan-teleworker","mac":"00ec77599d00","mist_configured":true,"model":"SSR120","node":"node1","node0_mac":"00ec77599d00","node1_mac":"00ec77599d01","num_members":0,"org_id":"6748cfa6-4e12-11e6-9188-0242ac110007","role":"","site_id":"a8178443-ecb5-461c-b854-f16627619ab3","t128agent_version":"3.8.0-201","time_drifted":false,"timestamp":1734001399.025,"type":"gateway","uptime":3586951,"version":"6.2.5-5.r2"}],"start":0,"total":0}'
+                  - '{"end":0,"limit":0,"next":"string","results":[{"clustered":false,"evpn_missing_links":false,"evpntopo_id":"","ext_ip":"0.0.0.0","hostname":["ld-cup-idf-bbb"],"ip":"10.0.0.217","last_config_status":"success","last_hostname":"ld-cup-idf-bbb","last_trouble_code":"106","last_trouble_timestamp":1719540,"mac":"00c78d939c00","mist_configured":true,"model":"EX4100-48MP","num_members":1,"org_id":"6748cfa6-4e12-11e6-9188-0242ac110007","role":"","site_id":"a8178443-ecb5-461c-b854-f16627619ab3","time_drifted":false,"timestamp":1733998766.256,"type":"switch","uptime":19287811,"version":"22.4R3.25"}],"start":0,"total":0}'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Ap:
+                  value:
+                    end: 0
+                    limit: 0
+                    next: string
+                    results:
+                    - hostname:
+                      - AP41-STB-3E5299-WH-2001
+                      - AP41-STB-3E5299-WH-50
+                      - AP41-STB-3E5299
+                      - 5c5b353e5299
+                      ip: 10.2.16.205
+                      lldp_mgmt_addr: 10.2.10.139
+                      lldp_port_desc: GigabitEthernet1/0/1
+                      lldp_port_id: Gi1/0/1
+                      lldp_system_desc: 'Cisco IOS Software, C2960S Software (C2960S-UNIVERSALK9-M), Version 15.2(1)E1, RELEASE SOFTWARE (fc2)
+
+                        Technical Support: https://www.cisco.com/techsupport
+
+                        Copyright (c) 1986-2013 by Cisco Systems, Inc.
+
+                        Compiled Fri 22-Nov-13 07:10 by prod_rel_team'
+                      lldp_system_name: ME-DC-1-ACC-SW
+                      mac: 5c5b353e5299
+                      model: AP41
+                      mxedge_id: 00000000-0000-0000-1000-43a81f238391
+                      mxtunnel_status: down
+                      org_id: 6748cfa6-4e12-11e6-9188-0242ac110007
+                      power_constrained: false
+                      power_opmode: ''
+                      site_id: a8178443-ecb5-461c-b854-f16627619ab3
+                      sku: AP41-US
+                      timestamp: 1596588619.007
+                      uptime: 85280
+                      version: 0.7.20216
+                      wlans:
+                      - id: 28c36fc7-dc22-4960-9d81-34087511c2e5
+                        ssid: Live-Demo-NAC
+                      - id: 51b82e2b-f9e8-470b-a32a-cecde5501b0f
+                        ssid: Live-Demo
+                    start: 0
+                    total: 0
+                Gateway:
+                  value:
+                    end: 0
+                    limit: 0
+                    next: string
+                    results:
+                    - clustered: true
+                      evpn_missing_links: false
+                      evpntopo_id: ''
+                      ext_ip: 250.242.0.102
+                      hostname:
+                      - wan-teleworker
+                      - 00ec77599d00
+                      - router
+                      ip: 250.242.0.102
+                      last_config_status: success
+                      last_hostname: wan-teleworker
+                      mac: 00ec77599d00
+                      mist_configured: true
+                      model: SSR120
+                      node: node1
+                      node0_mac: 00ec77599d00
+                      node1_mac: 00ec77599d01
+                      num_members: 0
+                      org_id: 6748cfa6-4e12-11e6-9188-0242ac110007
+                      role: ''
+                      site_id: a8178443-ecb5-461c-b854-f16627619ab3
+                      t128agent_version: 3.8.0-201
+                      time_drifted: false
+                      timestamp: 1734001399.025
+                      type: gateway
+                      uptime: 3586951
+                      version: 6.2.5-5.r2
+                    start: 0
+                    total: 0
+                Switch:
+                  value:
+                    end: 0
+                    limit: 0
+                    next: string
+                    results:
+                    - clustered: false
+                      evpn_missing_links: false
+                      evpntopo_id: ''
+                      ext_ip: 0.0.0.0
+                      hostname:
+                      - ld-cup-idf-bbb
+                      ip: 10.0.0.217
+                      last_config_status: success
+                      last_hostname: ld-cup-idf-bbb
+                      last_trouble_code: '106'
+                      last_trouble_timestamp: 1719540
+                      mac: 00c78d939c00
+                      mist_configured: true
+                      model: EX4100-48MP
+                      num_members: 1
+                      org_id: 6748cfa6-4e12-11e6-9188-0242ac110007
+                      role: ''
+                      site_id: a8178443-ecb5-461c-b854-f16627619ab3
+                      time_drifted: false
+                      timestamp: 1733998766.256
+                      type: switch
+                      uptime: 19287811
+                      version: 22.4R3.25
+                    start: 0
+                    total: 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/devices/summary:
+    parameters: []
+    get:
+      tags:
+      - Orgs Devices
+      summary: listOrgDevicesSummary
+      description: Return aggregate organization device counts by device category and assignment state.
+      operationId: listOrgDevicesSummary
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_org_devices_summary'
+                - description: Organization device count summary
+                  examples:
+                  - num_aps: 630
+                    num_gateways: 6
+                    num_mxedges: 1
+                    num_switches: 30
+                    num_unassigned_aps: 5
+                    num_unassigned_gateways: 0
+                    num_unassigned_switches: 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    num_aps: 630
+                    num_gateways: 6
+                    num_mxedges: 1
+                    num_switches: 30
+                    num_unassigned_aps: 5
+                    num_unassigned_gateways: 0
+                    num_unassigned_switches: 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_org_devices_summary'
+                - description: Organization device count summary
+                  examples:
+                  - num_aps: 630
+                    num_gateways: 6
+                    num_mxedges: 1
+                    num_switches: 30
+                    num_unassigned_aps: 5
+                    num_unassigned_gateways: 0
+                    num_unassigned_switches: 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    num_aps: 630
+                    num_gateways: 6
+                    num_mxedges: 1
+                    num_switches: 30
+                    num_unassigned_aps: 5
+                    num_unassigned_gateways: 0
+                    num_unassigned_switches: 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/ocdevices/outbound_ssh_cmd:
+    parameters: []
+    get:
+      tags:
+      - Orgs Devices
+      summary: getOrgJuniperDevicesCommand
+      description: 'Get Org Juniper Devices command
+
+
+        Juniper devices can be managed/adopted by Mist. Currently outbound-ssh + netconf is used.
+
+        A few lines of CLI commands are generated per-Org, allowing the Juniper devices to phone home to Mist.'
+      operationId: getOrgJuniperDevicesCommand
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: site_id
+        in: query
+        description: Filter results by site identifier
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_device_config_cmd'
+                - description: Device configuration command response
+                  examples:
+                  - cmd: 'set system services ssh...
+
+                      ...
+
+                      set system services outbound-ssh client mist ...'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    cmd: 'set system services ssh...
+
+                      ...
+
+                      set system services outbound-ssh client mist ...'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_device_config_cmd'
+                - description: Device configuration command response
+                  examples:
+                  - cmd: 'set system services ssh...
+
+                      ...
+
+                      set system services outbound-ssh client mist ...'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    cmd: 'set system services ssh...
+
+                      ...
+
+                      set system services outbound-ssh client mist ...'
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    response_org_devices:
+      title: response_org_devices
+      required:
+      - results
+      type: object
+      properties:
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/org_device'
+          description: Device records returned by the organization device list operation
+      description: Response containing organization device records
+    response_device_config_cmd:
+      title: response_device_config_cmd
+      required:
+      - cmd
+      type: object
+      properties:
+        cmd:
+          type: string
+          description: Configuration command returned for the device
+      description: Device configuration command response
+    org_devices_count_distinct:
+      title: org_devices_count_distinct
+      enum:
+      - hostname
+      - ip
+      - lldp_mgmt_addr
+      - lldp_port_id
+      - lldp_system_desc
+      - lldp_system_name
+      - mac
+      - model
+      - mxedge_id
+      - mxtunnel_status
+      - site_id
+      - version
+      type: string
+      description: 'enum: `hostname`, `ip`, `lldp_mgmt_addr`, `lldp_port_id`, `lldp_system_desc`, `lldp_system_name`, `mac`, `model`, `mxedge_id`, `mxtunnel_status`, `site_id`, `version`'
+    org_devices_events_count_distinct:
+      title: org_devices_events_count_distinct
+      enum:
+      - ap
+      - apfw
+      - model
+      - org_id
+      - site_id
+      - text
+      - timestamp
+      - type
+      type: string
+      description: 'enum: `ap`, `apfw`, `model`, `org_id`, `site_id`, `text`, `timestamp`, `type`'
+    org_device:
+      title: org_device
+      required:
+      - mac
+      - name
+      type: object
+      properties:
+        mac:
+          type: string
+          description: Organization device MAC address
+        name:
+          type: string
+          description: Display name of the organization device
+      description: Organization device identifier returned by the devices list
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    count_result:
+      title: count_result
+      required:
+      - count
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of matching items for the distinct value or values in this result
+          contentEncoding: int32
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
+    switch_search:
+      title: switch_search
+      required:
+      - type
+      type: object
+      properties:
+        clustered:
+          type: boolean
+          description: Whether the switch is part of a virtual chassis or cluster
+        evpn_missing_links:
+          type: boolean
+          description: Whether EVPN topology links are missing for this switch
+        evpntopo_id:
+          type: string
+          description: EVPN topology ID associated with this switch
+        ext_ip:
+          type: string
+          description: External IP address observed for switch management traffic
+        hostname:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Observed hostnames detected for the switch in search results
+        ip:
+          type: string
+          description: Management IP address currently reported for the switch
+        last_config_status:
+          type: string
+          description: Most recent configuration status reported for the switch
+        last_hostname:
+          type: string
+          description: Most recent hostname detected for the switch
+        last_trouble_code:
+          type: string
+          description: Most recent trouble code reported for the switch
+        last_trouble_timestamp:
+          type: number
+          description: Time when the most recent switch trouble code was reported
+          readOnly: true
+        mac:
+          type: string
+          description: Switch MAC address reported in search results
+        managed:
+          type: boolean
+          description: Whether the switch is managed by Mist. Deprecated in favor of `mist_configured`
+          deprecated: true
+        mist_configured:
+          type: boolean
+          description: whether the device can be configured by Mist or not. This deprecates `managed` (for adopted device) and `disable_auto_config` for claimed device)
+        model:
+          type: string
+          description: Switch model reported for this search result
+        num_members:
+          type: integer
+          description: Number of members in the switch virtual chassis, when applicable
+          contentEncoding: int32
+        org_id:
+          type: string
+          description: Organization that owns this switch search result
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        radius_stats:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/device_search_radius_stat'
+          description: RADIUS statistics for this switch keyed by server IP address
+        role:
+          type: string
+          description: Switch role reported for this search result
+        site_id:
+          type: string
+          description: Site that contains this switch search result
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        time_drifted:
+          type: boolean
+          description: Whether the switch clock has drifted from the expected time
+        timestamp:
+          type: number
+          description: Time associated with this switch search result
+          readOnly: true
+        type:
+          const: switch
+          type: string
+          description: Device type for this switch search result
+        uptime:
+          type: integer
+          description: Device uptime for the switch, in seconds
+          contentEncoding: int32
+        version:
+          type: string
+          description: Software version currently running on the switch
+      description: Switch record returned by device search endpoints
+    response_config_history_search_item:
+      title: response_config_history_search_item
+      required:
+      - channel_24
+      - channel_5
+      - secpolicy_violated
+      - timestamp
+      - version
+      type: object
+      properties:
+        channel_24:
+          type: integer
+          description: 2.4 GHz channel configured in this history entry
+          contentEncoding: int32
+        channel_5:
+          type: integer
+          description: 5 GHz channel configured in this history entry
+          contentEncoding: int32
+        radio_macs:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Radio MAC addresses included in this config history entry
+        radios:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/response_config_history_search_item_radio'
+          description: Radio configuration details included in this history entry
+        secpolicy_violated:
+          type: boolean
+          description: Whether the device configuration violated a security policy
+        ssids:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: WLAN SSIDs included in this config history entry
+        ssids_24:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: 2.4 GHz WLAN SSIDs included in this config history entry
+        ssids_5:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: 5 GHz WLAN SSIDs included in this config history entry
+        timestamp:
+          type: number
+          description: Epoch timestamp when this config history entry was recorded
+          readOnly: true
+        version:
+          type: string
+          description: Configuration version associated with this history entry
+        wlans:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/response_config_history_search_item_wlan'
+          description: WLAN configuration details included in this history entry
+      description: Device config history entry
+    webhook_device_events_event_ev_type2:
+      title: webhook_device_events_event_ev_type2
+      enum:
+      - notice
+      - warn
+      type: string
+      description: 'Advisory severity for the device event. enum: `notice`, `warn`.'
+    org_devices_last_configs_count_distinct:
+      title: org_devices_last_configs_count_distinct
+      enum:
+      - mac
+      - name
+      - site_id
+      - version
+      type: string
+      description: 'enum: `mac`, `name`, `site_id`, `version`'
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    ha_cluster_node_enum:
+      title: ha_cluster_node_enum
+      enum:
+      - node0
+      - node1
+      type: string
+      description: 'HA cluster node selector. enum: `node0`, `node1`'
+    ap_search:
+      title: ap_search
+      required:
+      - mxtunnel_status
+      - power_constrained
+      - power_opmode
+      - wlans
+      type: object
+      properties:
+        band_24_bandwidth:
+          type: string
+          description: Current channel bandwidth on the AP 2.4 GHz radio
+        band_24_channel:
+          type: integer
+          description: Current channel on the AP 2.4 GHz radio
+          contentEncoding: int32
+        band_24_power:
+          type: integer
+          description: Current transmit power on the AP 2.4 GHz radio
+          contentEncoding: int32
+        band_5_bandwidth:
+          type: string
+          description: Current channel bandwidth on the AP 5 GHz radio
+        band_5_channel:
+          type: integer
+          description: Current channel on the AP 5 GHz radio
+          contentEncoding: int32
+        band_5_power:
+          type: integer
+          description: Current transmit power on the AP 5 GHz radio
+          contentEncoding: int32
+        band_6_bandwidth:
+          type: string
+          description: Current channel bandwidth on the AP 6 GHz radio
+        band_6_channel:
+          type: integer
+          description: Current channel on the AP 6 GHz radio
+          contentEncoding: int32
+        band_6_power:
+          type: integer
+          description: Current transmit power on the AP 6 GHz radio
+          contentEncoding: int32
+        eth0_port_speed:
+          type: integer
+          description: Port speed of eth0
+          contentEncoding: int32
+        ext_ip:
+          type: string
+          description: External IP address observed for AP management traffic
+        hostname:
+          type: array
+          items:
+            type: string
+          description: Observed hostnames detected for the AP in search results
+        inactive_wired_vlans:
+          type: array
+          items:
+            type: integer
+            contentEncoding: int32
+          description: Inactive wired VLAN IDs reported for this AP
+        ip:
+          type: string
+          description: Management IP address currently assigned to the AP
+        last_hostname:
+          type: string
+          description: Most recent hostname detected for the AP
+        lldp_mgmt_addr:
+          type: string
+          description: LLDP management IP address advertised by the upstream neighbor
+        lldp_port_desc:
+          type: string
+          description: LLDP port description advertised by the upstream neighbor
+        lldp_port_id:
+          type: string
+          description: LLDP port identifier advertised by the upstream neighbor
+        lldp_power_allocated:
+          type: integer
+          description: Power allocated to the AP by LLDP, in mW
+          contentEncoding: int32
+        lldp_power_draw:
+          type: integer
+          description: Power drawn by the AP as reported through LLDP, in mW
+          contentEncoding: int32
+        lldp_system_desc:
+          type: string
+          description: LLDP system description advertised by the upstream neighbor
+        lldp_system_name:
+          type: string
+          description: LLDP system name advertised by the upstream neighbor
+        mac:
+          type: string
+          description: Access point MAC address used to identify the AP in search results
+        model:
+          type: string
+          description: AP hardware model for this search result
+        mxedge_id:
+          type: string
+          description: Mist Edge id, if AP is connecting to a Mist Edge
+        mxedge_ids:
+          type: string
+          description: Comma separated list of Mist Edge ids, if AP is connecting to a Mist Edge
+        mxtunnel_status:
+          type: string
+          description: Current MxTunnel connection status of the AP
+        org_id:
+          type: string
+          description: Organization that owns this AP search result
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        power_constrained:
+          type: boolean
+          description: Whether the AP is operating with insufficient power
+        power_opmode:
+          type: string
+          description: Operating mode reported when AP power is constrained
+        site_id:
+          type: string
+          description: Site that contains this AP search result
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        sku:
+          type: string
+          description: Hardware SKU for the AP model
+        timestamp:
+          type: number
+          description: Time associated with this AP search result
+          readOnly: true
+        uptime:
+          type: integer
+          description: Device uptime for the AP, in seconds
+          contentEncoding: int32
+        version:
+          type: string
+          description: Software version currently running on the AP
+        wlans:
+          type: array
+          items:
+            $ref: '#/components/schemas/ap_search_wlan'
+          description: Wireless LAN summaries applied to the AP in this search result
+      description: Access point record returned by device search endpoints
+    response_config_history_search_item_wlan:
+      title: response_config_history_search_item_wlan
+      required:
+      - auth
+      - id
+      - ssid
+      type: object
+      properties:
+        auth:
+          type: string
+          description: Configured authentication method for this WLAN
+        bands:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Radio bands where this WLAN was configured
+        id:
+          type: string
+          description: Unique identifier of the WLAN configuration
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        ssid:
+          type: string
+          description: WLAN SSID for this config history detail
+        vlan_ids:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: VLAN IDs configured for this WLAN
+      description: WLAN config history detail
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    gateway_search:
+      title: gateway_search
+      required:
+      - type
+      type: object
+      properties:
+        clustered:
+          type: boolean
+          description: Whether the gateway is part of a gateway cluster
+        evpn_missing_links:
+          type: boolean
+          description: Whether EVPN topology links are missing for this gateway
+        evpntopo_id:
+          type: string
+          description: EVPN topology ID associated with this gateway
+        ext_ip:
+          type: string
+          description: External IP address observed for gateway management traffic
+        hostname:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Observed hostnames detected for the gateway in search results
+        ip:
+          type: string
+          description: Management IP address currently reported for the gateway
+        last_config_status:
+          type: string
+          description: Most recent configuration status reported for the gateway
+        last_hostname:
+          type: string
+          description: Most recent hostname detected for the gateway
+        last_trouble_code:
+          type: string
+          description: Most recent trouble code reported for the gateway
+        last_trouble_timestamp:
+          type: integer
+          description: Timestamp when the most recent gateway trouble code was reported
+          contentEncoding: int32
+        mac:
+          type: string
+          description: Gateway MAC address reported in search results
+        managed:
+          type: boolean
+          description: Whether the gateway is managed by Mist. Deprecated in favor of `mist_configured`
+          deprecated: true
+        mist_configured:
+          type: boolean
+          description: Whether the gateway can be configured by Mist. Replaces `managed` for adopted devices and `disable_auto_config` for claimed devices
+        model:
+          type: string
+          description: Gateway model reported for this search result
+        node:
+          type: string
+          description: Gateway cluster node associated with this search result
+        node0_mac:
+          type: string
+          description: Cluster node0 MAC address reported for an HA gateway
+        node1_mac:
+          type: string
+          description: Cluster node1 MAC address reported for an HA gateway
+        num_members:
+          type: integer
+          description: Number of members in the gateway cluster
+          contentEncoding: int32
+        org_id:
+          type: string
+          description: Organization that owns this gateway search result
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        role:
+          type: string
+          description: Gateway cluster role reported for this search result
+        site_id:
+          type: string
+          description: Site that contains this gateway search result
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        t128agent_version:
+          type: string
+          description: Session Smart Router agent version reported by the gateway
+        time_drifted:
+          type: boolean
+          description: Whether the gateway clock has drifted from the expected time
+        timestamp:
+          type: number
+          description: Time associated with this gateway search result
+          readOnly: true
+        type:
+          const: gateway
+          type: string
+          description: Device type for this gateway search result
+        uptime:
+          type: integer
+          description: Device uptime for the gateway, in seconds
+          contentEncoding: int32
+        version:
+          type: string
+          description: Software version currently running on the gateway
+      description: Gateway record returned by device search endpoints
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    ap_search_wlan:
+      title: ap_search_wlan
+      type: object
+      properties:
+        id:
+          type: string
+          description: WLAN identifier included in the AP search result
+          contentEncoding: uuid
+        ssid:
+          type: string
+          description: Wireless network SSID shown for this WLAN
+      description: WLAN summary included in an AP search result
+    count_org_devices_mxtunnel_status:
+      title: count_org_devices_mxtunnel_status
+      enum:
+      - down
+      - up
+      type: string
+      description: 'Mist Tunnel status value used when counting organization devices. enum: `down`, `up`'
+    ap_radio_mac:
+      title: ap_radio_mac
+      required:
+      - mac
+      - radio_macs
+      type: object
+      properties:
+        mac:
+          minLength: 1
+          type: string
+          description: Access point MAC address for this radio MAC mapping
+          examples:
+          - 5c5b350001a0
+        radio_macs:
+          type: array
+          items:
+            type: string
+          description: List of radio MAC addresses associated with this access point
+          examples:
+          - - 5c5b350001a0
+            - 5c5b350001a1
+      description: Access point MAC address and its related radio MAC addresses
+      examples:
+      - mac: 5c5b350001a0
+        radio_macs:
+        - 5c5b350001a0
+        - 5c5b350001a1
+    device_type6:
+      title: device_type6
+      enum:
+      - ap
+      - gateway
+      - switch
+      type: string
+      description: 'Device type associated with the event. enum: `ap`, `gateway`, `switch`.'
+    last_config_device_type:
+      title: last_config_device_type
+      enum:
+      - ap
+      - gateway
+      - switch
+      - mxedge
+      type: string
+      description: 'enum: `ap`, `gateway`, `mxedge`, `switch`'
+    response_config_history_search:
+      title: response_config_history_search
+      required:
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Search window end timestamp for config history, in epoch seconds
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of config history entries requested
+          contentEncoding: int32
+        next:
+          type: string
+          description: URL for the next page of config history results
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/response_config_history_search_item'
+          description: Device config history entries returned for this page
+        start:
+          type: integer
+          description: Search window start timestamp for config history, in epoch seconds
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of config history entries matching the search
+          contentEncoding: int32
+      description: Paginated device config history search response
+    response_org_devices_summary:
+      title: response_org_devices_summary
+      type: object
+      properties:
+        num_aps:
+          type: integer
+          description: Number of APs in the organization
+          contentEncoding: int32
+          readOnly: true
+        num_gateways:
+          type: integer
+          description: Number of gateways in the organization
+          contentEncoding: int32
+          readOnly: true
+        num_mxedges:
+          type: integer
+          description: Number of Mist Edges in the organization
+          contentEncoding: int32
+          readOnly: true
+        num_switches:
+          type: integer
+          description: Number of switches in the organization
+          contentEncoding: int32
+          readOnly: true
+        num_unassigned_aps:
+          type: integer
+          description: Number of APs in organization inventory that are not assigned to a site
+          contentEncoding: int32
+          readOnly: true
+        num_unassigned_gateways:
+          type: integer
+          description: Number of gateways in organization inventory that are not assigned to a site
+          contentEncoding: int32
+          readOnly: true
+        num_unassigned_switches:
+          type: integer
+          description: Number of switches in organization inventory that are not assigned to a site
+          contentEncoding: int32
+          readOnly: true
+      description: Organization device count summary
+    response_device_events_search:
+      title: response_device_events_search
+      required:
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Epoch timestamp for the end of the event search window
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of event records returned in this page
+          contentEncoding: int32
+        next:
+          type: string
+          description: Pagination cursor or URL for retrieving the next page of event records
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/device_event'
+          description: Device or system event records matching the search filters
+        start:
+          type: integer
+          description: Epoch timestamp for the start of the event search window
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of event records matching the search filters across all pages
+          contentEncoding: int32
+      description: Paginated response for device or system event search results
+    device_type_default_ap:
+      title: device_type_default_ap
+      enum:
+      - ap
+      - gateway
+      - switch
+      type: string
+      description: 'enum: `ap`, `gateway`, `switch`'
+    device_event:
+      title: device_event
+      required:
+      - org_id
+      - timestamp
+      - type
+      type: object
+      properties:
+        ap:
+          type: string
+          description: Deprecated AP MAC address field; use `mac` instead
+          deprecated: true
+        ap_name:
+          type: string
+          description: Deprecated AP name field; use `device_name` instead
+          deprecated: true
+        apfw:
+          type: string
+          description: AP firmware version associated with the device event
+        audit_id:
+          type: string
+          description: Audit log identifier associated with the device event
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        bandwidth:
+          type: integer
+          description: Channel bandwidth associated with a radio event, in MHz
+          contentEncoding: int32
+        channel:
+          type: integer
+          description: RF channel associated with the device event
+          contentEncoding: int32
+        chassis_mac:
+          type: string
+          description: Chassis MAC address associated with the device event
+        count:
+          type: integer
+          description: Event count reported in the device event payload
+          contentEncoding: int32
+        device_name:
+          type: string
+          description: Name of the device associated with the event
+        device_type:
+          allOf:
+          - $ref: '#/components/schemas/device_type6'
+          - description: 'Device type associated with the event. enum: `ap`, `gateway`, `switch`.'
+        ev_type:
+          allOf:
+          - $ref: '#/components/schemas/webhook_device_events_event_ev_type2'
+          - description: 'Advisory severity for the device event. enum: `notice`, `warn`.'
+        ext_ip:
+          type: string
+          description: External IP address reported for the device event
+        job_id:
+          type: string
+          description: Job identifier associated with a tunnel provisioning event (present when `includes`==`ext_tunnel`)
+          contentEncoding: uuid
+        mac:
+          type: string
+          description: Device MAC address associated with the event
+        model:
+          type: string
+          description: Device model associated with the event
+        node:
+          type: string
+          description: Cluster node identifier associated with the device event
+        org_id:
+          type: string
+          description: Organization identifier associated with the device event
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        port_id:
+          type: string
+          description: Port identifier associated with the device event
+        power:
+          type: integer
+          description: Transmit power associated with a radio event
+          contentEncoding: int32
+        pre_bandwidth:
+          type: integer
+          description: Previous channel bandwidth before an RRM change, in MHz
+          contentEncoding: int32
+        pre_channel:
+          type: integer
+          description: Previous RF channel before an RRM change
+          contentEncoding: int32
+        pre_power:
+          type: integer
+          description: Previous transmit power before an RRM change
+          contentEncoding: int32
+        pre_usage:
+          type: integer
+          description: Previous radio usage band before an RRM change
+          contentEncoding: int32
+        reason:
+          type: string
+          description: Optional reason text reported for the device event
+        site_id:
+          type: string
+          description: Site identifier associated with the device event
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        site_name:
+          type: string
+          description: Name of the site associated with the event
+        status:
+          type: string
+          description: Tunnel provisioning status for ext_tunnel events (e.g. `PROVISION_IN_PROGRESS`)
+        template_id:
+          type: string
+          description: Gateway template identifier associated with a tunnel provisioning event (present when `includes`==`ext_tunnel`)
+          contentEncoding: uuid
+        text:
+          type: string
+          description: Optional human-readable text for the device event
+        timestamp:
+          type: number
+          description: Time when the device event occurred
+          readOnly: true
+        tunnel_name:
+          type: string
+          description: Tunnel name associated with a tunnel provisioning event (present when `includes`==`ext_tunnel`)
+        type:
+          type: string
+          description: Device event type key
+        usage:
+          type: integer
+          description: Current radio usage band for an RRM event
+          contentEncoding: int32
+        version:
+          type: string
+          description: Firmware or software version associated with the device event
+      description: Device event payload returned by search and webhook APIs
+    response_device_search_results_items:
+      oneOf:
+      - $ref: '#/components/schemas/ap_search'
+      - $ref: '#/components/schemas/switch_search'
+      - $ref: '#/components/schemas/gateway_search'
+      description: Device search record for an AP, switch, or gateway
+    device_search_radius_stat:
+      title: device_search_radius_stat
+      type: object
+      properties:
+        auth_accepts:
+          type: integer
+          description: Number of accepted authentication requests
+          contentEncoding: int32
+        auth_rejects:
+          type: integer
+          description: Number of rejected authentication requests
+          contentEncoding: int32
+        auth_server_status:
+          allOf:
+          - $ref: '#/components/schemas/device_search_radius_filter_status1'
+          - description: 'RADIUS authentication server status for this server in device search results. enum: `up`, `down`, `unreachable`.'
+        auth_timeouts:
+          type: integer
+          description: Number of authentication timeouts
+          contentEncoding: int32
+      description: RADIUS authentication counters and server status for a device search result
+    device_search_radius_filter_status1:
+      title: device_search_radius_filter_status1
+      enum:
+      - up
+      - down
+      - unreachable
+      type: string
+      description: 'RADIUS authentication server status for this server in device search results. enum: `up`, `down`, `unreachable`.'
+    search_org_devices_mxtunnel_status:
+      title: search_org_devices_mxtunnel_status
+      enum:
+      - down
+      - up
+      type: string
+      description: 'Mist Tunnel status filter for organization device search. enum: `down`, `up`'
+    response_config_history_search_item_radio:
+      title: response_config_history_search_item_radio
+      required:
+      - band
+      - channel
+      type: object
+      properties:
+        band:
+          type: string
+          description: Radio band for this config history detail
+        channel:
+          type: integer
+          description: Configured channel for this radio
+          contentEncoding: int32
+      description: Radio config history detail
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_device_search:
+      title: response_device_search
+      required:
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Epoch timestamp for the end of the device search window
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of device records returned in this page
+          contentEncoding: int32
+        next:
+          type: string
+          description: Pagination cursor or URL for retrieving the next page of device records
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/response_device_search_results_items'
+          description: AP, switch, or gateway records matching the device search filters
+        start:
+          type: integer
+          description: Epoch timestamp for the start of the device search window
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of device records matching the search filters across all pages
+          contentEncoding: int32
+      description: Paginated response for organization or site device search results
+    response_count:
+      title: response_count
+      required:
+      - distinct
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        distinct:
+          type: string
+          description: Field used to group the count results
+        end:
+          type: integer
+          description: Search window end timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of distinct count results requested
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/count_result'
+          description: Count results grouped by the distinct field
+        start:
+          type: integer
+          description: Search window start timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of distinct result buckets returned
+          contentEncoding: int32
+      description: Distinct count response for time-bounded search results
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

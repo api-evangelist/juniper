@@ -1,0 +1,2310 @@
+openapi: 3.2.0
+info:
+  title: Mist Orgs User MACs API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Orgs User MACs
+  description: NAC User MACs (Endpoints) provide a database of endpoints identified by their MAC addresses.
+paths:
+  /api/v1/orgs/{org_id}/usermacs:
+    parameters: []
+    post:
+      tags:
+      - Orgs User MACs
+      summary: createOrgUserMac
+      description: 'Create Org User MACs
+
+
+        ### Usermacs import CSV file format
+
+        mac,labels,vlan,notes
+
+        921b638445cd,"bldg1,flor1",vlan-100
+
+        721b638445ef,"bldg2,flor2",vlan-101,Canon Printers
+
+        721b638445ee,"bldg3,flor3",vlan-102
+
+        921b638445ce,"bldg4,flor4",vlan-103
+
+        921b638445cf,"bldg5,flor5",vlan-104'
+      operationId: createOrgUserMac
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user_mac'
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/user_mac'
+                - description: Organization user MAC entry
+                  examples:
+                  - id: 111cafd2-ba1b-5169-bfcb-9cdf1d473ddb
+                    labels:
+                    - flor1
+                    - bld4
+                    mac: 921b638445cd
+                    notes: MAC address refers to Canon printers
+                    site_ids:
+                    - 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                    - 52f4347e-3e4b-186c-21ca-ad5b70eb23d6
+                    vlan: '30'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    id: 111cafd2-ba1b-5169-bfcb-9cdf1d473ddb
+                    labels:
+                    - flor1
+                    - bld4
+                    mac: 921b638445cd
+                    notes: MAC address refers to Canon printers
+                    site_ids:
+                    - 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                    - 52f4347e-3e4b-186c-21ca-ad5b70eb23d6
+                    vlan: '30'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/user_mac'
+                - description: Organization user MAC entry
+                  examples:
+                  - id: 111cafd2-ba1b-5169-bfcb-9cdf1d473ddb
+                    labels:
+                    - flor1
+                    - bld4
+                    mac: 921b638445cd
+                    notes: MAC address refers to Canon printers
+                    site_ids:
+                    - 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                    - 52f4347e-3e4b-186c-21ca-ad5b70eb23d6
+                    vlan: '30'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    id: 111cafd2-ba1b-5169-bfcb-9cdf1d473ddb
+                    labels:
+                    - flor1
+                    - bld4
+                    mac: 921b638445cd
+                    notes: MAC address refers to Canon printers
+                    site_ids:
+                    - 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                    - 52f4347e-3e4b-186c-21ca-ad5b70eb23d6
+                    vlan: '30'
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    put:
+      tags:
+      - Orgs User MACs
+      summary: updateOrgMultipleUserMacs
+      description: Update Multiple Org User MACs. Accepts a JSON array of user MAC objects where `id` is required for each entry.
+      operationId: updateOrgMultipleUserMacs
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/user_mac'
+              description: ''
+              contentMediaType: application/json
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/user_macs_update'
+                - description: Result of a bulk user MAC update
+                  examples:
+                  - '{"detail":"batch update in progress"}'
+                  - '{"errors":["2feacc8e-5893-418a-acaa-4d7c1afd01fe - invalid id"],"updated":["1041c16c-ca87-4d3f-bb94-b97c5819fc09","a016cc8e-5893-418a-acaa-4d7c1af6ac0f"]}'
+                contentMediaType: application/json
+              examples:
+                Async:
+                  value:
+                    detail: batch update in progress
+                Sync:
+                  value:
+                    errors:
+                    - 2feacc8e-5893-418a-acaa-4d7c1afd01fe - invalid id
+                    updated:
+                    - 1041c16c-ca87-4d3f-bb94-b97c5819fc09
+                    - a016cc8e-5893-418a-acaa-4d7c1af6ac0f
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/user_macs_update'
+                - description: Result of a bulk user MAC update
+                  examples:
+                  - '{"detail":"batch update in progress"}'
+                  - '{"errors":["2feacc8e-5893-418a-acaa-4d7c1afd01fe - invalid id"],"updated":["1041c16c-ca87-4d3f-bb94-b97c5819fc09","a016cc8e-5893-418a-acaa-4d7c1af6ac0f"]}'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Async:
+                  value:
+                    detail: batch update in progress
+                Sync:
+                  value:
+                    errors:
+                    - 2feacc8e-5893-418a-acaa-4d7c1afd01fe - invalid id
+                    updated:
+                    - 1041c16c-ca87-4d3f-bb94-b97c5819fc09
+                    - a016cc8e-5893-418a-acaa-4d7c1af6ac0f
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/usermacs/count:
+    parameters: []
+    get:
+      tags:
+      - Orgs User MACs
+      summary: countOrgUserMacs
+      description: Count by Distinct Attributes of User MACs
+      operationId: countOrgUserMacs
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: distinct
+        in: query
+        description: 'Attribute to count by. enum: `mac`, `name`, `labels`, `org_id`'
+        required: true
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/count_usermac_distinct'
+          - description: 'Attribute to count by. enum: `mac`, `name`, `labels`, `org_id`'
+            examples:
+            - org_id
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/user_macs_count'
+                - description: User MACs count response
+                  examples:
+                  - end: 1723651268
+                    limit: 10
+                    results:
+                    - id: 111cafd2-ba1b-5169-bfcb-9cdf1d473ddb
+                      labels:
+                      - flor1
+                      - bld4
+                      mac: 921b638445cd
+                      name: Printer2
+                      notes: mac address refers to Canon printers
+                      radius_group: VIP
+                      site_ids:
+                      - 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                      - 52f4347e-3e4b-186c-21ca-ad5b70eb23d6
+                      vlan: '30'
+                    - id: abecafd2-ba1b-5169-bfcb-9cdf1d473123
+                      labels:
+                      - blgd-cupe
+                      - old
+                      mac: 921b638445ce
+                      name: os mac
+                      notes: mac devices
+                      radius_group: rg-1
+                      vlan: vlan-2
+                    start: 1723651267
+                    total: 2
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    end: 1723651268
+                    limit: 10
+                    results:
+                    - id: 111cafd2-ba1b-5169-bfcb-9cdf1d473ddb
+                      labels:
+                      - flor1
+                      - bld4
+                      mac: 921b638445cd
+                      name: Printer2
+                      notes: mac address refers to Canon printers
+                      radius_group: VIP
+                      site_ids:
+                      - 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                      - 52f4347e-3e4b-186c-21ca-ad5b70eb23d6
+                      vlan: '30'
+                    - id: abecafd2-ba1b-5169-bfcb-9cdf1d473123
+                      labels:
+                      - blgd-cupe
+                      - old
+                      mac: 921b638445ce
+                      name: os mac
+                      notes: mac devices
+                      radius_group: rg-1
+                      vlan: vlan-2
+                    start: 1723651267
+                    total: 2
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/user_macs_count'
+                - description: User MACs count response
+                  examples:
+                  - end: 1723651268
+                    limit: 10
+                    results:
+                    - id: 111cafd2-ba1b-5169-bfcb-9cdf1d473ddb
+                      labels:
+                      - flor1
+                      - bld4
+                      mac: 921b638445cd
+                      name: Printer2
+                      notes: mac address refers to Canon printers
+                      radius_group: VIP
+                      site_ids:
+                      - 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                      - 52f4347e-3e4b-186c-21ca-ad5b70eb23d6
+                      vlan: '30'
+                    - id: abecafd2-ba1b-5169-bfcb-9cdf1d473123
+                      labels:
+                      - blgd-cupe
+                      - old
+                      mac: 921b638445ce
+                      name: os mac
+                      notes: mac devices
+                      radius_group: rg-1
+                      vlan: vlan-2
+                    start: 1723651267
+                    total: 2
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    end: 1723651268
+                    limit: 10
+                    results:
+                    - id: 111cafd2-ba1b-5169-bfcb-9cdf1d473ddb
+                      labels:
+                      - flor1
+                      - bld4
+                      mac: 921b638445cd
+                      name: Printer2
+                      notes: mac address refers to Canon printers
+                      radius_group: VIP
+                      site_ids:
+                      - 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                      - 52f4347e-3e4b-186c-21ca-ad5b70eb23d6
+                      vlan: '30'
+                    - id: abecafd2-ba1b-5169-bfcb-9cdf1d473123
+                      labels:
+                      - blgd-cupe
+                      - old
+                      mac: 921b638445ce
+                      name: os mac
+                      notes: mac devices
+                      radius_group: rg-1
+                      vlan: vlan-2
+                    start: 1723651267
+                    total: 2
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/usermacs/delete:
+    parameters: []
+    post:
+      tags:
+      - Orgs User MACs
+      summary: deleteOrgMultipleUserMacs
+      description: Delete Multiple Org User MACs
+      operationId: deleteOrgMultipleUserMacs
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/usermacs_id'
+              - description: Request Body
+              contentMediaType: application/json
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/usermacs/import:
+    parameters: []
+    post:
+      tags:
+      - Orgs User MACs
+      summary: importOrgUserMacs
+      description: 'Import Org User MACs. Accepts JSON or CSV upload.
+
+
+        **JSON — Array form** (asynchronous by default):
+
+        ```json
+
+        [
+
+        {"mac": "921b638445cd", "labels": ["label1"], "vlan": "vlan-1"},
+
+        {"mac": "721b638445ef", "labels": ["label2", "label3"], "notes": "mac address refers to Canon printers"}
+
+        ]
+
+        ```
+
+
+        **CSV upload**: multipart/form-data with `file` field.
+
+
+        ### CSV file format
+
+        ```csv
+
+        mac,labels,vlan,notes,name,radius_group
+
+        921b638445cd,"bldg1,flor1",vlan-100
+
+        721b638445ef,"bldg2,flor2",vlan-101,Canon Printers
+
+        721b638445ee,"bldg3,flor3",vlan-102,Printer2,VIP
+
+        921b638445ce,"bldg4,flor4",vlan-103
+
+        921b638445cf,"bldg5,flor5",vlan-104
+
+        ```'
+      operationId: importOrgUserMacs
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        content:
+          multipart/form-data:
+            encoding: {}
+            schema:
+              required:
+              - file
+              type: object
+              properties:
+                file:
+                  type: string
+                  description: CSV file containing user MAC entries to import
+                  contentEncoding: base64
+              contentMediaType: multipart/form-data
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/user_mac_import'
+                - description: Result of importing user MAC entries
+                  examples:
+                  - '{"detail":"import in progress"}'
+                  - '{"added":["921b638445cd"],"errors":["921b638445ce - mac invalid","921b638445cf - mac already provided"],"updated":["721b638445ef","721b638445ee"]}'
+                contentMediaType: application/json
+              examples:
+                Async:
+                  value:
+                    detail: import in progress
+                Sync:
+                  value:
+                    added:
+                    - 921b638445cd
+                    errors:
+                    - 921b638445ce - mac invalid
+                    - 921b638445cf - mac already provided
+                    updated:
+                    - 721b638445ef
+                    - 721b638445ee
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/user_mac_import'
+                - description: Result of importing user MAC entries
+                  examples:
+                  - '{"detail":"import in progress"}'
+                  - '{"added":["921b638445cd"],"errors":["921b638445ce - mac invalid","921b638445cf - mac already provided"],"updated":["721b638445ef","721b638445ee"]}'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Async:
+                  value:
+                    detail: import in progress
+                Sync:
+                  value:
+                    added:
+                    - 921b638445cd
+                    errors:
+                    - 921b638445ce - mac invalid
+                    - 921b638445cf - mac already provided
+                    updated:
+                    - 721b638445ef
+                    - 721b638445ee
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/usermacs/search:
+    parameters: []
+    get:
+      tags:
+      - Orgs User MACs
+      summary: searchOrgUserMacs
+      description: Search Org User MACs
+      operationId: searchOrgUserMacs
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: mac
+        in: query
+        description: Partial / full Client MAC address. Use `prefix*` for prefix search or `*substring*` for contains search (e.g. `aabbcc*` and `*bbcc*` match `aabbccddeeff`). Suffix-only wildcards (e.g. `*bccddeeff`) are not supported
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - aabbccddeeff
+          - aabbcc*
+          - '*bbcc*'
+        examples:
+          Untitled Example1:
+            value: aabbccddeeff
+          Untitled Example2:
+            value: aabbcc*
+          Untitled Example3:
+            value: '*bbcc*'
+      - name: labels
+        in: query
+        description: Optional, array of strings of labels
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: page
+        in: query
+        description: Select the page number to return when using page-based pagination; starts at `1`
+        style: form
+        explode: true
+        schema:
+          minimum: 1
+          type: integer
+          contentEncoding: int32
+          default: 1
+      - name: sort
+        in: query
+        description: On which field the list should be sorted, -prefix represents DESC order
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: timestamp
+          examples:
+          - -site_id
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/user_mac'
+                description: List of user MAC entries
+                examples:
+                - - id: 111cafd2-ba1b-5169-bfcb-9cdf1d473ddb
+                    labels:
+                    - flor1
+                    - bld4
+                    mac: 921b638445cd
+                    notes: MAC address refers to Canon printers
+                    site_ids:
+                    - 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                    - 52f4347e-3e4b-186c-21ca-ad5b70eb23d6
+                    vlan: '30'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                  - id: 111cafd2-ba1b-5169-bfcb-9cdf1d473ddb
+                    labels:
+                    - flor1
+                    - bld4
+                    mac: 921b638445cd
+                    notes: MAC address refers to Canon printers
+                    site_ids:
+                    - 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                    - 52f4347e-3e4b-186c-21ca-ad5b70eb23d6
+                    vlan: '30'
+            application/vnd.api+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/user_mac'
+                description: List of user MAC entries
+                examples:
+                - - id: 111cafd2-ba1b-5169-bfcb-9cdf1d473ddb
+                    labels:
+                    - flor1
+                    - bld4
+                    mac: 921b638445cd
+                    notes: MAC address refers to Canon printers
+                    site_ids:
+                    - 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                    - 52f4347e-3e4b-186c-21ca-ad5b70eb23d6
+                    vlan: '30'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                  - id: 111cafd2-ba1b-5169-bfcb-9cdf1d473ddb
+                    labels:
+                    - flor1
+                    - bld4
+                    mac: 921b638445cd
+                    notes: MAC address refers to Canon printers
+                    site_ids:
+                    - 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                    - 52f4347e-3e4b-186c-21ca-ad5b70eb23d6
+                    vlan: '30'
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/usermacs/{usermac_id}:
+    parameters: []
+    delete:
+      tags:
+      - Orgs User MACs
+      summary: deleteOrgUserMac
+      description: Delete Org User MAC
+      operationId: deleteOrgUserMac
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: usermac_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    get:
+      tags:
+      - Orgs User MACs
+      summary: getOrgUserMac
+      description: Get Org User MAC
+      operationId: getOrgUserMac
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: usermac_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/user_mac'
+                - description: Organization user MAC entry
+                  examples:
+                  - id: 111cafd2-ba1b-5169-bfcb-9cdf1d473ddb
+                    labels:
+                    - flor1
+                    - bld4
+                    mac: 921b638445cd
+                    notes: MAC address refers to Canon printers
+                    site_ids:
+                    - 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                    - 52f4347e-3e4b-186c-21ca-ad5b70eb23d6
+                    vlan: '30'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    id: 111cafd2-ba1b-5169-bfcb-9cdf1d473ddb
+                    labels:
+                    - flor1
+                    - bld4
+                    mac: 921b638445cd
+                    notes: MAC address refers to Canon printers
+                    site_ids:
+                    - 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                    - 52f4347e-3e4b-186c-21ca-ad5b70eb23d6
+                    vlan: '30'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/user_mac'
+                - description: Organization user MAC entry
+                  examples:
+                  - id: 111cafd2-ba1b-5169-bfcb-9cdf1d473ddb
+                    labels:
+                    - flor1
+                    - bld4
+                    mac: 921b638445cd
+                    notes: MAC address refers to Canon printers
+                    site_ids:
+                    - 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                    - 52f4347e-3e4b-186c-21ca-ad5b70eb23d6
+                    vlan: '30'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    id: 111cafd2-ba1b-5169-bfcb-9cdf1d473ddb
+                    labels:
+                    - flor1
+                    - bld4
+                    mac: 921b638445cd
+                    notes: MAC address refers to Canon printers
+                    site_ids:
+                    - 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                    - 52f4347e-3e4b-186c-21ca-ad5b70eb23d6
+                    vlan: '30'
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    put:
+      tags:
+      - Orgs User MACs
+      summary: updateOrgUserMac
+      description: Update Org User MAC
+      operationId: updateOrgUserMac
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: usermac_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user_mac'
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/user_mac'
+                - description: Organization user MAC entry
+                  examples:
+                  - id: 111cafd2-ba1b-5169-bfcb-9cdf1d473ddb
+                    labels:
+                    - flor1
+                    - bld4
+                    mac: 921b638445cd
+                    notes: MAC address refers to Canon printers
+                    site_ids:
+                    - 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                    - 52f4347e-3e4b-186c-21ca-ad5b70eb23d6
+                    vlan: '30'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    id: 111cafd2-ba1b-5169-bfcb-9cdf1d473ddb
+                    labels:
+                    - flor1
+                    - bld4
+                    mac: 921b638445cd
+                    notes: MAC address refers to Canon printers
+                    site_ids:
+                    - 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                    - 52f4347e-3e4b-186c-21ca-ad5b70eb23d6
+                    vlan: '30'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/user_mac'
+                - description: Organization user MAC entry
+                  examples:
+                  - id: 111cafd2-ba1b-5169-bfcb-9cdf1d473ddb
+                    labels:
+                    - flor1
+                    - bld4
+                    mac: 921b638445cd
+                    notes: MAC address refers to Canon printers
+                    site_ids:
+                    - 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                    - 52f4347e-3e4b-186c-21ca-ad5b70eb23d6
+                    vlan: '30'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    id: 111cafd2-ba1b-5169-bfcb-9cdf1d473ddb
+                    labels:
+                    - flor1
+                    - bld4
+                    mac: 921b638445cd
+                    notes: MAC address refers to Canon printers
+                    site_ids:
+                    - 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                    - 52f4347e-3e4b-186c-21ca-ad5b70eb23d6
+                    vlan: '30'
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    user_macs_count:
+      title: user_macs_count
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Query end timestamp for user MAC counts
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of distinct count results to return
+          contentEncoding: int32
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/user_mac'
+          description: User MAC entries returned by the count query
+        start:
+          type: integer
+          description: Query start timestamp for user MAC counts
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Overall number of user MAC count results
+          contentEncoding: int32
+      description: User MACs count response
+    count_usermac_distinct:
+      title: count_usermac_distinct
+      enum:
+      - mac
+      - name
+      - labels
+      - org_id
+      type: string
+      description: 'Fields that can be used to group user MAC count results. enum: `mac`, `name`, `labels`, `org_id`'
+      examples:
+      - org_id
+    user_macs_update:
+      title: user_macs_update
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Status message returned for asynchronous batch updates
+        errors:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Update errors reported for user MAC entries
+        updated:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: User MAC entry IDs updated by the request
+      description: Result of a bulk user MAC update
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    usermacs_id:
+      title: usermacs_id
+      type: object
+      properties:
+        usermac_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: User MAC entry IDs to delete
+      description: Request body for deleting multiple user MAC entries
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    user_mac:
+      title: user_mac
+      required:
+      - mac
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for this user MAC entry
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        labels:
+          type: array
+          items:
+            type: string
+          description: Applied labels for this user MAC entry
+          examples:
+          - - byod
+            - flr1
+        mac:
+          type: string
+          description: Client MAC address for this entry. Only non-local-admin MAC addresses are accepted
+          examples:
+          - 5684dae9ac8b
+        name:
+          type: string
+          description: Display name for this user MAC entry
+          examples:
+          - Printer2
+        notes:
+          type: string
+          description: Free-form notes about this user MAC entry
+          examples:
+          - MAC address refers to Canon printers
+        radius_group:
+          type: string
+          description: RADIUS group associated with this user MAC entry
+          examples:
+          - VIP
+        site_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: Optional list of site IDs this user MAC entry is scoped to
+        vlan:
+          type: string
+          description: Network VLAN value associated with this user MAC entry
+          examples:
+          - '30'
+      description: Organization user MAC entry
+    user_mac_import:
+      title: user_mac_import
+      type: object
+      properties:
+        added:
+          type: array
+          items:
+            type: string
+          description: MAC addresses added by the import
+          examples:
+          - - 921b638445cd
+        detail:
+          type: string
+          description: Status message returned for asynchronous imports
+        errors:
+          type: array
+          items:
+            type: string
+          description: Import error messages for user MAC entries
+          examples:
+          - - 921b638445ce - mac invalid
+            - 921b638445cf - mac already provided
+        updated:
+          type: array
+          items:
+            type: string
+          description: MAC addresses updated by the import
+          examples:
+          - - 721b638445ef
+            - 721b638445ee
+      description: Result of importing user MAC entries
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

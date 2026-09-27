@@ -1,0 +1,2609 @@
+openapi: 3.2.0
+info:
+  title: Mist Sites Maps - Auto-placement API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Sites Maps - Auto-placement
+  description: '### AP Auto-Placement
+
+    AP Auto-Placement is a feature in Juniper Mist wireless assurance that automatically determines and sets the positions of Access Points (APs) on a floorplan.'
+paths:
+  /api/v1/sites/{site_id}/maps/{map_id}/apply_autoplacement:
+    parameters: []
+    post:
+      tags:
+      - Sites Maps - Auto-placement
+      summary: acceptSiteApLocalizationData
+      description: 'Accept the cached autoplacement and auto-orientation values of a map or subset of APs on a map. Any APs that have autoplacement values are stored in cache for up to 7 days while awaiting acceptance.
+
+
+        Accepting the autoplacement values overwrites the existing X, Y, and orientation of the accepted APs with their cached autoplacement values.
+
+
+        Once a decision to accept is made, or the 7-day time-to-live (TTL) expires, the cached values are deleted.'
+      operationId: acceptSiteApLocalizationData
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: map_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/autoplacement_localization_selector'
+              - description: Request Body
+                examples:
+                - for: placement
+                  macs:
+                  - 5c5b35000001
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  for: placement
+                  macs:
+                  - 5c5b35000001
+        required: false
+      responses:
+        '200':
+          description: Success
+          headers: {}
+          content: {}
+        '400':
+          description: Map does not exist or belong to specified site / Invalid localization service. Expected [placement, orientation]
+          headers: {}
+          content: {}
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/maps/{map_id}/auto_orient:
+    parameters: []
+    delete:
+      tags:
+      - Sites Maps - Auto-placement
+      summary: deleteSiteApAutoOrientation
+      description: This API is called to force stop auto placement for a given map
+      operationId: deleteSiteApAutoOrientation
+      parameters:
+      - name: map_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: Auto orient process has stopped for this map
+          headers: {}
+          content: {}
+        '400':
+          description: Autoplacement was not triggered
+          headers: {}
+          content: {}
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    get:
+      tags:
+      - Sites Maps - Auto-placement
+      summary: getSiteApAutoOrientation
+      description: This API is called to view the current status of auto orient for a given map.
+      operationId: getSiteApAutoOrientation
+      parameters:
+      - name: map_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: Map queued for auto orientation
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_auto_orientation_info'
+                - description: Auto orientation status response
+                  examples:
+                  - '{"start_time":1678900062,"status":"done","stop_time":1678900362}'
+                  - '{"est_time_left":300.0,"start_time":1678900062,"status":"inprogress"}'
+                contentMediaType: application/json
+              examples:
+                Completed:
+                  value:
+                    start_time: 1678900062
+                    status: done
+                    stop_time: 1678900362
+                In Progress:
+                  value:
+                    est_time_left: 300
+                    start_time: 1678900062
+                    status: inprogress
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_auto_orientation_info'
+                - description: Auto orientation status response
+                  examples:
+                  - '{"start_time":1678900062,"status":"done","stop_time":1678900362}'
+                  - '{"est_time_left":300.0,"start_time":1678900062,"status":"inprogress"}'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Completed:
+                  value:
+                    start_time: 1678900062
+                    status: done
+                    stop_time: 1678900362
+                In Progress:
+                  value:
+                    est_time_left: 300
+                    start_time: 1678900062
+                    status: inprogress
+        '400':
+          description: Autoplacement was not triggered
+          headers: {}
+          content: {}
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    post:
+      tags:
+      - Sites Maps - Auto-placement
+      summary: startSiteApAutoOrientation
+      description: 'This API is called to trigger a map for auto orient. For auto orient feature to work, BLE data needs to be collected from the APs on the map. This precess is not disruptive unlike FTM collection. Repeated POST requests to this endpoint while a map is still running will be rejected.
+
+
+        `force_collection` is set to `false` by default. If `force_collection`==`false`, the API attempts to start orientation with existing data. If no data exists, the API attempts to start collecting orientation data. If `force_collection`==`true`, the API attempts to start collecting orientation data.
+
+
+        Providing a list of device macs is optional. If provided, auto orientation suggestions will be made only for the specified devices. If no list is provided, all APs associated with the map are considered by default.'
+      operationId: startSiteApAutoOrientation
+      parameters:
+      - name: map_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/auto_orient'
+        required: false
+      responses:
+        '200':
+          description: Map queued for auto orientation
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_auto_orientation'
+                - description: Auto orientation start response
+                  examples:
+                  - '{"devices":{"00000000001":{"reason":"Device meets the minimum requirements for auto orient","valid":true},"00000000002":{"reason":"Device meets the minimum requirements for auto orient","valid":true},"00000000003":{"reason":"Device meets the minimum requirements for auto orient","valid":true}},"estimated_runtime":300,"reason":"Map has met the minimum requirements for auto orient","valid":true,"wifi_interrupting":true}'
+                  - '{"devices":{"00000000001":{"valid":true},"00000000002":{"valid":true},"00000000003":{"valid":true}},"estimated_runtime":300,"reason":"Map Already Enqueued","started":false,"valid":true,"wifi_interrupting":true}'
+                  - '{"devices":{"00000000001":{"valid":true},"00000000002":{"valid":true},"00000000003":{"valid":true},"00000000004":{"reason":"Device model AP41 is not supported for auto orient","valid":false},"00000000005":{"reason":"Device firmware 0.14.28300 does not meet the minimum requirement 0.14.28310","valid":false}},"reason":"Map has APs that do not meet the minimum requirements for auto orient","started":false,"valid":false}'
+                  - '{"devices":{"00000000001":{"valid":true},"00000000002":{"valid":true},"00000000003":{"valid":true},"00000000004":{"reason":"Device model AP32 is not supported for auto orient","valid":false},"00000000005":{"reason":"Device firmware 0.14.28300 does not meet the minimum requirement 0.14.28310","valid":false}},"estimated_runtime":300,"reason":"Started collection for auto orient","started":true,"valid":false}'
+                  - '{"devices":{"00000000001":{"valid":true},"00000000002":{"valid":true},"00000000003":{"valid":true}},"estimated_runtime":300,"reason":"Started collection for auto orient","started":true,"valid":true}'
+                  - '{"devices":{"00000000001":{"valid":true},"00000000002":{"valid":true},"00000000003":{"valid":true}},"estimated_runtime":300,"reason":"Unable to reach auto orient service","started":false,"valid":true,"wifi_interrupting":true}'
+                contentMediaType: application/json
+              examples:
+                Dryrun For Map Completed:
+                  value:
+                    devices:
+                      '00000000001':
+                        reason: Device meets the minimum requirements for auto orient
+                        valid: true
+                      '00000000002':
+                        reason: Device meets the minimum requirements for auto orient
+                        valid: true
+                      '00000000003':
+                        reason: Device meets the minimum requirements for auto orient
+                        valid: true
+                    estimated_runtime: 300
+                    reason: Map has met the minimum requirements for auto orient
+                    valid: true
+                    wifi_interrupting: true
+                Map Failed To Start As It Had Less Than 3 APs Associated With It:
+                  value:
+                    devices:
+                      '00000000001':
+                        valid: true
+                      '00000000002':
+                        valid: true
+                      '00000000003':
+                        valid: true
+                    estimated_runtime: 300
+                    reason: Map Already Enqueued
+                    started: false
+                    valid: true
+                    wifi_interrupting: true
+                Service Failed To Start Due Containing Invalid APs:
+                  value:
+                    devices:
+                      '00000000001':
+                        valid: true
+                      '00000000002':
+                        valid: true
+                      '00000000003':
+                        valid: true
+                      '00000000004':
+                        reason: Device model AP41 is not supported for auto orient
+                        valid: false
+                      '00000000005':
+                        reason: Device firmware 0.14.28300 does not meet the minimum requirement 0.14.28310
+                        valid: false
+                    reason: Map has APs that do not meet the minimum requirements for auto orient
+                    started: false
+                    valid: false
+                Service Started After Override For Localization / Orient Collection:
+                  value:
+                    devices:
+                      '00000000001':
+                        valid: true
+                      '00000000002':
+                        valid: true
+                      '00000000003':
+                        valid: true
+                      '00000000004':
+                        reason: Device model AP32 is not supported for auto orient
+                        valid: false
+                      '00000000005':
+                        reason: Device firmware 0.14.28300 does not meet the minimum requirement 0.14.28310
+                        valid: false
+                    estimated_runtime: 300
+                    reason: Started collection for auto orient
+                    started: true
+                    valid: false
+                Service Started Successfully For Localization / Orient Collection:
+                  value:
+                    devices:
+                      '00000000001':
+                        valid: true
+                      '00000000002':
+                        valid: true
+                      '00000000003':
+                        valid: true
+                    estimated_runtime: 300
+                    reason: Started collection for auto orient
+                    started: true
+                    valid: true
+                Unable To Reach The Orient Service:
+                  value:
+                    devices:
+                      '00000000001':
+                        valid: true
+                      '00000000002':
+                        valid: true
+                      '00000000003':
+                        valid: true
+                    estimated_runtime: 300
+                    reason: Unable to reach auto orient service
+                    started: false
+                    valid: true
+                    wifi_interrupting: true
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_auto_orientation'
+                - description: Auto orientation start response
+                  examples:
+                  - '{"devices":{"00000000001":{"reason":"Device meets the minimum requirements for auto orient","valid":true},"00000000002":{"reason":"Device meets the minimum requirements for auto orient","valid":true},"00000000003":{"reason":"Device meets the minimum requirements for auto orient","valid":true}},"estimated_runtime":300,"reason":"Map has met the minimum requirements for auto orient","valid":true,"wifi_interrupting":true}'
+                  - '{"devices":{"00000000001":{"valid":true},"00000000002":{"valid":true},"00000000003":{"valid":true}},"estimated_runtime":300,"reason":"Map Already Enqueued","started":false,"valid":true,"wifi_interrupting":true}'
+                  - '{"devices":{"00000000001":{"valid":true},"00000000002":{"valid":true},"00000000003":{"valid":true},"00000000004":{"reason":"Device model AP41 is not supported for auto orient","valid":false},"00000000005":{"reason":"Device firmware 0.14.28300 does not meet the minimum requirement 0.14.28310","valid":false}},"reason":"Map has APs that do not meet the minimum requirements for auto orient","started":false,"valid":false}'
+                  - '{"devices":{"00000000001":{"valid":true},"00000000002":{"valid":true},"00000000003":{"valid":true},"00000000004":{"reason":"Device model AP32 is not supported for auto orient","valid":false},"00000000005":{"reason":"Device firmware 0.14.28300 does not meet the minimum requirement 0.14.28310","valid":false}},"estimated_runtime":300,"reason":"Started collection for auto orient","started":true,"valid":false}'
+                  - '{"devices":{"00000000001":{"valid":true},"00000000002":{"valid":true},"00000000003":{"valid":true}},"estimated_runtime":300,"reason":"Started collection for auto orient","started":true,"valid":true}'
+                  - '{"devices":{"00000000001":{"valid":true},"00000000002":{"valid":true},"00000000003":{"valid":true}},"estimated_runtime":300,"reason":"Unable to reach auto orient service","started":false,"valid":true,"wifi_interrupting":true}'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Dryrun For Map Completed:
+                  value:
+                    devices:
+                      '00000000001':
+                        reason: Device meets the minimum requirements for auto orient
+                        valid: true
+                      '00000000002':
+                        reason: Device meets the minimum requirements for auto orient
+                        valid: true
+                      '00000000003':
+                        reason: Device meets the minimum requirements for auto orient
+                        valid: true
+                    estimated_runtime: 300
+                    reason: Map has met the minimum requirements for auto orient
+                    valid: true
+                    wifi_interrupting: true
+                Map Failed To Start As It Had Less Than 3 APs Associated With It:
+                  value:
+                    devices:
+                      '00000000001':
+                        valid: true
+                      '00000000002':
+                        valid: true
+                      '00000000003':
+                        valid: true
+                    estimated_runtime: 300
+                    reason: Map Already Enqueued
+                    started: false
+                    valid: true
+                    wifi_interrupting: true
+                Service Failed To Start Due Containing Invalid APs:
+                  value:
+                    devices:
+                      '00000000001':
+                        valid: true
+                      '00000000002':
+                        valid: true
+                      '00000000003':
+                        valid: true
+                      '00000000004':
+                        reason: Device model AP41 is not supported for auto orient
+                        valid: false
+                      '00000000005':
+                        reason: Device firmware 0.14.28300 does not meet the minimum requirement 0.14.28310
+                        valid: false
+                    reason: Map has APs that do not meet the minimum requirements for auto orient
+                    started: false
+                    valid: false
+                Service Started After Override For Localization / Orient Collection:
+                  value:
+                    devices:
+                      '00000000001':
+                        valid: true
+                      '00000000002':
+                        valid: true
+                      '00000000003':
+                        valid: true
+                      '00000000004':
+                        reason: Device model AP32 is not supported for auto orient
+                        valid: false
+                      '00000000005':
+                        reason: Device firmware 0.14.28300 does not meet the minimum requirement 0.14.28310
+                        valid: false
+                    estimated_runtime: 300
+                    reason: Started collection for auto orient
+                    started: true
+                    valid: false
+                Service Started Successfully For Localization / Orient Collection:
+                  value:
+                    devices:
+                      '00000000001':
+                        valid: true
+                      '00000000002':
+                        valid: true
+                      '00000000003':
+                        valid: true
+                    estimated_runtime: 300
+                    reason: Started collection for auto orient
+                    started: true
+                    valid: true
+                Unable To Reach The Orient Service:
+                  value:
+                    devices:
+                      '00000000001':
+                        valid: true
+                      '00000000002':
+                        valid: true
+                      '00000000003':
+                        valid: true
+                    estimated_runtime: 300
+                    reason: Unable to reach auto orient service
+                    started: false
+                    valid: true
+                    wifi_interrupting: true
+        '400':
+          description: Bad Request
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_detail_string'
+                - description: Response containing a human-readable detail message
+                  examples:
+                  - '{"detail":"Map has less than 3 APs associated with it to perform auto orient"}'
+                  - '{"detail":"Auto AP orient is already in progress for this Map"}'
+                  - '{"detail":"Auto orient data does not exist or has gone stale"}'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Map has less than 3 APs associated with it to perform auto orient
+                Example-2:
+                  value:
+                    detail: Auto AP orient is already in progress for this Map
+                Example-3:
+                  value:
+                    detail: Auto orient data does not exist or has gone stale
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_detail_string'
+                - description: Response containing a human-readable detail message
+                  examples:
+                  - '{"detail":"Map has less than 3 APs associated with it to perform auto orient"}'
+                  - '{"detail":"Auto AP orient is already in progress for this Map"}'
+                  - '{"detail":"Auto orient data does not exist or has gone stale"}'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Map has less than 3 APs associated with it to perform auto orient
+                Example-2:
+                  value:
+                    detail: Auto AP orient is already in progress for this Map
+                Example-3:
+                  value:
+                    detail: Auto orient data does not exist or has gone stale
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/maps/{map_id}/auto_placement:
+    parameters: []
+    delete:
+      tags:
+      - Sites Maps - Auto-placement
+      summary: deleteSiteApAutoplacement
+      description: This API is called to force stop auto placement for a given map
+      operationId: deleteSiteApAutoplacement
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: map_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: Autoplacement Process has stopped for this map
+          headers: {}
+          content: {}
+        '400':
+          description: Autoplacement was not triggered
+          headers: {}
+          content: {}
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    get:
+      tags:
+      - Sites Maps - Auto-placement
+      summary: getSiteApAutoPlacement
+      description: 'This API is called to view the current status of auto placement for a given map.
+
+
+        #### Status Descriptions
+
+
+        | Status | Description |
+
+        | --- | --- |
+
+        | `pending` | Autoplacement has not been requested for this map |
+
+        | `inprogress` | Autoplacement is currently processing |
+
+        | `done` | The autoplacement process has completed |
+
+        | `data_needed` | Additional position data is required for autoplacement. Users should verify the requested anchor APs have a position on the map |
+
+        | `invalid_model` | Autoplacement is not supported on the model of the APs on the map |
+
+        | `invalid_version` | Autoplacement is not supported with the APs current firmware version |
+
+        | `error` | There was an error in the autoplacement process |'
+      operationId: getSiteApAutoPlacement
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: map_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_auto_placement_info'
+                - description: Auto-placement status response with progress and validation details
+                  examples:
+                  - '{"end_time":1678900362,"start_time":1678900062,"status":"done"}'
+                  - '{"end_time":1678900362,"start_time":1678900062,"status":"error"}'
+                  - '{"est_time_left":300,"start_time":1678900062,"status":"inprogress"}'
+                  - '{"status":"pending"}'
+                contentMediaType: application/json
+              examples:
+                Done:
+                  value:
+                    end_time: 1678900362
+                    start_time: 1678900062
+                    status: done
+                Error:
+                  value:
+                    end_time: 1678900362
+                    start_time: 1678900062
+                    status: error
+                In Progress:
+                  value:
+                    est_time_left: 300
+                    start_time: 1678900062
+                    status: inprogress
+                Pending:
+                  value:
+                    status: pending
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_auto_placement_info'
+                - description: Auto-placement status response with progress and validation details
+                  examples:
+                  - '{"end_time":1678900362,"start_time":1678900062,"status":"done"}'
+                  - '{"end_time":1678900362,"start_time":1678900062,"status":"error"}'
+                  - '{"est_time_left":300,"start_time":1678900062,"status":"inprogress"}'
+                  - '{"status":"pending"}'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Done:
+                  value:
+                    end_time: 1678900362
+                    start_time: 1678900062
+                    status: done
+                Error:
+                  value:
+                    end_time: 1678900362
+                    start_time: 1678900062
+                    status: error
+                In Progress:
+                  value:
+                    est_time_left: 300
+                    start_time: 1678900062
+                    status: inprogress
+                Pending:
+                  value:
+                    status: pending
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    post:
+      tags:
+      - Sites Maps - Auto-placement
+      summary: runSiteApAutoplacement
+      description: 'This API is called to trigger auto placement for a map. For the auto placement feature to work, RTT-FTM data needs to be collected from the APs on the map.
+
+        This scan is disruptive, and users must be notified of service disruption during the auto placement process. Repeated POST requests to this endpoint while a map is still running will be rejected.
+
+
+        `force_collection` is set to `false` by default. If `force_collection` is set to `false`, the API attempts to start localization with existing data. If no data exists, the API attempts to start orchestration.
+
+        If `force_collection` is set to `true`, the API attempts to start orchestration.
+
+
+        Providing a list of devices is optional. If provided, autoplacement suggestions will be made only for the specified devices. If no list is provided, all APs associated with the map are considered by default.'
+      operationId: runSiteApAutoplacement
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: map_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/auto_placement'
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_autoplacement'
+                - description: Auto-placement start response returned after scheduling the run
+                  examples:
+                  - '{"devices":{"00000000001":{"valid":true},"00000000002":{"valid":true},"00000000003":{"valid":true}},"estimated_runtime":30,"reason":"Map Already Enqueued","started":false,"valid":true,"wifi_interrupting":true}'
+                  - '{"devices":{"00000000001":{"valid":true},"00000000002":{"valid":true},"00000000003":{"valid":true}},"estimated_runtime":30,"reason":"Map has met the minimum requirements for auto placement","valid":true,"wifi_interrupting":true}'
+                  - '{"devices":{},"reason":"Map has less than 3 APs associated with it to perform auto placement","started":false,"valid":false}'
+                  - '{"devices":{"00000000001":{"valid":true},"00000000002":{"valid":true},"00000000003":{"valid":true},"00000000004":{"reason":"Device model AP41 is not supported for auto placement","valid":false},"00000000005":{"reason":"Device firmware 0.14.28300 does not meet the minimum requirement 0.14.28310","valid":false}},"reason":"Map has APs that do not meet the minimum requirements for auto placement","started":false,"valid":false}'
+                  - '{"devices":{"00000000001":{"valid":true},"00000000002":{"valid":true},"00000000003":{"valid":true},"00000000004":{"reason":"Device model AP41 is not supported for auto placement","valid":false},"00000000005":{"reason":"Device firmware 0.14.28300 does not meet the minimum requirement 0.14.28310","valid":false}},"reason":"Started localization for auto placement","started":true,"valid":false}'
+                  - '{"devices":{"00000000001":{"valid":true},"00000000002":{"valid":true},"00000000003":{"valid":true},"00000000004":{"reason":"Device model AP41 is not supported for auto placement","valid":false},"00000000005":{"reason":"Device firmware 0.14.28300 does not meet the minimum requirement 0.14.28310","valid":false}},"estimated_runtime":30,"reason":"Started collection for auto placement","started":true,"valid":false,"wifi_interrupting":true}'
+                  - '{"devices":{"00000000001":{"valid":true},"00000000002":{"valid":true},"00000000003":{"valid":true}},"reason":"Started localization for auto placement","started":true,"valid":true}'
+                  - '{"devices":{"00000000001":{"valid":true},"00000000002":{"valid":true},"00000000003":{"valid":true}},"estimated_runtime":30,"reason":"Started collection for auto placement","started":true,"valid":true,"wifi_interrupting":true}'
+                  - '{"devices":{"00000000001":{"valid":true},"00000000002":{"valid":true},"00000000003":{"valid":true}},"estimated_runtime":30,"reason":"Unable to reach auto placement service","started":false,"valid":true,"wifi_interrupting":true}'
+                contentMediaType: application/json
+              examples:
+                Auto placement is already in progress for this map:
+                  value:
+                    devices:
+                      '00000000001':
+                        valid: true
+                      '00000000002':
+                        valid: true
+                      '00000000003':
+                        valid: true
+                    estimated_runtime: 30
+                    reason: Map Already Enqueued
+                    started: false
+                    valid: true
+                    wifi_interrupting: true
+                Dryrun for map completed:
+                  value:
+                    devices:
+                      '00000000001':
+                        valid: true
+                      '00000000002':
+                        valid: true
+                      '00000000003':
+                        valid: true
+                    estimated_runtime: 30
+                    reason: Map has met the minimum requirements for auto placement
+                    valid: true
+                    wifi_interrupting: true
+                Map failed to start as it had less than 3 APs associated with it:
+                  value:
+                    devices: {}
+                    reason: Map has less than 3 APs associated with it to perform auto placement
+                    started: false
+                    valid: false
+                Service failed to start due containing invalid APs:
+                  value:
+                    devices:
+                      '00000000001':
+                        valid: true
+                      '00000000002':
+                        valid: true
+                      '00000000003':
+                        valid: true
+                      '00000000004':
+                        reason: Device model AP41 is not supported for auto placement
+                        valid: false
+                      '00000000005':
+                        reason: Device firmware 0.14.28300 does not meet the minimum requirement 0.14.28310
+                        valid: false
+                    reason: Map has APs that do not meet the minimum requirements for auto placement
+                    started: false
+                    valid: false
+                Service started after override for localization:
+                  value:
+                    devices:
+                      '00000000001':
+                        valid: true
+                      '00000000002':
+                        valid: true
+                      '00000000003':
+                        valid: true
+                      '00000000004':
+                        reason: Device model AP41 is not supported for auto placement
+                        valid: false
+                      '00000000005':
+                        reason: Device firmware 0.14.28300 does not meet the minimum requirement 0.14.28310
+                        valid: false
+                    reason: Started localization for auto placement
+                    started: true
+                    valid: false
+                Service started after override for orchestration:
+                  value:
+                    devices:
+                      '00000000001':
+                        valid: true
+                      '00000000002':
+                        valid: true
+                      '00000000003':
+                        valid: true
+                      '00000000004':
+                        reason: Device model AP41 is not supported for auto placement
+                        valid: false
+                      '00000000005':
+                        reason: Device firmware 0.14.28300 does not meet the minimum requirement 0.14.28310
+                        valid: false
+                    estimated_runtime: 30
+                    reason: Started collection for auto placement
+                    started: true
+                    valid: false
+                    wifi_interrupting: true
+                Service started successfully for localization:
+                  value:
+                    devices:
+                      '00000000001':
+                        valid: true
+                      '00000000002':
+                        valid: true
+                      '00000000003':
+                        valid: true
+                    reason: Started localization for auto placement
+                    started: true
+                    valid: true
+                Service started successfully for orchestration:
+                  value:
+                    devices:
+                      '00000000001':
+                        valid: true
+                      '00000000002':
+                        valid: true
+                      '00000000003':
+                        valid: true
+                    estimated_runtime: 30
+                    reason: Started collection for auto placement
+                    started: true
+                    valid: true
+                    wifi_interrupting: true
+                Unable to reach the autoplacement service:
+                  value:
+                    devices:
+                      '00000000001':
+                        valid: true
+                      '00000000002':
+                        valid: true
+                      '00000000003':
+                        valid: true
+                    estimated_runtime: 30
+                    reason: Unable to reach auto placement service
+                    started: false
+                    valid: true
+                    wifi_interrupting: true
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_autoplacement'
+                - description: Auto-placement start response returned after scheduling the run
+                  examples:
+                  - '{"devices":{"00000000001":{"valid":true},"00000000002":{"valid":true},"00000000003":{"valid":true}},"estimated_runtime":30,"reason":"Map Already Enqueued","started":false,"valid":true,"wifi_interrupting":true}'
+                  - '{"devices":{"00000000001":{"valid":true},"00000000002":{"valid":true},"00000000003":{"valid":true}},"estimated_runtime":30,"reason":"Map has met the minimum requirements for auto placement","valid":true,"wifi_interrupting":true}'
+                  - '{"devices":{},"reason":"Map has less than 3 APs associated with it to perform auto placement","started":false,"valid":false}'
+                  - '{"devices":{"00000000001":{"valid":true},"00000000002":{"valid":true},"00000000003":{"valid":true},"00000000004":{"reason":"Device model AP41 is not supported for auto placement","valid":false},"00000000005":{"reason":"Device firmware 0.14.28300 does not meet the minimum requirement 0.14.28310","valid":false}},"reason":"Map has APs that do not meet the minimum requirements for auto placement","started":false,"valid":false}'
+                  - '{"devices":{"00000000001":{"valid":true},"00000000002":{"valid":true},"00000000003":{"valid":true},"00000000004":{"reason":"Device model AP41 is not supported for auto placement","valid":false},"00000000005":{"reason":"Device firmware 0.14.28300 does not meet the minimum requirement 0.14.28310","valid":false}},"reason":"Started localization for auto placement","started":true,"valid":false}'
+                  - '{"devices":{"00000000001":{"valid":true},"00000000002":{"valid":true},"00000000003":{"valid":true},"00000000004":{"reason":"Device model AP41 is not supported for auto placement","valid":false},"00000000005":{"reason":"Device firmware 0.14.28300 does not meet the minimum requirement 0.14.28310","valid":false}},"estimated_runtime":30,"reason":"Started collection for auto placement","started":true,"valid":false,"wifi_interrupting":true}'
+                  - '{"devices":{"00000000001":{"valid":true},"00000000002":{"valid":true},"00000000003":{"valid":true}},"reason":"Started localization for auto placement","started":true,"valid":true}'
+                  - '{"devices":{"00000000001":{"valid":true},"00000000002":{"valid":true},"00000000003":{"valid":true}},"estimated_runtime":30,"reason":"Started collection for auto placement","started":true,"valid":true,"wifi_interrupting":true}'
+                  - '{"devices":{"00000000001":{"valid":true},"00000000002":{"valid":true},"00000000003":{"valid":true}},"estimated_runtime":30,"reason":"Unable to reach auto placement service","started":false,"valid":true,"wifi_interrupting":true}'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Auto placement is already in progress for this map:
+                  value:
+                    devices:
+                      '00000000001':
+                        valid: true
+                      '00000000002':
+                        valid: true
+                      '00000000003':
+                        valid: true
+                    estimated_runtime: 30
+                    reason: Map Already Enqueued
+                    started: false
+                    valid: true
+                    wifi_interrupting: true
+                Dryrun for map completed:
+                  value:
+                    devices:
+                      '00000000001':
+                        valid: true
+                      '00000000002':
+                        valid: true
+                      '00000000003':
+                        valid: true
+                    estimated_runtime: 30
+                    reason: Map has met the minimum requirements for auto placement
+                    valid: true
+                    wifi_interrupting: true
+                Map failed to start as it had less than 3 APs associated with it:
+                  value:
+                    devices: {}
+                    reason: Map has less than 3 APs associated with it to perform auto placement
+                    started: false
+                    valid: false
+                Service failed to start due containing invalid APs:
+                  value:
+                    devices:
+                      '00000000001':
+                        valid: true
+                      '00000000002':
+                        valid: true
+                      '00000000003':
+                        valid: true
+                      '00000000004':
+                        reason: Device model AP41 is not supported for auto placement
+                        valid: false
+                      '00000000005':
+                        reason: Device firmware 0.14.28300 does not meet the minimum requirement 0.14.28310
+                        valid: false
+                    reason: Map has APs that do not meet the minimum requirements for auto placement
+                    started: false
+                    valid: false
+                Service started after override for localization:
+                  value:
+                    devices:
+                      '00000000001':
+                        valid: true
+                      '00000000002':
+                        valid: true
+                      '00000000003':
+                        valid: true
+                      '00000000004':
+                        reason: Device model AP41 is not supported for auto placement
+                        valid: false
+                      '00000000005':
+                        reason: Device firmware 0.14.28300 does not meet the minimum requirement 0.14.28310
+                        valid: false
+                    reason: Started localization for auto placement
+                    started: true
+                    valid: false
+                Service started after override for orchestration:
+                  value:
+                    devices:
+                      '00000000001':
+                        valid: true
+                      '00000000002':
+                        valid: true
+                      '00000000003':
+                        valid: true
+                      '00000000004':
+                        reason: Device model AP41 is not supported for auto placement
+                        valid: false
+                      '00000000005':
+                        reason: Device firmware 0.14.28300 does not meet the minimum requirement 0.14.28310
+                        valid: false
+                    estimated_runtime: 30
+                    reason: Started collection for auto placement
+                    started: true
+                    valid: false
+                    wifi_interrupting: true
+                Service started successfully for localization:
+                  value:
+                    devices:
+                      '00000000001':
+                        valid: true
+                      '00000000002':
+                        valid: true
+                      '00000000003':
+                        valid: true
+                    reason: Started localization for auto placement
+                    started: true
+                    valid: true
+                Service started successfully for orchestration:
+                  value:
+                    devices:
+                      '00000000001':
+                        valid: true
+                      '00000000002':
+                        valid: true
+                      '00000000003':
+                        valid: true
+                    estimated_runtime: 30
+                    reason: Started collection for auto placement
+                    started: true
+                    valid: true
+                    wifi_interrupting: true
+                Unable to reach the autoplacement service:
+                  value:
+                    devices:
+                      '00000000001':
+                        valid: true
+                      '00000000002':
+                        valid: true
+                      '00000000003':
+                        valid: true
+                    estimated_runtime: 30
+                    reason: Unable to reach auto placement service
+                    started: false
+                    valid: true
+                    wifi_interrupting: true
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/maps/{map_id}/clear_auto_orient:
+    parameters: []
+    post:
+      tags:
+      - Sites Maps - Auto-placement
+      summary: clearSiteApAutoOrient
+      description: This API is used to destroy the autoorientations of a map or subset of APs on a map.
+      operationId: clearSiteApAutoOrient
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: map_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/mac_addresses'
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/maps/{map_id}/clear_autoplacement:
+    parameters: []
+    post:
+      tags:
+      - Sites Maps - Auto-placement
+      summary: clearSiteApAutoplacement
+      description: 'Reject the cached autoplacement and auto-orientation values of a map or subset of APs on a map. Any APs that have autoplacement values are stored in cache for up to 7 days while awaiting rejection.
+
+
+        Rejecting the autoplacement values causes the APs to retain their current X, Y, and orientation.
+
+
+        Once a decision to reject is made, or the 7-day time-to-live (TTL) expires, the cached values are deleted.'
+      operationId: clearSiteApAutoplacement
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: map_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/autoplacement_localization_selector'
+              - examples:
+                - for: placement
+                  macs:
+                  - 5c5b35000001
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  for: placement
+                  macs:
+                  - 5c5b35000001
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/maps/{map_id}/use_auto_ap_values:
+    parameters: []
+    post:
+      tags:
+      - Sites Maps - Auto-placement
+      summary: confirmSiteApLocalizationData
+      description: '**Deprecated** — use Accept Site AP Autoplacement to accept cached values, or Clear Site AP Autoplacement to reject them.'
+      operationId: confirmSiteApLocalizationData
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: map_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/use_auto_ap_values'
+              - examples:
+                - accept: false
+                  device_macs:
+                  - string
+                  for: placement
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  accept: false
+                  device_macs:
+                  - string
+                  for: placement
+        required: false
+      responses:
+        '200':
+          description: Success
+          headers: {}
+          content: {}
+        '400':
+          description: Map does not exist or belong to specified site / Invalid localization service. Expected [placement, orientation]
+          headers: {}
+          content: {}
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: true
+components:
+  schemas:
+    response_autoplacement:
+      title: response_autoplacement
+      type: object
+      properties:
+        devices:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/response_autoplacement_device'
+          description: Per-device validation results for autoplacement, keyed by AP MAC address
+          readOnly: true
+        estimated_runtime:
+          type: integer
+          description: Estimated runtime for the process in seconds.
+          contentEncoding: int32
+          readOnly: true
+        reason:
+          type: string
+          description: Provides the reason for the status.
+          readOnly: true
+        started:
+          type: boolean
+          description: Indicates whether the autoplacement process has started.
+          readOnly: true
+        valid:
+          type: boolean
+          description: Indicates whether the autoplacement request is valid.
+          readOnly: true
+        wifi_interrupting:
+          type: boolean
+          description: Indicates whether the auto placement process will interrupt WiFi traffic.
+      description: Auto-placement start response returned after scheduling the run
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    auto_orient:
+      title: auto_orient
+      type: object
+      properties:
+        dryrun:
+          type: boolean
+          description: Set to `true` to perform an invalid AP check and provide an estimated run time without enqueuing the run into the auto orient service.
+        force_collection:
+          type: boolean
+          description: "If `force_collection`==`false`, the API attempts to start auto orientation with existing BLE data. \nIf `force_collection`==`true`, the API attempts to start BLE orchestration."
+          default: false
+        macs:
+          type: array
+          items:
+            type: string
+          description: AP MAC addresses to include in the auto-orient run
+        override:
+          type: boolean
+          description: Set to `true` to run auto orient even if there are invalid APs in the selected APs.
+      description: Request options for validating or starting AP auto-orientation
+    use_auto_ap_values_for2:
+      title: use_auto_ap_values_for2
+      enum:
+      - orientation
+      - placement
+      type: string
+      description: 'Localization value type to accept or reject. enum: `orientation`, `placement`.'
+    mac_addresses:
+      title: mac_addresses
+      required:
+      - macs
+      type: object
+      properties:
+        macs:
+          minItems: 1
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: List of MAC addresses included in the request
+          examples:
+          - - 683b679ac024
+      description: Request containing one or more MAC addresses
+    auto_placement_info_status1:
+      title: auto_placement_info_status1
+      enum:
+      - done
+      - error
+      - inprogress
+      - pending
+      type: string
+      description: 'Current autoplacement processing state. enum: `done`, `error`, `inprogress`, `pending`.'
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    response_auto_orientation:
+      title: response_auto_orientation
+      type: object
+      properties:
+        devices:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/response_auto_orientation_device'
+          description: Per-device validation results for auto orientation, keyed by device MAC address
+        estimated_runtime:
+          type: integer
+          description: Estimated runtime for the process in seconds
+          contentEncoding: int32
+        reason:
+          type: string
+          description: Provides the reason for the status.
+        started:
+          type: boolean
+          description: Indicates whether the auto orient process has started.
+        valid:
+          type: boolean
+          description: Indicates whether the auto orient request is valid.
+        wifi_interrupting:
+          type: boolean
+          description: Indicates whether the auto orient process will interrupt WiFi traffic.
+      description: Auto orientation start response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_auto_orientation_device:
+      title: response_auto_orientation_device
+      type: object
+      properties:
+        reason:
+          type: string
+          description: Provides the reason for the status if the AP is invalid.
+        valid:
+          type: boolean
+          description: Indicates whether the auto orient request is valid for the device.
+      description: Per-device validation result for auto orientation
+    response_auto_placement_info:
+      title: response_auto_placement_info
+      type: object
+      properties:
+        end_time:
+          type: number
+          description: Timestamp when autoplacement completed or was manually stopped
+        est_time_left:
+          type: number
+          description: (Only when inprogress) estimate of the time to completion
+        start_time:
+          type: integer
+          description: Timestamp when autoplacement process was last queued for this map
+          contentEncoding: int32
+        status:
+          allOf:
+          - $ref: '#/components/schemas/auto_placement_info_status1'
+          - description: 'Current autoplacement processing state. enum: `done`, `error`, `inprogress`, `pending`.'
+      description: Auto-placement status response with progress and validation details
+    use_auto_ap_values:
+      title: use_auto_ap_values
+      type: object
+      properties:
+        accept:
+          type: boolean
+          description: Whether to accept cached values; false rejects them for the selected APs
+          default: false
+        for:
+          allOf:
+          - $ref: '#/components/schemas/use_auto_ap_values_for2'
+          - description: 'Localization value type to accept or reject. enum: `orientation`, `placement`.'
+        macs:
+          type: array
+          items:
+            type: string
+          description: AP MAC addresses whose cached values are accepted or rejected
+      description: Request to accept or reject cached AP placement or orientation values on a map
+    autoplacement_localization_selector:
+      title: autoplacement_localization_selector
+      type: object
+      properties:
+        for:
+          allOf:
+          - $ref: '#/components/schemas/autoplacement_localization_selector_for'
+          - description: 'The selector to choose auto placement or auto orientation. enum: `orientation`, `placement`'
+        macs:
+          type: array
+          items:
+            type: string
+          description: List of AP MAC addresses to apply the action to. If omitted, the action applies to all APs on the map
+      description: Request body to apply or clear cached autoplacement or auto-orientation values for a map or subset of APs
+    response_auto_orientation_info:
+      title: response_auto_orientation_info
+      type: object
+      properties:
+        est_time_left:
+          type: number
+          description: Only when `status`==`inprogress`, estimate of the time to completion
+        start_time:
+          type: number
+          description: Timestamp when auto orient process was last queued for this map
+        status:
+          allOf:
+          - $ref: '#/components/schemas/response_auto_orientation_info_status2'
+          - description: 'Current auto orientation processing state. enum: `pending`, `inprogress`, `done`, `error`.'
+        stop_time:
+          type: number
+          description: Timestamp when auto orient completed or was manually stopped
+      description: Auto orientation status response
+    response_autoplacement_device:
+      title: response_autoplacement_device
+      type: object
+      properties:
+        reason:
+          type: string
+          description: Provides the reason for the status if the AP is invalid.
+          readOnly: true
+        valid:
+          type: boolean
+          description: Indicates whether the ap is valid.
+          readOnly: true
+      description: Per-AP validation result for autoplacement
+    response_auto_orientation_info_status2:
+      title: response_auto_orientation_info_status2
+      enum:
+      - pending
+      - inprogress
+      - done
+      - error
+      type: string
+      description: 'Current auto orientation processing state. enum: `pending`, `inprogress`, `done`, `error`.'
+    auto_placement:
+      title: auto_placement
+      type: object
+      properties:
+        dryrun:
+          type: boolean
+          description: Set to `true` to perform an invalid AP check and provide an estimated run time without enqueuing the run into the auto placement service.
+          default: false
+        force_collection:
+          type: boolean
+          description: "* If `force_collection`==`false`: the API attempts to start localization with existing data. \n* If `force_collection`==`true`: maintenance the API attempts to start orchestration."
+          default: false
+        macs:
+          type: array
+          items:
+            type: string
+          description: AP MAC addresses to include in the auto-placement run
+        override:
+          type: boolean
+          description: Set to `true` to run auto placement even if there are invalid APs in the selected APs.
+          default: false
+      description: Request options for validating or starting AP auto-placement
+    response_detail_string:
+      title: response_detail_string
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable detail message returned by the API
+      description: Response containing a human-readable detail message
+    autoplacement_localization_selector_for:
+      title: autoplacement_localization_selector_for
+      enum:
+      - orientation
+      - placement
+      type: string
+      description: 'The selector to choose auto placement or auto orientation. enum: `orientation`, `placement`'
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

@@ -1,0 +1,2444 @@
+openapi: 3.2.0
+info:
+  title: Mist Orgs Alarm Templates API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Orgs Alarm Templates
+  description: 'An Alarm Template is a set of Alarm Rules that could be applied to
+
+    one or more sites (while each site can only pick one Alarm Template), or to the
+
+    whole org.
+
+
+    Once created, the Alarm template must be assigned with the `alarmtemplate_id` attribute to one of the following
+
+    * the whole org with the Update Org API Call
+
+    * one or multiple sites with the Update Site Info API Call'
+paths:
+  /api/v1/orgs/{org_id}/alarmtemplates:
+    parameters: []
+    get:
+      tags:
+      - Orgs Alarm Templates
+      summary: listOrgAlarmTemplates
+      description: List alarm templates defined for the organization, including default delivery settings and per-alarm rule configuration.
+      operationId: listOrgAlarmTemplates
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: page
+        in: query
+        description: Select the page number to return when using page-based pagination; starts at `1`
+        style: form
+        explode: true
+        schema:
+          minimum: 1
+          type: integer
+          contentEncoding: int32
+          default: 1
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/alarm_template'
+                description: List of alarm templates
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/alarm_template'
+                description: List of alarm templates
+                contentMediaType: application/vnd.api+json
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    post:
+      tags:
+      - Orgs Alarm Templates
+      summary: createOrgAlarmTemplate
+      description: 'Create an organization alarm template that defines default delivery settings and per-alarm rule overrides.
+
+        Available rules can be found in List Alarm Definitions
+
+
+        The `delivery` object is only required when it differs from the template delivery settings.
+
+        To assign an Alarm template to a site, use the Update Site endpoint and specify the Alarm template ID in the `alarmtemplate_id` field of the request body.'
+      operationId: createOrgAlarmTemplate
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/alarm_template'
+              - description: Request Body
+              contentMediaType: application/json
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/alarm_template'
+                - description: Alarm template defining default delivery and per-alarm rules
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/alarm_template'
+                - description: Alarm template defining default delivery and per-alarm rules
+                contentMediaType: application/vnd.api+json
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/alarmtemplates/suppress:
+    parameters: []
+    delete:
+      tags:
+      - Orgs Alarm Templates
+      summary: unsuppressOrgSuppressedAlarms
+      description: Remove alarm suppression entries currently configured for this organization.
+      operationId: unsuppressOrgSuppressedAlarms
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    get:
+      tags:
+      - Orgs Alarm Templates
+      summary: listOrgSuppressedAlarms
+      description: List alarm suppression entries currently configured for this organization, optionally filtered by organization-wide or site-specific scope.
+      operationId: listOrgSuppressedAlarms
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: scope
+        in: query
+        description: 'Filter results by scope. enum: `org`, `site`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/suppressed_alarm_scope'
+          - description: 'Filter results by scope. enum: `org`, `site`'
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_org_suppress_alarm'
+                - description: Response containing currently suppressed organization alarm entries
+                  examples:
+                  - results:
+                    - duration: 48
+                      expire_time: 1678233080
+                      scheduled_time: 1678232900
+                      scope: site
+                      site_id: 581328b6-e382-f54e-c9dc-9c998d183a34
+                    - duration: 48
+                      expire_time: 1678233080
+                      scheduled_time: 1678232900
+                      scope: org
+                      site_id: 581328b6-e382-f54e-c9dc-9c998d183a35
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    results:
+                    - duration: 48
+                      expire_time: 1678233080
+                      scheduled_time: 1678232900
+                      scope: site
+                      site_id: 581328b6-e382-f54e-c9dc-9c998d183a34
+                    - duration: 48
+                      expire_time: 1678233080
+                      scheduled_time: 1678232900
+                      scope: org
+                      site_id: 581328b6-e382-f54e-c9dc-9c998d183a35
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_org_suppress_alarm'
+                - description: Response containing currently suppressed organization alarm entries
+                  examples:
+                  - results:
+                    - duration: 48
+                      expire_time: 1678233080
+                      scheduled_time: 1678232900
+                      scope: site
+                      site_id: 581328b6-e382-f54e-c9dc-9c998d183a34
+                    - duration: 48
+                      expire_time: 1678233080
+                      scheduled_time: 1678232900
+                      scope: org
+                      site_id: 581328b6-e382-f54e-c9dc-9c998d183a35
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    results:
+                    - duration: 48
+                      expire_time: 1678233080
+                      scheduled_time: 1678232900
+                      scope: site
+                      site_id: 581328b6-e382-f54e-c9dc-9c998d183a34
+                    - duration: 48
+                      expire_time: 1678233080
+                      scheduled_time: 1678232900
+                      scope: org
+                      site_id: 581328b6-e382-f54e-c9dc-9c998d183a35
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    post:
+      tags:
+      - Orgs Alarm Templates
+      summary: suppressOrgAlarm
+      description: Create or schedule an alarm suppression window for the organization or selected sites, for example during planned maintenance.
+      operationId: suppressOrgAlarm
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/suppressed_alarm'
+              - examples:
+                - '{"duration":3600,"scheduled_time":1678232980,"scope":"org"}'
+                - '{"applies":{"org_id":"2818e386-8dec-2562-9ede-5b8a0fbbdc71","site_ids":["4ac1dcf4-9d8b-7211-65c4-057819f0862b"],"sitegroup_ids":["581328b6-e382-f54e-c9dc-999983183a34","f57096b9-0c2f-4df6-c77b-ae6ae87a3d43"]},"duration":3600,"scheduled_time":1678232980,"scope":"site"}'
+              contentMediaType: application/json
+            examples:
+              org_suppression:
+                value:
+                  duration: 3600
+                  scheduled_time: 1678232980
+                  scope: org
+              site_suppression:
+                value:
+                  applies:
+                    org_id: 2818e386-8dec-2562-9ede-5b8a0fbbdc71
+                    site_ids:
+                    - 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                    sitegroup_ids:
+                    - 581328b6-e382-f54e-c9dc-999983183a34
+                    - f57096b9-0c2f-4df6-c77b-ae6ae87a3d43
+                  duration: 3600
+                  scheduled_time: 1678232980
+                  scope: site
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/alarmtemplates/{alarmtemplate_id}:
+    parameters: []
+    delete:
+      tags:
+      - Orgs Alarm Templates
+      summary: deleteOrgAlarmTemplate
+      description: Delete an organization alarm template by template ID from this organization.
+      operationId: deleteOrgAlarmTemplate
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: alarmtemplate_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    get:
+      tags:
+      - Orgs Alarm Templates
+      summary: getOrgAlarmTemplate
+      description: Return one organization alarm template, including default delivery settings and per-alarm rule overrides.
+      operationId: getOrgAlarmTemplate
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: alarmtemplate_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/alarm_template'
+                - description: Alarm template defining default delivery and per-alarm rules
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/alarm_template'
+                - description: Alarm template defining default delivery and per-alarm rules
+                contentMediaType: application/vnd.api+json
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    put:
+      tags:
+      - Orgs Alarm Templates
+      summary: updateOrgAlarmTemplate
+      description: Update an organization alarm template's default delivery settings or per-alarm rule overrides.
+      operationId: updateOrgAlarmTemplate
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: alarmtemplate_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/alarm_template'
+              - description: Request Body
+                examples:
+                - delivery:
+                    additional_emails:
+                    - string
+                    enabled: true
+                    to_org_admins: true
+                    to_site_admins: true
+                  name: string
+                  rules:
+                    adhoc_network:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    air_magnet_scan:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    ap_offline:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    bad_cable:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    beacon_flood:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    bssid_spoofing:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    device_down:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    device_restarted:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    dhcp_failure:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    disassociation_flood:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    dot1x_failure:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    eap_dictionary_attack:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    eap_failure_injection:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    eap_handshake_flood:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    eap_spoofed_success:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    eapol_logoff_attack:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    essid_jack:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    excessive_client:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    excessive_eapol_start:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    gateway_down:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    gw_bad_cable:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    gw_negotiation_mismatch:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    honeypot_ssid:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    krack_attack:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    missing_vlan:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    monkey_jack:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    negotiation_mismatch:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    non_compliant:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    out_of_sequence:
+                      enabled: true
+                    psk_failure:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    repeated_auth_failures:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    rogue_ap:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    rogue_client:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    secpolicy_violation:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    ssid_injection:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    switch_down:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    tkip_icv_attack:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    vendor_ie_missing:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    watched_station:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    zero_ssid_association:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  delivery:
+                    additional_emails:
+                    - string
+                    enabled: true
+                    to_org_admins: true
+                    to_site_admins: true
+                  name: string
+                  rules:
+                    adhoc_network:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    air_magnet_scan:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    ap_offline:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    bad_cable:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    beacon_flood:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    bssid_spoofing:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    device_down:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    device_restarted:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    dhcp_failure:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    disassociation_flood:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    dot1x_failure:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    eap_dictionary_attack:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    eap_failure_injection:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    eap_handshake_flood:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    eap_spoofed_success:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    eapol_logoff_attack:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    essid_jack:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    excessive_client:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    excessive_eapol_start:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    gateway_down:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    gw_bad_cable:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    gw_negotiation_mismatch:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    honeypot_ssid:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    krack_attack:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    missing_vlan:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    monkey_jack:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    negotiation_mismatch:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    non_compliant:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    out_of_sequence:
+                      enabled: true
+                    psk_failure:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    repeated_auth_failures:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    rogue_ap:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    rogue_client:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    secpolicy_violation:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    ssid_injection:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    switch_down:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    tkip_icv_attack:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    vendor_ie_missing:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    watched_station:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+                    zero_ssid_association:
+                      delivery:
+                        additional_emails:
+                        - string
+                        enabled: true
+                        to_org_admins: true
+                        to_site_admins: true
+                      enabled: true
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/alarm_template'
+                - description: Alarm template defining default delivery and per-alarm rules
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/alarm_template'
+                - description: Alarm template defining default delivery and per-alarm rules
+                contentMediaType: application/vnd.api+json
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    suppressed_alarm_scope:
+      title: suppressed_alarm_scope
+      enum:
+      - org
+      - site
+      type: string
+      description: 'level of scope. enum: `org`, `site`'
+    delivery1:
+      title: delivery1
+      required:
+      - enabled
+      type: object
+      properties:
+        additional_emails:
+          type: array
+          items:
+            type: string
+          description: Additional email recipients for alarm delivery
+        enabled:
+          type: boolean
+          description: Whether to enable the alarm delivery via emails or not
+          examples:
+          - true
+        to_org_admins:
+          type: boolean
+          description: Whether to deliver the alarms via emails to Org admins or not
+          examples:
+          - true
+        to_site_admins:
+          type: boolean
+          description: Whether to deliver the alarms via emails to Site admins or not
+          examples:
+          - false
+      description: Overrides for the alarm template delivery defaults for this alarm rule
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    alarm_template_rule:
+      title: alarm_template_rule
+      type: object
+      properties:
+        delivery:
+          allOf:
+          - $ref: '#/components/schemas/delivery1'
+          - description: Overrides for the alarm template delivery defaults for this alarm rule
+        enabled:
+          type: boolean
+          description: Whether this alarm rule is enabled in the template
+      description: Per-alarm enablement and delivery override in an alarm template
+    suppressed_alarm_applies2:
+      title: suppressed_alarm_applies2
+      type: object
+      properties:
+        org_id:
+          type: string
+          description: UUID of the current org (if provided, the alarms will be suppressed at org level)
+          contentEncoding: uuid
+        site_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: Site identifiers included in the suppression scope. If provided, alarms are suppressed for the listed sites.
+        sitegroup_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: Site group identifiers included in the suppression scope. If provided, alarms are suppressed for all sites in the listed site groups.
+      description: If `scope`==`site`. Site and site-group targets where alarms are suppressed
+    suppressed_alarm_scope3:
+      title: suppressed_alarm_scope3
+      enum:
+      - org
+      - site
+      type: string
+      description: 'Alarm suppression scope, either organization-wide or site-specific. enum: `org`, `site`.'
+    suppressed_alarm:
+      title: suppressed_alarm
+      type: object
+      properties:
+        applies:
+          allOf:
+          - $ref: '#/components/schemas/suppressed_alarm_applies2'
+          - description: If `scope`==`site`. Site and site-group targets where alarms are suppressed
+        duration:
+          maximum: 15552000
+          minimum: 0
+          type: number
+          description: Suppression length, in seconds. Maximum duration is 86400 * 180 (180 days). 0 is to un-suppress alarms
+          default: 3600
+        scheduled_time:
+          type: integer
+          description: Time when alarm suppression starts, in epoch seconds. Defaults to now; accepted range is from now to now + 7 days
+          contentEncoding: int32
+        scope:
+          allOf:
+          - $ref: '#/components/schemas/suppressed_alarm_scope1'
+          - description: 'Alarm suppression target level. enum: `org`, `site`.'
+      description: Request body for suppressing organization alarms
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    suppressed_alarm_scope1:
+      title: suppressed_alarm_scope1
+      enum:
+      - org
+      - site
+      type: string
+      description: 'Alarm suppression target level. enum: `org`, `site`.'
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_org_suppress_alarm_item:
+      title: response_org_suppress_alarm_item
+      type: object
+      properties:
+        duration:
+          type: integer
+          description: Number of seconds that alarms remain suppressed. Maximum duration is 86400 * 14 (14 days). Use 0 to remove suppression.
+          contentEncoding: int32
+        expire_time:
+          type: integer
+          description: Epoch timestamp, in seconds, when the alarm suppression expires
+          contentEncoding: int32
+        scheduled_time:
+          type: integer
+          description: Epoch timestamp, in seconds, when the alarm suppression starts
+          contentEncoding: int32
+        scope:
+          allOf:
+          - $ref: '#/components/schemas/suppressed_alarm_scope3'
+          - description: 'Alarm suppression scope, either organization-wide or site-specific. enum: `org`, `site`.'
+        site_id:
+          type: string
+          description: Site identifier for a site-scoped alarm suppression entry
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+      description: Suppressed alarm entry for an organization or site alarm scope
+    delivery3:
+      title: delivery3
+      required:
+      - enabled
+      type: object
+      properties:
+        additional_emails:
+          type: array
+          items:
+            type: string
+          description: Additional email recipients for alarm delivery
+        enabled:
+          type: boolean
+          description: Whether to enable the alarm delivery via emails or not
+          examples:
+          - true
+        to_org_admins:
+          type: boolean
+          description: Whether to deliver the alarms via emails to Org admins or not
+          examples:
+          - true
+        to_site_admins:
+          type: boolean
+          description: Whether to deliver the alarms via emails to Site admins or not
+          examples:
+          - false
+      description: Default alarm delivery settings for rules in this template
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    alarm_template:
+      title: alarm_template
+      required:
+      - delivery
+      - rules
+      type: object
+      properties:
+        created_time:
+          type: number
+          description: Timestamp when the alarm template was created
+          readOnly: true
+        delivery:
+          allOf:
+          - $ref: '#/components/schemas/delivery3'
+          - description: Default alarm delivery settings for rules in this template
+        id:
+          type: string
+          description: Unique identifier of the alarm template
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        modified_time:
+          type: number
+          description: Timestamp when the alarm template was last modified
+          readOnly: true
+        name:
+          type: string
+          description: Some string to name the alarm template
+          examples:
+          - default
+        org_id:
+          type: string
+          description: Organization that owns this alarm template
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        rules:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/alarm_template_rule'
+          description: Alarm Rules object to configure the individual alarm keys/types. Property key is the alarm name.
+          examples:
+          - ap_offline:
+              delivery:
+                additional_emails:
+                - string
+                enabled: true
+                to_org_admins: true
+                to_site_admins: true
+              enabled: true
+            bad_cable:
+              delivery:
+                additional_emails:
+                - string
+                enabled: true
+                to_org_admins: true
+                to_site_admins: true
+              enabled: true
+      description: Alarm template defining default delivery and per-alarm rules
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_org_suppress_alarm:
+      title: response_org_suppress_alarm
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/response_org_suppress_alarm_item'
+          description: Suppressed alarm entries currently configured for the organization
+      description: Response containing currently suppressed organization alarm entries
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

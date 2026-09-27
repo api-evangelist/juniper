@@ -1,0 +1,1463 @@
+openapi: 3.2.0
+info:
+  title: Mist Orgs Stats - Assets API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Orgs Stats - Assets
+  description: API Calls to retrieve statistics about the Assets at the Org level
+paths:
+  /api/v1/orgs/{org_id}/stats/assets:
+    parameters: []
+    get:
+      tags:
+      - Orgs Stats - Assets
+      summary: listOrgAssetsStats
+      description: List BLE asset location and advertisement statistics for the organization over an optional time window, including map coordinates, RSSI, zones, and iBeacon or Eddystone fields.
+      operationId: listOrgAssetsStats
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: page
+        in: query
+        description: Select the page number to return when using page-based pagination; starts at `1`
+        style: form
+        explode: true
+        schema:
+          minimum: 1
+          type: integer
+          contentEncoding: int32
+          default: 1
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/stats_asset'
+                description: Asset statistics returned by the request
+                examples:
+                - - _ttl: 86400
+                    battery_voltage: 3370
+                    by: asset
+                    device_id: 00000000-0000-0000-1000-5c5b35000001
+                    device_name: BLE Device
+                    eddystone_uid_instance: 5c5b35000001
+                    eddystone_uid_namespace: 2818e3868dec25629ede
+                    eddystone_url_url: https://www.abc.com
+                    ibeacon_major: 13
+                    ibeacon_minor: 138
+                    ibeacon_uuid: f3f17139-704a-f03a-2786-0400279e37c3
+                    id: 845a23bf-bed9-e43c-4c86-6fa474be7ae5
+                    last_seen: 1480716946
+                    mac: 4a0222000e31
+                    manufacture: Asset Manufacturer Name
+                    map_id: 63eda950-c6da-11e4-a628-60f81dd250cc
+                    mfg_company_id: 935
+                    mfg_data: 648520a1020000
+                    name: Asset Name
+                    rssi: -45
+                    rssizones:
+                    - id: 478f6eca-6276-4993-bfeb-5bcbbbbacf08
+                      since: 0
+                    service_packets:
+                    - data: '640'
+                      last_rx_time: 1645855923
+                      rx_cnt: 213065
+                      uuid: 00003e10-0000-1000-8000-00805f9b34fb
+                    temperature: 23.5
+                    x: 51
+                    y: 29
+                    zones:
+                    - id: 477f6eca-6276-4993-bfeb-5ccbbbbadf08
+                      since: 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                  - _ttl: 86400
+                    battery_voltage: 3370
+                    by: asset
+                    device_id: 00000000-0000-0000-1000-5c5b35000001
+                    device_name: BLE Device
+                    eddystone_uid_instance: 5c5b35000001
+                    eddystone_uid_namespace: 2818e3868dec25629ede
+                    eddystone_url_url: https://www.abc.com
+                    ibeacon_major: 13
+                    ibeacon_minor: 138
+                    ibeacon_uuid: f3f17139-704a-f03a-2786-0400279e37c3
+                    id: 845a23bf-bed9-e43c-4c86-6fa474be7ae5
+                    last_seen: 1480716946
+                    mac: 4a0222000e31
+                    manufacture: Asset Manufacturer Name
+                    map_id: 63eda950-c6da-11e4-a628-60f81dd250cc
+                    mfg_company_id: 935
+                    mfg_data: 648520a1020000
+                    name: Asset Name
+                    rssi: -45
+                    rssizones:
+                    - id: 478f6eca-6276-4993-bfeb-5bcbbbbacf08
+                      since: 0
+                    service_packets:
+                    - data: '640'
+                      last_rx_time: 1645855923
+                      rx_cnt: 213065
+                      uuid: 00003e10-0000-1000-8000-00805f9b34fb
+                    temperature: 23.5
+                    x: 51
+                    y: 29
+                    zones:
+                    - id: 477f6eca-6276-4993-bfeb-5ccbbbbadf08
+                      since: 0
+            application/vnd.api+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/stats_asset'
+                description: Asset statistics returned by the request
+                examples:
+                - - _ttl: 86400
+                    battery_voltage: 3370
+                    by: asset
+                    device_id: 00000000-0000-0000-1000-5c5b35000001
+                    device_name: BLE Device
+                    eddystone_uid_instance: 5c5b35000001
+                    eddystone_uid_namespace: 2818e3868dec25629ede
+                    eddystone_url_url: https://www.abc.com
+                    ibeacon_major: 13
+                    ibeacon_minor: 138
+                    ibeacon_uuid: f3f17139-704a-f03a-2786-0400279e37c3
+                    id: 845a23bf-bed9-e43c-4c86-6fa474be7ae5
+                    last_seen: 1480716946
+                    mac: 4a0222000e31
+                    manufacture: Asset Manufacturer Name
+                    map_id: 63eda950-c6da-11e4-a628-60f81dd250cc
+                    mfg_company_id: 935
+                    mfg_data: 648520a1020000
+                    name: Asset Name
+                    rssi: -45
+                    rssizones:
+                    - id: 478f6eca-6276-4993-bfeb-5bcbbbbacf08
+                      since: 0
+                    service_packets:
+                    - data: '640'
+                      last_rx_time: 1645855923
+                      rx_cnt: 213065
+                      uuid: 00003e10-0000-1000-8000-00805f9b34fb
+                    temperature: 23.5
+                    x: 51
+                    y: 29
+                    zones:
+                    - id: 477f6eca-6276-4993-bfeb-5ccbbbbadf08
+                      since: 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                  - _ttl: 86400
+                    battery_voltage: 3370
+                    by: asset
+                    device_id: 00000000-0000-0000-1000-5c5b35000001
+                    device_name: BLE Device
+                    eddystone_uid_instance: 5c5b35000001
+                    eddystone_uid_namespace: 2818e3868dec25629ede
+                    eddystone_url_url: https://www.abc.com
+                    ibeacon_major: 13
+                    ibeacon_minor: 138
+                    ibeacon_uuid: f3f17139-704a-f03a-2786-0400279e37c3
+                    id: 845a23bf-bed9-e43c-4c86-6fa474be7ae5
+                    last_seen: 1480716946
+                    mac: 4a0222000e31
+                    manufacture: Asset Manufacturer Name
+                    map_id: 63eda950-c6da-11e4-a628-60f81dd250cc
+                    mfg_company_id: 935
+                    mfg_data: 648520a1020000
+                    name: Asset Name
+                    rssi: -45
+                    rssizones:
+                    - id: 478f6eca-6276-4993-bfeb-5bcbbbbacf08
+                      since: 0
+                    service_packets:
+                    - data: '640'
+                      last_rx_time: 1645855923
+                      rx_cnt: 213065
+                      uuid: 00003e10-0000-1000-8000-00805f9b34fb
+                    temperature: 23.5
+                    x: 51
+                    y: 29
+                    zones:
+                    - id: 477f6eca-6276-4993-bfeb-5ccbbbbadf08
+                      since: 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/stats/assets/count:
+    parameters: []
+    get:
+      tags:
+      - Orgs Stats - Assets
+      summary: countOrgAssetsByDistanceField
+      description: Count organization asset statistics grouped by a distinct asset attribute, such as MAC address, site, map, iBeacon UUID, iBeacon major, or iBeacon minor.
+      operationId: countOrgAssetsByDistanceField
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: distinct
+        in: query
+        description: 'Field used to group this count response. enum: `ibeacon_major`, `ibeacon_minor`, `ibeacon_uuid`, `mac`, `map_id`, `site_id`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/org_asset_count_distinct'
+          - description: 'Field used to group this count response. enum: `ibeacon_major`, `ibeacon_minor`, `ibeacon_uuid`, `mac`, `map_id`, `site_id`'
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      responses:
+        '200':
+          description: Result of Count
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_count'
+                - description: Distinct count response for time-bounded search results
+                  examples:
+                  - distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_count'
+                - description: Distinct count response for time-bounded search results
+                  examples:
+                  - distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    distinct: string
+                    end: 0
+                    limit: 0
+                    results:
+                    - count: 0
+                      property: string
+                    start: 0
+                    total: 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/stats/assets/search:
+    parameters: []
+    get:
+      tags:
+      - Orgs Stats - Assets
+      summary: searchOrgAssets
+      description: Search BLE asset statistics with filters for site, MAC address, asset name, map, iBeacon or Eddystone identifiers, reporting AP MAC address, RSSI, beam, and time range. Supports pagination and sorting.
+      operationId: searchOrgAssets
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: site_id
+        in: query
+        description: Filter results by site identifier
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: mac
+        in: query
+        description: Filter results by MAC address. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 5c5b53010101,5c5b53020202
+      - name: device_name
+        in: query
+        description: Filter asset results by reporting device name
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: name
+        in: query
+        description: Filter results by name. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - name-a,name-b
+      - name: map_id
+        in: query
+        description: Filter results by map identifier
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: ibeacon_uuid
+        in: query
+        description: Filter asset results by iBeacon UUID. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 00000000-0000-0000-0000-000000000001,00000000-0000-0000-0000-000000000002
+      - name: ibeacon_major
+        in: query
+        description: Filter asset results by iBeacon major value. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 59788,902
+      - name: ibeacon_minor
+        in: query
+        description: Filter asset results by iBeacon minor value. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 8385,4432
+      - name: eddystone_uid_namespace
+        in: query
+        description: Filter asset results by Eddystone UID namespace
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: eddystone_uid_instance
+        in: query
+        description: Filter asset results by Eddystone UID instance
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: eddystone_url
+        in: query
+        description: Filter asset results by Eddystone URL
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: ap_mac
+        in: query
+        description: Filter asset results by reporting AP MAC address. Accepts multiple comma-separated values.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 5c5b53010101,5c5b53020202
+      - name: beam
+        in: query
+        description: Filter asset results by beam value. Accepts multiple comma-separated integer values.
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+      - name: rssi
+        in: query
+        description: Filter asset results by RSSI value. Accepts multiple comma-separated integer values.
+        style: form
+        explode: true
+        schema:
+          type: integer
+          contentEncoding: int32
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: sort
+        in: query
+        description: On which field the list should be sorted, -prefix represents DESC order
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: timestamp
+          examples:
+          - -site_id
+      - name: search_after
+        in: query
+        description: Pagination cursor for retrieving subsequent pages of results. This value is automatically populated by Mist in the `next` URL from the previous response and should not be manually constructed.
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_stats_assets'
+                - description: Paginated response for asset statistics search results
+                  examples:
+                  - end: 0
+                    limit: 0
+                    next: string
+                    results:
+                    - battery_voltage: 0
+                      eddystone_uid_instance: string
+                      eddystone_uid_namespace: string
+                      eddystone_url_url: string
+                      ibeacon_major: 1
+                      ibeacon_minor: 1
+                      ibeacon_uuid: 1f89bc00-d0af-481b-82fe-a6629259a39f
+                      last_seen: 0
+                      mac: string
+                      map_id: 09d2b626-2e4e-45ef-a3c4-e6aeb6c83db1
+                      name: string
+                      rssizones:
+                      - id: 476f6eca-6276-4993-bfeb-5dcbbbbaef08
+                        since: 0
+                      x: 0
+                      y: 0
+                      zones:
+                      - id: 475f6eca-6276-4993-bfeb-5ecbbbbf6f08
+                        since: 0
+                    start: 0
+                    total: 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    end: 0
+                    limit: 0
+                    next: string
+                    results:
+                    - battery_voltage: 0
+                      eddystone_uid_instance: string
+                      eddystone_uid_namespace: string
+                      eddystone_url_url: string
+                      ibeacon_major: 1
+                      ibeacon_minor: 1
+                      ibeacon_uuid: 1f89bc00-d0af-481b-82fe-a6629259a39f
+                      last_seen: 0
+                      mac: string
+                      map_id: 09d2b626-2e4e-45ef-a3c4-e6aeb6c83db1
+                      name: string
+                      rssizones:
+                      - id: 476f6eca-6276-4993-bfeb-5dcbbbbaef08
+                        since: 0
+                      x: 0
+                      y: 0
+                      zones:
+                      - id: 475f6eca-6276-4993-bfeb-5ecbbbbf6f08
+                        since: 0
+                    start: 0
+                    total: 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_stats_assets'
+                - description: Paginated response for asset statistics search results
+                  examples:
+                  - end: 0
+                    limit: 0
+                    next: string
+                    results:
+                    - battery_voltage: 0
+                      eddystone_uid_instance: string
+                      eddystone_uid_namespace: string
+                      eddystone_url_url: string
+                      ibeacon_major: 1
+                      ibeacon_minor: 1
+                      ibeacon_uuid: 1f89bc00-d0af-481b-82fe-a6629259a39f
+                      last_seen: 0
+                      mac: string
+                      map_id: 09d2b626-2e4e-45ef-a3c4-e6aeb6c83db1
+                      name: string
+                      rssizones:
+                      - id: 476f6eca-6276-4993-bfeb-5dcbbbbaef08
+                        since: 0
+                      x: 0
+                      y: 0
+                      zones:
+                      - id: 475f6eca-6276-4993-bfeb-5ecbbbbf6f08
+                        since: 0
+                    start: 0
+                    total: 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    end: 0
+                    limit: 0
+                    next: string
+                    results:
+                    - battery_voltage: 0
+                      eddystone_uid_instance: string
+                      eddystone_uid_namespace: string
+                      eddystone_url_url: string
+                      ibeacon_major: 1
+                      ibeacon_minor: 1
+                      ibeacon_uuid: 1f89bc00-d0af-481b-82fe-a6629259a39f
+                      last_seen: 0
+                      mac: string
+                      map_id: 09d2b626-2e4e-45ef-a3c4-e6aeb6c83db1
+                      name: string
+                      rssizones:
+                      - id: 476f6eca-6276-4993-bfeb-5dcbbbbaef08
+                        since: 0
+                      x: 0
+                      y: 0
+                      zones:
+                      - id: 475f6eca-6276-4993-bfeb-5ecbbbbf6f08
+                        since: 0
+                    start: 0
+                    total: 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    asset_rssi_zone:
+      title: asset_rssi_zone
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the RSSI zone
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        since:
+          type: number
+          description: Timestamp when the asset entered this RSSI zone
+      description: RSSI zone membership for an individual asset statistic
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    stats_asset:
+      title: stats_asset
+      required:
+      - mac
+      type: object
+      properties:
+        _ttl:
+          type: integer
+          description: Time-to-live in seconds; how long this asset data is valid in cache
+          contentEncoding: int32
+        battery_percent:
+          type: integer
+          description: Estimated battery level (1–100%); currently supported for Aruba/HPE asset tags
+          contentEncoding: int32
+          examples:
+          - 50
+        battery_voltage:
+          type: number
+          description: Battery voltage, in mV
+          examples:
+          - 2970
+        beam:
+          type: integer
+          description: BLE beam number where the asset was observed
+          contentEncoding: int32
+          examples:
+          - 6
+        by:
+          type: string
+          description: Observation source type for the asset statistic
+          examples:
+          - asset
+        device_id:
+          type: string
+          description: Device ID of the loudest AP
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 00000000-0000-0000-1000-5c5b35000001
+        device_name:
+          type: string
+          description: Display name of the loudest AP observing the asset
+          examples:
+          - a
+        duration:
+          type: integer
+          description: Length of the current asset observation, in seconds
+          contentEncoding: int32
+          examples:
+          - 120
+        eddystone_uid_instance:
+          type: string
+          description: Eddystone-UID instance value advertised by the asset
+          examples:
+          - 5c5b35000001
+        eddystone_uid_namespace:
+          type: string
+          description: Eddystone-UID namespace value advertised by the asset
+          examples:
+          - 2818e3868dec25629ede
+        eddystone_url_url:
+          type: string
+          description: URL value advertised by the asset through Eddystone-URL
+          examples:
+          - https://www.abc.com
+        ibeacon_major:
+          maximum: 65535
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          description: iBeacon major value advertised by the asset
+          contentEncoding: int32
+          examples:
+          - 1234
+        ibeacon_minor:
+          maximum: 65535
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          description: iBeacon minor value advertised by the asset
+          contentEncoding: int32
+          examples:
+          - 1234
+        ibeacon_uuid:
+          type:
+          - string
+          - 'null'
+          description: iBeacon UUID advertised by the asset
+          contentEncoding: uuid
+          examples:
+          - f3f17139-704a-f03a-2786-0400279e37c3
+        id:
+          type: string
+          description: Unique identifier for the asset statistic
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        last_seen:
+          type:
+          - number
+          - 'null'
+          description: Time when the BLE asset was last observed, in epoch seconds
+          readOnly: true
+          examples:
+          - 1470417522
+        mac:
+          type: string
+          description: Bluetooth MAC address for the asset
+          examples:
+          - 6fa474be7ae5
+        manufacture:
+          type: string
+          description: Vendor name resolved from the BLE manufacturer company ID
+        map_id:
+          type: string
+          description: Map where the device belongs to
+          contentEncoding: uuid
+          examples:
+          - c45be59f-854d-4ef7-b782-dcd6309c84a9
+        mfg_company_id:
+          type: integer
+          description: BLE manufacturer company ID from advertisement
+          contentEncoding: int32
+          examples:
+          - 935
+        mfg_data:
+          type: string
+          description: Manufacturer-specific data (hex encoded)
+          examples:
+          - 648520a1020000
+        name:
+          type: string
+          description: Display label for the BLE asset
+          examples:
+          - 6fa474be7ae5
+        rssi:
+          type: integer
+          description: Signal strength (RSSI) of the loudest AP in dBm
+          contentEncoding: int32
+          examples:
+          - -60
+        rssizones:
+          type: array
+          items:
+            $ref: '#/components/schemas/asset_rssi_zone'
+          description: RSSI zones currently containing this asset
+        service_packets:
+          maxItems: 10
+          type: array
+          items:
+            $ref: '#/components/schemas/stats_asset_service_packet'
+          description: Service data advertisements observed from this asset
+        temperature:
+          type: number
+          description: Reported temperature value from the BLE asset
+          examples:
+          - 23
+        x:
+          type: number
+          description: Map X coordinate of the asset location, in pixels
+          examples:
+          - 280.19918140310193
+        y:
+          type: number
+          description: Map Y coordinate of the asset location, in pixels
+          examples:
+          - 420.2987721046529
+        zones:
+          type: array
+          items:
+            $ref: '#/components/schemas/asset_zone'
+          description: Map zones currently containing this asset
+      description: BLE asset location and advertisement statistics
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    count_result:
+      title: count_result
+      required:
+      - count
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of matching items for the distinct value or values in this result
+          contentEncoding: int32
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    stats_asset_service_packet:
+      title: stats_asset_service_packet
+      type: object
+      properties:
+        data:
+          type: string
+          description: Service data payload (hex encoded)
+          examples:
+          - '640'
+        last_rx_time:
+          type: integer
+          description: Unix timestamp when this service data was last received
+          contentEncoding: int32
+          examples:
+          - 1645855923
+        rx_cnt:
+          type: integer
+          description: Total number of times this service data was received
+          contentEncoding: int32
+          examples:
+          - 213065
+        uuid:
+          type: string
+          description: BLE service UUID advertised by the asset service packet
+          examples:
+          - 00003e10-0000-1000-8000-00805f9b34fb
+      description: Service data advertisement from a BLE asset
+    response_stats_assets:
+      title: response_stats_assets
+      required:
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Epoch timestamp, in seconds, for the end of the asset statistics search window
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of asset statistics records returned in this page
+          contentEncoding: int32
+        next:
+          type: string
+          description: URL for retrieving the next page of asset statistics results
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/stats_asset'
+          description: Asset statistics records matching the search filters
+        start:
+          type: integer
+          description: Epoch timestamp, in seconds, for the start of the asset statistics search window
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of asset statistics records matching the search filters across all pages
+          contentEncoding: int32
+      description: Paginated response for asset statistics search results
+    asset_zone:
+      title: asset_zone
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the zone
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        since:
+          type: number
+          description: Timestamp when the asset entered this zone
+      description: Map zone membership for an individual asset statistic
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    org_asset_count_distinct:
+      title: org_asset_count_distinct
+      enum:
+      - ibeacon_major
+      - ibeacon_minor
+      - ibeacon_uuid
+      - mac
+      - map_id
+      - site_id
+      type: string
+      description: 'enum: `ibeacon_major`, `ibeacon_minor`, `ibeacon_uuid`, `mac`, `map_id`, `site_id`'
+    response_count:
+      title: response_count
+      required:
+      - distinct
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        distinct:
+          type: string
+          description: Field used to group the count results
+        end:
+          type: integer
+          description: Search window end timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of distinct count results requested
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/count_result'
+          description: Count results grouped by the distinct field
+        start:
+          type: integer
+          description: Search window start timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of distinct result buckets returned
+          contentEncoding: int32
+      description: Distinct count response for time-bounded search results
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

@@ -1,0 +1,1166 @@
+openapi: 3.2.0
+info:
+  title: Mist Orgs SLEs API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Orgs SLEs
+  description: Org SLEs, or Service-Level Expectations, are metrics used to monitor and report on the user experience of a Wireless, Wired or Wan network.
+paths:
+  /api/v1/orgs/{org_id}/insights/sites-sle:
+    parameters: []
+    get:
+      tags:
+      - Orgs SLEs
+      summary: getOrgSitesSle
+      description: Return per-site Service-Level Expectation (SLE) scores for Wi-Fi, wired, or WAN service over the requested time window.
+      operationId: getOrgSitesSle
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: sle
+        in: query
+        description: 'Filter insights by SLE name. enum: `wan`, `wifi`, `wired`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/org_site_sle_type'
+          - description: 'Filter insights by SLE name. enum: `wan`, `wifi`, `wired`'
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: interval
+        in: query
+        description: Aggregation works by giving a time range plus interval (e.g. 1d, 1h, 10m) where aggregation function would be applied to.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 10m
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: page
+        in: query
+        description: Select the page number to return when using page-based pagination; starts at `1`
+        style: form
+        explode: true
+        schema:
+          minimum: 1
+          type: integer
+          contentEncoding: int32
+          default: 1
+      responses:
+        '200':
+          description: Example response
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_org_site_sle'
+                - description: Organization site SLE response for Wi-Fi, wired, or WAN
+                  examples:
+                  - '{"end":1651323600,"interval":3600,"limit":1,"page":2,"results":[{"application_health":0.8250000047942866,"gateway-health":1,"num_clients":65,"num_gateways":1,"site_id":"f5fcbee5-1234-5678-9101-1619ede87879","wan-link-health":0.9988471089272484}],"start":1651269600,"total":4}'
+                  - '{"end":1651323600,"interval":3600,"limit":1,"page":2,"results":[{"ap-availability":1,"ap-health":0.6735632316819553,"capacity":0.9802900770150502,"coverage":0.812181632387686,"num_aps":3,"num_clients":24,"roaming":1,"site_id":"f5fcbee5-1234-5678-9101-1619ede87879","successful-connect":0.9535864983932881,"throughput":1,"time-to-connect":0.9791666666666666}],"start":1651269600,"total":4}'
+                  - '{"end":1651323600,"interval":3600,"limit":1,"page":2,"results":[{"num_clients":6,"num_switches":1,"site_id":"f5fcbee5-1234-5678-9101-1619ede87879","switch-bandwidth":0.9669529756744796,"switch-health":1,"switch-throughput":1}],"start":1651269600,"total":4}'
+                contentMediaType: application/json
+              examples:
+                WAN SLE:
+                  value:
+                    end: 1651323600
+                    interval: 3600
+                    limit: 1
+                    page: 2
+                    results:
+                    - application_health: 0.8250000047942866
+                      gateway-health: 1
+                      num_clients: 65
+                      num_gateways: 1
+                      site_id: f5fcbee5-1234-5678-9101-1619ede87879
+                      wan-link-health: 0.9988471089272484
+                    start: 1651269600
+                    total: 4
+                Wi-Fi SLE:
+                  value:
+                    end: 1651323600
+                    interval: 3600
+                    limit: 1
+                    page: 2
+                    results:
+                    - ap-availability: 1
+                      ap-health: 0.6735632316819553
+                      capacity: 0.9802900770150502
+                      coverage: 0.812181632387686
+                      num_aps: 3
+                      num_clients: 24
+                      roaming: 1
+                      site_id: f5fcbee5-1234-5678-9101-1619ede87879
+                      successful-connect: 0.9535864983932881
+                      throughput: 1
+                      time-to-connect: 0.9791666666666666
+                    start: 1651269600
+                    total: 4
+                Wired SLE:
+                  value:
+                    end: 1651323600
+                    interval: 3600
+                    limit: 1
+                    page: 2
+                    results:
+                    - num_clients: 6
+                      num_switches: 1
+                      site_id: f5fcbee5-1234-5678-9101-1619ede87879
+                      switch-bandwidth: 0.9669529756744796
+                      switch-health: 1
+                      switch-throughput: 1
+                    start: 1651269600
+                    total: 4
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_org_site_sle'
+                - description: Organization site SLE response for Wi-Fi, wired, or WAN
+                  examples:
+                  - '{"end":1651323600,"interval":3600,"limit":1,"page":2,"results":[{"application_health":0.8250000047942866,"gateway-health":1,"num_clients":65,"num_gateways":1,"site_id":"f5fcbee5-1234-5678-9101-1619ede87879","wan-link-health":0.9988471089272484}],"start":1651269600,"total":4}'
+                  - '{"end":1651323600,"interval":3600,"limit":1,"page":2,"results":[{"ap-availability":1,"ap-health":0.6735632316819553,"capacity":0.9802900770150502,"coverage":0.812181632387686,"num_aps":3,"num_clients":24,"roaming":1,"site_id":"f5fcbee5-1234-5678-9101-1619ede87879","successful-connect":0.9535864983932881,"throughput":1,"time-to-connect":0.9791666666666666}],"start":1651269600,"total":4}'
+                  - '{"end":1651323600,"interval":3600,"limit":1,"page":2,"results":[{"num_clients":6,"num_switches":1,"site_id":"f5fcbee5-1234-5678-9101-1619ede87879","switch-bandwidth":0.9669529756744796,"switch-health":1,"switch-throughput":1}],"start":1651269600,"total":4}'
+                contentMediaType: application/vnd.api+json
+              examples:
+                WAN SLE:
+                  value:
+                    end: 1651323600
+                    interval: 3600
+                    limit: 1
+                    page: 2
+                    results:
+                    - application_health: 0.8250000047942866
+                      gateway-health: 1
+                      num_clients: 65
+                      num_gateways: 1
+                      site_id: f5fcbee5-1234-5678-9101-1619ede87879
+                      wan-link-health: 0.9988471089272484
+                    start: 1651269600
+                    total: 4
+                Wi-Fi SLE:
+                  value:
+                    end: 1651323600
+                    interval: 3600
+                    limit: 1
+                    page: 2
+                    results:
+                    - ap-availability: 1
+                      ap-health: 0.6735632316819553
+                      capacity: 0.9802900770150502
+                      coverage: 0.812181632387686
+                      num_aps: 3
+                      num_clients: 24
+                      roaming: 1
+                      site_id: f5fcbee5-1234-5678-9101-1619ede87879
+                      successful-connect: 0.9535864983932881
+                      throughput: 1
+                      time-to-connect: 0.9791666666666666
+                    start: 1651269600
+                    total: 4
+                Wired SLE:
+                  value:
+                    end: 1651323600
+                    interval: 3600
+                    limit: 1
+                    page: 2
+                    results:
+                    - num_clients: 6
+                      num_switches: 1
+                      site_id: f5fcbee5-1234-5678-9101-1619ede87879
+                      switch-bandwidth: 0.9669529756744796
+                      switch-health: 1
+                      switch-throughput: 1
+                    start: 1651269600
+                    total: 4
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/insights/{metric}:
+    parameters: []
+    get:
+      tags:
+      - Orgs SLEs
+      summary: getOrgSle
+      description: Return organization-level insight data for the selected metric, such as all or worst sites, Mist Edge insights, or other supported insight metrics, over the requested time window.
+      operationId: getOrgSle
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: metric
+        in: path
+        description: See [List Insight Metrics]($e/Constants%20Definitions/listInsightMetrics) for available metrics
+        required: true
+        schema:
+          type: string
+      - name: sle
+        in: query
+        description: See [List Insight Metrics]($e/Constants%20Definitions/listInsightMetrics) for more details
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: interval
+        in: query
+        description: Aggregation works by giving a time range plus interval (e.g. 1d, 1h, 10m) where aggregation function would be applied to.
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 10m
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/insight_metrics'
+                - description: Insight metric response for a requested time range and aggregation interval
+                  examples:
+                  - end: 1643706000
+                    interval: 3600
+                    limit: 100
+                    results:
+                    - ap-availability: 0.9919400860511628
+                      ap-health: 0.967607512909879
+                      capacity: 0.7484652273070254
+                      coverage: 0.91217567374857
+                      num_aps: 13
+                      num_clients: 12
+                      roaming: 0.991735537682683
+                      roaming-exp: 0.991735537682683
+                      site_id: ab0aca7a-d45c-469b-b3bb-4fe240642d0b
+                      successful-connect: 0.46052632135780236
+                      throughput: 0.6775702123846302
+                      time-to-connect: 0.9349112447196916
+                    - ap-availability: 0.9990384613092129
+                      ap-health: 0.48201754375507955
+                      capacity: 0.9702673450306101
+                      coverage: 0.8335392334930375
+                      num_aps: 1
+                      num_clients: 6
+                      roaming: 1
+                      roaming-exp: 1
+                      site_id: 49ff76e0-a283-4e7d-b38d-041f1e9aff3c
+                      successful-connect: 1
+                      throughput: 0
+                      time-to-connect: 1
+                    - ap-availability: 1
+                      ap-health: 0.982456140612301
+                      capacity: 1
+                      coverage: 0.9276041182442488
+                      num_aps: 2
+                      num_clients: 3
+                      roaming: 1
+                      roaming-exp: 1
+                      site_id: 9b9b48f1-15a4-459e-86cc-9cbec9005983
+                      successful-connect: 1
+                      throughput: 1
+                      time-to-connect: 0.8125
+                    - ap-availability: 0.9981132070973234
+                      ap-health: 0.9991228068084047
+                      capacity: 1
+                      coverage: 1
+                      num_aps: 1
+                      num_clients: 0
+                      roaming: 1
+                      roaming-exp: 1
+                      site_id: eb0e1671-7a6b-472b-94c3-c187dafe5274
+                      successful-connect: 1
+                      throughput: 0
+                      time-to-connect: 0.5
+                    start: 1643670000
+                contentMediaType: application/json
+              examples:
+                Worst Sites By Sle:
+                  value:
+                    end: 1643706000
+                    interval: 3600
+                    limit: 100
+                    results:
+                    - ap-availability: 0.9919400860511628
+                      ap-health: 0.967607512909879
+                      capacity: 0.7484652273070254
+                      coverage: 0.91217567374857
+                      num_aps: 13
+                      num_clients: 12
+                      roaming: 0.991735537682683
+                      roaming-exp: 0.991735537682683
+                      site_id: ab0aca7a-d45c-469b-b3bb-4fe240642d0b
+                      successful-connect: 0.46052632135780236
+                      throughput: 0.6775702123846302
+                      time-to-connect: 0.9349112447196916
+                    - ap-availability: 0.9990384613092129
+                      ap-health: 0.48201754375507955
+                      capacity: 0.9702673450306101
+                      coverage: 0.8335392334930375
+                      num_aps: 1
+                      num_clients: 6
+                      roaming: 1
+                      roaming-exp: 1
+                      site_id: 49ff76e0-a283-4e7d-b38d-041f1e9aff3c
+                      successful-connect: 1
+                      throughput: 0
+                      time-to-connect: 1
+                    - ap-availability: 1
+                      ap-health: 0.982456140612301
+                      capacity: 1
+                      coverage: 0.9276041182442488
+                      num_aps: 2
+                      num_clients: 3
+                      roaming: 1
+                      roaming-exp: 1
+                      site_id: 9b9b48f1-15a4-459e-86cc-9cbec9005983
+                      successful-connect: 1
+                      throughput: 1
+                      time-to-connect: 0.8125
+                    - ap-availability: 0.9981132070973234
+                      ap-health: 0.9991228068084047
+                      capacity: 1
+                      coverage: 1
+                      num_aps: 1
+                      num_clients: 0
+                      roaming: 1
+                      roaming-exp: 1
+                      site_id: eb0e1671-7a6b-472b-94c3-c187dafe5274
+                      successful-connect: 1
+                      throughput: 0
+                      time-to-connect: 0.5
+                    start: 1643670000
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/insight_metrics'
+                - description: Insight metric response for a requested time range and aggregation interval
+                  examples:
+                  - end: 1643706000
+                    interval: 3600
+                    limit: 100
+                    results:
+                    - ap-availability: 0.9919400860511628
+                      ap-health: 0.967607512909879
+                      capacity: 0.7484652273070254
+                      coverage: 0.91217567374857
+                      num_aps: 13
+                      num_clients: 12
+                      roaming: 0.991735537682683
+                      roaming-exp: 0.991735537682683
+                      site_id: ab0aca7a-d45c-469b-b3bb-4fe240642d0b
+                      successful-connect: 0.46052632135780236
+                      throughput: 0.6775702123846302
+                      time-to-connect: 0.9349112447196916
+                    - ap-availability: 0.9990384613092129
+                      ap-health: 0.48201754375507955
+                      capacity: 0.9702673450306101
+                      coverage: 0.8335392334930375
+                      num_aps: 1
+                      num_clients: 6
+                      roaming: 1
+                      roaming-exp: 1
+                      site_id: 49ff76e0-a283-4e7d-b38d-041f1e9aff3c
+                      successful-connect: 1
+                      throughput: 0
+                      time-to-connect: 1
+                    - ap-availability: 1
+                      ap-health: 0.982456140612301
+                      capacity: 1
+                      coverage: 0.9276041182442488
+                      num_aps: 2
+                      num_clients: 3
+                      roaming: 1
+                      roaming-exp: 1
+                      site_id: 9b9b48f1-15a4-459e-86cc-9cbec9005983
+                      successful-connect: 1
+                      throughput: 1
+                      time-to-connect: 0.8125
+                    - ap-availability: 0.9981132070973234
+                      ap-health: 0.9991228068084047
+                      capacity: 1
+                      coverage: 1
+                      num_aps: 1
+                      num_clients: 0
+                      roaming: 1
+                      roaming-exp: 1
+                      site_id: eb0e1671-7a6b-472b-94c3-c187dafe5274
+                      successful-connect: 1
+                      throughput: 0
+                      time-to-connect: 0.5
+                    start: 1643670000
+                contentMediaType: application/vnd.api+json
+              examples:
+                Worst Sites By Sle:
+                  value:
+                    end: 1643706000
+                    interval: 3600
+                    limit: 100
+                    results:
+                    - ap-availability: 0.9919400860511628
+                      ap-health: 0.967607512909879
+                      capacity: 0.7484652273070254
+                      coverage: 0.91217567374857
+                      num_aps: 13
+                      num_clients: 12
+                      roaming: 0.991735537682683
+                      roaming-exp: 0.991735537682683
+                      site_id: ab0aca7a-d45c-469b-b3bb-4fe240642d0b
+                      successful-connect: 0.46052632135780236
+                      throughput: 0.6775702123846302
+                      time-to-connect: 0.9349112447196916
+                    - ap-availability: 0.9990384613092129
+                      ap-health: 0.48201754375507955
+                      capacity: 0.9702673450306101
+                      coverage: 0.8335392334930375
+                      num_aps: 1
+                      num_clients: 6
+                      roaming: 1
+                      roaming-exp: 1
+                      site_id: 49ff76e0-a283-4e7d-b38d-041f1e9aff3c
+                      successful-connect: 1
+                      throughput: 0
+                      time-to-connect: 1
+                    - ap-availability: 1
+                      ap-health: 0.982456140612301
+                      capacity: 1
+                      coverage: 0.9276041182442488
+                      num_aps: 2
+                      num_clients: 3
+                      roaming: 1
+                      roaming-exp: 1
+                      site_id: 9b9b48f1-15a4-459e-86cc-9cbec9005983
+                      successful-connect: 1
+                      throughput: 1
+                      time-to-connect: 0.8125
+                    - ap-availability: 0.9981132070973234
+                      ap-health: 0.9991228068084047
+                      capacity: 1
+                      coverage: 1
+                      num_aps: 1
+                      num_clients: 0
+                      roaming: 1
+                      roaming-exp: 1
+                      site_id: eb0e1671-7a6b-472b-94c3-c187dafe5274
+                      successful-connect: 1
+                      throughput: 0
+                      time-to-connect: 0.5
+                    start: 1643670000
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    insight_metrics_results_item:
+      anyOf:
+      - type: number
+      - type: object
+      description: Insight metric result item, returned either as a number or an object depending on the requested metric
+    org_site_sle_type:
+      title: org_site_sle_type
+      enum:
+      - wan
+      - wifi
+      - wired
+      type: string
+      description: 'enum: `wan`, `wifi`, `wired`'
+    org_site_sle_wan_result:
+      title: org_site_sle_wan_result
+      required:
+      - gateway-health
+      - site_id
+      type: object
+      properties:
+        application_health:
+          type: number
+          description: Application health SLE score for this site
+        gateway-health:
+          type: number
+          description: Gateway health SLE score for this site
+        num_clients:
+          type: number
+          description: Number of WAN clients included in this site result
+        num_gateways:
+          type: number
+          description: Number of gateways included in this site result
+        site_id:
+          type: string
+          description: Site associated with this WAN SLE result
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        wan-link-health:
+          type: number
+          description: WAN link health SLE score for this site
+      description: WAN SLE scores and counts for one site
+    org_site_sle_wifi:
+      title: org_site_sle_wifi
+      required:
+      - end
+      - interval
+      - limit
+      - page
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        end:
+          type: number
+          description: Query end timestamp for the returned SLE window
+        interval:
+          type: integer
+          description: Aggregation interval, in seconds, used for the SLE query
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of site results returned per page
+          contentEncoding: int32
+        page:
+          type: integer
+          description: Result page number returned by the query
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/org_site_sle_wifi_result'
+          description: Wi-Fi SLE results for the current page
+        start:
+          type: number
+          description: Query start timestamp for the returned SLE window
+        total:
+          type: integer
+          description: Number of matching site results available for the query
+          contentEncoding: int32
+      description: Paginated Wi-Fi SLE results for organization sites
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    org_site_wan_wifi:
+      title: org_site_wan_wifi
+      required:
+      - end
+      - interval
+      - limit
+      - page
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        end:
+          type: number
+          description: Query end timestamp for the returned SLE window
+        interval:
+          type: integer
+          description: Aggregation interval, in seconds, used for the SLE query
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of site results returned per page
+          contentEncoding: int32
+        page:
+          type: integer
+          description: Result page number returned by the query
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/org_site_sle_wan_result'
+          description: WAN SLE results for the current page
+        start:
+          type: number
+          description: Query start timestamp for the returned SLE window
+        total:
+          type: integer
+          description: Number of matching site results available for the query
+          contentEncoding: int32
+      description: Paginated WAN SLE results for organization sites
+    org_site_sle_wired_result:
+      title: org_site_sle_wired_result
+      required:
+      - site_id
+      - switch-health
+      type: object
+      properties:
+        num_clients:
+          type: number
+          description: Number of wired clients included in this site result
+        num_switches:
+          type: number
+          description: Number of switches included in this site result
+        site_id:
+          type: string
+          description: Site associated with this wired SLE result
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        switch-bandwidth:
+          type: number
+          description: Switch bandwidth SLE score for this site
+        switch-health:
+          type: number
+          description: Switch health SLE score for this site
+        switch-throughput:
+          type: number
+          description: Switch throughput SLE score for this site
+      description: Wired SLE scores and counts for one site
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    org_site_wired_wifi:
+      title: org_site_wired_wifi
+      required:
+      - end
+      - interval
+      - limit
+      - page
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        end:
+          type: number
+          description: Query end timestamp for the returned SLE window
+        interval:
+          type: integer
+          description: Aggregation interval, in seconds, used for the SLE query
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of site results returned per page
+          contentEncoding: int32
+        page:
+          type: integer
+          description: Result page number returned by the query
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/org_site_sle_wired_result'
+          description: Wired SLE results for the current page
+        start:
+          type: number
+          description: Query start timestamp for the returned SLE window
+        total:
+          type: integer
+          description: Number of matching site results available for the query
+          contentEncoding: int32
+      description: Paginated wired SLE results for organization sites
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_org_site_sle:
+      oneOf:
+      - $ref: '#/components/schemas/org_site_sle_wifi'
+      - $ref: '#/components/schemas/org_site_wired_wifi'
+      - $ref: '#/components/schemas/org_site_wan_wifi'
+      description: Organization site SLE response for Wi-Fi, wired, or WAN
+    insight_metrics:
+      title: insight_metrics
+      required:
+      - end
+      - interval
+      - start
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Window end timestamp for the returned insight metrics
+          contentEncoding: int32
+        interval:
+          type: integer
+          description: Aggregation interval used for the metric results
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of insight metric result items returned
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/insight_metrics_results_item'
+          description: Metric result values for the requested insight metric
+        start:
+          type: integer
+          description: Window start timestamp for the returned insight metrics
+          contentEncoding: int32
+      description: Insight metric response for a requested time range and aggregation interval
+    org_site_sle_wifi_result:
+      title: org_site_sle_wifi_result
+      required:
+      - ap-availability
+      - site_id
+      type: object
+      properties:
+        ap-availability:
+          type: number
+          description: AP availability SLE score for this site
+        ap-health:
+          type: number
+          description: AP health SLE score for this site
+        capacity:
+          type: number
+          description: Wi-Fi capacity SLE score for this site
+        coverage:
+          type: number
+          description: Wi-Fi coverage SLE score for this site
+        num_aps:
+          type: number
+          description: Number of APs included in this site result
+        num_clients:
+          type: number
+          description: Number of Wi-Fi clients included in this site result
+        roaming:
+          type: number
+          description: Wi-Fi roaming SLE score for this site
+        site_id:
+          type: string
+          description: Site associated with this Wi-Fi SLE result
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        successful-connect:
+          type: number
+          description: Successful connection SLE score for this site
+        throughput:
+          type: number
+          description: Wi-Fi throughput SLE score for this site
+        time-to-connect:
+          type: number
+          description: Client connection-time SLE score for this site
+      description: Wi-Fi SLE scores and counts for one site
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

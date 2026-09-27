@@ -1,0 +1,486 @@
+openapi: 3.2.0
+info:
+  title: Mist Sites VPNs API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Sites VPNs
+  description: API Calls to retrieve the list of Org VPNs configuration available for the Site
+paths:
+  /api/v1/sites/{site_id}/vpns/derived:
+    parameters: []
+    get:
+      tags:
+      - Sites VPNs
+      summary: listSiteVpnsDerived
+      description: Get the list of derived VPNs for a site
+      operationId: listSiteVpnsDerived
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: resolve
+        in: query
+        description: Whether resolve the site variables
+        style: form
+        explode: true
+        schema:
+          type: boolean
+          default: false
+          examples:
+          - true
+      responses:
+        '200':
+          description: Example response
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/vpn'
+                description: VPN records returned by a list response
+                examples:
+                - - name: string
+                    paths:
+                      property1:
+                        bfd_profile: broadband
+                        ip: string
+                      property2:
+                        bfd_profile: lte
+                        ip: string
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                  - name: string
+                    paths:
+                      property1:
+                        bfd_profile: broadband
+                        ip: string
+                      property2:
+                        bfd_profile: lte
+                        ip: string
+            application/vnd.api+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/vpn'
+                description: VPN records returned by a list response
+                examples:
+                - - name: string
+                    paths:
+                      property1:
+                        bfd_profile: broadband
+                        ip: string
+                      property2:
+                        bfd_profile: lte
+                        ip: string
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                  - name: string
+                    paths:
+                      property1:
+                        bfd_profile: broadband
+                        ip: string
+                      property2:
+                        bfd_profile: lte
+                        ip: string
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    vpn_path_selection2:
+      title: vpn_path_selection2
+      type: object
+      properties:
+        strategy:
+          allOf:
+          - $ref: '#/components/schemas/vpn_path_selection_strategy2'
+          - description: 'Path selection strategy for a hub-and-spoke VPN. enum: `disabled`, `simple`, `manual`.'
+      description: Path selection settings used when `type`==`hub_spoke`
+    vpn_path_bfd_profile2:
+      title: vpn_path_bfd_profile2
+      enum:
+      - broadband
+      - lte
+      type: string
+      description: 'BFD profile used for this VPN path. enum: `broadband`, `lte`.'
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    vpn_path:
+      title: vpn_path
+      type: object
+      properties:
+        bfd_profile:
+          allOf:
+          - $ref: '#/components/schemas/vpn_path_bfd_profile2'
+          - description: 'BFD profile used for this VPN path. enum: `broadband`, `lte`.'
+        bfd_use_tunnel_mode:
+          type: boolean
+          description: If `type`==`mesh` and for SSR only, whether to use tunnel mode
+          default: false
+        ip:
+          type: string
+          description: Source IP address for this VPN path, if different from the WAN port IP
+        peer_paths:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/vpn_path_peer_paths_peer'
+          description: Peer path preferences used when `type`==`mesh`
+        pod:
+          maximum: 128
+          minimum: 1
+          type: integer
+          description: Grouping index used to place this VPN path into a pod
+          contentEncoding: int32
+          default: 1
+          examples:
+          - 2
+        traffic_shaping:
+          allOf:
+          - $ref: '#/components/schemas/vpn_path_traffic_shaping2'
+          - description: Traffic shaping settings applied to this VPN path
+      description: VPN path settings used by an organization VPN
+    vpn_path_traffic_shaping2:
+      title: vpn_path_traffic_shaping2
+      type: object
+      properties:
+        class_percentage:
+          maxItems: 4
+          minItems: 4
+          type: array
+          items:
+            type: integer
+            contentEncoding: int32
+          description: Bandwidth percentages for high, medium, low, and best-effort traffic classes
+          default:
+          - 80
+          - 10
+          - 9
+          - 1
+        enabled:
+          type: boolean
+          description: Whether traffic shaping is enabled for this VPN path
+        max_tx_kbps:
+          type:
+          - integer
+          - 'null'
+          description: Maximum transmit rate for this VPN path, in Kbps; `null` means no explicit limit
+          contentEncoding: int32
+      description: Traffic shaping settings applied to this VPN path
+    vpn_path_selection_strategy2:
+      title: vpn_path_selection_strategy2
+      enum:
+      - disabled
+      - simple
+      - manual
+      type: string
+      description: 'Path selection strategy for a hub-and-spoke VPN. enum: `disabled`, `simple`, `manual`.'
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    vpn:
+      title: vpn
+      required:
+      - name
+      - paths
+      type: object
+      properties:
+        created_time:
+          type: number
+          description: Epoch timestamp when the VPN configuration was created
+          readOnly: true
+        id:
+          type: string
+          description: Unique identifier of the VPN configuration
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        modified_time:
+          type: number
+          description: Epoch timestamp when the VPN configuration was last modified
+          readOnly: true
+        name:
+          minLength: 1
+          type: string
+          description: Display name of the VPN configuration
+        org_id:
+          type: string
+          description: Organization that owns the VPN configuration
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        path_selection:
+          allOf:
+          - $ref: '#/components/schemas/vpn_path_selection2'
+          - description: Path selection settings used when `type`==`hub_spoke`
+        paths:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/vpn_path'
+          description: VPN path definitions keyed by VPN name for `hub_spoke` mode or interface name for `mesh` mode
+        type:
+          allOf:
+          - $ref: '#/components/schemas/vpn_mode2'
+          - description: 'VPN topology mode for this configuration. enum: `hub_spoke`, `mesh`.'
+      description: Organization VPN overlay configuration
+    vpn_mode2:
+      title: vpn_mode2
+      enum:
+      - hub_spoke
+      - mesh
+      type: string
+      description: 'VPN topology mode for this configuration. enum: `hub_spoke`, `mesh`.'
+    vpn_path_peer_paths_peer:
+      title: vpn_path_peer_paths_peer
+      type: object
+      properties:
+        preference:
+          type: integer
+          description: Lower numeric value makes this outgoing WAN path more preferred
+          contentEncoding: int32
+      description: Peer path preference settings for mesh VPN routing
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

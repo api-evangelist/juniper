@@ -1,0 +1,1838 @@
+openapi: 3.2.0
+info:
+  title: Mist Sites Rfdiags API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Sites Rfdiags
+  description: 'Rf Diags is a feature in Juniper Mist location services that allows users to replay recorded sessions of the RF (radio frequency) environment.
+
+
+    It enables users to gain an understanding of current issues, troubleshoot problems, and review recordings for further analysis or to share with customer support.'
+paths:
+  /api/v1/sites/{site_id}/rfdiags:
+    parameters: []
+    get:
+      tags:
+      - Sites Rfdiags
+      summary: getSiteSiteRfdiagRecording
+      description: List RF Glass Recording
+      operationId: getSiteSiteRfdiagRecording
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: page
+        in: query
+        description: Select the page number to return when using page-based pagination; starts at `1`
+        style: form
+        explode: true
+        schema:
+          minimum: 1
+          type: integer
+          contentEncoding: int32
+          default: 1
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/rf_diag_info_item'
+                description: List response containing RF diagnostic recording entry arrays
+                examples:
+                - - - asset_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      asset_name: string
+                      client_name: string
+                      duration: 0
+                      end_time: 0
+                      frame_count: 0
+                      id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      mac: string
+                      map_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      name: string
+                      next: string
+                      raw_events: string
+                      ready: true
+                      sdkclient_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      sdkclient_name: string
+                      sdkclient_uuid: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      start_time: 0
+                      type: sdkclient
+                      url: string
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                  - - asset_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      asset_name: string
+                      client_name: string
+                      duration: 0
+                      end_time: 0
+                      frame_count: 0
+                      id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      mac: string
+                      map_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      name: string
+                      next: string
+                      raw_events: string
+                      ready: true
+                      sdkclient_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      sdkclient_name: string
+                      sdkclient_uuid: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      start_time: 0
+                      type: sdkclient
+                      url: string
+            application/vnd.api+json:
+              schema:
+                type: array
+                items:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/rf_diag_info_item'
+                description: List response containing RF diagnostic recording entry arrays
+                examples:
+                - - - asset_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      asset_name: string
+                      client_name: string
+                      duration: 0
+                      end_time: 0
+                      frame_count: 0
+                      id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      mac: string
+                      map_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      name: string
+                      next: string
+                      raw_events: string
+                      ready: true
+                      sdkclient_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      sdkclient_name: string
+                      sdkclient_uuid: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      start_time: 0
+                      type: sdkclient
+                      url: string
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                  - - asset_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      asset_name: string
+                      client_name: string
+                      duration: 0
+                      end_time: 0
+                      frame_count: 0
+                      id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      mac: string
+                      map_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      name: string
+                      next: string
+                      raw_events: string
+                      ready: true
+                      sdkclient_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      sdkclient_name: string
+                      sdkclient_uuid: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                      start_time: 0
+                      type: sdkclient
+                      url: string
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    post:
+      tags:
+      - Sites Rfdiags
+      summary: startSiteRecording
+      description: Start RF Glass Recording
+      operationId: startSiteRecording
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/rf_diag'
+              - description: Request Body
+              contentMediaType: application/json
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                uniqueItems: true
+                type: array
+                items:
+                  $ref: '#/components/schemas/rf_diag_info_item'
+                description: RF diagnostic recording response entries
+                examples:
+                - - asset_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    asset_name: string
+                    client_name: string
+                    duration: 0
+                    end_time: 0
+                    frame_count: 0
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    mac: string
+                    map_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    name: string
+                    next: string
+                    raw_events: string
+                    ready: true
+                    sdkclient_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    sdkclient_name: string
+                    sdkclient_uuid: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    start_time: 0
+                    type: sdkclient
+                    url: string
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                  - asset_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    asset_name: string
+                    client_name: string
+                    duration: 0
+                    end_time: 0
+                    frame_count: 0
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    mac: string
+                    map_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    name: string
+                    next: string
+                    raw_events: string
+                    ready: true
+                    sdkclient_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    sdkclient_name: string
+                    sdkclient_uuid: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    start_time: 0
+                    type: sdkclient
+                    url: string
+            application/vnd.api+json:
+              schema:
+                uniqueItems: true
+                type: array
+                items:
+                  $ref: '#/components/schemas/rf_diag_info_item'
+                description: RF diagnostic recording response entries
+                examples:
+                - - asset_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    asset_name: string
+                    client_name: string
+                    duration: 0
+                    end_time: 0
+                    frame_count: 0
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    mac: string
+                    map_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    name: string
+                    next: string
+                    raw_events: string
+                    ready: true
+                    sdkclient_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    sdkclient_name: string
+                    sdkclient_uuid: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    start_time: 0
+                    type: sdkclient
+                    url: string
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                  - asset_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    asset_name: string
+                    client_name: string
+                    duration: 0
+                    end_time: 0
+                    frame_count: 0
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    mac: string
+                    map_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    name: string
+                    next: string
+                    raw_events: string
+                    ready: true
+                    sdkclient_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    sdkclient_name: string
+                    sdkclient_uuid: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    start_time: 0
+                    type: sdkclient
+                    url: string
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/rfdiags/{rfdiag_id}:
+    parameters: []
+    delete:
+      tags:
+      - Sites Rfdiags
+      summary: deleteSiteRfdiagRecording
+      description: Delete Recording
+      operationId: deleteSiteRfdiagRecording
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: rfdiag_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    get:
+      tags:
+      - Sites Rfdiags
+      summary: getSiteRfdiagRecording
+      description: Get RF Diag Recording Details
+      operationId: getSiteRfdiagRecording
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: rfdiag_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                uniqueItems: true
+                type: array
+                items:
+                  $ref: '#/components/schemas/rf_diag_info_item'
+                description: RF diagnostic recording response entries
+                examples:
+                - - asset_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    asset_name: string
+                    client_name: string
+                    duration: 0
+                    end_time: 0
+                    frame_count: 0
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    mac: string
+                    map_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    name: string
+                    next: string
+                    raw_events: string
+                    ready: true
+                    sdkclient_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    sdkclient_name: string
+                    sdkclient_uuid: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    start_time: 0
+                    type: sdkclient
+                    url: string
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                  - asset_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    asset_name: string
+                    client_name: string
+                    duration: 0
+                    end_time: 0
+                    frame_count: 0
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    mac: string
+                    map_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    name: string
+                    next: string
+                    raw_events: string
+                    ready: true
+                    sdkclient_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    sdkclient_name: string
+                    sdkclient_uuid: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    start_time: 0
+                    type: sdkclient
+                    url: string
+            application/vnd.api+json:
+              schema:
+                uniqueItems: true
+                type: array
+                items:
+                  $ref: '#/components/schemas/rf_diag_info_item'
+                description: RF diagnostic recording response entries
+                examples:
+                - - asset_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    asset_name: string
+                    client_name: string
+                    duration: 0
+                    end_time: 0
+                    frame_count: 0
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    mac: string
+                    map_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    name: string
+                    next: string
+                    raw_events: string
+                    ready: true
+                    sdkclient_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    sdkclient_name: string
+                    sdkclient_uuid: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    start_time: 0
+                    type: sdkclient
+                    url: string
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                  - asset_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    asset_name: string
+                    client_name: string
+                    duration: 0
+                    end_time: 0
+                    frame_count: 0
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    mac: string
+                    map_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    name: string
+                    next: string
+                    raw_events: string
+                    ready: true
+                    sdkclient_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    sdkclient_name: string
+                    sdkclient_uuid: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    start_time: 0
+                    type: sdkclient
+                    url: string
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    put:
+      tags:
+      - Sites Rfdiags
+      summary: updateSiteRfdiagRecording
+      description: Update Recording
+      operationId: updateSiteRfdiagRecording
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: rfdiag_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/rf_diag'
+              - description: Request Body
+              contentMediaType: application/json
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                uniqueItems: true
+                type: array
+                items:
+                  $ref: '#/components/schemas/rf_diag_info_item'
+                description: RF diagnostic recording response entries
+                examples:
+                - - asset_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    asset_name: string
+                    client_name: string
+                    duration: 0
+                    end_time: 0
+                    frame_count: 0
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    mac: string
+                    map_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    name: string
+                    next: string
+                    raw_events: string
+                    ready: true
+                    sdkclient_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    sdkclient_name: string
+                    sdkclient_uuid: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    start_time: 0
+                    type: sdkclient
+                    url: string
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                  - asset_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    asset_name: string
+                    client_name: string
+                    duration: 0
+                    end_time: 0
+                    frame_count: 0
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    mac: string
+                    map_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    name: string
+                    next: string
+                    raw_events: string
+                    ready: true
+                    sdkclient_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    sdkclient_name: string
+                    sdkclient_uuid: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    start_time: 0
+                    type: sdkclient
+                    url: string
+            application/vnd.api+json:
+              schema:
+                uniqueItems: true
+                type: array
+                items:
+                  $ref: '#/components/schemas/rf_diag_info_item'
+                description: RF diagnostic recording response entries
+                examples:
+                - - asset_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    asset_name: string
+                    client_name: string
+                    duration: 0
+                    end_time: 0
+                    frame_count: 0
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    mac: string
+                    map_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    name: string
+                    next: string
+                    raw_events: string
+                    ready: true
+                    sdkclient_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    sdkclient_name: string
+                    sdkclient_uuid: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    start_time: 0
+                    type: sdkclient
+                    url: string
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                  - asset_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    asset_name: string
+                    client_name: string
+                    duration: 0
+                    end_time: 0
+                    frame_count: 0
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    mac: string
+                    map_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    name: string
+                    next: string
+                    raw_events: string
+                    ready: true
+                    sdkclient_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    sdkclient_name: string
+                    sdkclient_uuid: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    start_time: 0
+                    type: sdkclient
+                    url: string
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/rfdiags/{rfdiag_id}/download:
+    parameters: []
+    get:
+      tags:
+      - Sites Rfdiags
+      summary: downloadSiteRfdiagRecording
+      description: 'Download Recording
+
+        Download raw_events blob'
+      operationId: downloadSiteRfdiagRecording
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: rfdiag_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: string
+                description: File
+                contentEncoding: base64
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                type: string
+                description: File
+                contentEncoding: base64
+                contentMediaType: application/vnd.api+json
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/rfdiags/{rfdiag_id}/stop:
+    parameters: []
+    post:
+      tags:
+      - Sites Rfdiags
+      summary: stopSiteRfdiagRecording
+      description: If the recording session is active for the given rfdiag_id, it will finish the recording. duration and end_time will be updated to reflect the correct values.
+      operationId: stopSiteRfdiagRecording
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: rfdiag_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    rf_diag_info_item:
+      title: rf_diag_info_item
+      required:
+      - duration
+      - end_time
+      - frame_count
+      - map_id
+      - name
+      - raw_events
+      - ready
+      - start_time
+      - type
+      - url
+      type: object
+      properties:
+        asset_id:
+          type: string
+          description: If `type`==`asset`, id of the asset
+          contentEncoding: uuid
+        asset_name:
+          type: string
+          description: If `type`==`asset`, name of the asset
+        client_name:
+          type: string
+          description: If `type`==`client`, hostname of the client
+        duration:
+          type: integer
+          description: recording length in seconds, max is 120
+          contentEncoding: int32
+        end_time:
+          type: integer
+          description: Timestamp of end of recording
+          contentEncoding: int32
+        frame_count:
+          type: integer
+          description: Number of frames in the output
+          contentEncoding: int32
+        id:
+          type: string
+          description: Unique value identifying the RF diagnostic recording
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        mac:
+          type: string
+          description: If `type`==`client` or `asset`, MAC address of the recorded device
+        map_id:
+          type: string
+          description: Map identifier associated with the recording
+          contentEncoding: uuid
+        name:
+          type: string
+          description: Recording name returned for the RF diagnostic recording
+        next:
+          type: string
+          description: Optional. id of the next recoding if present. Only valid for site survey.
+        raw_events:
+          type: string
+          description: URL to a JSON file that contains array of raw location diag events
+        ready:
+          type: boolean
+          description: Whether it’s ready for playback
+        sdkclient_id:
+          type: string
+          description: If `type`==`sdkclient`, sdkclient_id of this recording
+          contentEncoding: uuid
+        sdkclient_name:
+          type: string
+          description: If `type`==`sdkclient`, name of the sdkclient
+        sdkclient_uuid:
+          type: string
+          description: If `type`==`sdkclient`, device_id of sdkclient
+          contentEncoding: uuid
+        start_time:
+          type: integer
+          description: Timestamp of the recording (the start)
+          contentEncoding: int32
+        type:
+          allOf:
+          - $ref: '#/components/schemas/rf_client_type2'
+          - description: 'Target device category for the recording. enum: `asset`, `client`, `sdkclient`.'
+        url:
+          type: string
+          description: JSON file URL for frame data captured by the recording
+      description: RF diagnostic recording metadata and output links
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    rf_client_type2:
+      title: rf_client_type2
+      enum:
+      - asset
+      - client
+      - sdkclient
+      type: string
+      description: 'Target device category for the recording. enum: `asset`, `client`, `sdkclient`.'
+    rf_client_type1:
+      title: rf_client_type1
+      enum:
+      - asset
+      - client
+      - sdkclient
+      type: string
+      description: 'Target device category for the RF diagnostic recording. enum: `asset`, `client`, `sdkclient`.'
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    rf_diag:
+      title: rf_diag
+      required:
+      - name
+      - type
+      type: object
+      properties:
+        duration:
+          maximum: 180
+          type: integer
+          description: Recording length, in seconds; maximum and default are 180
+          contentEncoding: int32
+          default: 180
+        mac:
+          type: string
+          description: If `type`==`client` or `asset`, MAC address of the device being recorded
+        name:
+          type: string
+          description: Recording name; the SDK client name is a good default for SDK-client recordings
+        sdkclient_id:
+          type: string
+          description: If `type`==`sdkclient`, SDK client identifier for this recording
+          contentEncoding: uuid
+        type:
+          allOf:
+          - $ref: '#/components/schemas/rf_client_type1'
+          - description: 'Target device category for the RF diagnostic recording. enum: `asset`, `client`, `sdkclient`.'
+      description: RF diagnostic recording request
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

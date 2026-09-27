@@ -1,0 +1,3166 @@
+openapi: 3.2.0
+info:
+  title: Mist Orgs Licenses API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Orgs Licenses
+  description: Licenses are a type of service or access that customers can purchase for various features or services offered by a company.
+paths:
+  /api/v1/orgs/{org_id}/claim:
+    parameters: []
+    post:
+      tags:
+      - Orgs Licenses
+      summary: claimOrgLicense
+      description: Synchronously claims licenses and/or inventory devices from an activation code. All inventory devices are claimed immediately during the request.
+      operationId: claimOrgLicense
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/claim_activation'
+              - description: Request Body
+                examples:
+                - code: ZHT3K-H36DT-MG85D-M61AC
+                  type: all
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  code: ZHT3K-H36DT-MG85D-M61AC
+                  type: all
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_claim_license'
+                - description: Result of claiming licenses or activation codes
+                  examples:
+                  - inventory_added:
+                    - mac: 5c5b35000018
+                      magic: 6JG8EPTFV2A9Z2N
+                      model: AP41
+                      serial: FXLH2015150025
+                      type: ap
+                    inventory_duplicated:
+                    - mac: 5c5b35000012
+                      magic: DVH4VSNMSZPDXBR
+                      model: AP41
+                      serial: FXLH2015150027
+                      type: ap
+                    inventory_pending:
+                    - mac: 5c5b35000012
+                    license_added:
+                    - end: 1520380800
+                      quantity: 180
+                      start: 1504828800
+                      type: SUB-MAN
+                    - end: 1520380800
+                      quantity: 120
+                      start: 1504828800
+                      type: SUB-LOC
+                    license_duplicated:
+                    - end: 1520380800
+                      quantity: 180
+                      start: 1504828800
+                      type: SUB-MAN
+                    license_error:
+                    - order: '00000464'
+                      reason: ''
+                contentMediaType: application/json
+              examples:
+                Licenses Successfully Claimed And Applied:
+                  value:
+                    inventory_added:
+                    - mac: 5c5b35000018
+                      magic: 6JG8EPTFV2A9Z2N
+                      model: AP41
+                      serial: FXLH2015150025
+                      type: ap
+                    inventory_duplicated:
+                    - mac: 5c5b35000012
+                      magic: DVH4VSNMSZPDXBR
+                      model: AP41
+                      serial: FXLH2015150027
+                      type: ap
+                    inventory_pending:
+                    - mac: 5c5b35000012
+                    license_added:
+                    - end: 1520380800
+                      quantity: 180
+                      start: 1504828800
+                      type: SUB-MAN
+                    - end: 1520380800
+                      quantity: 120
+                      start: 1504828800
+                      type: SUB-LOC
+                    license_duplicated:
+                    - end: 1520380800
+                      quantity: 180
+                      start: 1504828800
+                      type: SUB-MAN
+                    license_error:
+                    - order: '00000464'
+                      reason: ''
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_claim_license'
+                - description: Result of claiming licenses or activation codes
+                  examples:
+                  - inventory_added:
+                    - mac: 5c5b35000018
+                      magic: 6JG8EPTFV2A9Z2N
+                      model: AP41
+                      serial: FXLH2015150025
+                      type: ap
+                    inventory_duplicated:
+                    - mac: 5c5b35000012
+                      magic: DVH4VSNMSZPDXBR
+                      model: AP41
+                      serial: FXLH2015150027
+                      type: ap
+                    inventory_pending:
+                    - mac: 5c5b35000012
+                    license_added:
+                    - end: 1520380800
+                      quantity: 180
+                      start: 1504828800
+                      type: SUB-MAN
+                    - end: 1520380800
+                      quantity: 120
+                      start: 1504828800
+                      type: SUB-LOC
+                    license_duplicated:
+                    - end: 1520380800
+                      quantity: 180
+                      start: 1504828800
+                      type: SUB-MAN
+                    license_error:
+                    - order: '00000464'
+                      reason: ''
+                contentMediaType: application/vnd.api+json
+              examples:
+                Licenses Successfully Claimed And Applied:
+                  value:
+                    inventory_added:
+                    - mac: 5c5b35000018
+                      magic: 6JG8EPTFV2A9Z2N
+                      model: AP41
+                      serial: FXLH2015150025
+                      type: ap
+                    inventory_duplicated:
+                    - mac: 5c5b35000012
+                      magic: DVH4VSNMSZPDXBR
+                      model: AP41
+                      serial: FXLH2015150027
+                      type: ap
+                    inventory_pending:
+                    - mac: 5c5b35000012
+                    license_added:
+                    - end: 1520380800
+                      quantity: 180
+                      start: 1504828800
+                      type: SUB-MAN
+                    - end: 1520380800
+                      quantity: 120
+                      start: 1504828800
+                      type: SUB-LOC
+                    license_duplicated:
+                    - end: 1520380800
+                      quantity: 180
+                      start: 1504828800
+                      type: SUB-MAN
+                    license_error:
+                    - order: '00000464'
+                      reason: ''
+        '400':
+          description: Invalid key (or already used)
+          headers: {}
+          content: {}
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/claim/status:
+    parameters: []
+    get:
+      tags:
+      - Orgs Licenses
+      summary: GetOrgLicenseAsyncClaimStatus
+      description: Return processing status for an asynchronous organization license claim, optionally including per-device license details.
+      operationId: GetOrgLicenseAsyncClaimStatus
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: detail
+        in: query
+        description: Whether to include license details in the claim status response
+        style: form
+        explode: true
+        schema:
+          type: boolean
+          examples:
+          - true
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_async_license'
+                - description: Asynchronous license claim progress response
+                  examples:
+                  - completed:
+                    - '000000000022'
+                    - '000000000011'
+                    details:
+                    - mac: '000000000022'
+                      status: added
+                      timestamp: 1709598053
+                    failed: 0
+                    incompleted: []
+                    processed: 2
+                    scheduled_at: 1709598052
+                    status: done
+                    succeed: 2
+                    timestamp: 1709598053
+                    total: 2
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    completed:
+                    - '000000000022'
+                    - '000000000011'
+                    details:
+                    - mac: '000000000022'
+                      status: added
+                      timestamp: 1709598053
+                    failed: 0
+                    incompleted: []
+                    processed: 2
+                    scheduled_at: 1709598052
+                    status: done
+                    succeed: 2
+                    timestamp: 1709598053
+                    total: 2
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_async_license'
+                - description: Asynchronous license claim progress response
+                  examples:
+                  - completed:
+                    - '000000000022'
+                    - '000000000011'
+                    details:
+                    - mac: '000000000022'
+                      status: added
+                      timestamp: 1709598053
+                    failed: 0
+                    incompleted: []
+                    processed: 2
+                    scheduled_at: 1709598052
+                    status: done
+                    succeed: 2
+                    timestamp: 1709598053
+                    total: 2
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    completed:
+                    - '000000000022'
+                    - '000000000011'
+                    details:
+                    - mac: '000000000022'
+                      status: added
+                      timestamp: 1709598053
+                    failed: 0
+                    incompleted: []
+                    processed: 2
+                    scheduled_at: 1709598052
+                    status: done
+                    succeed: 2
+                    timestamp: 1709598053
+                    total: 2
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/claims:
+    parameters: []
+    get:
+      tags:
+      - Orgs Licenses
+      summary: listOrgAsyncClaims
+      description: List all async inventory claim jobs for the organization, optionally including per-device details per claim.
+      operationId: listOrgAsyncClaims
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: detail
+        in: query
+        description: Whether to include per-device detail in each claim record
+        style: form
+        explode: true
+        schema:
+          type: boolean
+          examples:
+          - true
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_async_claims_list'
+                - description: List of async inventory claim jobs for the organization
+                  examples:
+                  - '{"claims":[{"claim_id":"8e2a0c6f-6f3c-4c4e-9c72-8c5b1c1b6b9b","completed":["000000000022","000000000011"],"failed":0,"incompleted":[],"org_id":"44fe2c6b-7d7d-46e6-8d4f-5ce6a7c6b01a","processed":2,"scheduled_at":1709598052,"status":"done","succeed":2,"timestamp":1709598053,"total":2},{"claim_id":"3a7b6c1e-4e5a-4eaa-9c7f-9a9c62b7f402","completed":["000000000044"],"failed":0,"incompleted":["000000000033"],"org_id":"44fe2c6b-7d7d-46e6-8d4f-5ce6a7c6b01a","processed":1,"scheduled_at":1709598070,"status":"ongoing","succeed":1,"timestamp":1709598075,"total":2}]}'
+                  - '{"claims":[{"claim_id":"8e2a0c6f-6f3c-4c4e-9c72-8c5b1c1b6b9b","completed":["000000000022","000000000011"],"details":[{"mac":"000000000022","status":"added","timestamp":1709598053},{"mac":"000000000011","status":"added","timestamp":1709598053}],"failed":0,"incompleted":[],"org_id":"44fe2c6b-7d7d-46e6-8d4f-5ce6a7c6b01a","processed":2,"scheduled_at":1709598052,"status":"done","succeed":2,"timestamp":1709598053,"total":2}]}'
+                contentMediaType: application/json
+              examples:
+                Detail False:
+                  value:
+                    claims:
+                    - claim_id: 8e2a0c6f-6f3c-4c4e-9c72-8c5b1c1b6b9b
+                      completed:
+                      - '000000000022'
+                      - '000000000011'
+                      failed: 0
+                      incompleted: []
+                      org_id: 44fe2c6b-7d7d-46e6-8d4f-5ce6a7c6b01a
+                      processed: 2
+                      scheduled_at: 1709598052
+                      status: done
+                      succeed: 2
+                      timestamp: 1709598053
+                      total: 2
+                    - claim_id: 3a7b6c1e-4e5a-4eaa-9c7f-9a9c62b7f402
+                      completed:
+                      - '000000000044'
+                      failed: 0
+                      incompleted:
+                      - '000000000033'
+                      org_id: 44fe2c6b-7d7d-46e6-8d4f-5ce6a7c6b01a
+                      processed: 1
+                      scheduled_at: 1709598070
+                      status: ongoing
+                      succeed: 1
+                      timestamp: 1709598075
+                      total: 2
+                Detail True:
+                  value:
+                    claims:
+                    - claim_id: 8e2a0c6f-6f3c-4c4e-9c72-8c5b1c1b6b9b
+                      completed:
+                      - '000000000022'
+                      - '000000000011'
+                      details:
+                      - mac: '000000000022'
+                        status: added
+                        timestamp: 1709598053
+                      - mac: '000000000011'
+                        status: added
+                        timestamp: 1709598053
+                      failed: 0
+                      incompleted: []
+                      org_id: 44fe2c6b-7d7d-46e6-8d4f-5ce6a7c6b01a
+                      processed: 2
+                      scheduled_at: 1709598052
+                      status: done
+                      succeed: 2
+                      timestamp: 1709598053
+                      total: 2
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_async_claims_list'
+                - description: List of async inventory claim jobs for the organization
+                  examples:
+                  - '{"claims":[{"claim_id":"8e2a0c6f-6f3c-4c4e-9c72-8c5b1c1b6b9b","completed":["000000000022","000000000011"],"failed":0,"incompleted":[],"org_id":"44fe2c6b-7d7d-46e6-8d4f-5ce6a7c6b01a","processed":2,"scheduled_at":1709598052,"status":"done","succeed":2,"timestamp":1709598053,"total":2},{"claim_id":"3a7b6c1e-4e5a-4eaa-9c7f-9a9c62b7f402","completed":["000000000044"],"failed":0,"incompleted":["000000000033"],"org_id":"44fe2c6b-7d7d-46e6-8d4f-5ce6a7c6b01a","processed":1,"scheduled_at":1709598070,"status":"ongoing","succeed":1,"timestamp":1709598075,"total":2}]}'
+                  - '{"claims":[{"claim_id":"8e2a0c6f-6f3c-4c4e-9c72-8c5b1c1b6b9b","completed":["000000000022","000000000011"],"details":[{"mac":"000000000022","status":"added","timestamp":1709598053},{"mac":"000000000011","status":"added","timestamp":1709598053}],"failed":0,"incompleted":[],"org_id":"44fe2c6b-7d7d-46e6-8d4f-5ce6a7c6b01a","processed":2,"scheduled_at":1709598052,"status":"done","succeed":2,"timestamp":1709598053,"total":2}]}'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Detail False:
+                  value:
+                    claims:
+                    - claim_id: 8e2a0c6f-6f3c-4c4e-9c72-8c5b1c1b6b9b
+                      completed:
+                      - '000000000022'
+                      - '000000000011'
+                      failed: 0
+                      incompleted: []
+                      org_id: 44fe2c6b-7d7d-46e6-8d4f-5ce6a7c6b01a
+                      processed: 2
+                      scheduled_at: 1709598052
+                      status: done
+                      succeed: 2
+                      timestamp: 1709598053
+                      total: 2
+                    - claim_id: 3a7b6c1e-4e5a-4eaa-9c7f-9a9c62b7f402
+                      completed:
+                      - '000000000044'
+                      failed: 0
+                      incompleted:
+                      - '000000000033'
+                      org_id: 44fe2c6b-7d7d-46e6-8d4f-5ce6a7c6b01a
+                      processed: 1
+                      scheduled_at: 1709598070
+                      status: ongoing
+                      succeed: 1
+                      timestamp: 1709598075
+                      total: 2
+                Detail True:
+                  value:
+                    claims:
+                    - claim_id: 8e2a0c6f-6f3c-4c4e-9c72-8c5b1c1b6b9b
+                      completed:
+                      - '000000000022'
+                      - '000000000011'
+                      details:
+                      - mac: '000000000022'
+                        status: added
+                        timestamp: 1709598053
+                      - mac: '000000000011'
+                        status: added
+                        timestamp: 1709598053
+                      failed: 0
+                      incompleted: []
+                      org_id: 44fe2c6b-7d7d-46e6-8d4f-5ce6a7c6b01a
+                      processed: 2
+                      scheduled_at: 1709598052
+                      status: done
+                      succeed: 2
+                      timestamp: 1709598053
+                      total: 2
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    post:
+      tags:
+      - Orgs Licenses
+      summary: createOrgAsyncClaim
+      description: 'Schedules an async claim for inventory devices. Inventory claiming is queued and processed in the background; the response returns immediately with a `claim_id` for polling. Licenses (if `type=all`) are still claimed synchronously during the request.
+
+
+        Use `GET /api/v1/orgs/{org_id}/claims/{claim_id}` to poll the result.'
+      operationId: createOrgAsyncClaim
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/claim_activation_async'
+              - description: Request Body
+                examples:
+                - code: ZHT3K-H36DT-MG85D-M61AC
+                  type: inventory
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  code: ZHT3K-H36DT-MG85D-M61AC
+                  type: inventory
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_async_claim_create'
+                - description: Response to an async inventory claim request
+                  examples:
+                  - claim_id: 8e2a0c6f-6f3c-4c4e-9c72-8c5b1c1b6b9b
+                    inventory_pending:
+                    - mac: 5c5b35000012
+                    - mac: 5c5b35000018
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    claim_id: 8e2a0c6f-6f3c-4c4e-9c72-8c5b1c1b6b9b
+                    inventory_pending:
+                    - mac: 5c5b35000012
+                    - mac: 5c5b35000018
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_async_claim_create'
+                - description: Response to an async inventory claim request
+                  examples:
+                  - claim_id: 8e2a0c6f-6f3c-4c4e-9c72-8c5b1c1b6b9b
+                    inventory_pending:
+                    - mac: 5c5b35000012
+                    - mac: 5c5b35000018
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    claim_id: 8e2a0c6f-6f3c-4c4e-9c72-8c5b1c1b6b9b
+                    inventory_pending:
+                    - mac: 5c5b35000012
+                    - mac: 5c5b35000018
+        '400':
+          description: Invalid key (or already used)
+          headers: {}
+          content: {}
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/claims/{claim_id}:
+    parameters: []
+    get:
+      tags:
+      - Orgs Licenses
+      summary: getOrgAsyncClaimStatus
+      description: Return the processing status for a specific async inventory claim job, optionally including per-device details.
+      operationId: getOrgAsyncClaimStatus
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: claim_id
+        in: path
+        description: Unique identifier of the async claim job
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+      - name: detail
+        in: query
+        description: Whether to include per-device detail in the claim status response
+        style: form
+        explode: true
+        schema:
+          type: boolean
+          examples:
+          - true
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_async_claim_status'
+                - description: Async inventory claim job status
+                  examples:
+                  - claim_id: 8e2a0c6f-6f3c-4c4e-9c72-8c5b1c1b6b9b
+                    completed:
+                    - '000000000022'
+                    - '000000000011'
+                    details:
+                    - mac: '000000000022'
+                      status: added
+                      timestamp: 1709598053
+                    - mac: '000000000011'
+                      status: added
+                      timestamp: 1709598053
+                    failed: 0
+                    incompleted: []
+                    org_id: 44fe2c6b-7d7d-46e6-8d4f-5ce6a7c6b01a
+                    processed: 2
+                    scheduled_at: 1709598052
+                    status: done
+                    succeed: 2
+                    timestamp: 1709598053
+                    total: 2
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    claim_id: 8e2a0c6f-6f3c-4c4e-9c72-8c5b1c1b6b9b
+                    completed:
+                    - '000000000022'
+                    - '000000000011'
+                    details:
+                    - mac: '000000000022'
+                      status: added
+                      timestamp: 1709598053
+                    - mac: '000000000011'
+                      status: added
+                      timestamp: 1709598053
+                    failed: 0
+                    incompleted: []
+                    org_id: 44fe2c6b-7d7d-46e6-8d4f-5ce6a7c6b01a
+                    processed: 2
+                    scheduled_at: 1709598052
+                    status: done
+                    succeed: 2
+                    timestamp: 1709598053
+                    total: 2
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_async_claim_status'
+                - description: Async inventory claim job status
+                  examples:
+                  - claim_id: 8e2a0c6f-6f3c-4c4e-9c72-8c5b1c1b6b9b
+                    completed:
+                    - '000000000022'
+                    - '000000000011'
+                    details:
+                    - mac: '000000000022'
+                      status: added
+                      timestamp: 1709598053
+                    - mac: '000000000011'
+                      status: added
+                      timestamp: 1709598053
+                    failed: 0
+                    incompleted: []
+                    org_id: 44fe2c6b-7d7d-46e6-8d4f-5ce6a7c6b01a
+                    processed: 2
+                    scheduled_at: 1709598052
+                    status: done
+                    succeed: 2
+                    timestamp: 1709598053
+                    total: 2
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    claim_id: 8e2a0c6f-6f3c-4c4e-9c72-8c5b1c1b6b9b
+                    completed:
+                    - '000000000022'
+                    - '000000000011'
+                    details:
+                    - mac: '000000000022'
+                      status: added
+                      timestamp: 1709598053
+                    - mac: '000000000011'
+                      status: added
+                      timestamp: 1709598053
+                    failed: 0
+                    incompleted: []
+                    org_id: 44fe2c6b-7d7d-46e6-8d4f-5ce6a7c6b01a
+                    processed: 2
+                    scheduled_at: 1709598052
+                    status: done
+                    succeed: 2
+                    timestamp: 1709598053
+                    total: 2
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/licenses:
+    parameters: []
+    get:
+      tags:
+      - Orgs Licenses
+      summary: getOrgLicensesSummary
+      description: Return the organization license entitlement, subscription, amendment, consumption, and available-license summary.
+      operationId: getOrgLicensesSummary
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/license'
+                - description: Organization license entitlement, subscription, and usage summary
+                  examples:
+                  - amendments:
+                    - created_time: 1644684842
+                      end_time: 1744156799
+                      id: ff0a14f6-1234-5678-90ab-c8e64d4bc6c6
+                      modified_time: 1644684842
+                      quantity: -1
+                      start_time: 1632873600
+                      subscription_id: VNA-000000af
+                      type: SUB-VNA
+                    - created_time: 1644684842
+                      end_time: 1744156799
+                      id: c1c28812-1234-5678-90ab-dc95680da61e
+                      modified_time: 1644684842
+                      quantity: -1
+                      start_time: 1632873600
+                      subscription_id: MAN-000008be
+                      type: SUB-MAN
+                    - created_time: 1644684842
+                      end_time: 1744243199
+                      id: 96c0a41f-1234-5678-90ab-afe74817e9fd
+                      modified_time: 1644684842
+                      quantity: -1
+                      start_time: 1586476800
+                      subscription_id: EX24-000000bc
+                      type: SUB-EX24
+                    entitled:
+                      SUB-ENG: 26
+                      SUB-EX24: 9
+                      SUB-MAN: 26
+                      SUB-VNA: 26
+                    licenses:
+                    - created_time: 1555353534
+                      end_time: 1586822399
+                      id: 693a41a6-1234-5678-90ab-f53dbd3a31c0
+                      modified_time: 1555353534
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 2
+                      remaining_quantity: 0
+                      start_time: 1555286400
+                      subscription_id: VNA-000000aa
+                      type: SUB-VNA
+                    - created_time: 1576132516
+                      end_time: 1586822399
+                      id: 656607cf-1234-5678-90ab-fc9035614ea5
+                      modified_time: 1576132516
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 8
+                      remaining_quantity: 0
+                      start_time: 1576022400
+                      subscription_id: VNA-000000ab
+                      type: SUB-VNA
+                    - created_time: 1579204568
+                      end_time: 1730764800
+                      id: db50d0bc-1234-5678-90ab-e439958cb06b
+                      modified_time: 1579204568
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 2
+                      remaining_quantity: 2
+                      start_time: 1572998400
+                      subscription_id: MAN-000000ac
+                      type: SUB-MAN
+                    - created_time: 1579204568
+                      end_time: 1730764800
+                      id: 2ff9e84a-1234-5678-90ab-fb9ec0726e01
+                      modified_time: 1579204568
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 2
+                      remaining_quantity: 2
+                      start_time: 1572998400
+                      subscription_id: ENG-000000ad
+                      type: SUB-ENG
+                    - created_time: 1579204568
+                      end_time: 1730764800
+                      id: 16df7ea6-1234-5678-90ab-78018cd4024d
+                      modified_time: 1579204568
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 2
+                      remaining_quantity: 2
+                      start_time: 1572998400
+                      subscription_id: VNA-000000ae
+                      type: SUB-VNA
+                    - created_time: 1586237081
+                      end_time: 1744243199
+                      id: 1b6f68d5-1234-5678-90ab-70d3e6d18c73
+                      modified_time: 1586237081
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 14
+                      remaining_quantity: 14
+                      start_time: 1586563200
+                      subscription_id: VNA-000000af
+                      type: SUB-VNA
+                    - created_time: 1586237097
+                      end_time: 1744243199
+                      id: 1375c9bf-1234-5678-90ab-9c636708c89e
+                      modified_time: 1586237097
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 14
+                      remaining_quantity: 14
+                      start_time: 1586563200
+                      subscription_id: MAN-000000ba
+                      type: SUB-MAN
+                    - created_time: 1586237137
+                      end_time: 1744243199
+                      id: 5974e979-1234-5678-90ab-438f833ec1c9
+                      modified_time: 1586237137
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 14
+                      remaining_quantity: 14
+                      start_time: 1586563200
+                      subscription_id: ENG-000000bb
+                      type: SUB-ENG
+                    - created_time: 1629947267
+                      end_time: 1744243199
+                      id: 340a9cb3-1234-5678-90ab-b009344dbf3c
+                      modified_time: 1629947267
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 10
+                      remaining_quantity: 9
+                      start_time: 1586476800
+                      subscription_id: EX24-000000bc
+                      type: SUB-EX24
+                    - created_time: 1632941870
+                      end_time: 1744156799
+                      id: 9b599b0f-1234-5678-90ab-406081b58e7f
+                      modified_time: 1632941870
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 10
+                      remaining_quantity: 10
+                      start_time: 1632873600
+                      subscription_id: ENG-000000bd
+                      type: SUB-ENG
+                    - created_time: 1632941882
+                      end_time: 1744156799
+                      id: d6d8ead3-1234-5678-90ab-98badeac7287
+                      modified_time: 1632941882
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 11
+                      remaining_quantity: 9
+                      start_time: 1632873600
+                      subscription_id: MAN-000008be
+                      type: SUB-MAN
+                    summary:
+                      SUB-ENG: 18
+                      SUB-EX24: 3
+                      SUB-MAN: 22
+                      SUB-VNA: 20
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    amendments:
+                    - created_time: 1644684842
+                      end_time: 1744156799
+                      id: ff0a14f6-1234-5678-90ab-c8e64d4bc6c6
+                      modified_time: 1644684842
+                      quantity: -1
+                      start_time: 1632873600
+                      subscription_id: VNA-000000af
+                      type: SUB-VNA
+                    - created_time: 1644684842
+                      end_time: 1744156799
+                      id: c1c28812-1234-5678-90ab-dc95680da61e
+                      modified_time: 1644684842
+                      quantity: -1
+                      start_time: 1632873600
+                      subscription_id: MAN-000008be
+                      type: SUB-MAN
+                    - created_time: 1644684842
+                      end_time: 1744243199
+                      id: 96c0a41f-1234-5678-90ab-afe74817e9fd
+                      modified_time: 1644684842
+                      quantity: -1
+                      start_time: 1586476800
+                      subscription_id: EX24-000000bc
+                      type: SUB-EX24
+                    entitled:
+                      SUB-ENG: 26
+                      SUB-EX24: 9
+                      SUB-MAN: 26
+                      SUB-VNA: 26
+                    licenses:
+                    - created_time: 1555353534
+                      end_time: 1586822399
+                      id: 693a41a6-1234-5678-90ab-f53dbd3a31c0
+                      modified_time: 1555353534
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 2
+                      remaining_quantity: 0
+                      start_time: 1555286400
+                      subscription_id: VNA-000000aa
+                      type: SUB-VNA
+                    - created_time: 1576132516
+                      end_time: 1586822399
+                      id: 656607cf-1234-5678-90ab-fc9035614ea5
+                      modified_time: 1576132516
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 8
+                      remaining_quantity: 0
+                      start_time: 1576022400
+                      subscription_id: VNA-000000ab
+                      type: SUB-VNA
+                    - created_time: 1579204568
+                      end_time: 1730764800
+                      id: db50d0bc-1234-5678-90ab-e439958cb06b
+                      modified_time: 1579204568
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 2
+                      remaining_quantity: 2
+                      start_time: 1572998400
+                      subscription_id: MAN-000000ac
+                      type: SUB-MAN
+                    - created_time: 1579204568
+                      end_time: 1730764800
+                      id: 2ff9e84a-1234-5678-90ab-fb9ec0726e01
+                      modified_time: 1579204568
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 2
+                      remaining_quantity: 2
+                      start_time: 1572998400
+                      subscription_id: ENG-000000ad
+                      type: SUB-ENG
+                    - created_time: 1579204568
+                      end_time: 1730764800
+                      id: 16df7ea6-1234-5678-90ab-78018cd4024d
+                      modified_time: 1579204568
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 2
+                      remaining_quantity: 2
+                      start_time: 1572998400
+                      subscription_id: VNA-000000ae
+                      type: SUB-VNA
+                    - created_time: 1586237081
+                      end_time: 1744243199
+                      id: 1b6f68d5-1234-5678-90ab-70d3e6d18c73
+                      modified_time: 1586237081
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 14
+                      remaining_quantity: 14
+                      start_time: 1586563200
+                      subscription_id: VNA-000000af
+                      type: SUB-VNA
+                    - created_time: 1586237097
+                      end_time: 1744243199
+                      id: 1375c9bf-1234-5678-90ab-9c636708c89e
+                      modified_time: 1586237097
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 14
+                      remaining_quantity: 14
+                      start_time: 1586563200
+                      subscription_id: MAN-000000ba
+                      type: SUB-MAN
+                    - created_time: 1586237137
+                      end_time: 1744243199
+                      id: 5974e979-1234-5678-90ab-438f833ec1c9
+                      modified_time: 1586237137
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 14
+                      remaining_quantity: 14
+                      start_time: 1586563200
+                      subscription_id: ENG-000000bb
+                      type: SUB-ENG
+                    - created_time: 1629947267
+                      end_time: 1744243199
+                      id: 340a9cb3-1234-5678-90ab-b009344dbf3c
+                      modified_time: 1629947267
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 10
+                      remaining_quantity: 9
+                      start_time: 1586476800
+                      subscription_id: EX24-000000bc
+                      type: SUB-EX24
+                    - created_time: 1632941870
+                      end_time: 1744156799
+                      id: 9b599b0f-1234-5678-90ab-406081b58e7f
+                      modified_time: 1632941870
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 10
+                      remaining_quantity: 10
+                      start_time: 1632873600
+                      subscription_id: ENG-000000bd
+                      type: SUB-ENG
+                    - created_time: 1632941882
+                      end_time: 1744156799
+                      id: d6d8ead3-1234-5678-90ab-98badeac7287
+                      modified_time: 1632941882
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 11
+                      remaining_quantity: 9
+                      start_time: 1632873600
+                      subscription_id: MAN-000008be
+                      type: SUB-MAN
+                    summary:
+                      SUB-ENG: 18
+                      SUB-EX24: 3
+                      SUB-MAN: 22
+                      SUB-VNA: 20
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/license'
+                - description: Organization license entitlement, subscription, and usage summary
+                  examples:
+                  - amendments:
+                    - created_time: 1644684842
+                      end_time: 1744156799
+                      id: ff0a14f6-1234-5678-90ab-c8e64d4bc6c6
+                      modified_time: 1644684842
+                      quantity: -1
+                      start_time: 1632873600
+                      subscription_id: VNA-000000af
+                      type: SUB-VNA
+                    - created_time: 1644684842
+                      end_time: 1744156799
+                      id: c1c28812-1234-5678-90ab-dc95680da61e
+                      modified_time: 1644684842
+                      quantity: -1
+                      start_time: 1632873600
+                      subscription_id: MAN-000008be
+                      type: SUB-MAN
+                    - created_time: 1644684842
+                      end_time: 1744243199
+                      id: 96c0a41f-1234-5678-90ab-afe74817e9fd
+                      modified_time: 1644684842
+                      quantity: -1
+                      start_time: 1586476800
+                      subscription_id: EX24-000000bc
+                      type: SUB-EX24
+                    entitled:
+                      SUB-ENG: 26
+                      SUB-EX24: 9
+                      SUB-MAN: 26
+                      SUB-VNA: 26
+                    licenses:
+                    - created_time: 1555353534
+                      end_time: 1586822399
+                      id: 693a41a6-1234-5678-90ab-f53dbd3a31c0
+                      modified_time: 1555353534
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 2
+                      remaining_quantity: 0
+                      start_time: 1555286400
+                      subscription_id: VNA-000000aa
+                      type: SUB-VNA
+                    - created_time: 1576132516
+                      end_time: 1586822399
+                      id: 656607cf-1234-5678-90ab-fc9035614ea5
+                      modified_time: 1576132516
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 8
+                      remaining_quantity: 0
+                      start_time: 1576022400
+                      subscription_id: VNA-000000ab
+                      type: SUB-VNA
+                    - created_time: 1579204568
+                      end_time: 1730764800
+                      id: db50d0bc-1234-5678-90ab-e439958cb06b
+                      modified_time: 1579204568
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 2
+                      remaining_quantity: 2
+                      start_time: 1572998400
+                      subscription_id: MAN-000000ac
+                      type: SUB-MAN
+                    - created_time: 1579204568
+                      end_time: 1730764800
+                      id: 2ff9e84a-1234-5678-90ab-fb9ec0726e01
+                      modified_time: 1579204568
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 2
+                      remaining_quantity: 2
+                      start_time: 1572998400
+                      subscription_id: ENG-000000ad
+                      type: SUB-ENG
+                    - created_time: 1579204568
+                      end_time: 1730764800
+                      id: 16df7ea6-1234-5678-90ab-78018cd4024d
+                      modified_time: 1579204568
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 2
+                      remaining_quantity: 2
+                      start_time: 1572998400
+                      subscription_id: VNA-000000ae
+                      type: SUB-VNA
+                    - created_time: 1586237081
+                      end_time: 1744243199
+                      id: 1b6f68d5-1234-5678-90ab-70d3e6d18c73
+                      modified_time: 1586237081
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 14
+                      remaining_quantity: 14
+                      start_time: 1586563200
+                      subscription_id: VNA-000000af
+                      type: SUB-VNA
+                    - created_time: 1586237097
+                      end_time: 1744243199
+                      id: 1375c9bf-1234-5678-90ab-9c636708c89e
+                      modified_time: 1586237097
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 14
+                      remaining_quantity: 14
+                      start_time: 1586563200
+                      subscription_id: MAN-000000ba
+                      type: SUB-MAN
+                    - created_time: 1586237137
+                      end_time: 1744243199
+                      id: 5974e979-1234-5678-90ab-438f833ec1c9
+                      modified_time: 1586237137
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 14
+                      remaining_quantity: 14
+                      start_time: 1586563200
+                      subscription_id: ENG-000000bb
+                      type: SUB-ENG
+                    - created_time: 1629947267
+                      end_time: 1744243199
+                      id: 340a9cb3-1234-5678-90ab-b009344dbf3c
+                      modified_time: 1629947267
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 10
+                      remaining_quantity: 9
+                      start_time: 1586476800
+                      subscription_id: EX24-000000bc
+                      type: SUB-EX24
+                    - created_time: 1632941870
+                      end_time: 1744156799
+                      id: 9b599b0f-1234-5678-90ab-406081b58e7f
+                      modified_time: 1632941870
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 10
+                      remaining_quantity: 10
+                      start_time: 1632873600
+                      subscription_id: ENG-000000bd
+                      type: SUB-ENG
+                    - created_time: 1632941882
+                      end_time: 1744156799
+                      id: d6d8ead3-1234-5678-90ab-98badeac7287
+                      modified_time: 1632941882
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 11
+                      remaining_quantity: 9
+                      start_time: 1632873600
+                      subscription_id: MAN-000008be
+                      type: SUB-MAN
+                    summary:
+                      SUB-ENG: 18
+                      SUB-EX24: 3
+                      SUB-MAN: 22
+                      SUB-VNA: 20
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    amendments:
+                    - created_time: 1644684842
+                      end_time: 1744156799
+                      id: ff0a14f6-1234-5678-90ab-c8e64d4bc6c6
+                      modified_time: 1644684842
+                      quantity: -1
+                      start_time: 1632873600
+                      subscription_id: VNA-000000af
+                      type: SUB-VNA
+                    - created_time: 1644684842
+                      end_time: 1744156799
+                      id: c1c28812-1234-5678-90ab-dc95680da61e
+                      modified_time: 1644684842
+                      quantity: -1
+                      start_time: 1632873600
+                      subscription_id: MAN-000008be
+                      type: SUB-MAN
+                    - created_time: 1644684842
+                      end_time: 1744243199
+                      id: 96c0a41f-1234-5678-90ab-afe74817e9fd
+                      modified_time: 1644684842
+                      quantity: -1
+                      start_time: 1586476800
+                      subscription_id: EX24-000000bc
+                      type: SUB-EX24
+                    entitled:
+                      SUB-ENG: 26
+                      SUB-EX24: 9
+                      SUB-MAN: 26
+                      SUB-VNA: 26
+                    licenses:
+                    - created_time: 1555353534
+                      end_time: 1586822399
+                      id: 693a41a6-1234-5678-90ab-f53dbd3a31c0
+                      modified_time: 1555353534
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 2
+                      remaining_quantity: 0
+                      start_time: 1555286400
+                      subscription_id: VNA-000000aa
+                      type: SUB-VNA
+                    - created_time: 1576132516
+                      end_time: 1586822399
+                      id: 656607cf-1234-5678-90ab-fc9035614ea5
+                      modified_time: 1576132516
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 8
+                      remaining_quantity: 0
+                      start_time: 1576022400
+                      subscription_id: VNA-000000ab
+                      type: SUB-VNA
+                    - created_time: 1579204568
+                      end_time: 1730764800
+                      id: db50d0bc-1234-5678-90ab-e439958cb06b
+                      modified_time: 1579204568
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 2
+                      remaining_quantity: 2
+                      start_time: 1572998400
+                      subscription_id: MAN-000000ac
+                      type: SUB-MAN
+                    - created_time: 1579204568
+                      end_time: 1730764800
+                      id: 2ff9e84a-1234-5678-90ab-fb9ec0726e01
+                      modified_time: 1579204568
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 2
+                      remaining_quantity: 2
+                      start_time: 1572998400
+                      subscription_id: ENG-000000ad
+                      type: SUB-ENG
+                    - created_time: 1579204568
+                      end_time: 1730764800
+                      id: 16df7ea6-1234-5678-90ab-78018cd4024d
+                      modified_time: 1579204568
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 2
+                      remaining_quantity: 2
+                      start_time: 1572998400
+                      subscription_id: VNA-000000ae
+                      type: SUB-VNA
+                    - created_time: 1586237081
+                      end_time: 1744243199
+                      id: 1b6f68d5-1234-5678-90ab-70d3e6d18c73
+                      modified_time: 1586237081
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 14
+                      remaining_quantity: 14
+                      start_time: 1586563200
+                      subscription_id: VNA-000000af
+                      type: SUB-VNA
+                    - created_time: 1586237097
+                      end_time: 1744243199
+                      id: 1375c9bf-1234-5678-90ab-9c636708c89e
+                      modified_time: 1586237097
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 14
+                      remaining_quantity: 14
+                      start_time: 1586563200
+                      subscription_id: MAN-000000ba
+                      type: SUB-MAN
+                    - created_time: 1586237137
+                      end_time: 1744243199
+                      id: 5974e979-1234-5678-90ab-438f833ec1c9
+                      modified_time: 1586237137
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 14
+                      remaining_quantity: 14
+                      start_time: 1586563200
+                      subscription_id: ENG-000000bb
+                      type: SUB-ENG
+                    - created_time: 1629947267
+                      end_time: 1744243199
+                      id: 340a9cb3-1234-5678-90ab-b009344dbf3c
+                      modified_time: 1629947267
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 10
+                      remaining_quantity: 9
+                      start_time: 1586476800
+                      subscription_id: EX24-000000bc
+                      type: SUB-EX24
+                    - created_time: 1632941870
+                      end_time: 1744156799
+                      id: 9b599b0f-1234-5678-90ab-406081b58e7f
+                      modified_time: 1632941870
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 10
+                      remaining_quantity: 10
+                      start_time: 1632873600
+                      subscription_id: ENG-000000bd
+                      type: SUB-ENG
+                    - created_time: 1632941882
+                      end_time: 1744156799
+                      id: d6d8ead3-1234-5678-90ab-98badeac7287
+                      modified_time: 1632941882
+                      order_id: '00000000'
+                      org_id: 9777c1a0-1234-5678-90ab-02e208b2d34f
+                      quantity: 11
+                      remaining_quantity: 9
+                      start_time: 1632873600
+                      subscription_id: MAN-000008be
+                      type: SUB-MAN
+                    summary:
+                      SUB-ENG: 18
+                      SUB-EX24: 3
+                      SUB-MAN: 22
+                      SUB-VNA: 20
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    put:
+      tags:
+      - Orgs Licenses
+      summary: moveOrDeleteOrgLicenseToAnotherOrg
+      description: 'Move, Undo Move or Delete Org License to Another Org
+
+        If the admin has admin privilege against the `org_id` and `dst_org_id`, he can move some of the licenses to another Org. Given that:
+
+        1. the specified license is currently active
+
+        2. there’s enough licenses left in the specified license (by subscription_id)
+
+        3. there will still be enough entitled licenses for the type of license after the amendment'
+      operationId: moveOrDeleteOrgLicenseToAnotherOrg
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/org_license_action'
+              - description: Request Body
+                examples:
+                - '{"notes":"customer notes","op":"annotate","subscription_id":"SUB-000144"}'
+                - '{"op":"delete","subscription_id":"SUB-0000144"}'
+                - '{"dst_org_id":"3eff35f7-c218-894e-bca2-24e5325601cc","op":"amend","quantity":10,"subscription_id":"SUB-0000144"}'
+                - '{"amendment_id":"2b9116ab-cd1e-e897-6e08-31fccd88e792","op":"unamend"}'
+              contentMediaType: application/json
+            examples:
+              annotate:
+                value:
+                  notes: customer notes
+                  op: annotate
+                  subscription_id: SUB-000144
+              delete:
+                value:
+                  op: delete
+                  subscription_id: SUB-0000144
+              move:
+                value:
+                  dst_org_id: 3eff35f7-c218-894e-bca2-24e5325601cc
+                  op: amend
+                  quantity: 10
+                  subscription_id: SUB-0000144
+              undo_move:
+                value:
+                  amendment_id: 2b9116ab-cd1e-e897-6e08-31fccd88e792
+                  op: unamend
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/licenses/usages:
+    parameters: []
+    get:
+      tags:
+      - Orgs Licenses
+      summary: getOrgLicensesBySite
+      description: 'Get Licenses Usage by Sites
+
+        This shows license usage (i.e. needed) based on the features enabled for the site.'
+      operationId: getOrgLicensesBySite
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                uniqueItems: true
+                type: array
+                items:
+                  $ref: '#/components/schemas/license_usage_org'
+                description: Organization license usage records returned by a usage response
+                examples:
+                - - fully_loaded:
+                      SUB-LOC: 30
+                      SUB-MAN: 80
+                    num_devices: 80
+                    site_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                    usages:
+                      SUB-LOC: 30
+                      SUB-MAN: 60
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                  - fully_loaded:
+                      SUB-LOC: 30
+                      SUB-MAN: 80
+                    num_devices: 80
+                    site_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                    usages:
+                      SUB-LOC: 30
+                      SUB-MAN: 60
+            application/vnd.api+json:
+              schema:
+                uniqueItems: true
+                type: array
+                items:
+                  $ref: '#/components/schemas/license_usage_org'
+                description: Organization license usage records returned by a usage response
+                examples:
+                - - fully_loaded:
+                      SUB-LOC: 30
+                      SUB-MAN: 80
+                    num_devices: 80
+                    site_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                    usages:
+                      SUB-LOC: 30
+                      SUB-MAN: 60
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                  - fully_loaded:
+                      SUB-LOC: 30
+                      SUB-MAN: 80
+                    num_devices: 80
+                    site_id: 4ac1dcf4-9d8b-7211-65c4-057819f0862b
+                    usages:
+                      SUB-LOC: 30
+                      SUB-MAN: 60
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    claim_activation:
+      title: claim_activation
+      required:
+      - code
+      - type
+      type: object
+      properties:
+        code:
+          type: string
+          description: Activation or license claim code to redeem
+        device_type:
+          allOf:
+          - $ref: '#/components/schemas/device_type_default_ap1'
+          - description: 'If only intended to claim a certain device type, specify it here. enum: `ap`, `gateway`, `switch`.'
+        type:
+          allOf:
+          - $ref: '#/components/schemas/claim_type2'
+          - description: Claim scope, such as all, inventory, or license
+      description: Request to claim organization licenses or activation codes
+    license:
+      title: license
+      type: object
+      properties:
+        amendments:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/license_amendment'
+          description: Read-only license amendments associated with the organization
+          readOnly: true
+        entitled:
+          type: object
+          additionalProperties:
+            type: integer
+            format: int32
+          description: Property key is license type (e.g. SUB-MAN) and Property value is the number of licenses entitled.
+          readOnly: true
+        fully_loaded:
+          type: object
+          additionalProperties:
+            type: integer
+            format: int32
+          description: Maximum license demand by service if all organization devices use each service
+          readOnly: true
+        licenses:
+          type: array
+          items:
+            $ref: '#/components/schemas/license_sub'
+          description: Read-only license subscriptions for the organization
+        summary:
+          type: object
+          additionalProperties:
+            type: integer
+            format: int32
+          description: Current license consumption by license type
+          readOnly: true
+        usages:
+          type: object
+          additionalProperties:
+            type: integer
+            format: int32
+          description: Available license counts by service
+          readOnly: true
+      description: Organization license entitlement, subscription, and usage summary
+    response_async_claims_list:
+      title: response_async_claims_list
+      type: object
+      properties:
+        claims:
+          type: array
+          items:
+            $ref: '#/components/schemas/response_async_claim_status'
+          description: Async claim job status records
+      description: List of async inventory claim jobs for the organization
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    claim_type2:
+      title: claim_type2
+      enum:
+      - all
+      - inventory
+      - license
+      type: string
+      description: Claim scope, such as all, inventory, or license
+    response_async_license_status3:
+      title: response_async_license_status3
+      enum:
+      - prepared
+      - ongoing
+      - done
+      type: string
+      description: 'Current async claim processing state. enum: `prepared`, `ongoing`, `done`.'
+    response_async_license_status1:
+      title: response_async_license_status1
+      enum:
+      - prepared
+      - ongoing
+      - done
+      type: string
+      description: 'Current asynchronous license claim processing state. enum: `prepared`, `ongoing`, `done`.'
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_claim_license_license_item:
+      title: response_claim_license_license_item
+      required:
+      - end
+      - quantity
+      - start
+      - type
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Epoch timestamp when the license entitlement ends
+          contentEncoding: int32
+        quantity:
+          type: integer
+          description: Number of license units included in the entitlement
+          contentEncoding: int32
+        start:
+          type: integer
+          description: Epoch timestamp when the license entitlement starts
+          contentEncoding: int32
+        type:
+          type: string
+          description: License SKU or subscription type
+      description: License entitlement returned by a claim operation
+    response_async_license:
+      title: response_async_license
+      type: object
+      properties:
+        completed:
+          type: array
+          items:
+            type: string
+          description: Device MAC addresses that completed asynchronous license claim processing
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/response_async_license_detail'
+          description: Per-device status details for asynchronous license claim processing
+        failed:
+          type: integer
+          description: Number of devices that failed license claim processing
+          contentEncoding: int32
+        incompleted:
+          type: array
+          items:
+            type: string
+          description: Device MAC addresses not yet completed in asynchronous license claim processing
+        processed:
+          type: integer
+          description: Number of devices processed so far by asynchronous license claim
+          contentEncoding: int32
+        scheduled_at:
+          type: integer
+          description: Epoch timestamp when the asynchronous license claim was scheduled
+          contentEncoding: int32
+        status:
+          allOf:
+          - $ref: '#/components/schemas/response_async_license_status1'
+          - description: 'Current asynchronous license claim processing state. enum: `prepared`, `ongoing`, `done`.'
+        succeed:
+          type: integer
+          description: Number of devices that successfully completed license claim processing
+          contentEncoding: int32
+        timestamp:
+          type: number
+          description: Epoch timestamp when this asynchronous license status was reported
+          readOnly: true
+        total:
+          type: integer
+          description: Number of devices included in the license claim
+          contentEncoding: int32
+      description: Asynchronous license claim progress response
+    license_sub:
+      title: license_sub
+      type: object
+      properties:
+        created_time:
+          type: number
+          description: Timestamp when the license subscription was created
+          readOnly: true
+        end_time:
+          type: integer
+          description: End date of the license term
+          contentEncoding: int32
+          readOnly: true
+        id:
+          type: string
+          description: Unique identifier of the license subscription
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        modified_time:
+          type: number
+          description: Timestamp when the license subscription was last modified
+          readOnly: true
+        order_id:
+          type: string
+          description: Order identifier for this license subscription
+          readOnly: true
+        org_id:
+          type: string
+          description: Organization that owns this license subscription
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        quantity:
+          type: integer
+          description: Number of devices entitled for this license
+          contentEncoding: int32
+          readOnly: true
+        remaining_quantity:
+          type: integer
+          description: Number of licenses left in this subscription
+          contentEncoding: int32
+        start_time:
+          type: integer
+          description: Start date of the license term
+          contentEncoding: int32
+          readOnly: true
+        subscription_id:
+          type: string
+          description: Subscription identifier for this license subscription
+          readOnly: true
+        type:
+          type: string
+          description: License type for this subscription
+          readOnly: true
+      description: Read-only license subscription record
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_claim_license_inventory_item:
+      title: response_claim_license_inventory_item
+      required:
+      - mac
+      - magic
+      - model
+      - serial
+      - type
+      type: object
+      properties:
+        mac:
+          type: string
+          description: Device MAC address for the claimed inventory item
+        magic:
+          type: string
+          description: Activation code or claim code associated with the inventory item
+        model:
+          type: string
+          description: Device model for the claimed inventory item
+        serial:
+          type: string
+          description: Device serial number for the claimed inventory item
+        type:
+          type: string
+          description: Device type for the claimed inventory item
+      description: Inventory device returned by a license claim
+    org_license_action:
+      title: org_license_action
+      required:
+      - op
+      type: object
+      properties:
+        amendment_id:
+          type: string
+          description: If `op`==`unamend`, the ID of the operation to cancel
+          contentEncoding: uuid
+        dst_org_id:
+          type: string
+          description: If `op`==`amend`, the id of the org where the license is moved
+          contentEncoding: uuid
+        notes:
+          type: string
+          description: If `op`==`annotate`, note text to attach to the license
+        op:
+          allOf:
+          - $ref: '#/components/schemas/org_license_action_operation2'
+          - description: 'License action operation to perform. enum: `amend`, `annotate`, `delete`, `unamend`.'
+        quantity:
+          type: integer
+          description: If `op`==`amend`, the number of licenses to move
+          contentEncoding: int32
+        subscription_id:
+          type: string
+          description: If `op`==`amend` or `op`==`delete`, the ID of the subscription to use
+      description: Request to amend, annotate, delete, or unamend an organization license
+    response_claim_license_inventory_pending_item:
+      title: response_claim_license_inventory_pending_item
+      type: object
+      properties:
+        mac:
+          type: string
+          description: Device MAC address pending asynchronous inventory claim
+      description: Inventory device pending asynchronous claim processing
+    response_claim_license:
+      title: response_claim_license
+      required:
+      - inventory_added
+      - inventory_duplicated
+      - license_added
+      - license_duplicated
+      - license_error
+      type: object
+      properties:
+        inventory_added:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/response_claim_license_inventory_item'
+          description: Inventory devices added by the claim operation
+        inventory_duplicated:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/response_claim_license_inventory_item'
+          description: Inventory devices already present during the claim operation
+        inventory_pending:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/response_claim_license_inventory_pending_item'
+          description: Inventory devices pending asynchronous claim processing
+        license_added:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/response_claim_license_license_item'
+          description: License entitlements added by the claim operation
+        license_duplicated:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/response_claim_license_license_item'
+          description: License entitlements already present during the claim operation
+        license_error:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/response_claim_license_license_error_item'
+          description: License claim errors returned by order number
+      description: Result of claiming licenses or activation codes
+    claim_activation_async:
+      title: claim_activation_async
+      required:
+      - code
+      - type
+      type: object
+      properties:
+        code:
+          type: string
+          description: Activation code to claim
+        device_type:
+          allOf:
+          - $ref: '#/components/schemas/device_type_default_ap1'
+          - description: 'If only intended to claim a certain device type, specify it here. enum: `ap`, `gateway`, `switch`.'
+        type:
+          allOf:
+          - $ref: '#/components/schemas/claim_type_async2'
+          - description: Claim scope; `all` claims licenses synchronously and queues inventory, `inventory` queues inventory only
+      description: Request to schedule an asynchronous inventory claim
+    license_usage_org:
+      title: license_usage_org
+      required:
+      - num_devices
+      - site_id
+      - usages
+      type: object
+      properties:
+        for_site:
+          type: boolean
+          description: Whether this license usage record is scoped to a site
+          readOnly: true
+        fully_loaded:
+          type: object
+          additionalProperties:
+            type: integer
+            format: int32
+          description: Maximum license demand by service if all organization devices use each service
+          readOnly: true
+        num_devices:
+          type: integer
+          description: Number of devices counted in this license usage scope
+          contentEncoding: int32
+          readOnly: true
+        site_id:
+          type: string
+          description: Site associated with this license usage record
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        summary:
+          type: object
+          additionalProperties:
+            type: integer
+            format: int32
+          description: Current license consumption by license type for this usage scope
+          readOnly: true
+        usages:
+          type: object
+          additionalProperties:
+            type: integer
+            format: int32
+          description: Available license counts by service for this usage scope
+          readOnly: true
+      description: License usage record for an organization usage scope
+    response_async_license_detail:
+      title: response_async_license_detail
+      type: object
+      properties:
+        mac:
+          type: string
+          description: Device MAC address for this license claim detail
+        status:
+          type: string
+          description: Claim processing state for this device
+        timestamp:
+          type: number
+          description: Epoch timestamp when this device claim status was reported
+          readOnly: true
+      description: Per-device asynchronous license claim status
+    response_async_claim_status:
+      title: response_async_claim_status
+      type: object
+      properties:
+        claim_id:
+          type: string
+          description: Unique identifier of the async claim job
+          contentEncoding: uuid
+        completed:
+          type: array
+          items:
+            type: string
+          description: Device MAC addresses that completed async claim processing
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/response_async_license_detail'
+          description: Per-device status details for async claim processing; present when `detail=true`
+        failed:
+          type: integer
+          description: Number of devices that failed claim processing
+          contentEncoding: int32
+        incompleted:
+          type: array
+          items:
+            type: string
+          description: Device MAC addresses not yet completed in async claim processing
+        org_id:
+          type: string
+          description: Organization that owns the async claim job
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        processed:
+          type: integer
+          description: Number of devices processed so far
+          contentEncoding: int32
+        scheduled_at:
+          type: integer
+          description: Epoch timestamp when the async claim was scheduled
+          contentEncoding: int32
+        status:
+          allOf:
+          - $ref: '#/components/schemas/response_async_license_status3'
+          - description: 'Current async claim processing state. enum: `prepared`, `ongoing`, `done`.'
+        succeed:
+          type: integer
+          description: Number of devices that successfully completed claim processing
+          contentEncoding: int32
+        timestamp:
+          type: number
+          description: Epoch timestamp of the last status report
+          readOnly: true
+        total:
+          type: integer
+          description: Total number of devices included in the claim
+          contentEncoding: int32
+      description: Async inventory claim job status
+    license_amendment:
+      title: license_amendment
+      type: object
+      properties:
+        created_time:
+          type: number
+          description: Timestamp when the license amendment was created
+          readOnly: true
+        end_time:
+          type: integer
+          description: End time of the license amendment
+          contentEncoding: int32
+          readOnly: true
+        id:
+          type: string
+          description: Unique identifier of the license amendment
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        modified_time:
+          type: number
+          description: Timestamp when the license amendment was last modified
+          readOnly: true
+        quantity:
+          type: integer
+          description: License quantity associated with this amendment
+          contentEncoding: int32
+          readOnly: true
+        start_time:
+          type: integer
+          description: Start time of the license amendment
+          contentEncoding: int32
+          readOnly: true
+        subscription_id:
+          type: string
+          description: Subscription identifier associated with this amendment
+          readOnly: true
+        type:
+          type: string
+          description: License type affected by this amendment
+          readOnly: true
+      description: Read-only change applied to a license subscription
+    claim_type_async2:
+      title: claim_type_async2
+      enum:
+      - all
+      - inventory
+      type: string
+      description: Claim scope; `all` claims licenses synchronously and queues inventory, `inventory` queues inventory only
+    org_license_action_operation2:
+      title: org_license_action_operation2
+      enum:
+      - amend
+      - annotate
+      - delete
+      - unamend
+      type: string
+      description: 'License action operation to perform. enum: `amend`, `annotate`, `delete`, `unamend`.'
+    response_async_claim_create:
+      title: response_async_claim_create
+      type: object
+      properties:
+        claim_id:
+          type: string
+          description: Unique identifier for the async claim job, used to poll status
+          contentEncoding: uuid
+        inventory_pending:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/response_claim_license_inventory_pending_item'
+          description: Inventory devices queued for async claim processing
+      description: Response to an async inventory claim request
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_claim_license_license_error_item:
+      title: response_claim_license_license_error_item
+      required:
+      - order
+      - reason
+      type: object
+      properties:
+        order:
+          type: string
+          description: License order number or claim identifier that failed
+        reason:
+          type: string
+          description: Explanation of why the license order could not be claimed
+      description: License order that could not be claimed
+    device_type_default_ap1:
+      title: device_type_default_ap1
+      enum:
+      - ap
+      - gateway
+      - switch
+      type: string
+      description: 'If only intended to claim a certain device type, specify it here. enum: `ap`, `gateway`, `switch`.'
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

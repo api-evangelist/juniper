@@ -1,0 +1,1567 @@
+openapi: 3.2.0
+info:
+  title: Mist Orgs MxTunnels API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Orgs MxTunnels
+  description: 'A Mist Tunnel (MxTunnel) is a configuration object that allows for the tunneling of user VLANs from the Access Points (APs) to a central point on the network.
+
+
+    It specifies the VLAN IDs that need to be tunneled and assigns the tunnel to a primary or secondary mist edge cluster. The mist tunnel also includes settings for tunnel fail over, auto-preemption, and other parameters related to tunnel termination services.'
+paths:
+  /api/v1/orgs/{org_id}/mxtunnels:
+    parameters: []
+    get:
+      tags:
+      - Orgs MxTunnels
+      summary: listOrgMxTunnels
+      description: List organization Mist Tunnel configurations used to carry AP user VLANs to Mist Edge clusters.
+      operationId: listOrgMxTunnels
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: page
+        in: query
+        description: Select the page number to return when using page-based pagination; starts at `1`
+        style: form
+        explode: true
+        schema:
+          minimum: 1
+          type: integer
+          contentEncoding: int32
+          default: 1
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/mxtunnel'
+                description: List of Mist Tunnel configurations
+                examples:
+                - - hello_interval: 60
+                    hello_retries: 3
+                    ipsec:
+                      dns_servers:
+                      - 172.16.0.8
+                      enabled: true
+                      extra_routes:
+                      - dest: 172.16.0.0/12
+                        next_hop: 172.16.0.1
+                      split_tunnel: true
+                    mxcluster_ids:
+                    - 572586b7-f97b-a22b-526c-8b97a3f609c4
+                    name: HQ
+                    protocol: udp
+                    vlan_ids:
+                    - 3
+                    - 4
+                    - 5
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                  - hello_interval: 60
+                    hello_retries: 3
+                    ipsec:
+                      dns_servers:
+                      - 172.16.0.8
+                      enabled: true
+                      extra_routes:
+                      - dest: 172.16.0.0/12
+                        next_hop: 172.16.0.1
+                      split_tunnel: true
+                    mxcluster_ids:
+                    - 572586b7-f97b-a22b-526c-8b97a3f609c4
+                    name: HQ
+                    protocol: udp
+                    vlan_ids:
+                    - 3
+                    - 4
+                    - 5
+            application/vnd.api+json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/mxtunnel'
+                description: List of Mist Tunnel configurations
+                examples:
+                - - hello_interval: 60
+                    hello_retries: 3
+                    ipsec:
+                      dns_servers:
+                      - 172.16.0.8
+                      enabled: true
+                      extra_routes:
+                      - dest: 172.16.0.0/12
+                        next_hop: 172.16.0.1
+                      split_tunnel: true
+                    mxcluster_ids:
+                    - 572586b7-f97b-a22b-526c-8b97a3f609c4
+                    name: HQ
+                    protocol: udp
+                    vlan_ids:
+                    - 3
+                    - 4
+                    - 5
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                  - hello_interval: 60
+                    hello_retries: 3
+                    ipsec:
+                      dns_servers:
+                      - 172.16.0.8
+                      enabled: true
+                      extra_routes:
+                      - dest: 172.16.0.0/12
+                        next_hop: 172.16.0.1
+                      split_tunnel: true
+                    mxcluster_ids:
+                    - 572586b7-f97b-a22b-526c-8b97a3f609c4
+                    name: HQ
+                    protocol: udp
+                    vlan_ids:
+                    - 3
+                    - 4
+                    - 5
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    post:
+      tags:
+      - Orgs MxTunnels
+      summary: createOrgMxTunnel
+      description: Create an organization Mist Tunnel configuration, including hosting Mist Edge clusters, VLANs, heartbeat settings, and optional IPsec settings.
+      operationId: createOrgMxTunnel
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/mxtunnel'
+              - description: Request Body
+                examples:
+                - cluster_ids:
+                  - string
+                  hello_interval: 60
+                  hello_retries: 7
+                  ipsec:
+                    dns_servers:
+                    - string
+                    enabled: true
+                    extra_routes:
+                    - dest: string
+                      next_hop: 192.168.0.1
+                    split_tunnel: true
+                    use_mxedge: true
+                  vlan_ids:
+                  - 0
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  cluster_ids:
+                  - string
+                  hello_interval: 60
+                  hello_retries: 7
+                  ipsec:
+                    dns_servers:
+                    - string
+                    enabled: true
+                    extra_routes:
+                    - dest: string
+                      next_hop: 192.168.0.1
+                    split_tunnel: true
+                    use_mxedge: true
+                  vlan_ids:
+                  - 0
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/mxtunnel'
+                - description: Mist Tunnel configuration for tunneling AP user VLANs to Mist Edge clusters
+                  examples:
+                  - cluster_ids:
+                    - string
+                    created_time: 0
+                    for_site: true
+                    hello_interval: 60
+                    hello_retries: 7
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    ipsec:
+                      dns_servers:
+                      - string
+                      enabled: true
+                      extra_routes:
+                      - dest: string
+                        next_hop: 192.168.0.1
+                      split_tunnel: true
+                      use_mxedge: true
+                    modified_time: 0
+                    org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    vlan_ids:
+                    - 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    cluster_ids:
+                    - string
+                    created_time: 0
+                    for_site: true
+                    hello_interval: 60
+                    hello_retries: 7
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    ipsec:
+                      dns_servers:
+                      - string
+                      enabled: true
+                      extra_routes:
+                      - dest: string
+                        next_hop: 192.168.0.1
+                      split_tunnel: true
+                      use_mxedge: true
+                    modified_time: 0
+                    org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    vlan_ids:
+                    - 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/mxtunnel'
+                - description: Mist Tunnel configuration for tunneling AP user VLANs to Mist Edge clusters
+                  examples:
+                  - cluster_ids:
+                    - string
+                    created_time: 0
+                    for_site: true
+                    hello_interval: 60
+                    hello_retries: 7
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    ipsec:
+                      dns_servers:
+                      - string
+                      enabled: true
+                      extra_routes:
+                      - dest: string
+                        next_hop: 192.168.0.1
+                      split_tunnel: true
+                      use_mxedge: true
+                    modified_time: 0
+                    org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    vlan_ids:
+                    - 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    cluster_ids:
+                    - string
+                    created_time: 0
+                    for_site: true
+                    hello_interval: 60
+                    hello_retries: 7
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    ipsec:
+                      dns_servers:
+                      - string
+                      enabled: true
+                      extra_routes:
+                      - dest: string
+                        next_hop: 192.168.0.1
+                      split_tunnel: true
+                      use_mxedge: true
+                    modified_time: 0
+                    org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    vlan_ids:
+                    - 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/orgs/{org_id}/mxtunnels/{mxtunnel_id}:
+    parameters: []
+    delete:
+      tags:
+      - Orgs MxTunnels
+      summary: deleteOrgMxTunnel
+      description: Delete an organization Mist Tunnel configuration by Mist Tunnel ID.
+      operationId: deleteOrgMxTunnel
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: mxtunnel_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    get:
+      tags:
+      - Orgs MxTunnels
+      summary: getOrgMxTunnel
+      description: Retrieve configuration details for a specific organization Mist Tunnel, including cluster, VLAN, heartbeat, IPsec, and preemption settings.
+      operationId: getOrgMxTunnel
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: mxtunnel_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/mxtunnel'
+                - description: Mist Tunnel configuration for tunneling AP user VLANs to Mist Edge clusters
+                  examples:
+                  - cluster_ids:
+                    - string
+                    created_time: 0
+                    for_site: true
+                    hello_interval: 60
+                    hello_retries: 7
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    ipsec:
+                      dns_servers:
+                      - string
+                      enabled: true
+                      extra_routes:
+                      - dest: string
+                        next_hop: 192.168.0.1
+                      split_tunnel: true
+                      use_mxedge: true
+                    modified_time: 0
+                    org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    vlan_ids:
+                    - 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    cluster_ids:
+                    - string
+                    created_time: 0
+                    for_site: true
+                    hello_interval: 60
+                    hello_retries: 7
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    ipsec:
+                      dns_servers:
+                      - string
+                      enabled: true
+                      extra_routes:
+                      - dest: string
+                        next_hop: 192.168.0.1
+                      split_tunnel: true
+                      use_mxedge: true
+                    modified_time: 0
+                    org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    vlan_ids:
+                    - 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/mxtunnel'
+                - description: Mist Tunnel configuration for tunneling AP user VLANs to Mist Edge clusters
+                  examples:
+                  - cluster_ids:
+                    - string
+                    created_time: 0
+                    for_site: true
+                    hello_interval: 60
+                    hello_retries: 7
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    ipsec:
+                      dns_servers:
+                      - string
+                      enabled: true
+                      extra_routes:
+                      - dest: string
+                        next_hop: 192.168.0.1
+                      split_tunnel: true
+                      use_mxedge: true
+                    modified_time: 0
+                    org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    vlan_ids:
+                    - 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    cluster_ids:
+                    - string
+                    created_time: 0
+                    for_site: true
+                    hello_interval: 60
+                    hello_retries: 7
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    ipsec:
+                      dns_servers:
+                      - string
+                      enabled: true
+                      extra_routes:
+                      - dest: string
+                        next_hop: 192.168.0.1
+                      split_tunnel: true
+                      use_mxedge: true
+                    modified_time: 0
+                    org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    vlan_ids:
+                    - 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    put:
+      tags:
+      - Orgs MxTunnels
+      summary: updateOrgMxTunnel
+      description: Update an organization Mist Tunnel configuration, including cluster membership, VLANs, heartbeat settings, IPsec, and preemption behavior.
+      operationId: updateOrgMxTunnel
+      parameters:
+      - name: org_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: mxtunnel_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/mxtunnel'
+              - description: Request Body
+              contentMediaType: application/json
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/mxtunnel'
+                - description: Mist Tunnel configuration for tunneling AP user VLANs to Mist Edge clusters
+                  examples:
+                  - cluster_ids:
+                    - string
+                    created_time: 0
+                    for_site: true
+                    hello_interval: 60
+                    hello_retries: 7
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    ipsec:
+                      dns_servers:
+                      - string
+                      enabled: true
+                      extra_routes:
+                      - dest: string
+                        next_hop: 192.168.0.1
+                      split_tunnel: true
+                      use_mxedge: true
+                    modified_time: 0
+                    org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    vlan_ids:
+                    - 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    cluster_ids:
+                    - string
+                    created_time: 0
+                    for_site: true
+                    hello_interval: 60
+                    hello_retries: 7
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    ipsec:
+                      dns_servers:
+                      - string
+                      enabled: true
+                      extra_routes:
+                      - dest: string
+                        next_hop: 192.168.0.1
+                      split_tunnel: true
+                      use_mxedge: true
+                    modified_time: 0
+                    org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    vlan_ids:
+                    - 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/mxtunnel'
+                - description: Mist Tunnel configuration for tunneling AP user VLANs to Mist Edge clusters
+                  examples:
+                  - cluster_ids:
+                    - string
+                    created_time: 0
+                    for_site: true
+                    hello_interval: 60
+                    hello_retries: 7
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    ipsec:
+                      dns_servers:
+                      - string
+                      enabled: true
+                      extra_routes:
+                      - dest: string
+                        next_hop: 192.168.0.1
+                      split_tunnel: true
+                      use_mxedge: true
+                    modified_time: 0
+                    org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    vlan_ids:
+                    - 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    cluster_ids:
+                    - string
+                    created_time: 0
+                    for_site: true
+                    hello_interval: 60
+                    hello_retries: 7
+                    id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    ipsec:
+                      dns_servers:
+                      - string
+                      enabled: true
+                      extra_routes:
+                      - dest: string
+                        next_hop: 192.168.0.1
+                      split_tunnel: true
+                      use_mxedge: true
+                    modified_time: 0
+                    org_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    site_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                    vlan_ids:
+                    - 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    mxtunnel:
+      title: mxtunnel
+      type: object
+      properties:
+        anchor_mxtunnel_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: IDs of anchor Mist Tunnels used for edge-to-edge tunnel formation
+        auto_preemption:
+          allOf:
+          - $ref: '#/components/schemas/auto_preemption1'
+          - description: Preemption behavior for restoring preferred tunnel peers after failover
+        created_time:
+          type: number
+          description: Timestamp when the Mist Tunnel was created
+          readOnly: true
+        for_site:
+          type: boolean
+          description: Whether this Mist Tunnel is scoped to a site
+          readOnly: true
+        hello_interval:
+          maximum: 300
+          minimum: 1
+          type:
+          - integer
+          - 'null'
+          description: In seconds, used as heartbeat to detect if a tunnel is alive. AP will try another peer after missing N hellos specified by `hello_retries`.
+          contentEncoding: int32
+          default: 60
+        hello_retries:
+          maximum: 30
+          minimum: 2
+          type:
+          - integer
+          - 'null'
+          description: Number of missed hello heartbeats before an AP tries another tunnel peer
+          contentEncoding: int32
+          default: 7
+        id:
+          type: string
+          description: Unique identifier of the Mist Tunnel
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        ipsec:
+          allOf:
+          - $ref: '#/components/schemas/mxtunnel_ipsec2'
+          - description: Security settings for IPsec support on this Mist Tunnel
+        modified_time:
+          type: number
+          description: Timestamp when the Mist Tunnel was last modified
+          readOnly: true
+        mtu:
+          maximum: 1500
+          minimum: 0
+          type: integer
+          description: 0 to enable PMTU, 552-1500 to start PMTU with a lower MTU
+          contentEncoding: int32
+          default: 0
+        mxcluster_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: Mist Edge cluster IDs that host this Mist Tunnel
+        name:
+          type:
+          - string
+          - 'null'
+          description: Display name of the Mist Tunnel
+        org_id:
+          type: string
+          description: Identifier of the org that owns the Mist Tunnel
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        protocol:
+          allOf:
+          - $ref: '#/components/schemas/mxtunnel_protocol3'
+          - description: 'Encapsulation protocol used for the Mist Tunnel. enum: `ip`, `udp`.'
+        site_id:
+          type: string
+          description: Identifier of the site when the Mist Tunnel is site-scoped
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        vlan_ids:
+          type: array
+          items:
+            type: integer
+            contentEncoding: int32
+          description: List of VLAN IDs carried by this Mist Tunnel
+      description: Mist Tunnel configuration for tunneling AP user VLANs to Mist Edge clusters
+    auto_preemption1:
+      title: auto_preemption1
+      type: object
+      properties:
+        day_of_week:
+          allOf:
+          - $ref: '#/components/schemas/day_of_week7'
+          - description: 'Scheduled weekday for auto preemption. enum: `any`, `fri`, `mon`, `sat`, `sun`, `thu`, `tue`, `wed`.'
+        enabled:
+          type: boolean
+          description: Whether auto preemption is enabled
+          default: false
+        time_of_day:
+          type: string
+          description: Scheduled time of day for auto preemption
+          default: any
+          examples:
+          - 720
+      description: Preemption behavior for restoring preferred tunnel peers after failover
+    day_of_week7:
+      title: day_of_week7
+      enum:
+      - any
+      - fri
+      - mon
+      - sat
+      - sun
+      - thu
+      - tue
+      - wed
+      type: string
+      description: 'Scheduled weekday for auto preemption. enum: `any`, `fri`, `mon`, `sat`, `sun`, `thu`, `tue`, `wed`.'
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    mxtunnel_protocol3:
+      title: mxtunnel_protocol3
+      enum:
+      - ip
+      - udp
+      type: string
+      description: 'Encapsulation protocol used for the Mist Tunnel. enum: `ip`, `udp`.'
+    mxtunnel_ipsec_extra_route:
+      title: mxtunnel_ipsec_extra_route
+      type: object
+      properties:
+        dest:
+          type: string
+          description: Route destination CIDR for the IPsec extra route
+        next_hop:
+          type: string
+          description: Route next-hop IPv4 address for the IPsec extra route
+          contentEncoding: ipv4
+      description: Extra route advertised for an IPsec tunnel
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    mxtunnel_ipsec2:
+      title: mxtunnel_ipsec2
+      type: object
+      properties:
+        dns_servers:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Name server addresses advertised for IPsec tunnel clients
+        dns_suffix:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Search suffixes advertised for IPsec tunnel clients
+        enabled:
+          type: boolean
+          description: Whether IPsec support is enabled for this Mist Tunnel
+        extra_routes:
+          type: array
+          items:
+            $ref: '#/components/schemas/mxtunnel_ipsec_extra_route'
+          description: Additional routes advertised for the IPsec tunnel
+        split_tunnel:
+          type: boolean
+          description: Whether split tunneling is enabled for IPsec clients
+        use_mxedge:
+          type: boolean
+          description: Whether IPsec termination uses Mist Edge
+      description: Security settings for IPsec support on this Mist Tunnel
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

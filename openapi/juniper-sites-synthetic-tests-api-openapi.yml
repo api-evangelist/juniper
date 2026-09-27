@@ -1,0 +1,1615 @@
+openapi: 3.2.0
+info:
+  title: Mist Sites Synthetic Tests API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Sites Synthetic Tests
+  description: Synthetic Tests (Marvis Minis) are a feature of Juniper Networks' Mist platform, designed to proactively identify and resolve network issues before they impact users by simulating user connections and validating network configurations.
+paths:
+  /api/v1/sites/{site_id}/devices/{device_id}/check_radius_server:
+    parameters: []
+    post:
+      tags:
+      - Sites Synthetic Tests
+      summary: startSiteSwitchRadiusSyntheticTest
+      description: 'Ping test from the AP to confirm ''reachability'' of the RADIUS server.
+
+
+        Utilize Juniper EX switch(to which an AP is connected to) radius test capabilities to get details on the RADIUS Server ''availability''.
+
+
+        #### Subscribe to Device Command outputs
+
+
+        `WS /api-ws/v1/stream`
+
+
+        ```json
+
+        {
+
+        "subscribe": "/sites/{site_id}/devices/{device_id}/cmd"
+
+        }
+
+        ```
+
+
+        #### Example output from ws stream
+
+
+        ```json
+
+        {
+
+        "event": "data",
+
+        "channel": "/sites/d6fb4f96-3ba4-4cf5-8af2-a8d7b85087ac/devices/00000000-0000-0000-1000-2093390b3580/cmd",
+
+        "data": "{\"event\": \"data\", \"channel\": \"/sites/d6fb4f96-3ba4-4cf5-8af2-a8d7b85087ac/devices/2093390b3580/cmd\", \"data\": {\"session\": \"6043daff-884e-48bc-aa9a-810d268aceb1\", \"raw\": \" Reason : fail\"}}"
+
+        }
+
+        {
+
+        "event": "data",
+
+        "channel": "/sites/d6fb4f96-3ba4-4cf5-8af2-a8d7b85087ac/devices/00000000-0000-0000-1000-2093390b3580/cmd",
+
+        "data": "{\"event\": \"data\", \"channel\": \"/sites/d6fb4f96-3ba4-4cf5-8af2-a8d7b85087ac/devices/2093390b3580/cmd\", \"data\": {\"session\": \"6043daff-884e-48bc-aa9a-810d268aceb1\", \"raw\": \" Test complete. Exiting\"}}"
+
+        }
+
+        ```'
+      operationId: startSiteSwitchRadiusSyntheticTest
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: device_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/synthetictest_radius_server'
+              - examples:
+                - password: string
+                  profile: dot1x
+                  user: string
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  password: string
+                  profile: dot1x
+                  user: string
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/websocket_session'
+                - description: Response containing the WebSocket session handle for asynchronous command output
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/websocket_session'
+                - description: Response containing the WebSocket session handle for asynchronous command output
+                contentMediaType: application/vnd.api+json
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/devices/{device_id}/synthetic_test:
+    parameters: []
+    get:
+      tags:
+      - Sites Synthetic Tests
+      summary: getSiteDeviceSyntheticTest
+      description: Get Device Synthetic Test
+      operationId: getSiteDeviceSyntheticTest
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: device_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: Synthetic Test Status
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/synthetictest_info'
+                - description: Synthetic test status or result record
+                  examples:
+                  - device_type: gateway
+                    mac: 5c5b35584a6f
+                    port_id: ge-0/0/1.100
+                    start_time: 1675718807
+                    status: inprogress
+                    type: speedtest
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    device_type: gateway
+                    mac: 5c5b35584a6f
+                    port_id: ge-0/0/1.100
+                    start_time: 1675718807
+                    status: inprogress
+                    type: speedtest
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/synthetictest_info'
+                - description: Synthetic test status or result record
+                  examples:
+                  - device_type: gateway
+                    mac: 5c5b35584a6f
+                    port_id: ge-0/0/1.100
+                    start_time: 1675718807
+                    status: inprogress
+                    type: speedtest
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    device_type: gateway
+                    mac: 5c5b35584a6f
+                    port_id: ge-0/0/1.100
+                    start_time: 1675718807
+                    status: inprogress
+                    type: speedtest
+        '400':
+          description: Device not online / Device not supported / Already in progress
+          headers: {}
+          content: {}
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    post:
+      tags:
+      - Sites Synthetic Tests
+      summary: triggerSiteDeviceSyntheticTest
+      description: Trigger Device Synthetic Test
+      operationId: triggerSiteDeviceSyntheticTest
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: device_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/synthetictest_device'
+        required: false
+      responses:
+        '200':
+          description: Scheduled
+          headers: {}
+          content: {}
+        '400':
+          description: Device not online / Device not supported / Already in progress
+          headers: {}
+          content: {}
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/synthetic_test:
+    parameters: []
+    post:
+      tags:
+      - Sites Synthetic Tests
+      summary: triggerSiteSyntheticTest
+      description: Trigger Synthetic Testing
+      operationId: triggerSiteSyntheticTest
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/synthetictest'
+              - examples:
+                - email: test@mist.com
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  email: test@mist.com
+        required: false
+      responses:
+        '200':
+          description: Synthetic Test Started
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_synthetictest'
+                - description: Result returned after a site synthetic test is queued
+                  examples:
+                  - id: a42775f6-edc8-69b5-f979-542fa1b43ff9
+                    message: Successfully queued synthetic test for the site.
+                    status: string
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    id: a42775f6-edc8-69b5-f979-542fa1b43ff9
+                    message: Successfully queued synthetic test for the site.
+                    status: string
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_synthetictest'
+                - description: Result returned after a site synthetic test is queued
+                  examples:
+                  - id: a42775f6-edc8-69b5-f979-542fa1b43ff9
+                    message: Successfully queued synthetic test for the site.
+                    status: string
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    id: a42775f6-edc8-69b5-f979-542fa1b43ff9
+                    message: Successfully queued synthetic test for the site.
+                    status: string
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/synthetic_test/search:
+    parameters: []
+    get:
+      tags:
+      - Sites Synthetic Tests
+      summary: searchSiteSyntheticTest
+      description: Search Site Synthetic Testing
+      operationId: searchSiteSyntheticTest
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: mac
+        in: query
+        description: Filter results by MAC address
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 5c5b350e0410
+      - name: port_id
+        in: query
+        description: Filter results by port identifier
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - ge-1/0/1
+      - name: vlan_id
+        in: query
+        description: Filter results by VLAN ID
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - '100'
+      - name: by
+        in: query
+        description: Entity who triggers the test
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - user
+      - name: reason
+        in: query
+        description: Filter results by reason
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - test failed
+      - name: type
+        in: query
+        description: 'Synthetic test type used to filter results. enum: `arp`, `curl`, `dhcp`, `dhcp6`, `dns`, `lan_connectivity`, `radius`, `speedtest`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/synthetictest_type'
+          - description: 'Synthetic test type used to filter results. enum: `arp`, `curl`, `dhcp`, `dhcp6`, `dns`, `lan_connectivity`, `radius`, `speedtest`'
+      - name: protocol
+        in: query
+        description: 'Connectivity protocol used to filter synthetic test results. enum: `ping`, `traceroute`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/synthetictest_protocol'
+          - description: 'Connectivity protocol used to filter synthetic test results. enum: `ping`, `traceroute`'
+      - name: tenant
+        in: query
+        description: Filter results by tenant network
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Maximum number of results to return per page
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          contentEncoding: int32
+          default: 100
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: search_after
+        in: query
+        description: Pagination cursor for retrieving subsequent pages of results. This value is automatically populated by Mist in the `next` URL from the previous response and should not be manually constructed.
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Synthetic Test Search Result
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_synthetictest_search'
+                - description: Paginated response for site synthetic test search results
+                  examples:
+                  - end: 0
+                    limit: 0
+                    next: string
+                    results:
+                    - by: user
+                      device_type: gateway
+                      failed: false
+                      latency: 40
+                      mac: aff827549235
+                      port_id: ge-0/0/2
+                      rx_mbps: 322
+                      timestamp: 1706824045.059036
+                      tx_mbps: 199
+                      type: speedtest
+                      vlan_id: 20
+                    - by: marvis
+                      device_type: gateway
+                      failed: true
+                      latency: 0
+                      mac: 8396cd006c8c
+                      port_id: ge-0/0/2
+                      reason: interface not ready to perform test
+                      rx_mbps: 0
+                      timestamp: 1706824045.059036
+                      tx_mbps: 0
+                      type: speedtest
+                      vlan_id: 100
+                    start: 0
+                    total: 0
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    end: 0
+                    limit: 0
+                    next: string
+                    results:
+                    - by: user
+                      device_type: gateway
+                      failed: false
+                      latency: 40
+                      mac: aff827549235
+                      port_id: ge-0/0/2
+                      rx_mbps: 322
+                      timestamp: 1706824045.059036
+                      tx_mbps: 199
+                      type: speedtest
+                      vlan_id: 20
+                    - by: marvis
+                      device_type: gateway
+                      failed: true
+                      latency: 0
+                      mac: 8396cd006c8c
+                      port_id: ge-0/0/2
+                      reason: interface not ready to perform test
+                      rx_mbps: 0
+                      timestamp: 1706824045.059036
+                      tx_mbps: 0
+                      type: speedtest
+                      vlan_id: 100
+                    start: 0
+                    total: 0
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_synthetictest_search'
+                - description: Paginated response for site synthetic test search results
+                  examples:
+                  - end: 0
+                    limit: 0
+                    next: string
+                    results:
+                    - by: user
+                      device_type: gateway
+                      failed: false
+                      latency: 40
+                      mac: aff827549235
+                      port_id: ge-0/0/2
+                      rx_mbps: 322
+                      timestamp: 1706824045.059036
+                      tx_mbps: 199
+                      type: speedtest
+                      vlan_id: 20
+                    - by: marvis
+                      device_type: gateway
+                      failed: true
+                      latency: 0
+                      mac: 8396cd006c8c
+                      port_id: ge-0/0/2
+                      reason: interface not ready to perform test
+                      rx_mbps: 0
+                      timestamp: 1706824045.059036
+                      tx_mbps: 0
+                      type: speedtest
+                      vlan_id: 100
+                    start: 0
+                    total: 0
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    end: 0
+                    limit: 0
+                    next: string
+                    results:
+                    - by: user
+                      device_type: gateway
+                      failed: false
+                      latency: 40
+                      mac: aff827549235
+                      port_id: ge-0/0/2
+                      rx_mbps: 322
+                      timestamp: 1706824045.059036
+                      tx_mbps: 199
+                      type: speedtest
+                      vlan_id: 20
+                    - by: marvis
+                      device_type: gateway
+                      failed: true
+                      latency: 0
+                      mac: 8396cd006c8c
+                      port_id: ge-0/0/2
+                      reason: interface not ready to perform test
+                      rx_mbps: 0
+                      timestamp: 1706824045.059036
+                      tx_mbps: 0
+                      type: speedtest
+                      vlan_id: 100
+                    start: 0
+                    total: 0
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    synthetictest_protocol:
+      title: synthetictest_protocol
+      enum:
+      - ping
+      - traceroute
+      type: string
+      description: 'Protocol used by a synthetic test probe. enum: `ping`, `traceroute`'
+    synthetictest_radius_server:
+      title: synthetictest_radius_server
+      required:
+      - password
+      - user
+      type: object
+      properties:
+        password:
+          type: string
+          description: Specify the password associated with the username
+          contentEncoding: password
+        profile:
+          type: string
+          description: Specify the access profile associated with the subscriber
+          default: dot1x
+        user:
+          type: string
+          description: Specify the subscriber username to test
+      description: Request body for testing RADIUS server availability from a switch
+    synthetictest_info:
+      title: synthetictest_info
+      type: object
+      properties:
+        by:
+          type: string
+          description: Actor that triggered the synthetic test
+          examples:
+          - user
+        device_type:
+          allOf:
+          - $ref: '#/components/schemas/device_type4'
+          - description: 'Device category that ran the synthetic test. enum: `ap`, `gateway`, `switch`.'
+        failed:
+          type: boolean
+          description: Whether the synthetic test failed
+          examples:
+          - false
+        latency:
+          type: integer
+          description: Measured latency for the synthetic test, in milliseconds
+          contentEncoding: int32
+          examples:
+          - 40
+        mac:
+          type: string
+          description: Device MAC address that ran the synthetic test
+        port_id:
+          type: string
+          description: Interface identifier used to run the synthetic test
+          examples:
+          - ge-0/0/2
+        reason:
+          type: string
+          description: Failure reason reported for the synthetic test, when available
+          examples:
+          - interface not ready to perform test
+        rx_mbps:
+          type: integer
+          description: Receive throughput measured by the synthetic speed test, in Mbps
+          contentEncoding: int32
+          examples:
+          - 322
+        start_time:
+          type: integer
+          description: Epoch timestamp, in seconds, when the synthetic test started
+          contentEncoding: int32
+          examples:
+          - 1675718807
+        status:
+          type: string
+          description: Current execution status of the synthetic test
+        timestamp:
+          type: number
+          description: Time when the synthetic test result was recorded
+          readOnly: true
+        tx_mbps:
+          type: integer
+          description: Transmit throughput measured by the synthetic speed test, in Mbps
+          contentEncoding: int32
+          examples:
+          - 199
+        type:
+          allOf:
+          - $ref: '#/components/schemas/synthetictest_type3'
+          - description: 'Synthetic test type for this result. enum: `arp`, `curl`, `dhcp`, `dhcp6`, `dns`, `lan_connectivity`, `radius`, `speedtest`.'
+        vlan_id:
+          type: integer
+          description: Identifier of the VLAN used by the synthetic test
+          contentEncoding: int32
+          examples:
+          - 20
+      description: Synthetic test status or result record
+    device_type4:
+      title: device_type4
+      enum:
+      - ap
+      - gateway
+      - switch
+      type: string
+      description: 'Device category that ran the synthetic test. enum: `ap`, `gateway`, `switch`.'
+    synthetictest_type3:
+      title: synthetictest_type3
+      enum:
+      - arp
+      - curl
+      - dhcp
+      - dhcp6
+      - dns
+      - lan_connectivity
+      - radius
+      - speedtest
+      type: string
+      description: 'Synthetic test type for this result. enum: `arp`, `curl`, `dhcp`, `dhcp6`, `dns`, `lan_connectivity`, `radius`, `speedtest`.'
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_synthetictest_search:
+      title: response_synthetictest_search
+      required:
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Epoch timestamp, in seconds, for the end of the synthetic test search window
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of synthetic test results returned in this page
+          contentEncoding: int32
+        next:
+          type: string
+          description: URL for retrieving the next page of synthetic test results
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/synthetictest_info'
+          description: Synthetic test result records matching the search filters
+        start:
+          type: integer
+          description: Epoch timestamp, in seconds, for the start of the synthetic test search window
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of synthetic test results matching the search filters across all pages
+          contentEncoding: int32
+      description: Paginated response for site synthetic test search results
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    synthetictest:
+      title: synthetictest
+      type: object
+      properties:
+        email:
+          type: string
+          description: Contact email address supplied when triggering the site synthetic test
+          contentEncoding: email
+          examples:
+          - test@mist.com
+      description: Request body for triggering a site synthetic test
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    synthetictest_type1:
+      title: synthetictest_type1
+      enum:
+      - arp
+      - curl
+      - dhcp
+      - dhcp6
+      - dns
+      - lan_connectivity
+      - radius
+      - speedtest
+      type: string
+      description: 'Synthetic test type to run against the target. enum: `arp`, `curl`, `dhcp`, `dhcp6`, `dns`, `lan_connectivity`, `radius`, `speedtest`.'
+    synthetictest_device:
+      title: synthetictest_device
+      required:
+      - type
+      type: object
+      properties:
+        host:
+          type: string
+          description: If `type`==`lan_connectivity`. Hostname or IP address to probe for LAN connectivity testing
+          examples:
+          - www.example.com
+        hostname:
+          type: string
+          description: If `type`==`dns`. Hostname to resolve during the DNS synthetic test
+          examples:
+          - google.com"
+        ip:
+          type: string
+          description: If `type`==`arp`. IP address to resolve through ARP during the synthetic test
+          examples:
+          - 192.168.3.5
+        password:
+          type: string
+          description: If `type`==`radius`. Password used for RADIUS authentication testing
+          contentEncoding: password
+          examples:
+          - test123
+        ping_count:
+          maximum: 60
+          minimum: 10
+          type: integer
+          description: If `type`==`lan_connectivity`. Number of ping probes to send during the LAN connectivity test
+          contentEncoding: int32
+          default: 10
+        ping_details:
+          type: boolean
+          description: If `type`==`lan_connectivity`. Whether to include per-ping results in the LAN connectivity test output
+          default: false
+        ping_size:
+          maximum: 65535
+          minimum: 56
+          type: integer
+          description: If `type`==`lan_connectivity`. Payload size, in bytes, for each ping probe
+          contentEncoding: int32
+          default: 56
+        port_id:
+          type: string
+          description: If `type`==`speedtest`, required for ssr
+          examples:
+          - wan0
+        protocol:
+          allOf:
+          - $ref: '#/components/schemas/synthetictest_device_protocol2'
+          - description: 'If `type`==`lan_connectivity`. Protocol or protocol combination used for the connectivity test. enum: `ping`, `ping+traceroute`, `traceroute`.'
+        tenant:
+          type: string
+          description: If `type`==`curl` or `type`==`lan_connectivity`
+          examples:
+          - lan_network1
+        timeout:
+          maximum: 120
+          minimum: 30
+          type: integer
+          description: If `type`==`curl`. Timeout, in seconds, for the HTTP request
+          contentEncoding: int32
+          default: 60
+          examples:
+          - 60
+        traceroute_udp_port:
+          maximum: 65535
+          minimum: 0
+          type: integer
+          description: SRX only, traceroute udp port
+          contentEncoding: int32
+          default: 33434
+        type:
+          allOf:
+          - $ref: '#/components/schemas/synthetictest_type1'
+          - description: 'Synthetic test type to run against the target. enum: `arp`, `curl`, `dhcp`, `dhcp6`, `dns`, `lan_connectivity`, `radius`, `speedtest`.'
+        url:
+          type: string
+          description: If `type`==`curl`. URL requested during the HTTP synthetic test
+          examples:
+          - https://www.example.com
+        username:
+          type: string
+          description: If `type`==`radius`. Username used for RADIUS authentication testing
+          examples:
+          - user
+        vlan_id:
+          oneOf:
+          - type: string
+          - maximum: 4094
+            minimum: 1
+            type: integer
+            contentEncoding: int32
+          description: Required for AP. VLAN ID used by the synthetic test when the target device is an AP
+      description: Request body for triggering a synthetic test on a device
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    synthetictest_device_protocol2:
+      title: synthetictest_device_protocol2
+      enum:
+      - ping
+      - ping+traceroute
+      - traceroute
+      type: string
+      description: 'If `type`==`lan_connectivity`. Protocol or protocol combination used for the connectivity test. enum: `ping`, `ping+traceroute`, `traceroute`.'
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    websocket_session:
+      title: websocket_session
+      required:
+      - session
+      type: object
+      properties:
+        session:
+          type: string
+          description: Identifier used to correlate output on the WebSocket stream
+          examples:
+          - 19e73828-937f-05e6-f709-e29efdb0a82b
+      description: Response containing the WebSocket session handle for asynchronous command output
+    synthetictest_type:
+      title: synthetictest_type
+      enum:
+      - arp
+      - curl
+      - dhcp
+      - dhcp6
+      - dns
+      - lan_connectivity
+      - radius
+      - speedtest
+      type: string
+      description: 'enum: `arp`, `curl`, `dhcp`, `dhcp6`, `dns`, `lan_connectivity`, `radius`, `speedtest`'
+    response_synthetictest:
+      title: response_synthetictest
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique value for the queued synthetic test request
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        message:
+          type: string
+          description: Human-readable queuing result returned by the API
+          examples:
+          - Successfully queued synthetic test for the site.
+        status:
+          type: string
+          description: Queue status for the synthetic test request
+          examples:
+          - success
+      description: Result returned after a site synthetic test is queued
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header

@@ -1,0 +1,2340 @@
+openapi: 3.2.0
+info:
+  title: Mist Sites Location API
+  description: '> Version: **2607.1.1**
+
+    >
+
+    > Date: **August 17, 2026**
+
+
+    NOTE:
+
+    Some important API changes will be introduced.'
+  contact:
+    name: Thomas Munzer
+    email: tmunzer@juniper.net
+  version: 2607.1.1
+servers:
+- url: https://api.mist.com
+  variables: {}
+- url: https://api.gc1.mist.com
+  variables: {}
+- url: https://api.ac2.mist.com
+  variables: {}
+- url: https://api.gc2.mist.com
+  variables: {}
+- url: https://api.gc4.mist.com
+  variables: {}
+- url: https://api.eu.mist.com
+  variables: {}
+- url: https://api.gc3.mist.com
+  variables: {}
+- url: https://api.ac6.mist.com
+  variables: {}
+- url: https://api.gc6.mist.com
+  variables: {}
+- url: https://api.ac5.mist.com
+  variables: {}
+- url: https://api.gc5.mist.com
+  variables: {}
+- url: https://api.gc7.mist.com
+  variables: {}
+security:
+- apiToken: []
+- csrfToken: []
+tags:
+- name: Sites Location
+  description: The Location Diagnostics allows users to retrieve and analyze coverage and performance data for mist access points (aps) and devices.
+paths:
+  /api/v1/sites/{site_id}/location/coverage:
+    parameters: []
+    get:
+      tags:
+      - Sites Location
+      summary: getSiteBeamCoverageOverview
+      description: Get Beam Coverage Overview
+      operationId: getSiteBeamCoverageOverview
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: map_id
+        in: query
+        description: Filter results by map identifier
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 00000000-0000-0000-0000-000000000000
+      - name: type
+        in: query
+        description: 'Filter results by type. enum: `asset`, `client`, `sdkclient`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/rf_client_type'
+          - description: 'Filter results by type. enum: `asset`, `client`, `sdkclient`'
+      - name: client_type
+        in: query
+        description: Filter results by client type
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: Time range duration for the query, using relative units such as `10m`, `7d`, or `2w`
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: 1d
+          examples:
+          - 10m
+      - name: resolution
+        in: query
+        description: 'Location calculation resolution used by the query. enum: `default`, `fine`'
+        style: form
+        explode: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/resolution'
+          - description: 'Location calculation resolution used by the query. enum: `default`, `fine`'
+      - name: start
+        in: query
+        description: Lower bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d` or `-1w`
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: Upper bound of the time range, as an epoch timestamp in seconds or a relative value such as `-1d`, `-2h`, or `now`
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_location_coverage'
+                - description: Beam coverage overview for a site location map
+                  examples:
+                  - beams_means:
+                    - - 1
+                      - 3
+                      - 3.2
+                    - - 6
+                      - 10
+                      - 6.5
+                    end: 1428954000
+                    gridsize: 1
+                    result_def:
+                    - x
+                    - y
+                    - beams_mean
+                    - beacons_mean
+                    - max_rssi
+                    - avg_rssi
+                    results:
+                    - - 1
+                      - 3
+                      - 3.2
+                      - 18.5
+                      - -68
+                      - -70
+                    - - 6
+                      - 10
+                      - 6.5
+                      - 30
+                      - 1
+                      - -72.5
+                      - -75
+                    start: 1428939600
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    beams_means:
+                    - - 1
+                      - 3
+                      - 3.2
+                    - - 6
+                      - 10
+                      - 6.5
+                    end: 1428954000
+                    gridsize: 1
+                    result_def:
+                    - x
+                    - y
+                    - beams_mean
+                    - beacons_mean
+                    - max_rssi
+                    - avg_rssi
+                    results:
+                    - - 1
+                      - 3
+                      - 3.2
+                      - 18.5
+                      - -68
+                      - -70
+                    - - 6
+                      - 10
+                      - 6.5
+                      - 30
+                      - 1
+                      - -72.5
+                      - -75
+                    start: 1428939600
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_location_coverage'
+                - description: Beam coverage overview for a site location map
+                  examples:
+                  - beams_means:
+                    - - 1
+                      - 3
+                      - 3.2
+                    - - 6
+                      - 10
+                      - 6.5
+                    end: 1428954000
+                    gridsize: 1
+                    result_def:
+                    - x
+                    - y
+                    - beams_mean
+                    - beacons_mean
+                    - max_rssi
+                    - avg_rssi
+                    results:
+                    - - 1
+                      - 3
+                      - 3.2
+                      - 18.5
+                      - -68
+                      - -70
+                    - - 6
+                      - 10
+                      - 6.5
+                      - 30
+                      - 1
+                      - -72.5
+                      - -75
+                    start: 1428939600
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    beams_means:
+                    - - 1
+                      - 3
+                      - 3.2
+                    - - 6
+                      - 10
+                      - 6.5
+                    end: 1428954000
+                    gridsize: 1
+                    result_def:
+                    - x
+                    - y
+                    - beams_mean
+                    - beacons_mean
+                    - max_rssi
+                    - avg_rssi
+                    results:
+                    - - 1
+                      - 3
+                      - 3.2
+                      - 18.5
+                      - -68
+                      - -70
+                    - - 6
+                      - 10
+                      - 6.5
+                      - 30
+                      - 1
+                      - -72.5
+                      - -75
+                    start: 1428939600
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/location/ml/current:
+    parameters: []
+    get:
+      tags:
+      - Sites Location
+      summary: getSiteMachineLearningCurrentStat
+      description: 'Get Machine Learning Current Stat
+
+        For each VBLE AP, it has ML model parameters (e.g. Path-loss-estimate, Intercept) as well as completion indicators (Level and PercentageComplete). For the completeness, ML takes N sample to finish its first level and use N*0.25 samples to complete each successive level. When a device is moved, the completeness will be reset as it has to re-learn.'
+      operationId: getSiteMachineLearningCurrentStat
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: map_id
+        in: query
+        description: Filter results by map identifier
+        style: form
+        explode: true
+        schema:
+          type: string
+          examples:
+          - 00000000-0000-0000-0000-000000000000
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                uniqueItems: true
+                type: array
+                items:
+                  type: object
+                description: Machine-learning response records returned as opaque objects
+                examples:
+                - - current:
+                      Android:
+                        completed: 36
+                        int: -6
+                        level: 3
+                        ple: -3
+                        quality: '4'
+                        src: device
+                        timestamp: 1442854794
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: '2'
+                        src: default
+                        timestamp: 1442854704
+                      iPod:
+                        int: -10
+                        overwrite: true
+                        ple: -5
+                        src: overwrite
+                    device_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                  - beacon_id: 7913f032-aab4-c3ae-e83e-5a2756ef4d40
+                    current:
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: last
+                        src: device
+                        timestamp: 1442854704
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                  - current:
+                      Android:
+                        completed: 36
+                        int: -6
+                        level: 3
+                        ple: -3
+                        quality: '4'
+                        src: device
+                        timestamp: 1442854794
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: '2'
+                        src: default
+                        timestamp: 1442854704
+                      iPod:
+                        int: -10
+                        overwrite: true
+                        ple: -5
+                        src: overwrite
+                    device_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                  - beacon_id: 7913f032-aab4-c3ae-e83e-5a2756ef4d40
+                    current:
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: last
+                        src: device
+                        timestamp: 1442854704
+            application/vnd.api+json:
+              schema:
+                uniqueItems: true
+                type: array
+                items:
+                  type: object
+                description: Machine-learning response records returned as opaque objects
+                examples:
+                - - current:
+                      Android:
+                        completed: 36
+                        int: -6
+                        level: 3
+                        ple: -3
+                        quality: '4'
+                        src: device
+                        timestamp: 1442854794
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: '2'
+                        src: default
+                        timestamp: 1442854704
+                      iPod:
+                        int: -10
+                        overwrite: true
+                        ple: -5
+                        src: overwrite
+                    device_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                  - beacon_id: 7913f032-aab4-c3ae-e83e-5a2756ef4d40
+                    current:
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: last
+                        src: device
+                        timestamp: 1442854704
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                  - current:
+                      Android:
+                        completed: 36
+                        int: -6
+                        level: 3
+                        ple: -3
+                        quality: '4'
+                        src: device
+                        timestamp: 1442854794
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: '2'
+                        src: default
+                        timestamp: 1442854704
+                      iPod:
+                        int: -10
+                        overwrite: true
+                        ple: -5
+                        src: overwrite
+                    device_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                  - beacon_id: 7913f032-aab4-c3ae-e83e-5a2756ef4d40
+                    current:
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: last
+                        src: device
+                        timestamp: 1442854704
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/location/ml/defaults:
+    parameters: []
+    get:
+      tags:
+      - Sites Location
+      summary: getSiteDefaultPlfForModels
+      description: Get Default PLF for Models
+      operationId: getSiteDefaultPlfForModels
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                uniqueItems: true
+                type: array
+                items:
+                  type: object
+                description: Machine-learning response records returned as opaque objects
+                examples:
+                - - current:
+                      Android:
+                        completed: 36
+                        int: -6
+                        level: 3
+                        ple: -3
+                        quality: '4'
+                        src: device
+                        timestamp: 1442854794
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: '2'
+                        src: default
+                        timestamp: 1442854704
+                      iPod:
+                        int: -10
+                        overwrite: true
+                        ple: -5
+                        src: overwrite
+                    device_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                  - beacon_id: 7913f032-aab4-c3ae-e83e-5a2756ef4d40
+                    current:
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: last
+                        src: device
+                        timestamp: 1442854704
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                  - current:
+                      Android:
+                        completed: 36
+                        int: -6
+                        level: 3
+                        ple: -3
+                        quality: '4'
+                        src: device
+                        timestamp: 1442854794
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: '2'
+                        src: default
+                        timestamp: 1442854704
+                      iPod:
+                        int: -10
+                        overwrite: true
+                        ple: -5
+                        src: overwrite
+                    device_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                  - beacon_id: 7913f032-aab4-c3ae-e83e-5a2756ef4d40
+                    current:
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: last
+                        src: device
+                        timestamp: 1442854704
+            application/vnd.api+json:
+              schema:
+                uniqueItems: true
+                type: array
+                items:
+                  type: object
+                description: Machine-learning response records returned as opaque objects
+                examples:
+                - - current:
+                      Android:
+                        completed: 36
+                        int: -6
+                        level: 3
+                        ple: -3
+                        quality: '4'
+                        src: device
+                        timestamp: 1442854794
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: '2'
+                        src: default
+                        timestamp: 1442854704
+                      iPod:
+                        int: -10
+                        overwrite: true
+                        ple: -5
+                        src: overwrite
+                    device_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                  - beacon_id: 7913f032-aab4-c3ae-e83e-5a2756ef4d40
+                    current:
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: last
+                        src: device
+                        timestamp: 1442854704
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                  - current:
+                      Android:
+                        completed: 36
+                        int: -6
+                        level: 3
+                        ple: -3
+                        quality: '4'
+                        src: device
+                        timestamp: 1442854794
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: '2'
+                        src: default
+                        timestamp: 1442854704
+                      iPod:
+                        int: -10
+                        overwrite: true
+                        ple: -5
+                        src: overwrite
+                    device_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                  - beacon_id: 7913f032-aab4-c3ae-e83e-5a2756ef4d40
+                    current:
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: last
+                        src: device
+                        timestamp: 1442854704
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/location/ml/device/{device_id}:
+    parameters: []
+    delete:
+      tags:
+      - Sites Location
+      summary: clearSiteMlOverwriteForDevice
+      description: Clear ML Overwrite for Device
+      operationId: clearSiteMlOverwriteForDevice
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: device_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    put:
+      tags:
+      - Sites Location
+      summary: overwriteSiteMlForDevice
+      description: Overwrite ML For Device
+      operationId: overwriteSiteMlForDevice
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: device_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/ml_overwrite_additional_properties'
+              description: Request Body
+              examples:
+              - iOS:
+                  int: 6
+                  ple: -3
+                iPod:
+                  int: -10
+                  ple: -5
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  iOS:
+                    int: 6
+                    ple: -3
+                  iPod:
+                    int: -10
+                    ple: -5
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                uniqueItems: true
+                type: array
+                items:
+                  type: object
+                description: Machine-learning response records returned as opaque objects
+                examples:
+                - - current:
+                      Android:
+                        completed: 36
+                        int: -6
+                        level: 3
+                        ple: -3
+                        quality: '4'
+                        src: device
+                        timestamp: 1442854794
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: '2'
+                        src: default
+                        timestamp: 1442854704
+                      iPod:
+                        int: -10
+                        overwrite: true
+                        ple: -5
+                        src: overwrite
+                    device_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                  - beacon_id: 7913f032-aab4-c3ae-e83e-5a2756ef4d40
+                    current:
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: last
+                        src: device
+                        timestamp: 1442854704
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                  - current:
+                      Android:
+                        completed: 36
+                        int: -6
+                        level: 3
+                        ple: -3
+                        quality: '4'
+                        src: device
+                        timestamp: 1442854794
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: '2'
+                        src: default
+                        timestamp: 1442854704
+                      iPod:
+                        int: -10
+                        overwrite: true
+                        ple: -5
+                        src: overwrite
+                    device_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                  - beacon_id: 7913f032-aab4-c3ae-e83e-5a2756ef4d40
+                    current:
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: last
+                        src: device
+                        timestamp: 1442854704
+            application/vnd.api+json:
+              schema:
+                uniqueItems: true
+                type: array
+                items:
+                  type: object
+                description: Machine-learning response records returned as opaque objects
+                examples:
+                - - current:
+                      Android:
+                        completed: 36
+                        int: -6
+                        level: 3
+                        ple: -3
+                        quality: '4'
+                        src: device
+                        timestamp: 1442854794
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: '2'
+                        src: default
+                        timestamp: 1442854704
+                      iPod:
+                        int: -10
+                        overwrite: true
+                        ple: -5
+                        src: overwrite
+                    device_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                  - beacon_id: 7913f032-aab4-c3ae-e83e-5a2756ef4d40
+                    current:
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: last
+                        src: device
+                        timestamp: 1442854704
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                  - current:
+                      Android:
+                        completed: 36
+                        int: -6
+                        level: 3
+                        ple: -3
+                        quality: '4'
+                        src: device
+                        timestamp: 1442854794
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: '2'
+                        src: default
+                        timestamp: 1442854704
+                      iPod:
+                        int: -10
+                        overwrite: true
+                        ple: -5
+                        src: overwrite
+                    device_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                  - beacon_id: 7913f032-aab4-c3ae-e83e-5a2756ef4d40
+                    current:
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: last
+                        src: device
+                        timestamp: 1442854704
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/location/ml/map/{map_id}:
+    parameters: []
+    delete:
+      tags:
+      - Sites Location
+      summary: clearSiteMlOverwriteForMap
+      description: Clear ML Overwrite for Map
+      operationId: clearSiteMlOverwriteForMap
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: map_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+    put:
+      tags:
+      - Sites Location
+      summary: overwriteSiteMlForMap
+      description: Overwrite ML For Map
+      operationId: overwriteSiteMlForMap
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: map_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/ml_overwrite_additional_properties'
+              description: Request Body
+              examples:
+              - iOS:
+                  int: 6
+                  ple: -3
+                iPod:
+                  int: -10
+                  ple: -5
+              contentMediaType: application/json
+            examples:
+              Example:
+                value:
+                  iOS:
+                    int: 6
+                    ple: -3
+                  iPod:
+                    int: -10
+                    ple: -5
+        required: false
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                uniqueItems: true
+                type: array
+                items:
+                  type: object
+                description: Machine-learning response records returned as opaque objects
+                examples:
+                - - current:
+                      Android:
+                        completed: 36
+                        int: -6
+                        level: 3
+                        ple: -3
+                        quality: '4'
+                        src: device
+                        timestamp: 1442854794
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: '2'
+                        src: default
+                        timestamp: 1442854704
+                      iPod:
+                        int: -10
+                        overwrite: true
+                        ple: -5
+                        src: overwrite
+                    device_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                  - beacon_id: 7913f032-aab4-c3ae-e83e-5a2756ef4d40
+                    current:
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: last
+                        src: device
+                        timestamp: 1442854704
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                  - current:
+                      Android:
+                        completed: 36
+                        int: -6
+                        level: 3
+                        ple: -3
+                        quality: '4'
+                        src: device
+                        timestamp: 1442854794
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: '2'
+                        src: default
+                        timestamp: 1442854704
+                      iPod:
+                        int: -10
+                        overwrite: true
+                        ple: -5
+                        src: overwrite
+                    device_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                  - beacon_id: 7913f032-aab4-c3ae-e83e-5a2756ef4d40
+                    current:
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: last
+                        src: device
+                        timestamp: 1442854704
+            application/vnd.api+json:
+              schema:
+                uniqueItems: true
+                type: array
+                items:
+                  type: object
+                description: Machine-learning response records returned as opaque objects
+                examples:
+                - - current:
+                      Android:
+                        completed: 36
+                        int: -6
+                        level: 3
+                        ple: -3
+                        quality: '4'
+                        src: device
+                        timestamp: 1442854794
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: '2'
+                        src: default
+                        timestamp: 1442854704
+                      iPod:
+                        int: -10
+                        overwrite: true
+                        ple: -5
+                        src: overwrite
+                    device_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                  - beacon_id: 7913f032-aab4-c3ae-e83e-5a2756ef4d40
+                    current:
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: last
+                        src: device
+                        timestamp: 1442854704
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                  - current:
+                      Android:
+                        completed: 36
+                        int: -6
+                        level: 3
+                        ple: -3
+                        quality: '4'
+                        src: device
+                        timestamp: 1442854794
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: '2'
+                        src: default
+                        timestamp: 1442854704
+                      iPod:
+                        int: -10
+                        overwrite: true
+                        ple: -5
+                        src: overwrite
+                    device_id: b069b358-4c97-5319-1f8c-7c5ca64d6ab1
+                  - beacon_id: 7913f032-aab4-c3ae-e83e-5a2756ef4d40
+                    current:
+                      iOS:
+                        completed: 16
+                        int: -6
+                        level: 6
+                        ple: -3
+                        quality: last
+                        src: device
+                        timestamp: 1442854704
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+  /api/v1/sites/{site_id}/location/ml/reset/map/{map_id}:
+    parameters: []
+    post:
+      tags:
+      - Sites Location
+      summary: resetSiteMlStatsByMap
+      description: Reset ML Stats by Map
+      operationId: resetSiteMlStatsByMap
+      parameters:
+      - name: site_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      - name: map_id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          contentEncoding: uuid
+          examples:
+          - 000000ab-00ab-00ab-00ab-0000000000ab
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content: {}
+        '400':
+          description: Bad Syntax
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http400'
+                - description: Standard HTTP 400 bad request error response
+                  examples:
+                  - detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+        '401':
+          description: Unauthorized
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http401'
+                - description: Standard HTTP 401 authentication error response
+                  examples:
+                  - detail: Authentication credentials were not provided.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Authentication credentials were not provided.
+        '403':
+          description: Permission Denied
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http403'
+                - description: Standard HTTP 403 permission error response
+                  examples:
+                  - detail: You do not have permission to perform this action.
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: You do not have permission to perform this action.
+        '404':
+          description: Not found. The API endpoint doesn’t exist or resource doesn’ t exist
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/json
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http404'
+                - description: Standard HTTP 404 not found error response
+                contentMediaType: application/vnd.api+json
+        '429':
+          description: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+            application/vnd.api+json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/response_http429'
+                - description: Standard HTTP 429 rate limit error response
+                  examples:
+                  - detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+                contentMediaType: application/vnd.api+json
+              examples:
+                Example:
+                  value:
+                    detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      deprecated: false
+components:
+  schemas:
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    response_location_coverage:
+      title: response_location_coverage
+      required:
+      - beams_means
+      - end
+      - gridsize
+      - result_def
+      - results
+      - start
+      type: object
+      properties:
+        beams_means:
+          type: array
+          items:
+            type: array
+            items:
+              type: number
+          description: Grid beam mean samples as [x, y, mean] values for the coverage view
+        end:
+          type: integer
+          description: Epoch timestamp for the end of the coverage analysis window
+          contentEncoding: int32
+        gridsize:
+          type: number
+          description: Grid cell size in meters for coverage samples
+        result_def:
+          type: array
+          items:
+            type: string
+          description: Column names describing each value position in the coverage result rows
+        results:
+          type: array
+          items:
+            type: array
+            items:
+              type: number
+          description: Coverage result rows whose values follow the `result_def` column order
+        start:
+          type: integer
+          description: Epoch timestamp for the start of the coverage analysis window
+          contentEncoding: int32
+      description: Beam coverage overview for a site location map
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    ml_overwrite_additional_properties:
+      title: ml_overwrite_additional_properties
+      type: object
+      properties:
+        int:
+          type: integer
+          description: Location ML intercept value to use for the model
+          contentEncoding: int32
+        ple:
+          type: integer
+          description: Path-loss estimate value to use for the location machine learning model
+          contentEncoding: int32
+      description: Location machine learning parameter overwrite values for one client model
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    rf_client_type:
+      title: rf_client_type
+      enum:
+      - asset
+      - client
+      - sdkclient
+      type: string
+      description: 'enum: `asset`, `client`, `sdkclient`'
+    resolution:
+      title: resolution
+      enum:
+      - default
+      - fine
+      type: string
+      description: 'Location resolution mode for map or placement calculations. enum: `default`, `fine`'
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      description: "Preferred authentication method for automation and integrations. Send the API token in the HTTP `Authorization` header.\n\n**Format**:\n  `Authorization: Token {apitoken}`\n\n**Notes**:\n* An API token generated for a specific admin has the same privileges as that admin\n* An API token is automatically removed if it is not used for more than 90 days\n* SSO admins cannot generate admin API tokens. Use organization API tokens when scoped Org/Site privileges are needed."
+      name: Authorization
+      in: header
+    csrfToken:
+      type: apiKey
+      description: 'Session-based authentication for browser or login/password flows. After a successful [Login]($e/Admins%20Login/login) request, Mist returns a `csrftoken` cookie. Send that value in the `X-CSRFToken` header on later API requests that use the login session.
+
+
+        **Format**:
+
+        ```
+
+        X-CSRFToken: vwvBuq9qkqaKh7lu8tNc0gkvBfEaLAmx
+
+        ```
+
+
+        For automation, API Token authentication is preferred.'
+      name: X-CSRFToken
+      in: header
