@@ -118,20 +118,24 @@ paths:
         '200':
           description: WLAN deleted
 components:
-  responses:
-    BadRequest:
-      description: Bad request - invalid parameters
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+  parameters:
+    SiteId:
+      name: site_id
+      in: path
+      required: true
+      description: Site unique identifier
+      schema:
+        type: string
+        format: uuid
+    WlanId:
+      name: wlan_id
+      in: path
+      required: true
+      description: WLAN unique identifier
+      schema:
+        type: string
+        format: uuid
   schemas:
-    Error:
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Error message
     Wlan:
       type: object
       properties:
@@ -189,23 +193,19 @@ components:
           type: number
         modified_time:
           type: number
-  parameters:
-    SiteId:
-      name: site_id
-      in: path
-      required: true
-      description: Site unique identifier
-      schema:
-        type: string
-        format: uuid
-    WlanId:
-      name: wlan_id
-      in: path
-      required: true
-      description: WLAN unique identifier
-      schema:
-        type: string
-        format: uuid
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Error message
+  responses:
+    BadRequest:
+      description: Bad request - invalid parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     apiToken:
       type: http

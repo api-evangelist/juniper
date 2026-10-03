@@ -1681,55 +1681,6 @@ components:
             type: string
           description: IPv4 DMVPN peer host routes to which traffic is forwarded
       description: Settings for Dynamic Multipoint VPN on this WxLAN tunnel
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    wxlan_tunnel_session_ethertype2:
-      title: wxlan_tunnel_session_ethertype2
-      enum:
-      - ethernet
-      - vlan
-      type: string
-      description: 'Frame type carried by this tunnel session. enum: `ethernet`, `vlan`.'
-    wxlan_tunnel_ipsec2:
-      title: wxlan_tunnel_ipsec2
-      required:
-      - psk
-      type: object
-      properties:
-        enabled:
-          type: boolean
-          description: Whether ipsec is enabled, requires DMVPN be enabled
-          default: false
-        psk:
-          type: string
-          description: Pre-shared key used for IPsec on this WxLAN tunnel
-      description: Security settings for IPsec on this WxLAN tunnel; requires DMVPN to be enabled
     wxlan_tunnel:
       title: wxlan_tunnel
       required:
@@ -1838,26 +1789,30 @@ components:
           description: Whether to use UDP instead of IP (proto=115, which is default of L2TPv3)
           default: false
       description: WxLAN tunnel configuration for L2TPv3 or DMVPN connectivity
-    response_http401:
-      title: response_http401
+    wxlan_tunnel_ipsec2:
+      title: wxlan_tunnel_ipsec2
+      required:
+      - psk
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether ipsec is enabled, requires DMVPN be enabled
+          default: false
+        psk:
+          type: string
+          description: Pre-shared key used for IPsec on this WxLAN tunnel
+      description: Security settings for IPsec on this WxLAN tunnel; requires DMVPN to be enabled
+    response_http403:
+      title: response_http403
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the authentication error
+          description: Human-readable explanation of the permission error
           examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
     wxlan_tunnel_session:
       title: wxlan_tunnel_session
       type: object
@@ -1899,6 +1854,51 @@ components:
           description: Whether to use AP (last 4 bytes of MAC currently) as session ids
           default: false
       description: L2TPv3 session established inside a WxLAN tunnel
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    wxlan_tunnel_session_ethertype2:
+      title: wxlan_tunnel_session_ethertype2
+      enum:
+      - ethernet
+      - vlan
+      type: string
+      description: 'Frame type carried by this tunnel session. enum: `ethernet`, `vlan`.'
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
   securitySchemes:
     apiToken:
       type: apiKey

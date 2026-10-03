@@ -208,14 +208,16 @@ paths:
       deprecated: false
 components:
   schemas:
-    response_http404:
-      title: response_http404
+    response_http403:
+      title: response_http403
       type: object
       properties:
-        id:
+        detail:
           type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
     response_self_subscription:
       title: response_self_subscription
       required:
@@ -230,16 +232,16 @@ components:
           examples:
           - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
       description: Subscription record visible to the current account
-    response_http403:
-      title: response_http403
+    response_http400:
+      title: response_http400
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the permission error
+          description: Human-readable explanation of the bad request error
           examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
     response_http429:
       title: response_http429
       type: object
@@ -260,16 +262,14 @@ components:
           examples:
           - Authentication credentials were not provided.
       description: Standard HTTP 401 authentication error response
-    response_http400:
-      title: response_http400
+    response_http404:
+      title: response_http404
       type: object
       properties:
-        detail:
+        id:
           type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
   securitySchemes:
     apiToken:
       type: apiKey

@@ -1296,42 +1296,19 @@ paths:
       deprecated: false
 components:
   schemas:
-    response_site_search:
-      title: response_site_search
+    count_result:
+      title: count_result
       required:
-      - end
-      - limit
-      - results
-      - start
-      - total
+      - count
       type: object
       properties:
-        end:
+        count:
           type: integer
-          description: Epoch timestamp, in seconds, for the end of the site search window
+          description: Number of matching items for the distinct value or values in this result
           contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of site records returned in this page
-          contentEncoding: int32
-        next:
-          type: string
-          description: URL for retrieving the next page of site search results
-        results:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/response_site_search_item'
-          description: Site records matching the organization search filters
-        start:
-          type: integer
-          description: Epoch timestamp, in seconds, for the start of the site search window
-          contentEncoding: int32
-        total:
-          type: integer
-          description: Number of site records matching the search filters across all pages
-          contentEncoding: int32
-      description: Paginated response for organization site search results
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
     response_site_search_item:
       title: response_site_search_item
       required:
@@ -1404,32 +1381,43 @@ components:
           type: boolean
           description: Whether Wi-Fi service is enabled for the site
       description: Site record returned by organization site search
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    lat_lng2:
-      title: lat_lng2
+    response_count:
+      title: response_count
       required:
-      - lat
-      - lng
+      - distinct
+      - end
+      - limit
+      - results
+      - start
+      - total
       type: object
       properties:
-        lat:
-          type: number
-          description: Geographic latitude in decimal degrees
-          examples:
-          - 37.295833
-        lng:
-          type: number
-          description: Geographic longitude in decimal degrees
-          examples:
-          - -122.032946
-      description: Latitude and longitude for the site location
+        distinct:
+          type: string
+          description: Field used to group the count results
+        end:
+          type: integer
+          description: Search window end timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of distinct count results requested
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/count_result'
+          description: Count results grouped by the distinct field
+        start:
+          type: integer
+          description: Search window start timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of distinct result buckets returned
+          contentEncoding: int32
+      description: Distinct count response for time-bounded search results
     org_sites_count_distinct:
       title: org_sites_count_distinct
       enum:
@@ -1451,49 +1439,42 @@ components:
       - wifi_enabled
       type: string
       description: 'enum: `analytic_enabled`, `app_waking`, `asset_enabled`, `auto_upgrade_enabled`, `auto_upgrade_version`, `country_code`, `honeypot_enabled`, `id`, `locate_unconnected`, `mesh_enabled`, `name`, `remote_syslog_enabled`, `rogue_enabled`, `rtsa_enabled`, `vna_enabled`, `wifi_enabled`'
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    count_result:
-      title: count_result
+    response_site_search:
+      title: response_site_search
       required:
-      - count
+      - end
+      - limit
+      - results
+      - start
+      - total
       type: object
       properties:
-        count:
+        end:
           type: integer
-          description: Number of matching items for the distinct value or values in this result
+          description: Epoch timestamp, in seconds, for the end of the site search window
           contentEncoding: int32
-      additionalProperties:
-        type: string
-      description: Count result row with the matching distinct field values
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
+        limit:
+          type: integer
+          description: Maximum number of site records returned in this page
+          contentEncoding: int32
+        next:
           type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
+          description: URL for retrieving the next page of site search results
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/response_site_search_item'
+          description: Site records matching the organization search filters
+        start:
+          type: integer
+          description: Epoch timestamp, in seconds, for the start of the site search window
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of site records matching the search filters across all pages
+          contentEncoding: int32
+      description: Paginated response for organization site search results
     site:
       title: site
       required:
@@ -1638,43 +1619,62 @@ components:
           examples:
           - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
       description: Standard HTTP 400 bad request error response
-    response_count:
-      title: response_count
-      required:
-      - distinct
-      - end
-      - limit
-      - results
-      - start
-      - total
+    response_http429:
+      title: response_http429
       type: object
       properties:
-        distinct:
+        detail:
           type: string
-          description: Field used to group the count results
-        end:
-          type: integer
-          description: Search window end timestamp for the count request, in epoch seconds
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of distinct count results requested
-          contentEncoding: int32
-        results:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/count_result'
-          description: Count results grouped by the distinct field
-        start:
-          type: integer
-          description: Search window start timestamp for the count request, in epoch seconds
-          contentEncoding: int32
-        total:
-          type: integer
-          description: Number of distinct result buckets returned
-          contentEncoding: int32
-      description: Distinct count response for time-bounded search results
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    lat_lng2:
+      title: lat_lng2
+      required:
+      - lat
+      - lng
+      type: object
+      properties:
+        lat:
+          type: number
+          description: Geographic latitude in decimal degrees
+          examples:
+          - 37.295833
+        lng:
+          type: number
+          description: Geographic longitude in decimal degrees
+          examples:
+          - -122.032946
+      description: Latitude and longitude for the site location
   securitySchemes:
     apiToken:
       type: apiKey

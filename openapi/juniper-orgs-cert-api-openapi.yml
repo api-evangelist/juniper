@@ -883,6 +883,36 @@ paths:
       deprecated: false
 components:
   schemas:
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
     response_certificate:
       title: response_certificate
       required:
@@ -900,44 +930,6 @@ components:
           description: Epoch timestamp when the pending certificate is expected to replace the current certificate
           contentEncoding: int32
       description: If the current Org CA certificate is set to expire within 30 days, a pending certificate will be returned along with the expected auto-renewal timestamp.
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    org_ssl_proxy_cert:
-      title: org_ssl_proxy_cert
-      type: object
-      properties:
-        cert:
-          type: string
-          description: PEM-encoded SSL proxy certificate for the organization
-          examples:
-          - '-----BEGIN CERTIFICATE-----\nMIIowDQYJKoZIhvcNAQELBQE\n-----END CERTIFICATE-----'
-      description: SSL proxy certificate returned for the organization
     response_http401:
       title: response_http401
       type: object
@@ -958,16 +950,24 @@ components:
           contentEncoding: int32
           default: 30
       description: Request body specifying CRL truncation retention in days
-    response_http400:
-      title: response_http400
+    response_http404:
+      title: response_http404
       type: object
       properties:
-        detail:
+        id:
           type: string
-          description: Human-readable explanation of the bad request error
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    org_ssl_proxy_cert:
+      title: org_ssl_proxy_cert
+      type: object
+      properties:
+        cert:
+          type: string
+          description: PEM-encoded SSL proxy certificate for the organization
           examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
+          - '-----BEGIN CERTIFICATE-----\nMIIowDQYJKoZIhvcNAQELBQE\n-----END CERTIFICATE-----'
+      description: SSL proxy certificate returned for the organization
   securitySchemes:
     apiToken:
       type: apiKey

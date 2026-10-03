@@ -1377,145 +1377,43 @@ paths:
       deprecated: false
 components:
   schemas:
-    stats_mxedge_inactive_vlan_strs2:
-      title: stats_mxedge_inactive_vlan_strs2
+    stats_mxedge_oob_ip_stat2:
+      title: stats_mxedge_oob_ip_stat2
       type: object
       properties:
-        l2tp:
+        dns:
+          uniqueItems: true
           type: array
           items:
             type: string
-          description: Inactive L2TP VLANs. Entries can be individual VLANs or ranges.
-        wired:
-          type: array
-          items:
-            type: string
-          description: Inactive wired VLANs. Entries can be individual VLANs or ranges.
-          examples:
-          - - '100'
-            - 102-106
-      description: Inactive VLAN identifiers reported by the Mist Edge
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
+          description: Out-of-band management DNS servers
+        gateway:
           type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    stats_mxedge_memory_stat2:
-      title: stats_mxedge_memory_stat2
-      type: object
-      properties:
-        active:
-          type: integer
-          description: The amount of memory, in kilobytes, that has been used more recently and is usually not reclaimed unless absolutely necessary.
-          contentEncoding: int32
-          examples:
-          - 394936320
-        available:
-          type: integer
-          description: An estimate of how much memory is available for starting new applications, without swapping.
-          contentEncoding: int64
-          examples:
-          - 4699291648
-        buffers:
-          type: integer
-          description: The amount, in kilobytes, of temporary storage for raw disk blocks.
-          contentEncoding: int32
-          examples:
-          - 107646976
-        cached:
-          type: integer
-          description: The amount of physical RAM, in kilobytes, used as cache memory.
-          contentEncoding: int32
-          examples:
-          - 478060544
-        free:
-          type: integer
-          description: The amount of physical RAM, in kilobytes, left unused by the system
-          contentEncoding: int64
-          examples:
-          - 4330659840
-        inactive:
-          type: integer
-          description: The amount of memory, in kilobytes, that has been used less recently and is more eligible to be reclaimed for other purposes.
-          contentEncoding: int32
-          examples:
-          - 211980288
-        swap_cached:
-          type: integer
-          description: The amount of memory, in kilobytes, that has once been moved into swap, then back into the main memory, but still also remains in the swapfile.
-          contentEncoding: int32
-          examples:
-          - 0
-        swap_free:
-          type: integer
-          description: The total amount of swap free, in kilobytes.
-          contentEncoding: int32
-          examples:
-          - 1022357504
-        swap_total:
-          type: integer
-          description: The total amount of swap available, in kilobytes.
-          contentEncoding: int32
-          examples:
-          - 1022357504
-        total:
-          type: integer
-          description: Usable RAM total, in kilobytes, which is physical RAM minus a number of reserved bits and the kernel binary code
-          contentEncoding: int64
-          examples:
-          - 8365957120
-        usage:
-          type: integer
-          description: Memory utilization percentage reported by the Mist Edge
-          contentEncoding: int32
-          examples:
-          - 48
-      description: Memory utilization statistics reported by the Mist Edge
-    cpu_stat:
-      title: cpu_stat
-      type: object
-      properties:
-        idle:
-          type:
-          - number
-          - 'null'
-          description: Percentage of CPU time that is idle
-          readOnly: true
-        interrupt:
-          type:
-          - number
-          - 'null'
-          description: Percentage of CPU time being used by interrupts
-          readOnly: true
-        load_avg:
-          type: array
-          items:
-            type: number
-          description: Load averages for the last 1, 5, and 15 minutes
-        system:
-          type:
-          - number
-          - 'null'
-          description: Percentage of CPU time being used by system processes
-          readOnly: true
-        usage:
-          type:
-          - number
-          - 'null'
-          description: Overall CPU usage percentage
-          readOnly: true
-        user:
-          type:
-          - number
-          - 'null'
-          description: Percentage of CPU time being used by user processes
-          readOnly: true
-      description: CPU utilization breakdown for a device
+          description: IPv4 default gateway for out-of-band management
+        gateway6:
+          type: string
+          description: IPv6 default gateway for out-of-band management
+        ip:
+          type: string
+          description: Out-of-band management IPv4 address
+        ip6:
+          type: string
+          description: Out-of-band management IPv6 address
+        netmask:
+          type: string
+          description: IPv4 netmask for the out-of-band management interface
+        netmask6:
+          type: string
+          description: IPv6 prefix length for the out-of-band management interface
+        type:
+          allOf:
+          - $ref: '#/components/schemas/mxedge_mgmt_oob_ip_type2'
+          - description: 'IPv4 address assignment mode for out-of-band management. enum: `dhcp`, `disabled`, `static`.'
+        type8:
+          allOf:
+          - $ref: '#/components/schemas/mxedge_mgmt_oob_ip_type62'
+          - description: 'IPv6 address assignment mode for out-of-band management. enum: `autoconf`, `dhcp`, `disabled`, `static`.'
+      description: Observed out-of-band management IP status for the Mist Edge
     for_site:
       title: for_site
       enum:
@@ -1524,185 +1422,6 @@ components:
       - 'false'
       type: string
       description: 'enum: `any`, `true`, `false`'
-    stats_mxedge_port_stat_lldp_stats2:
-      title: stats_mxedge_port_stat_lldp_stats2
-      type: object
-      properties:
-        chassis_id:
-          type: string
-          description: LLDP chassis identifier advertised by the neighbor
-        mgmt_addr:
-          type: string
-          description: Management address advertised by the LLDP neighbor
-        port_desc:
-          type: string
-          description: Port description advertised by the LLDP neighbor
-        port_id:
-          type: string
-          description: Port identifier advertised by the LLDP neighbor
-        system_desc:
-          type: string
-          description: System description advertised by the LLDP neighbor
-        system_name:
-          type: string
-          description: System name advertised by the LLDP neighbor
-      description: LLDP neighbor information learned on the port
-    fwupdate_stat5:
-      title: fwupdate_stat5
-      type: object
-      properties:
-        progress:
-          maximum: 100
-          minimum: 0
-          type:
-          - integer
-          - 'null'
-          description: Firmware update progress percentage, or null when unavailable
-          contentEncoding: int32
-          readOnly: true
-          examples:
-          - 10
-        status:
-          allOf:
-          - oneOf:
-            - {}
-            - $ref: '#/components/schemas/fwupdate_stat_status2'
-          - description: 'Current firmware update status. enum: `inprogress`, `failed`, `upgraded`, `success`, `scheduled`, `error`.'
-          readOnly: true
-        status_id:
-          type:
-          - integer
-          - 'null'
-          description: Numeric firmware update status identifier
-          contentEncoding: int32
-          readOnly: true
-          examples:
-          - 5
-        timestamp:
-          type: number
-          description: Time when the firmware update status was last updated
-          readOnly: true
-        will_retry:
-          type:
-          - boolean
-          - 'null'
-          description: Whether the firmware update process will retry after the current status
-          readOnly: true
-          examples:
-          - false
-      description: Firmware or package update status for the Mist Edge
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    mxedge_mgmt_oob_ip_type62:
-      title: mxedge_mgmt_oob_ip_type62
-      enum:
-      - autoconf
-      - dhcp
-      - disabled
-      - static
-      type: string
-      description: 'IPv6 address assignment mode for out-of-band management. enum: `autoconf`, `dhcp`, `disabled`, `static`.'
-    mxedge_mgmt_oob_ip_type2:
-      title: mxedge_mgmt_oob_ip_type2
-      enum:
-      - dhcp
-      - disabled
-      - static
-      type: string
-      description: 'IPv4 address assignment mode for out-of-band management. enum: `dhcp`, `disabled`, `static`.'
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    stats_mxedge_ip_stat2:
-      title: stats_mxedge_ip_stat2
-      type: object
-      properties:
-        ip:
-          type: string
-          description: Primary IPv4 address reported for the Mist Edge
-          examples:
-          - 192.168.1.244
-        ip6:
-          type: string
-          description: Primary IPv6 address reported for the Mist Edge
-          examples:
-          - fd4e:c615:b27d:5555::45
-        ips:
-          type: object
-          additionalProperties:
-            type: string
-          description: Interface IP addresses keyed by interface name
-          examples:
-          - ens18: 92.168.1.244/24,fd4e:c615:b27d:5555::45/128,fd4e:c615:b27d:5555:20c:29ff:fe44:af25/64,fe80::104c:ffff:fee0:caf8/64
-        macs:
-          type: object
-          additionalProperties:
-            type: string
-          description: Interface MAC addresses keyed by interface name
-          examples:
-          - ens18: e4434b217044
-        netmask:
-          type: string
-          description: IPv4 netmask reported for the primary Mist Edge address
-          examples:
-          - 255.255.255.0
-        netmask6:
-          type: string
-          description: IPv6 prefix length reported for the primary Mist Edge address
-          examples:
-          - /128
-      description: IP address statistics reported by the Mist Edge
-    stats_mxedge_port_stat_lacp2:
-      title: stats_mxedge_port_stat_lacp2
-      type: object
-      properties:
-        mux_state:
-          type: string
-          description: LACP multiplexer state reported for the port
-        rx_lacpdu:
-          type: integer
-          description: Number of LACPDUs received on the port
-          contentEncoding: int32
-        rx_state:
-          type: string
-          description: LACP receive state reported for the port
-        tx_lacpdu:
-          type: integer
-          description: Number of LACPDUs transmitted from the port
-          contentEncoding: int32
-      description: Link aggregation control protocol state and packet counters for the port
-    ip_type9:
-      title: ip_type9
-      enum:
-      - dhcp
-      - static
-      type: string
-      description: 'IPv4 address assignment mode for out-of-band management. enum: `dhcp`, `static`.'
-      examples:
-      - static
     stats_mxedge_tunterm_ip_config2:
       title: stats_mxedge_tunterm_ip_config2
       type: object
@@ -1723,114 +1442,6 @@ components:
           examples:
           - 255.255.255.0
       description: Configured tunnel termination IP settings for the Mist Edge
-    stats_mxedge_service_stat:
-      title: stats_mxedge_service_stat
-      type: object
-      properties:
-        ext_ip:
-          type: string
-          description: External IP from ep-terminator’s point of view. valid only for service having its own cloud connection
-        last_seen:
-          type: number
-          description: Cloud Unix time, in seconds, when stats were last seen for this service, or the latest service last_seen time for whole-system records
-        package_state:
-          type: string
-          description: Installation state of the Mist Edge service package
-        package_version:
-          type: string
-          description: Installed version of the Mist Edge service package
-        running_state:
-          type: string
-          description: Runtime state reported by the Mist Edge service
-        uptime:
-          type: integer
-          description: Elapsed running time reported by the Mist Edge service, in seconds
-          contentEncoding: int32
-      description: Runtime and package state for one Mist Edge service
-    ip_type10:
-      title: ip_type10
-      enum:
-      - dhcp
-      - static
-      type: string
-      description: 'IPv6 address assignment mode for out-of-band management. enum: `dhcp`, `static`.'
-      examples:
-      - static
-    stats_mxedge_cpu_stat2:
-      title: stats_mxedge_cpu_stat2
-      type: object
-      properties:
-        cpus:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/cpu_stat'
-          description: Per-core CPU utilization statistics keyed by CPU name
-          examples:
-          - cpu0:
-              idle: 89
-              interrupt: 0
-              system: 8
-              usage: 10
-              user: 1
-            cpu1:
-              idle: 81
-              interrupt: 0
-              system: 4
-              usage: 18
-              user: 13
-            cpu2:
-              idle: 81
-              interrupt: 0
-              system: 4
-              usage: 18
-              user: 13
-            cpu3:
-              idle: 2
-              interrupt: 0
-              system: 50
-              usage: 97
-              user: 46
-        idle:
-          type: integer
-          description: Percentage of Idle, Idle/(Idle + Busy) since last sampling
-          contentEncoding: int32
-          examples:
-          - 62
-        interrupt:
-          type: integer
-          description: Percentage of Interrupt, (Irq + SoftIrq)/(Idle + Busy) since last sampling
-          contentEncoding: int32
-          examples:
-          - 0
-        system:
-          type: integer
-          description: Percentage of System, System/(Idle + Busy) since last sampling
-          contentEncoding: int32
-          examples:
-          - 17
-        usage:
-          type: integer
-          description: Percentage of load, Busy/(Idle + Busy) since last sampling
-          contentEncoding: int32
-          examples:
-          - 37
-        user:
-          type: integer
-          description: Percentage of User, User/(Idle + Busy) since last sampling
-          contentEncoding: int32
-          examples:
-          - 19
-      description: CPU utilization statistics reported by the Mist Edge
-    stats_mxedge_lag_stat:
-      title: stats_mxedge_lag_stat
-      type: object
-      properties:
-        active_ports:
-          type: array
-          items:
-            type: string
-          description: Ports currently active in the link aggregation group
-      description: Link aggregation group status for a Mist Edge
     stats_mxedge:
       title: stats_mxedge
       type: object
@@ -2064,41 +1675,25 @@ components:
           examples:
           - KVM
       description: Statistics for a Mist Edge appliance returned by stats endpoints
-    stats_mxedge_port_stat_sfp2:
-      title: stats_mxedge_port_stat_sfp2
+    stats_mxedge_port_stat_lacp2:
+      title: stats_mxedge_port_stat_lacp2
       type: object
       properties:
-        codes:
+        mux_state:
           type: string
-          description: Transceiver capability codes reported by the SFP module
-        mbps:
+          description: LACP multiplexer state reported for the port
+        rx_lacpdu:
           type: integer
-          description: Nominal transceiver speed, in Mbps
+          description: Number of LACPDUs received on the port
           contentEncoding: int32
-        part_no:
+        rx_state:
           type: string
-          description: Manufacturer part number reported by the SFP module
-        serial_no:
-          type: string
-          description: Manufacturer serial number reported by the SFP module
-        type:
+          description: LACP receive state reported for the port
+        tx_lacpdu:
           type: integer
-          description: Transceiver type code reported by the SFP module
+          description: Number of LACPDUs transmitted from the port
           contentEncoding: int32
-        vendor:
-          type: string
-          description: Manufacturer name reported by the SFP module
-      description: Transceiver details reported for the SFP module on the port
-    stats_mxedge_tunterm_stat2:
-      title: stats_mxedge_tunterm_stat2
-      type: object
-      properties:
-        monitoring_failed:
-          type: boolean
-          description: Whether tunnel termination monitoring is currently failing
-          examples:
-          - false
-      description: Tunnel termination monitoring status reported by the Mist Edge
+      description: Link aggregation control protocol state and packet counters for the port
     stats_mxedge_port_stat:
       title: stats_mxedge_port_stat
       type: object
@@ -2176,17 +1771,85 @@ components:
           type: boolean
           description: Whether the Mist Edge port link is up
       description: Mist Edge port traffic and link status statistics
-    fwupdate_stat_status2:
-      title: fwupdate_stat_status2
+    mxedge_mgmt_oob_ip_type2:
+      title: mxedge_mgmt_oob_ip_type2
       enum:
-      - inprogress
-      - failed
-      - upgraded
-      - success
-      - scheduled
-      - error
+      - dhcp
+      - disabled
+      - static
       type: string
-      description: 'Current firmware update status. enum: `inprogress`, `failed`, `upgraded`, `success`, `scheduled`, `error`.'
+      description: 'IPv4 address assignment mode for out-of-band management. enum: `dhcp`, `disabled`, `static`.'
+    stats_mxedge_memory_stat2:
+      title: stats_mxedge_memory_stat2
+      type: object
+      properties:
+        active:
+          type: integer
+          description: The amount of memory, in kilobytes, that has been used more recently and is usually not reclaimed unless absolutely necessary.
+          contentEncoding: int32
+          examples:
+          - 394936320
+        available:
+          type: integer
+          description: An estimate of how much memory is available for starting new applications, without swapping.
+          contentEncoding: int64
+          examples:
+          - 4699291648
+        buffers:
+          type: integer
+          description: The amount, in kilobytes, of temporary storage for raw disk blocks.
+          contentEncoding: int32
+          examples:
+          - 107646976
+        cached:
+          type: integer
+          description: The amount of physical RAM, in kilobytes, used as cache memory.
+          contentEncoding: int32
+          examples:
+          - 478060544
+        free:
+          type: integer
+          description: The amount of physical RAM, in kilobytes, left unused by the system
+          contentEncoding: int64
+          examples:
+          - 4330659840
+        inactive:
+          type: integer
+          description: The amount of memory, in kilobytes, that has been used less recently and is more eligible to be reclaimed for other purposes.
+          contentEncoding: int32
+          examples:
+          - 211980288
+        swap_cached:
+          type: integer
+          description: The amount of memory, in kilobytes, that has once been moved into swap, then back into the main memory, but still also remains in the swapfile.
+          contentEncoding: int32
+          examples:
+          - 0
+        swap_free:
+          type: integer
+          description: The total amount of swap free, in kilobytes.
+          contentEncoding: int32
+          examples:
+          - 1022357504
+        swap_total:
+          type: integer
+          description: The total amount of swap available, in kilobytes.
+          contentEncoding: int32
+          examples:
+          - 1022357504
+        total:
+          type: integer
+          description: Usable RAM total, in kilobytes, which is physical RAM minus a number of reserved bits and the kernel binary code
+          contentEncoding: int64
+          examples:
+          - 8365957120
+        usage:
+          type: integer
+          description: Memory utilization percentage reported by the Mist Edge
+          contentEncoding: int32
+          examples:
+          - 48
+      description: Memory utilization statistics reported by the Mist Edge
     mxedge_oob_ip_config2:
       title: mxedge_oob_ip_config2
       type: object
@@ -2257,6 +1920,359 @@ components:
             examples:
             - static
       description: Configured out-of-band management IP settings for the Mist Edge
+    ip_type10:
+      title: ip_type10
+      enum:
+      - dhcp
+      - static
+      type: string
+      description: 'IPv6 address assignment mode for out-of-band management. enum: `dhcp`, `static`.'
+      examples:
+      - static
+    stats_mxedge_service_stat:
+      title: stats_mxedge_service_stat
+      type: object
+      properties:
+        ext_ip:
+          type: string
+          description: External IP from ep-terminator’s point of view. valid only for service having its own cloud connection
+        last_seen:
+          type: number
+          description: Cloud Unix time, in seconds, when stats were last seen for this service, or the latest service last_seen time for whole-system records
+        package_state:
+          type: string
+          description: Installation state of the Mist Edge service package
+        package_version:
+          type: string
+          description: Installed version of the Mist Edge service package
+        running_state:
+          type: string
+          description: Runtime state reported by the Mist Edge service
+        uptime:
+          type: integer
+          description: Elapsed running time reported by the Mist Edge service, in seconds
+          contentEncoding: int32
+      description: Runtime and package state for one Mist Edge service
+    ip_type9:
+      title: ip_type9
+      enum:
+      - dhcp
+      - static
+      type: string
+      description: 'IPv4 address assignment mode for out-of-band management. enum: `dhcp`, `static`.'
+      examples:
+      - static
+    fwupdate_stat5:
+      title: fwupdate_stat5
+      type: object
+      properties:
+        progress:
+          maximum: 100
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: Firmware update progress percentage, or null when unavailable
+          contentEncoding: int32
+          readOnly: true
+          examples:
+          - 10
+        status:
+          allOf:
+          - oneOf:
+            - {}
+            - $ref: '#/components/schemas/fwupdate_stat_status2'
+          - description: 'Current firmware update status. enum: `inprogress`, `failed`, `upgraded`, `success`, `scheduled`, `error`.'
+          readOnly: true
+        status_id:
+          type:
+          - integer
+          - 'null'
+          description: Numeric firmware update status identifier
+          contentEncoding: int32
+          readOnly: true
+          examples:
+          - 5
+        timestamp:
+          type: number
+          description: Time when the firmware update status was last updated
+          readOnly: true
+        will_retry:
+          type:
+          - boolean
+          - 'null'
+          description: Whether the firmware update process will retry after the current status
+          readOnly: true
+          examples:
+          - false
+      description: Firmware or package update status for the Mist Edge
+    stats_mxedge_port_stat_lldp_stats2:
+      title: stats_mxedge_port_stat_lldp_stats2
+      type: object
+      properties:
+        chassis_id:
+          type: string
+          description: LLDP chassis identifier advertised by the neighbor
+        mgmt_addr:
+          type: string
+          description: Management address advertised by the LLDP neighbor
+        port_desc:
+          type: string
+          description: Port description advertised by the LLDP neighbor
+        port_id:
+          type: string
+          description: Port identifier advertised by the LLDP neighbor
+        system_desc:
+          type: string
+          description: System description advertised by the LLDP neighbor
+        system_name:
+          type: string
+          description: System name advertised by the LLDP neighbor
+      description: LLDP neighbor information learned on the port
+    stats_mxedge_cpu_stat2:
+      title: stats_mxedge_cpu_stat2
+      type: object
+      properties:
+        cpus:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/cpu_stat'
+          description: Per-core CPU utilization statistics keyed by CPU name
+          examples:
+          - cpu0:
+              idle: 89
+              interrupt: 0
+              system: 8
+              usage: 10
+              user: 1
+            cpu1:
+              idle: 81
+              interrupt: 0
+              system: 4
+              usage: 18
+              user: 13
+            cpu2:
+              idle: 81
+              interrupt: 0
+              system: 4
+              usage: 18
+              user: 13
+            cpu3:
+              idle: 2
+              interrupt: 0
+              system: 50
+              usage: 97
+              user: 46
+        idle:
+          type: integer
+          description: Percentage of Idle, Idle/(Idle + Busy) since last sampling
+          contentEncoding: int32
+          examples:
+          - 62
+        interrupt:
+          type: integer
+          description: Percentage of Interrupt, (Irq + SoftIrq)/(Idle + Busy) since last sampling
+          contentEncoding: int32
+          examples:
+          - 0
+        system:
+          type: integer
+          description: Percentage of System, System/(Idle + Busy) since last sampling
+          contentEncoding: int32
+          examples:
+          - 17
+        usage:
+          type: integer
+          description: Percentage of load, Busy/(Idle + Busy) since last sampling
+          contentEncoding: int32
+          examples:
+          - 37
+        user:
+          type: integer
+          description: Percentage of User, User/(Idle + Busy) since last sampling
+          contentEncoding: int32
+          examples:
+          - 19
+      description: CPU utilization statistics reported by the Mist Edge
+    cpu_stat:
+      title: cpu_stat
+      type: object
+      properties:
+        idle:
+          type:
+          - number
+          - 'null'
+          description: Percentage of CPU time that is idle
+          readOnly: true
+        interrupt:
+          type:
+          - number
+          - 'null'
+          description: Percentage of CPU time being used by interrupts
+          readOnly: true
+        load_avg:
+          type: array
+          items:
+            type: number
+          description: Load averages for the last 1, 5, and 15 minutes
+        system:
+          type:
+          - number
+          - 'null'
+          description: Percentage of CPU time being used by system processes
+          readOnly: true
+        usage:
+          type:
+          - number
+          - 'null'
+          description: Overall CPU usage percentage
+          readOnly: true
+        user:
+          type:
+          - number
+          - 'null'
+          description: Percentage of CPU time being used by user processes
+          readOnly: true
+      description: CPU utilization breakdown for a device
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    stats_mxedge_ip_stat2:
+      title: stats_mxedge_ip_stat2
+      type: object
+      properties:
+        ip:
+          type: string
+          description: Primary IPv4 address reported for the Mist Edge
+          examples:
+          - 192.168.1.244
+        ip6:
+          type: string
+          description: Primary IPv6 address reported for the Mist Edge
+          examples:
+          - fd4e:c615:b27d:5555::45
+        ips:
+          type: object
+          additionalProperties:
+            type: string
+          description: Interface IP addresses keyed by interface name
+          examples:
+          - ens18: 92.168.1.244/24,fd4e:c615:b27d:5555::45/128,fd4e:c615:b27d:5555:20c:29ff:fe44:af25/64,fe80::104c:ffff:fee0:caf8/64
+        macs:
+          type: object
+          additionalProperties:
+            type: string
+          description: Interface MAC addresses keyed by interface name
+          examples:
+          - ens18: e4434b217044
+        netmask:
+          type: string
+          description: IPv4 netmask reported for the primary Mist Edge address
+          examples:
+          - 255.255.255.0
+        netmask6:
+          type: string
+          description: IPv6 prefix length reported for the primary Mist Edge address
+          examples:
+          - /128
+      description: IP address statistics reported by the Mist Edge
+    stats_mxedge_inactive_vlan_strs2:
+      title: stats_mxedge_inactive_vlan_strs2
+      type: object
+      properties:
+        l2tp:
+          type: array
+          items:
+            type: string
+          description: Inactive L2TP VLANs. Entries can be individual VLANs or ranges.
+        wired:
+          type: array
+          items:
+            type: string
+          description: Inactive wired VLANs. Entries can be individual VLANs or ranges.
+          examples:
+          - - '100'
+            - 102-106
+      description: Inactive VLAN identifiers reported by the Mist Edge
+    mxedge_mgmt_oob_ip_type62:
+      title: mxedge_mgmt_oob_ip_type62
+      enum:
+      - autoconf
+      - dhcp
+      - disabled
+      - static
+      type: string
+      description: 'IPv6 address assignment mode for out-of-band management. enum: `autoconf`, `dhcp`, `disabled`, `static`.'
+    stats_mxedge_port_stat_sfp2:
+      title: stats_mxedge_port_stat_sfp2
+      type: object
+      properties:
+        codes:
+          type: string
+          description: Transceiver capability codes reported by the SFP module
+        mbps:
+          type: integer
+          description: Nominal transceiver speed, in Mbps
+          contentEncoding: int32
+        part_no:
+          type: string
+          description: Manufacturer part number reported by the SFP module
+        serial_no:
+          type: string
+          description: Manufacturer serial number reported by the SFP module
+        type:
+          type: integer
+          description: Transceiver type code reported by the SFP module
+          contentEncoding: int32
+        vendor:
+          type: string
+          description: Manufacturer name reported by the SFP module
+      description: Transceiver details reported for the SFP module on the port
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    stats_mxedge_tunterm_stat2:
+      title: stats_mxedge_tunterm_stat2
+      type: object
+      properties:
+        monitoring_failed:
+          type: boolean
+          description: Whether tunnel termination monitoring is currently failing
+          examples:
+          - false
+      description: Tunnel termination monitoring status reported by the Mist Edge
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
     stats_mxedge_tunterm_port_config2:
       title: stats_mxedge_tunterm_port_config2
       type: object
@@ -2283,6 +2299,17 @@ components:
           - - '0'
             - '1'
       description: Tunnel termination port configuration reported for the Mist Edge
+    fwupdate_stat_status2:
+      title: fwupdate_stat_status2
+      enum:
+      - inprogress
+      - failed
+      - upgraded
+      - success
+      - scheduled
+      - error
+      type: string
+      description: 'Current firmware update status. enum: `inprogress`, `failed`, `upgraded`, `success`, `scheduled`, `error`.'
     response_http401:
       title: response_http401
       type: object
@@ -2293,43 +2320,16 @@ components:
           examples:
           - Authentication credentials were not provided.
       description: Standard HTTP 401 authentication error response
-    stats_mxedge_oob_ip_stat2:
-      title: stats_mxedge_oob_ip_stat2
+    stats_mxedge_lag_stat:
+      title: stats_mxedge_lag_stat
       type: object
       properties:
-        dns:
-          uniqueItems: true
+        active_ports:
           type: array
           items:
             type: string
-          description: Out-of-band management DNS servers
-        gateway:
-          type: string
-          description: IPv4 default gateway for out-of-band management
-        gateway6:
-          type: string
-          description: IPv6 default gateway for out-of-band management
-        ip:
-          type: string
-          description: Out-of-band management IPv4 address
-        ip6:
-          type: string
-          description: Out-of-band management IPv6 address
-        netmask:
-          type: string
-          description: IPv4 netmask for the out-of-band management interface
-        netmask6:
-          type: string
-          description: IPv6 prefix length for the out-of-band management interface
-        type:
-          allOf:
-          - $ref: '#/components/schemas/mxedge_mgmt_oob_ip_type2'
-          - description: 'IPv4 address assignment mode for out-of-band management. enum: `dhcp`, `disabled`, `static`.'
-        type8:
-          allOf:
-          - $ref: '#/components/schemas/mxedge_mgmt_oob_ip_type62'
-          - description: 'IPv6 address assignment mode for out-of-band management. enum: `autoconf`, `dhcp`, `disabled`, `static`.'
-      description: Observed out-of-band management IP status for the Mist Edge
+          description: Ports currently active in the link aggregation group
+      description: Link aggregation group status for a Mist Edge
   securitySchemes:
     apiToken:
       type: apiKey

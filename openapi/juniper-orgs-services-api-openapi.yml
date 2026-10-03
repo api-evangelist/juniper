@@ -1409,58 +1409,6 @@ paths:
       deprecated: false
 components:
   schemas:
-    service_traffic_class2:
-      title: service_traffic_class2
-      enum:
-      - best_effort
-      - high
-      - low
-      - medium
-      type: string
-      description: 'Traffic class applied when `traffic_type`==`custom`. enum: `best_effort`, `high`, `low`, `medium`.'
-    service_type2:
-      title: service_type2
-      enum:
-      - app_categories
-      - apps
-      - custom
-      - urls
-      type: string
-      description: 'Matching mode that determines which app, URL, or custom fields are used. enum: `app_categories`, `apps`, `custom`, `urls`.'
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    service_spec:
-      title: service_spec
-      type: object
-      properties:
-        port_range:
-          type: string
-          description: Port number, port range, or variable
-          examples:
-          - 8080,8443
-        protocol:
-          type: string
-          description: '`https`/ `tcp` / `udp` / `icmp` / `gre` / `any` / `:protocol_number`, `protocol_number` is between 1-254'
-          default: any
-          examples:
-          - tcp
-      description: Protocol and port match rule for a custom service
     response_http403:
       title: response_http403
       type: object
@@ -1471,6 +1419,16 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
     response_http429:
       title: response_http429
       type: object
@@ -1661,16 +1619,58 @@ components:
       - revertible
       type: string
       description: 'Failover behavior for traffic matched by this service. enum: `non_revertible`, `none`, `revertible`.'
-    response_http400:
-      title: response_http400
+    response_http401:
+      title: response_http401
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the bad request error
+          description: Human-readable explanation of the authentication error
           examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    service_spec:
+      title: service_spec
+      type: object
+      properties:
+        port_range:
+          type: string
+          description: Port number, port range, or variable
+          examples:
+          - 8080,8443
+        protocol:
+          type: string
+          description: '`https`/ `tcp` / `udp` / `icmp` / `gre` / `any` / `:protocol_number`, `protocol_number` is between 1-254'
+          default: any
+          examples:
+          - tcp
+      description: Protocol and port match rule for a custom service
+    service_type2:
+      title: service_type2
+      enum:
+      - app_categories
+      - apps
+      - custom
+      - urls
+      type: string
+      description: 'Matching mode that determines which app, URL, or custom fields are used. enum: `app_categories`, `apps`, `custom`, `urls`.'
+    service_traffic_class2:
+      title: service_traffic_class2
+      enum:
+      - best_effort
+      - high
+      - low
+      - medium
+      type: string
+      description: 'Traffic class applied when `traffic_type`==`custom`. enum: `best_effort`, `high`, `low`, `medium`.'
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
   securitySchemes:
     apiToken:
       type: apiKey

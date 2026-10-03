@@ -1522,14 +1522,69 @@ paths:
       deprecated: false
 components:
   schemas:
-    response_http404:
-      title: response_http404
+    response_http403:
+      title: response_http403
       type: object
       properties:
-        id:
+        detail:
           type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    const_event:
+      title: const_event
+      required:
+      - display
+      - key
+      type: object
+      properties:
+        description:
+          type: string
+          description: Narrative description of the device event type
+        display:
+          type: string
+          description: Human-readable label for the device event type
+        example:
+          type: object
+          description: Sample device event payload for this event type
+        group:
+          type: string
+          description: Device event group for this definition
+        key:
+          type: string
+          description: Machine-readable device event key
+      description: Device event definition returned by the constants API
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
     const_alarm_definition:
       title: const_alarm_definition
       required:
@@ -1589,26 +1644,6 @@ components:
           examples:
           - warn
       description: Alarm type definition returned by the constants API
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
     const_nac_event:
       title: const_nac_event
       type: object
@@ -1711,49 +1746,14 @@ components:
           examples:
           - b43637b0-f0d9-0a1d-1ec2-73c394a9f679
       description: NAC event example payload returned by the constants API
-    response_http401:
-      title: response_http401
+    response_http404:
+      title: response_http404
       type: object
       properties:
-        detail:
+        id:
           type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    const_event:
-      title: const_event
-      required:
-      - display
-      - key
-      type: object
-      properties:
-        description:
-          type: string
-          description: Narrative description of the device event type
-        display:
-          type: string
-          description: Human-readable label for the device event type
-        example:
-          type: object
-          description: Sample device event payload for this event type
-        group:
-          type: string
-          description: Device event group for this definition
-        key:
-          type: string
-          description: Machine-readable device event key
-      description: Device event definition returned by the constants API
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
   securitySchemes:
     apiToken:
       type: apiKey

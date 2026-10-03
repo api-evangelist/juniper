@@ -1040,6 +1040,83 @@ paths:
       deprecated: false
 components:
   schemas:
+    secintel_profile_profile_category2:
+      title: secintel_profile_profile_category2
+      enum:
+      - CC
+      - DNS
+      - IH
+      type: string
+      description: 'SecIntel feed category configured by this profile entry. enum: `CC`, `DNS`, `IH`.'
+    secintel_profile_profile:
+      title: secintel_profile_profile
+      type: object
+      properties:
+        action:
+          allOf:
+          - $ref: '#/components/schemas/secintel_profile_profile_action2'
+          - description: 'Protection level applied to the SecIntel category. enum: `default`, `standard`, `strict`.'
+        category:
+          allOf:
+          - $ref: '#/components/schemas/secintel_profile_profile_category2'
+          - description: 'SecIntel feed category configured by this profile entry. enum: `CC`, `DNS`, `IH`.'
+      description: SecIntel action setting for a specific feed category
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    secintel_profile_profile_action2:
+      title: secintel_profile_profile_action2
+      enum:
+      - default
+      - standard
+      - strict
+      type: string
+      description: 'Protection level applied to the SecIntel category. enum: `default`, `standard`, `strict`.'
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
     secintel_profile:
       title: secintel_profile
       type: object
@@ -1055,83 +1132,6 @@ components:
             $ref: '#/components/schemas/secintel_profile_profile'
           description: Category-specific SecIntel action settings included in this profile
       description: SecIntel profile containing category-specific threat intelligence actions
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    secintel_profile_profile:
-      title: secintel_profile_profile
-      type: object
-      properties:
-        action:
-          allOf:
-          - $ref: '#/components/schemas/secintel_profile_profile_action2'
-          - description: 'Protection level applied to the SecIntel category. enum: `default`, `standard`, `strict`.'
-        category:
-          allOf:
-          - $ref: '#/components/schemas/secintel_profile_profile_category2'
-          - description: 'SecIntel feed category configured by this profile entry. enum: `CC`, `DNS`, `IH`.'
-      description: SecIntel action setting for a specific feed category
-    secintel_profile_profile_action2:
-      title: secintel_profile_profile_action2
-      enum:
-      - default
-      - standard
-      - strict
-      type: string
-      description: 'Protection level applied to the SecIntel category. enum: `default`, `standard`, `strict`.'
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    secintel_profile_profile_category2:
-      title: secintel_profile_profile_category2
-      enum:
-      - CC
-      - DNS
-      - IH
-      type: string
-      description: 'SecIntel feed category configured by this profile entry. enum: `CC`, `DNS`, `IH`.'
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
   securitySchemes:
     apiToken:
       type: apiKey

@@ -1082,6 +1082,147 @@ paths:
       deprecated: false
 components:
   schemas:
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    nac_auth_type3:
+      title: nac_auth_type3
+      enum:
+      - cert
+      - device-auth
+      - eap-teap
+      - eap-tls
+      - eap-ttls
+      - idp
+      - mab
+      - eap-peap
+      type: string
+      description: 'NAC authentication method that must match the request. enum: `cert`, `device-auth`, `eap-teap`, `eap-tls`, `eap-ttls`, `idp`, `mab`, `eap-peap`.'
+      examples:
+      - eap-tls
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    nac_rule_action2:
+      title: nac_rule_action2
+      enum:
+      - allow
+      - block
+      type: string
+      description: Allow or block decision applied when the NAC rule matches
+      examples:
+      - allow
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    nac_rule_matching3:
+      title: nac_rule_matching3
+      type: object
+      properties:
+        auth_type:
+          allOf:
+          - $ref: '#/components/schemas/nac_auth_type3'
+          - description: 'NAC authentication method that must match the request. enum: `cert`, `device-auth`, `eap-teap`, `eap-tls`, `eap-ttls`, `idp`, `mab`, `eap-peap`.'
+            examples:
+            - eap-tls
+        family:
+          type: array
+          items:
+            type: string
+          description: Client device family values that must match the request
+        mfg:
+          type: array
+          items:
+            type: string
+          description: Client device manufacturer values that must match the request
+        model:
+          type: array
+          items:
+            type: string
+          description: Client device model values that must match the request
+        nactags:
+          type: array
+          items:
+            type: string
+          description: NAC tag IDs whose match criteria must be satisfied by the request
+          examples:
+          - - 041d5d36-716c-4cfb-4988-3857c6aa14a2
+            - a809a97f-d599-f812-eb8c-c3f84aabf6ba
+        os_type:
+          type: array
+          items:
+            type: string
+          description: Client OS type values that must match the request
+        port_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/nac_rule_matching_port_type'
+          description: Wired or wireless access types that must match the request
+          examples:
+          - - wired
+        site_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: Site IDs where the rule criteria apply
+          examples:
+          - - bb19fc3e-4124-4b57-80d9-c3f6edce47c4
+            - bb19fc3e-6564-4b57-80d9-c3f6edce47c1
+        sitegroup_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: Site group IDs where the rule criteria apply
+          examples:
+          - - bb19fc3e-4124-4b57-80d9-c3f6edce47c4
+            - bb19fc3e-6564-4b57-80d9-c3f6edce47c1
+        vendor:
+          type: array
+          items:
+            type: string
+          description: Client device vendor values that must match the request
+      description: Criteria that must match for the NAC rule to apply
     nac_rule:
       title: nac_rule
       required:
@@ -1156,14 +1297,6 @@ components:
           examples:
           - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
       description: NAC authentication policy rule that matches request criteria and applies an allow or block action
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
     nac_rule_matching1:
       title: nac_rule_matching1
       type: object
@@ -1233,31 +1366,6 @@ components:
             type: string
           description: Client device vendor values that must match the request
       description: Criteria that must not match for the NAC rule to apply
-    nac_auth_type3:
-      title: nac_auth_type3
-      enum:
-      - cert
-      - device-auth
-      - eap-teap
-      - eap-tls
-      - eap-ttls
-      - idp
-      - mab
-      - eap-peap
-      type: string
-      description: 'NAC authentication method that must match the request. enum: `cert`, `device-auth`, `eap-teap`, `eap-tls`, `eap-ttls`, `idp`, `mab`, `eap-peap`.'
-      examples:
-      - eap-tls
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
     nac_rule_guest_auth_state2:
       title: nac_rule_guest_auth_state2
       enum:
@@ -1267,114 +1375,6 @@ components:
       description: 'Guest portal authorization state condition for the rule. enum: `authorized`, `unknown`.'
       examples:
       - authorized
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    nac_rule_matching3:
-      title: nac_rule_matching3
-      type: object
-      properties:
-        auth_type:
-          allOf:
-          - $ref: '#/components/schemas/nac_auth_type3'
-          - description: 'NAC authentication method that must match the request. enum: `cert`, `device-auth`, `eap-teap`, `eap-tls`, `eap-ttls`, `idp`, `mab`, `eap-peap`.'
-            examples:
-            - eap-tls
-        family:
-          type: array
-          items:
-            type: string
-          description: Client device family values that must match the request
-        mfg:
-          type: array
-          items:
-            type: string
-          description: Client device manufacturer values that must match the request
-        model:
-          type: array
-          items:
-            type: string
-          description: Client device model values that must match the request
-        nactags:
-          type: array
-          items:
-            type: string
-          description: NAC tag IDs whose match criteria must be satisfied by the request
-          examples:
-          - - 041d5d36-716c-4cfb-4988-3857c6aa14a2
-            - a809a97f-d599-f812-eb8c-c3f84aabf6ba
-        os_type:
-          type: array
-          items:
-            type: string
-          description: Client OS type values that must match the request
-        port_types:
-          type: array
-          items:
-            $ref: '#/components/schemas/nac_rule_matching_port_type'
-          description: Wired or wireless access types that must match the request
-          examples:
-          - - wired
-        site_ids:
-          type: array
-          items:
-            type: string
-            contentEncoding: uuid
-          description: Site IDs where the rule criteria apply
-          examples:
-          - - bb19fc3e-4124-4b57-80d9-c3f6edce47c4
-            - bb19fc3e-6564-4b57-80d9-c3f6edce47c1
-        sitegroup_ids:
-          type: array
-          items:
-            type: string
-            contentEncoding: uuid
-          description: Site group IDs where the rule criteria apply
-          examples:
-          - - bb19fc3e-4124-4b57-80d9-c3f6edce47c4
-            - bb19fc3e-6564-4b57-80d9-c3f6edce47c1
-        vendor:
-          type: array
-          items:
-            type: string
-          description: Client device vendor values that must match the request
-      description: Criteria that must match for the NAC rule to apply
-    nac_rule_action2:
-      title: nac_rule_action2
-      enum:
-      - allow
-      - block
-      type: string
-      description: Allow or block decision applied when the NAC rule matches
-      examples:
-      - allow
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
     nac_rule_matching_port_type:
       title: nac_rule_matching_port_type
       enum:

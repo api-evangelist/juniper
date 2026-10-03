@@ -2357,52 +2357,47 @@ paths:
       deprecated: false
 components:
   schemas:
-    test_twilio:
-      title: test_twilio
+    utils_zeroize_fips:
+      title: utils_zeroize_fips
       required:
-      - from
-      - to
-      - twilio_auth_token
-      - twilio_sid
+      - password
       type: object
       properties:
-        from:
+        password:
           type: string
-          description: One of the numbers you have in your Twilio account
-          examples:
-          - '+185051234567'
-        to:
-          type: string
-          description: Phone number of the recipient of SMS
-          examples:
-          - '+19999999999'
-        twilio_auth_token:
-          type: string
-          description: Twilio Auth Token used to send the test SMS
-          examples:
-          - 2135be04736a1a0a314bce432d61721a
-        twilio_sid:
-          type: string
-          description: Twilio account SID used to send the test SMS
-          examples:
-          - REDACTED_TWILIO_ACCOUNT_SID
-      description: Request body for validating Twilio SMS gateway credentials
-    utils_reset_radio_config:
-      title: utils_reset_radio_config
-      required:
-      - bands
+          description: Confirmation password for the FIPS zeroize operation
+          contentEncoding: password
+      description: Request body for confirming FIPS AP zeroize operations
+    response_http403:
+      title: response_http403
       type: object
       properties:
-        bands:
-          type: array
-          items:
-            type: string
-          description: Radio bands to reset to RRM management
-        force:
-          type: boolean
-          description: Whether to reset radios that are currently disabled; default `false` honors radios intentionally disabled by the user
-          default: false
-      description: Request to reset AP radio settings to RRM-managed values
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
     test_telstra:
       title: test_telstra
       required:
@@ -2428,66 +2423,6 @@ components:
           examples:
           - '+911122334455'
       description: Request body for validating Telstra SMS gateway credentials
-    utils_rrm_optimize:
-      title: utils_rrm_optimize
-      required:
-      - bands
-      type: object
-      properties:
-        bands:
-          type: array
-          items:
-            type: string
-          description: Radio bands to include in the RRM optimization
-        macs:
-          type: array
-          items:
-            type: string
-          description: AP MAC addresses to target for optimization; omitted or empty targets all APs
-        txpower_only:
-          type: boolean
-          description: When true, adjust only transmit power so clients are not disconnected
-          default: false
-      description: Request to optimize RRM for selected AP radio bands
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    utils_zeroize_fips:
-      title: utils_zeroize_fips
-      required:
-      - password
-      type: object
-      properties:
-        password:
-          type: string
-          description: Confirmation password for the FIPS zeroize operation
-          contentEncoding: password
-      description: Request body for confirming FIPS AP zeroize operations
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
     test_sms_global:
       title: test_sms_global
       required:
@@ -2518,16 +2453,6 @@ components:
           examples:
           - '+911122334455'
       description: Request body for validating SMSGlobal SMS gateway credentials
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
     mac_addresses:
       title: mac_addresses
       required:
@@ -2544,16 +2469,91 @@ components:
           examples:
           - - 683b679ac024
       description: Request containing one or more MAC addresses
-    response_http400:
-      title: response_http400
+    response_http401:
+      title: response_http401
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the bad request error
+          description: Human-readable explanation of the authentication error
           examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    utils_rrm_optimize:
+      title: utils_rrm_optimize
+      required:
+      - bands
+      type: object
+      properties:
+        bands:
+          type: array
+          items:
+            type: string
+          description: Radio bands to include in the RRM optimization
+        macs:
+          type: array
+          items:
+            type: string
+          description: AP MAC addresses to target for optimization; omitted or empty targets all APs
+        txpower_only:
+          type: boolean
+          description: When true, adjust only transmit power so clients are not disconnected
+          default: false
+      description: Request to optimize RRM for selected AP radio bands
+    utils_reset_radio_config:
+      title: utils_reset_radio_config
+      required:
+      - bands
+      type: object
+      properties:
+        bands:
+          type: array
+          items:
+            type: string
+          description: Radio bands to reset to RRM management
+        force:
+          type: boolean
+          description: Whether to reset radios that are currently disabled; default `false` honors radios intentionally disabled by the user
+          default: false
+      description: Request to reset AP radio settings to RRM-managed values
+    test_twilio:
+      title: test_twilio
+      required:
+      - from
+      - to
+      - twilio_auth_token
+      - twilio_sid
+      type: object
+      properties:
+        from:
+          type: string
+          description: One of the numbers you have in your Twilio account
+          examples:
+          - '+185051234567'
+        to:
+          type: string
+          description: Phone number of the recipient of SMS
+          examples:
+          - '+19999999999'
+        twilio_auth_token:
+          type: string
+          description: Twilio Auth Token used to send the test SMS
+          examples:
+          - 2135be04736a1a0a314bce432d61721a
+        twilio_sid:
+          type: string
+          description: Twilio account SID used to send the test SMS
+          examples:
+          - REDACTED_TWILIO_ACCOUNT_SID
+      description: Request body for validating Twilio SMS gateway credentials
   securitySchemes:
     apiToken:
       type: apiKey

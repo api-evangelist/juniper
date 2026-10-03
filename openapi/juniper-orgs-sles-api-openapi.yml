@@ -815,11 +815,108 @@ paths:
       deprecated: false
 components:
   schemas:
-    insight_metrics_results_item:
-      anyOf:
-      - type: number
-      - type: object
-      description: Insight metric result item, returned either as a number or an object depending on the requested metric
+    insight_metrics:
+      title: insight_metrics
+      required:
+      - end
+      - interval
+      - start
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Window end timestamp for the returned insight metrics
+          contentEncoding: int32
+        interval:
+          type: integer
+          description: Aggregation interval used for the metric results
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of insight metric result items returned
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/insight_metrics_results_item'
+          description: Metric result values for the requested insight metric
+        start:
+          type: integer
+          description: Window start timestamp for the returned insight metrics
+          contentEncoding: int32
+      description: Insight metric response for a requested time range and aggregation interval
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    org_site_wired_wifi:
+      title: org_site_wired_wifi
+      required:
+      - end
+      - interval
+      - limit
+      - page
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        end:
+          type: number
+          description: Query end timestamp for the returned SLE window
+        interval:
+          type: integer
+          description: Aggregation interval, in seconds, used for the SLE query
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of site results returned per page
+          contentEncoding: int32
+        page:
+          type: integer
+          description: Result page number returned by the query
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/org_site_sle_wired_result'
+          description: Wired SLE results for the current page
+        start:
+          type: number
+          description: Query start timestamp for the returned SLE window
+        total:
+          type: integer
+          description: Number of matching site results available for the query
+          contentEncoding: int32
+      description: Paginated wired SLE results for organization sites
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
     org_site_sle_type:
       title: org_site_sle_type
       enum:
@@ -828,6 +925,105 @@ components:
       - wired
       type: string
       description: 'enum: `wan`, `wifi`, `wired`'
+    org_site_sle_wifi_result:
+      title: org_site_sle_wifi_result
+      required:
+      - ap-availability
+      - site_id
+      type: object
+      properties:
+        ap-availability:
+          type: number
+          description: AP availability SLE score for this site
+        ap-health:
+          type: number
+          description: AP health SLE score for this site
+        capacity:
+          type: number
+          description: Wi-Fi capacity SLE score for this site
+        coverage:
+          type: number
+          description: Wi-Fi coverage SLE score for this site
+        num_aps:
+          type: number
+          description: Number of APs included in this site result
+        num_clients:
+          type: number
+          description: Number of Wi-Fi clients included in this site result
+        roaming:
+          type: number
+          description: Wi-Fi roaming SLE score for this site
+        site_id:
+          type: string
+          description: Site associated with this Wi-Fi SLE result
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        successful-connect:
+          type: number
+          description: Successful connection SLE score for this site
+        throughput:
+          type: number
+          description: Wi-Fi throughput SLE score for this site
+        time-to-connect:
+          type: number
+          description: Client connection-time SLE score for this site
+      description: Wi-Fi SLE scores and counts for one site
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    org_site_sle_wired_result:
+      title: org_site_sle_wired_result
+      required:
+      - site_id
+      - switch-health
+      type: object
+      properties:
+        num_clients:
+          type: number
+          description: Number of wired clients included in this site result
+        num_switches:
+          type: number
+          description: Number of switches included in this site result
+        site_id:
+          type: string
+          description: Site associated with this wired SLE result
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        switch-bandwidth:
+          type: number
+          description: Switch bandwidth SLE score for this site
+        switch-health:
+          type: number
+          description: Switch health SLE score for this site
+        switch-throughput:
+          type: number
+          description: Switch throughput SLE score for this site
+      description: Wired SLE scores and counts for one site
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    response_org_site_sle:
+      oneOf:
+      - $ref: '#/components/schemas/org_site_sle_wifi'
+      - $ref: '#/components/schemas/org_site_wired_wifi'
+      - $ref: '#/components/schemas/org_site_wan_wifi'
+      description: Organization site SLE response for Wi-Fi, wired, or WAN
     org_site_sle_wan_result:
       title: org_site_sle_wan_result
       required:
@@ -899,14 +1095,11 @@ components:
           description: Number of matching site results available for the query
           contentEncoding: int32
       description: Paginated Wi-Fi SLE results for organization sites
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
+    insight_metrics_results_item:
+      anyOf:
+      - type: number
+      - type: object
+      description: Insight metric result item, returned either as a number or an object depending on the requested metric
     org_site_wan_wifi:
       title: org_site_wan_wifi
       required:
@@ -948,199 +1141,6 @@ components:
           description: Number of matching site results available for the query
           contentEncoding: int32
       description: Paginated WAN SLE results for organization sites
-    org_site_sle_wired_result:
-      title: org_site_sle_wired_result
-      required:
-      - site_id
-      - switch-health
-      type: object
-      properties:
-        num_clients:
-          type: number
-          description: Number of wired clients included in this site result
-        num_switches:
-          type: number
-          description: Number of switches included in this site result
-        site_id:
-          type: string
-          description: Site associated with this wired SLE result
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
-        switch-bandwidth:
-          type: number
-          description: Switch bandwidth SLE score for this site
-        switch-health:
-          type: number
-          description: Switch health SLE score for this site
-        switch-throughput:
-          type: number
-          description: Switch throughput SLE score for this site
-      description: Wired SLE scores and counts for one site
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    org_site_wired_wifi:
-      title: org_site_wired_wifi
-      required:
-      - end
-      - interval
-      - limit
-      - page
-      - results
-      - start
-      - total
-      type: object
-      properties:
-        end:
-          type: number
-          description: Query end timestamp for the returned SLE window
-        interval:
-          type: integer
-          description: Aggregation interval, in seconds, used for the SLE query
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of site results returned per page
-          contentEncoding: int32
-        page:
-          type: integer
-          description: Result page number returned by the query
-          contentEncoding: int32
-        results:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/org_site_sle_wired_result'
-          description: Wired SLE results for the current page
-        start:
-          type: number
-          description: Query start timestamp for the returned SLE window
-        total:
-          type: integer
-          description: Number of matching site results available for the query
-          contentEncoding: int32
-      description: Paginated wired SLE results for organization sites
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_org_site_sle:
-      oneOf:
-      - $ref: '#/components/schemas/org_site_sle_wifi'
-      - $ref: '#/components/schemas/org_site_wired_wifi'
-      - $ref: '#/components/schemas/org_site_wan_wifi'
-      description: Organization site SLE response for Wi-Fi, wired, or WAN
-    insight_metrics:
-      title: insight_metrics
-      required:
-      - end
-      - interval
-      - start
-      type: object
-      properties:
-        end:
-          type: integer
-          description: Window end timestamp for the returned insight metrics
-          contentEncoding: int32
-        interval:
-          type: integer
-          description: Aggregation interval used for the metric results
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of insight metric result items returned
-          contentEncoding: int32
-        results:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/insight_metrics_results_item'
-          description: Metric result values for the requested insight metric
-        start:
-          type: integer
-          description: Window start timestamp for the returned insight metrics
-          contentEncoding: int32
-      description: Insight metric response for a requested time range and aggregation interval
-    org_site_sle_wifi_result:
-      title: org_site_sle_wifi_result
-      required:
-      - ap-availability
-      - site_id
-      type: object
-      properties:
-        ap-availability:
-          type: number
-          description: AP availability SLE score for this site
-        ap-health:
-          type: number
-          description: AP health SLE score for this site
-        capacity:
-          type: number
-          description: Wi-Fi capacity SLE score for this site
-        coverage:
-          type: number
-          description: Wi-Fi coverage SLE score for this site
-        num_aps:
-          type: number
-          description: Number of APs included in this site result
-        num_clients:
-          type: number
-          description: Number of Wi-Fi clients included in this site result
-        roaming:
-          type: number
-          description: Wi-Fi roaming SLE score for this site
-        site_id:
-          type: string
-          description: Site associated with this Wi-Fi SLE result
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
-        successful-connect:
-          type: number
-          description: Successful connection SLE score for this site
-        throughput:
-          type: number
-          description: Wi-Fi throughput SLE score for this site
-        time-to-connect:
-          type: number
-          description: Client connection-time SLE score for this site
-      description: Wi-Fi SLE scores and counts for one site
   securitySchemes:
     apiToken:
       type: apiKey

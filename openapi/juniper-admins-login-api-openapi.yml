@@ -305,6 +305,49 @@ components:
           examples:
           - '123456'
       description: Request body for submitting a 2FA login code
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_login_failure:
+      title: response_login_failure
+      required:
+      - detail
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable login failure message returned by the API
+        forward_url:
+          type: string
+          description: SSO URL where the user should continue login, when provided
+      description: Login failure response returned when authentication cannot continue locally
     login:
       title: login
       required:
@@ -328,26 +371,6 @@ components:
           examples:
           - '123456'
       description: Login request using email/password and an optional two-factor code
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
     response_login_success:
       title: response_login_success
       type: object
@@ -362,29 +385,6 @@ components:
           type: boolean
           description: Whether this login requires a two-factor code before a session is established
       description: Login response body, empty on normal success or populated with two-factor state
-    response_login_failure:
-      title: response_login_failure
-      required:
-      - detail
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable login failure message returned by the API
-        forward_url:
-          type: string
-          description: SSO URL where the user should continue login, when provided
-      description: Login failure response returned when authentication cannot continue locally
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
   securitySchemes:
     apiToken:
       type: apiKey

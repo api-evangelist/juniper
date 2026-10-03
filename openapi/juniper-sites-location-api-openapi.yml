@@ -2197,14 +2197,46 @@ paths:
       deprecated: false
 components:
   schemas:
-    response_http404:
-      title: response_http404
+    resolution:
+      title: resolution
+      enum:
+      - default
+      - fine
+      type: string
+      description: 'Location resolution mode for map or placement calculations. enum: `default`, `fine`'
+    response_http403:
+      title: response_http403
       type: object
       properties:
-        id:
+        detail:
           type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    ml_overwrite_additional_properties:
+      title: ml_overwrite_additional_properties
+      type: object
+      properties:
+        int:
+          type: integer
+          description: Location ML intercept value to use for the model
+          contentEncoding: int32
+        ple:
+          type: integer
+          description: Path-loss estimate value to use for the location machine learning model
+          contentEncoding: int32
+      description: Location machine learning parameter overwrite values for one client model
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
     response_location_coverage:
       title: response_location_coverage
       required:
@@ -2247,29 +2279,6 @@ components:
           description: Epoch timestamp for the start of the coverage analysis window
           contentEncoding: int32
       description: Beam coverage overview for a site location map
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    ml_overwrite_additional_properties:
-      title: ml_overwrite_additional_properties
-      type: object
-      properties:
-        int:
-          type: integer
-          description: Location ML intercept value to use for the model
-          contentEncoding: int32
-        ple:
-          type: integer
-          description: Path-loss estimate value to use for the location machine learning model
-          contentEncoding: int32
-      description: Location machine learning parameter overwrite values for one client model
     response_http429:
       title: response_http429
       type: object
@@ -2280,21 +2289,6 @@ components:
           examples:
           - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
       description: Standard HTTP 429 rate limit error response
-    rf_client_type:
-      title: rf_client_type
-      enum:
-      - asset
-      - client
-      - sdkclient
-      type: string
-      description: 'enum: `asset`, `client`, `sdkclient`'
-    resolution:
-      title: resolution
-      enum:
-      - default
-      - fine
-      type: string
-      description: 'Location resolution mode for map or placement calculations. enum: `default`, `fine`'
     response_http401:
       title: response_http401
       type: object
@@ -2305,16 +2299,22 @@ components:
           examples:
           - Authentication credentials were not provided.
       description: Standard HTTP 401 authentication error response
-    response_http400:
-      title: response_http400
+    response_http404:
+      title: response_http404
       type: object
       properties:
-        detail:
+        id:
           type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    rf_client_type:
+      title: rf_client_type
+      enum:
+      - asset
+      - client
+      - sdkclient
+      type: string
+      description: 'enum: `asset`, `client`, `sdkclient`'
   securitySchemes:
     apiToken:
       type: apiKey

@@ -2,7 +2,7 @@ openapi: 3.2.0
 info:
   title: Juniper Sites API
   version: '1.0'
-  description: 'Operations tagged Sites across 2 of this provider''s published API definitions: juniper-mist-openapi.yml, juniper-mist-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Sites across 2 of this provider''s published API definitions: juniper-mist-openapi.yml, juniper-sites-api-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.mist.com/api/v1
   description: Global Cloud (US)
@@ -175,6 +175,31 @@ paths:
       description: GovCloud
   /api/v1/sites/{site_id}:
     parameters: []
+    servers:
+    - url: https://api.mist.com
+      variables: {}
+    - url: https://api.gc1.mist.com
+      variables: {}
+    - url: https://api.ac2.mist.com
+      variables: {}
+    - url: https://api.gc2.mist.com
+      variables: {}
+    - url: https://api.gc4.mist.com
+      variables: {}
+    - url: https://api.eu.mist.com
+      variables: {}
+    - url: https://api.gc3.mist.com
+      variables: {}
+    - url: https://api.ac6.mist.com
+      variables: {}
+    - url: https://api.gc6.mist.com
+      variables: {}
+    - url: https://api.ac5.mist.com
+      variables: {}
+    - url: https://api.gc5.mist.com
+      variables: {}
+    - url: https://api.gc7.mist.com
+      variables: {}
     delete:
       tags:
       - Sites
@@ -879,33 +904,27 @@ paths:
                   value:
                     detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
       deprecated: false
-    servers:
-    - url: https://api.mist.com
-      variables: {}
-    - url: https://api.gc1.mist.com
-      variables: {}
-    - url: https://api.ac2.mist.com
-      variables: {}
-    - url: https://api.gc2.mist.com
-      variables: {}
-    - url: https://api.gc4.mist.com
-      variables: {}
-    - url: https://api.eu.mist.com
-      variables: {}
-    - url: https://api.gc3.mist.com
-      variables: {}
-    - url: https://api.ac6.mist.com
-      variables: {}
-    - url: https://api.gc6.mist.com
-      variables: {}
-    - url: https://api.ac5.mist.com
-      variables: {}
-    - url: https://api.gc5.mist.com
-      variables: {}
-    - url: https://api.gc7.mist.com
-      variables: {}
 components:
   schemas:
+    SiteStats:
+      type: object
+      properties:
+        num_ap:
+          type: integer
+        num_ap_connected:
+          type: integer
+        num_switch:
+          type: integer
+        num_gateway:
+          type: integer
+        num_clients:
+          type: integer
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Error message
     Site:
       type: object
       properties:
@@ -943,51 +962,6 @@ components:
           type: number
         modified_time:
           type: number
-    Error:
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Error message
-    SiteStats:
-      type: object
-      properties:
-        num_ap:
-          type: integer
-        num_ap_connected:
-          type: integer
-        num_switch:
-          type: integer
-        num_gateway:
-          type: integer
-        num_clients:
-          type: integer
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    lat_lng2:
-      title: lat_lng2
-      required:
-      - lat
-      - lng
-      type: object
-      properties:
-        lat:
-          type: number
-          description: Geographic latitude in decimal degrees
-          examples:
-          - 37.295833
-        lng:
-          type: number
-          description: Geographic longitude in decimal degrees
-          examples:
-          - -122.032946
-      description: Latitude and longitude for the site location
     response_http403:
       title: response_http403
       type: object
@@ -998,26 +972,6 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
     site:
       title: site
       required:
@@ -1162,15 +1116,53 @@ components:
           examples:
           - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
       description: Standard HTTP 400 bad request error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    lat_lng2:
+      title: lat_lng2
+      required:
+      - lat
+      - lng
+      type: object
+      properties:
+        lat:
+          type: number
+          description: Geographic latitude in decimal degrees
+          examples:
+          - 37.295833
+        lng:
+          type: number
+          description: Geographic longitude in decimal degrees
+          examples:
+          - -122.032946
+      description: Latitude and longitude for the site location
   parameters:
-    OrgId:
-      name: org_id
-      in: path
-      required: true
-      description: Organization unique identifier
-      schema:
-        type: string
-        format: uuid
     LimitParam:
       name: limit
       in: query
@@ -1179,13 +1171,6 @@ components:
         type: integer
         default: 100
         maximum: 1000
-    PageParam:
-      name: page
-      in: query
-      description: Page number for pagination
-      schema:
-        type: integer
-        default: 1
     SiteId:
       name: site_id
       in: path
@@ -1194,6 +1179,21 @@ components:
       schema:
         type: string
         format: uuid
+    OrgId:
+      name: org_id
+      in: path
+      required: true
+      description: Organization unique identifier
+      schema:
+        type: string
+        format: uuid
+    PageParam:
+      name: page
+      in: query
+      description: Page number for pagination
+      schema:
+        type: integer
+        default: 1
   responses:
     BadRequest:
       description: Bad request - invalid parameters
@@ -1222,4 +1222,4 @@ externalDocs:
   url: https://doc.mist-lab.fr/
 x-refined-from:
 - juniper-mist-openapi.yml
-- juniper-mist-api-openapi.yml
+- juniper-sites-api-openapi.yml

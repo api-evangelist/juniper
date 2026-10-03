@@ -745,33 +745,6 @@ paths:
       deprecated: false
 components:
   schemas:
-    site_iotendpoints_count_distinct:
-      title: site_iotendpoints_count_distinct
-      enum:
-      - ap_mac
-      - mac
-      - site_id
-      - type
-      type: string
-      description: 'enum: `ap_mac`, `mac`, `site_id`, `type`'
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
     count_result:
       title: count_result
       required:
@@ -785,16 +758,6 @@ components:
       additionalProperties:
         type: string
       description: Count result row with the matching distinct field values
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
     iotendpoint_stats:
       title: iotendpoint_stats
       type: object
@@ -839,52 +802,6 @@ components:
           examples:
           - zigbee
       description: IoT endpoint statistics returned by a search response
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_iot_endpoints_search:
-      title: response_iot_endpoints_search
-      required:
-      - end
-      - results
-      - start
-      - total
-      type: object
-      properties:
-        end:
-          type: number
-          description: Epoch timestamp, in seconds, for the end of the IoT endpoint search window
-        results:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/iotendpoint_stats'
-          description: IoT endpoint statistics matching the search filters
-        start:
-          type: number
-          description: Epoch timestamp, in seconds, for the start of the IoT endpoint search window
-        total:
-          type: integer
-          description: Number of IoT endpoint records matching the search filters
-          contentEncoding: int32
-      description: Time-bounded response for IoT endpoint search results
     response_count:
       title: response_count
       required:
@@ -922,6 +839,89 @@ components:
           description: Number of distinct result buckets returned
           contentEncoding: int32
       description: Distinct count response for time-bounded search results
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_iot_endpoints_search:
+      title: response_iot_endpoints_search
+      required:
+      - end
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        end:
+          type: number
+          description: Epoch timestamp, in seconds, for the end of the IoT endpoint search window
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/iotendpoint_stats'
+          description: IoT endpoint statistics matching the search filters
+        start:
+          type: number
+          description: Epoch timestamp, in seconds, for the start of the IoT endpoint search window
+        total:
+          type: integer
+          description: Number of IoT endpoint records matching the search filters
+          contentEncoding: int32
+      description: Time-bounded response for IoT endpoint search results
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    site_iotendpoints_count_distinct:
+      title: site_iotendpoints_count_distinct
+      enum:
+      - ap_mac
+      - mac
+      - site_id
+      - type
+      type: string
+      description: 'enum: `ap_mac`, `mac`, `site_id`, `type`'
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
   securitySchemes:
     apiToken:
       type: apiKey

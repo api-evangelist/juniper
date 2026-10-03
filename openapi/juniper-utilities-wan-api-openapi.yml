@@ -3022,34 +3022,6 @@ paths:
       deprecated: false
 components:
   schemas:
-    ha_cluster_node_enum19:
-      title: ha_cluster_node_enum19
-      enum:
-      - node0
-      - node1
-      type: string
-      description: 'HA cluster node on which to show active sessions. enum: `node0`, `node1`.'
-    utils_show_route_protocol2:
-      title: utils_show_route_protocol2
-      enum:
-      - any
-      - bgp
-      - direct
-      - evpn
-      - ospf
-      - static
-      type: string
-      description: 'Routing protocol filter for route entries. enum: `any`, `bgp`, `direct`, `evpn`, `ospf`, `static`.'
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
     utils_show_service_path:
       title: utils_show_service_path
       type: object
@@ -3064,13 +3036,65 @@ components:
           examples:
           - any
       description: Service path lookup request for SSR devices
-    ha_cluster_node_enum4:
-      title: ha_cluster_node_enum4
+    ha_cluster_node_enum16:
+      title: ha_cluster_node_enum16
       enum:
       - node0
       - node1
       type: string
-      description: 'HA cluster node on which to clear BGP sessions. enum: `node0`, `node1`.'
+      description: 'HA cluster node on which to show OSPF neighbors. enum: `node0`, `node1`.'
+    ha_cluster_node_enum14:
+      title: ha_cluster_node_enum14
+      enum:
+      - node0
+      - node1
+      type: string
+      description: 'HA cluster node on which to show the OSPF database. enum: `node0`, `node1`.'
+    ha_cluster_node1:
+      title: ha_cluster_node1
+      type: object
+      properties:
+        node:
+          allOf:
+          - $ref: '#/components/schemas/ha_cluster_node_enum22'
+          - description: 'HA cluster node on which to run the device operation. enum: `node0`, `node1`.'
+      description: HA cluster node on which to show routes
+    ha_cluster_node_enum18:
+      title: ha_cluster_node_enum18
+      enum:
+      - node0
+      - node1
+      type: string
+      description: 'HA cluster node on which to show the service path. enum: `node0`, `node1`.'
+    utils_clear_bgp:
+      title: utils_clear_bgp
+      required:
+      - neighbor
+      - type
+      type: object
+      properties:
+        neighbor:
+          type: string
+          description: can be ip, ipv6, all
+        node:
+          allOf:
+          - $ref: '#/components/schemas/ha_cluster_node_enum4'
+          - description: 'HA cluster node on which to clear BGP sessions. enum: `node0`, `node1`.'
+        type:
+          allOf:
+          - $ref: '#/components/schemas/utils_clear_bgp_type2'
+          - description: 'BGP clear operation type to run. enum: `hard`, `in`, `out`, `soft`.'
+        vrf:
+          type: string
+          description: Routing instance or VRF containing the BGP session
+      description: Request to clear BGP sessions on a device
+    ha_cluster_node_enum15:
+      title: ha_cluster_node_enum15
+      enum:
+      - node0
+      - node1
+      type: string
+      description: 'HA cluster node on which to show OSPF interfaces. enum: `node0`, `node1`.'
     utils_service_ping:
       title: utils_service_ping
       required:
@@ -3105,6 +3129,34 @@ components:
           type: string
           description: Routing tenant context in which the packet is sent
       description: Service ping request for SSR devices
+    utils_show_ospf_summary:
+      title: utils_show_ospf_summary
+      type: object
+      properties:
+        node:
+          allOf:
+          - $ref: '#/components/schemas/ha_cluster_node_enum17'
+          - description: 'HA cluster node on which to show the OSPF summary. enum: `node0`, `node1`.'
+        vrf:
+          type: string
+          description: Routing instance or VRF filter for OSPF summary output
+          examples:
+          - lan
+      description: OSPF summary command request for SSR and SRX devices
+    ha_cluster_node_enum19:
+      title: ha_cluster_node_enum19
+      enum:
+      - node0
+      - node1
+      type: string
+      description: 'HA cluster node on which to show active sessions. enum: `node0`, `node1`.'
+    ha_cluster_node_enum22:
+      title: ha_cluster_node_enum22
+      enum:
+      - node0
+      - node1
+      type: string
+      description: 'HA cluster node on which to run the device operation. enum: `node0`, `node1`.'
     utils_release_dhcp:
       title: utils_release_dhcp
       required:
@@ -3122,15 +3174,77 @@ components:
           examples:
           - ge-0/0/1.10
       description: Request to release the DHCP lease on a device interface
-    ha_cluster_node1:
-      title: ha_cluster_node1
+    ha_cluster_node_enum7:
+      title: ha_cluster_node_enum7
+      enum:
+      - node0
+      - node1
+      type: string
+      description: 'HA cluster node on which to release the DHCP lease. enum: `node0`, `node1`.'
+    utils_clear_arp:
+      title: utils_clear_arp
       type: object
       properties:
+        ip:
+          type: string
+          description: The IP address for which to clear an ARP entry. port_id must be specified.
+          examples:
+          - 10.1.1.1
         node:
           allOf:
-          - $ref: '#/components/schemas/ha_cluster_node_enum22'
-          - description: 'HA cluster node on which to run the device operation. enum: `node0`, `node1`.'
-      description: HA cluster node on which to show routes
+          - $ref: '#/components/schemas/ha_cluster_node_enum3'
+          - description: 'HA cluster node on which to clear ARP entries. enum: `node0`, `node1`.'
+        port_id:
+          type: string
+          description: The device interface on which to clear the ARP cache.
+          examples:
+          - wan
+        vlan:
+          type: integer
+          description: The VLAN on which to clear the ARP cache. port_id must be specified.
+          contentEncoding: int32
+          examples:
+          - 1000
+        vrf:
+          type: string
+          description: The vrf for which to clear an ARP entry. applicable for switch.
+          examples:
+          - guest
+      description: Request to clear ARP entries on a device
+    utils_clear_bgp_type2:
+      title: utils_clear_bgp_type2
+      enum:
+      - hard
+      - in
+      - out
+      - soft
+      type: string
+      description: 'BGP clear operation type to run. enum: `hard`, `in`, `out`, `soft`.'
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    ha_cluster_node_enum9:
+      title: ha_cluster_node_enum9
+      enum:
+      - node0
+      - node1
+      type: string
+      description: 'HA cluster node from which to send the service ping. enum: `node0`, `node1`.'
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
     response_http400:
       title: response_http400
       type: object
@@ -3141,56 +3255,6 @@ components:
           examples:
           - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
       description: Standard HTTP 400 bad request error response
-    websocket_session_with_url:
-      title: websocket_session_with_url
-      required:
-      - session
-      - url
-      type: object
-      properties:
-        session:
-          type: string
-          description: Identifier used to correlate output on the WebSocket stream
-          examples:
-          - 19e73828-937f-05e6-f709-e29efdb0a82b
-        url:
-          type: string
-          description: WebSocket URL returned for connecting to this session
-          examples:
-          - wss://api-ws.mist.com/ssh?jwt=xxxx
-      description: Response containing a WebSocket session handle and connection URL
-    utils_show_session:
-      title: utils_show_session
-      type: object
-      properties:
-        node:
-          allOf:
-          - $ref: '#/components/schemas/ha_cluster_node_enum19'
-          - description: 'HA cluster node on which to show active sessions. enum: `node0`, `node1`.'
-        service_name:
-          type: string
-          description: The exact service name for which to display the active sessions
-          examples:
-          - any
-        session_id:
-          type: string
-          description: Identifier of the session to show in detail
-      description: Active session lookup request for device command output
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    ha_cluster_node_enum7:
-      title: ha_cluster_node_enum7
-      enum:
-      - node0
-      - node1
-      type: string
-      description: 'HA cluster node on which to release the DHCP lease. enum: `node0`, `node1`.'
     response_http429:
       title: response_http429
       type: object
@@ -3201,71 +3265,6 @@ components:
           examples:
           - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
       description: Standard HTTP 429 rate limit error response
-    utils_show_ospf_interfaces:
-      title: utils_show_ospf_interfaces
-      type: object
-      properties:
-        node:
-          allOf:
-          - $ref: '#/components/schemas/ha_cluster_node_enum15'
-          - description: 'HA cluster node on which to show OSPF interfaces. enum: `node0`, `node1`.'
-        port_id:
-          type: string
-          description: Network interface filter for OSPF interface output
-          examples:
-          - ge-0/0/3
-        vrf:
-          type: string
-          description: Routing instance or VRF filter for OSPF interface output
-          examples:
-          - lan
-      description: OSPF interfaces command request for SSR and SRX devices
-    ha_cluster_node_enum18:
-      title: ha_cluster_node_enum18
-      enum:
-      - node0
-      - node1
-      type: string
-      description: 'HA cluster node on which to show the service path. enum: `node0`, `node1`.'
-    ha_cluster_node_enum9:
-      title: ha_cluster_node_enum9
-      enum:
-      - node0
-      - node1
-      type: string
-      description: 'HA cluster node from which to send the service ping. enum: `node0`, `node1`.'
-    utils_show_ospf_database:
-      title: utils_show_ospf_database
-      type: object
-      properties:
-        node:
-          allOf:
-          - $ref: '#/components/schemas/ha_cluster_node_enum14'
-          - description: 'HA cluster node on which to show the OSPF database. enum: `node0`, `node1`.'
-        self_originate:
-          type: boolean
-          description: Whether to show only self-originated OSPF database entries
-          default: false
-        vrf:
-          type: string
-          description: Routing instance or VRF filter for OSPF database output
-          examples:
-          - lan
-      description: OSPF database command request for SSR and SRX devices
-    utils_show_ospf_summary:
-      title: utils_show_ospf_summary
-      type: object
-      properties:
-        node:
-          allOf:
-          - $ref: '#/components/schemas/ha_cluster_node_enum17'
-          - description: 'HA cluster node on which to show the OSPF summary. enum: `node0`, `node1`.'
-        vrf:
-          type: string
-          description: Routing instance or VRF filter for OSPF summary output
-          examples:
-          - lan
-      description: OSPF summary command request for SSR and SRX devices
     utils_show_ospf_neighbors:
       title: utils_show_ospf_neighbors
       type: object
@@ -3290,13 +3289,54 @@ components:
           examples:
           - lan
       description: OSPF neighbors command request for SSR and SRX devices
-    ha_cluster_node_enum14:
-      title: ha_cluster_node_enum14
+    utils_clear_session:
+      title: utils_clear_session
+      type: object
+      properties:
+        node:
+          allOf:
+          - $ref: '#/components/schemas/ha_cluster_node_enum5'
+          - description: 'HA cluster node on which to clear sessions. enum: `node0`, `node1`.'
+        service_name:
+          type: string
+          description: Service name, only supported in SSR
+          examples:
+          - internet-wan_and_lte
+        session_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: Session identifiers to clear
+          examples:
+          - - 88776655-0123-4567-890a-112233445566
+      description: To use five tuples to lookup the session to be cleared, all must be provided
+    ha_cluster_node_enum17:
+      title: ha_cluster_node_enum17
       enum:
       - node0
       - node1
       type: string
-      description: 'HA cluster node on which to show the OSPF database. enum: `node0`, `node1`.'
+      description: 'HA cluster node on which to show the OSPF summary. enum: `node0`, `node1`.'
+    ha_cluster_node_enum4:
+      title: ha_cluster_node_enum4
+      enum:
+      - node0
+      - node1
+      type: string
+      description: 'HA cluster node on which to clear BGP sessions. enum: `node0`, `node1`.'
+    websocket_session:
+      title: websocket_session
+      required:
+      - session
+      type: object
+      properties:
+        session:
+          type: string
+          description: Identifier used to correlate output on the WebSocket stream
+          examples:
+          - 19e73828-937f-05e6-f709-e29efdb0a82b
+      description: Response containing the WebSocket session handle for asynchronous command output
     utils_show_route:
       title: utils_show_route
       type: object
@@ -3344,32 +3384,46 @@ components:
           examples:
           - default
       description: Route table lookup request for device command output
-    utils_clear_bgp:
-      title: utils_clear_bgp
-      required:
-      - neighbor
-      - type
+    utils_show_session:
+      title: utils_show_session
       type: object
       properties:
-        neighbor:
-          type: string
-          description: can be ip, ipv6, all
         node:
           allOf:
-          - $ref: '#/components/schemas/ha_cluster_node_enum4'
-          - description: 'HA cluster node on which to clear BGP sessions. enum: `node0`, `node1`.'
-        type:
+          - $ref: '#/components/schemas/ha_cluster_node_enum19'
+          - description: 'HA cluster node on which to show active sessions. enum: `node0`, `node1`.'
+        service_name:
+          type: string
+          description: The exact service name for which to display the active sessions
+          examples:
+          - any
+        session_id:
+          type: string
+          description: Identifier of the session to show in detail
+      description: Active session lookup request for device command output
+    utils_show_ospf_database:
+      title: utils_show_ospf_database
+      type: object
+      properties:
+        node:
           allOf:
-          - $ref: '#/components/schemas/utils_clear_bgp_type2'
-          - description: 'BGP clear operation type to run. enum: `hard`, `in`, `out`, `soft`.'
+          - $ref: '#/components/schemas/ha_cluster_node_enum14'
+          - description: 'HA cluster node on which to show the OSPF database. enum: `node0`, `node1`.'
+        self_originate:
+          type: boolean
+          description: Whether to show only self-originated OSPF database entries
+          default: false
         vrf:
           type: string
-          description: Routing instance or VRF containing the BGP session
-      description: Request to clear BGP sessions on a device
-    websocket_session:
-      title: websocket_session
+          description: Routing instance or VRF filter for OSPF database output
+          examples:
+          - lan
+      description: OSPF database command request for SSR and SRX devices
+    websocket_session_with_url:
+      title: websocket_session_with_url
       required:
       - session
+      - url
       type: object
       properties:
         session:
@@ -3377,50 +3431,12 @@ components:
           description: Identifier used to correlate output on the WebSocket stream
           examples:
           - 19e73828-937f-05e6-f709-e29efdb0a82b
-      description: Response containing the WebSocket session handle for asynchronous command output
-    ha_cluster_node_enum22:
-      title: ha_cluster_node_enum22
-      enum:
-      - node0
-      - node1
-      type: string
-      description: 'HA cluster node on which to run the device operation. enum: `node0`, `node1`.'
-    utils_clear_session:
-      title: utils_clear_session
-      type: object
-      properties:
-        node:
-          allOf:
-          - $ref: '#/components/schemas/ha_cluster_node_enum5'
-          - description: 'HA cluster node on which to clear sessions. enum: `node0`, `node1`.'
-        service_name:
+        url:
           type: string
-          description: Service name, only supported in SSR
+          description: WebSocket URL returned for connecting to this session
           examples:
-          - internet-wan_and_lte
-        session_ids:
-          type: array
-          items:
-            type: string
-            contentEncoding: uuid
-          description: Session identifiers to clear
-          examples:
-          - - 88776655-0123-4567-890a-112233445566
-      description: To use five tuples to lookup the session to be cleared, all must be provided
-    ha_cluster_node_enum15:
-      title: ha_cluster_node_enum15
-      enum:
-      - node0
-      - node1
-      type: string
-      description: 'HA cluster node on which to show OSPF interfaces. enum: `node0`, `node1`.'
-    ha_cluster_node_enum3:
-      title: ha_cluster_node_enum3
-      enum:
-      - node0
-      - node1
-      type: string
-      description: 'HA cluster node on which to clear ARP entries. enum: `node0`, `node1`.'
+          - wss://api-ws.mist.com/ssh?jwt=xxxx
+      description: Response containing a WebSocket session handle and connection URL
     ha_cluster_node_enum5:
       title: ha_cluster_node_enum5
       enum:
@@ -3428,22 +3444,6 @@ components:
       - node1
       type: string
       description: 'HA cluster node on which to clear sessions. enum: `node0`, `node1`.'
-    utils_clear_bgp_type2:
-      title: utils_clear_bgp_type2
-      enum:
-      - hard
-      - in
-      - out
-      - soft
-      type: string
-      description: 'BGP clear operation type to run. enum: `hard`, `in`, `out`, `soft`.'
-    ha_cluster_node_enum16:
-      title: ha_cluster_node_enum16
-      enum:
-      - node0
-      - node1
-      type: string
-      description: 'HA cluster node on which to show OSPF neighbors. enum: `node0`, `node1`.'
     response_http401:
       title: response_http401
       type: object
@@ -3454,43 +3454,43 @@ components:
           examples:
           - Authentication credentials were not provided.
       description: Standard HTTP 401 authentication error response
-    ha_cluster_node_enum17:
-      title: ha_cluster_node_enum17
+    ha_cluster_node_enum3:
+      title: ha_cluster_node_enum3
       enum:
       - node0
       - node1
       type: string
-      description: 'HA cluster node on which to show the OSPF summary. enum: `node0`, `node1`.'
-    utils_clear_arp:
-      title: utils_clear_arp
+      description: 'HA cluster node on which to clear ARP entries. enum: `node0`, `node1`.'
+    utils_show_route_protocol2:
+      title: utils_show_route_protocol2
+      enum:
+      - any
+      - bgp
+      - direct
+      - evpn
+      - ospf
+      - static
+      type: string
+      description: 'Routing protocol filter for route entries. enum: `any`, `bgp`, `direct`, `evpn`, `ospf`, `static`.'
+    utils_show_ospf_interfaces:
+      title: utils_show_ospf_interfaces
       type: object
       properties:
-        ip:
-          type: string
-          description: The IP address for which to clear an ARP entry. port_id must be specified.
-          examples:
-          - 10.1.1.1
         node:
           allOf:
-          - $ref: '#/components/schemas/ha_cluster_node_enum3'
-          - description: 'HA cluster node on which to clear ARP entries. enum: `node0`, `node1`.'
+          - $ref: '#/components/schemas/ha_cluster_node_enum15'
+          - description: 'HA cluster node on which to show OSPF interfaces. enum: `node0`, `node1`.'
         port_id:
           type: string
-          description: The device interface on which to clear the ARP cache.
+          description: Network interface filter for OSPF interface output
           examples:
-          - wan
-        vlan:
-          type: integer
-          description: The VLAN on which to clear the ARP cache. port_id must be specified.
-          contentEncoding: int32
-          examples:
-          - 1000
+          - ge-0/0/3
         vrf:
           type: string
-          description: The vrf for which to clear an ARP entry. applicable for switch.
+          description: Routing instance or VRF filter for OSPF interface output
           examples:
-          - guest
-      description: Request to clear ARP entries on a device
+          - lan
+      description: OSPF interfaces command request for SSR and SRX devices
   securitySchemes:
     apiToken:
       type: apiKey

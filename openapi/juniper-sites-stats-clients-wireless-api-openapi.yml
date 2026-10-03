@@ -1399,6 +1399,49 @@ paths:
       deprecated: false
 components:
   schemas:
+    stats_wireless_client_wxrule_usage:
+      title: stats_wireless_client_wxrule_usage
+      type: object
+      properties:
+        tag_id:
+          type: string
+          description: WxLAN tag identifier for this rule usage entry
+          contentEncoding: uuid
+        usage:
+          type: integer
+          description: Count recorded for this WxLAN rule usage entry
+          contentEncoding: int32
+      description: WxLAN rule usage counter for one wireless tag
+    stats_client:
+      oneOf:
+      - $ref: '#/components/schemas/stats_wireless_client'
+      - $ref: '#/components/schemas/stats_wired_client'
+      description: Client statistics record for a wireless or wired client
+    stats_wireless_client_rssi_zone:
+      title: stats_wireless_client_rssi_zone
+      type: object
+      properties:
+        id:
+          type: string
+          description: RSSI zone identifier that currently contains the wireless client
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        since:
+          type: number
+          description: Time when the wireless client entered the RSSI zone, in epoch seconds
+      description: RSSI zone currently containing a wireless client
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
     stats_wired_client:
       title: stats_wired_client
       required:
@@ -1489,134 +1532,6 @@ components:
           type: number
           description: Time when the wireless client entered the zone, in epoch seconds
       description: Zone currently containing a wireless client
-    dot11_proto2:
-      title: dot11_proto2
-      enum:
-      - a
-      - ac
-      - ax
-      - b
-      - be
-      - g
-      - n
-      type: string
-      description: '802.11 protocol amendment used by the wireless client. enum: `a`, `ac`, `ax`, `b`, `be`, `g`, `n`.'
-    stats_client:
-      oneOf:
-      - $ref: '#/components/schemas/stats_wireless_client'
-      - $ref: '#/components/schemas/stats_wired_client'
-      description: Client statistics record for a wireless or wired client
-    stats_wireless_client_wxrule_usage:
-      title: stats_wireless_client_wxrule_usage
-      type: object
-      properties:
-        tag_id:
-          type: string
-          description: WxLAN tag identifier for this rule usage entry
-          contentEncoding: uuid
-        usage:
-          type: integer
-          description: Count recorded for this WxLAN rule usage entry
-          contentEncoding: int32
-      description: WxLAN rule usage counter for one wireless tag
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    guest1:
-      title: guest1
-      type: object
-      properties:
-        access_code_email:
-          type: string
-          description: If `auth_method`==`email`, the email address where the authorization code has been sent to
-          readOnly: true
-        ap_mac:
-          type: string
-          description: MAC address of the AP used during guest registration
-          readOnly: true
-        auth_method:
-          type: string
-          description: Guest authentication method used for the authorization
-          readOnly: true
-        authorized:
-          type: boolean
-          description: Whether the guest is currently authorized
-          default: true
-        authorized_expiring_time:
-          type: number
-          description: Unix timestamp when the guest authorization expires
-          readOnly: true
-          examples:
-          - 1480704955
-        authorized_time:
-          type: number
-          description: Unix timestamp when the guest was authorized
-          readOnly: true
-          examples:
-          - 1480704355
-        company:
-          type: string
-          description: Optional company name provided by the guest during registration
-          examples:
-          - abc
-        email:
-          type: string
-          description: Optional email address provided by the guest during registration
-          contentEncoding: email
-          examples:
-          - john@abc.com
-        field1:
-          type: string
-          description: Optional custom field 1 value provided by the guest during registration
-        field2:
-          type: string
-          description: Optional custom field 2 value provided by the guest during registration
-        field3:
-          type: string
-          description: Optional custom field 3 value provided by the guest during registration
-        field4:
-          type: string
-          description: Optional custom field 4 value provided by the guest during registration
-        mac:
-          type: string
-          description: Device MAC address captured during guest registration
-          readOnly: true
-        minutes:
-          maximum: 259200
-          minimum: 0
-          type: integer
-          description: Authorization duration, in minutes. Default is 1440 minutes (1 day), maximum is 259200 (180 days)
-          contentEncoding: int32
-          default: 1440
-        name:
-          type: string
-          description: Optional name provided by the guest during registration
-          readOnly: true
-          examples:
-          - John Smith
-        random_mac:
-          type: boolean
-          description: Whether the guest device used a randomized MAC address to connect to the SSID
-          readOnly: true
-        ssid:
-          type: string
-          description: Name of the SSID
-          readOnly: true
-          examples:
-          - Guest-SSID
-        wlan_id:
-          type: string
-          description: Identifier of the WLAN used for the guest authorization
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 6748cfa6-4e12-11e6-9188-0242ac110007
-      description: Portal guest details for the wireless client
     stats_unconnected_client:
       title: stats_unconnected_client
       required:
@@ -1661,26 +1576,6 @@ components:
           type: number
           description: Vertical map coordinate of the unconnected client location, in pixels, if known
       description: Location statistics for an unconnected Wi-Fi client observed by an AP
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
     stats_wireless_client:
       title: stats_wireless_client
       required:
@@ -1954,18 +1849,28 @@ components:
             $ref: '#/components/schemas/stats_wireless_client_zone'
           description: Zone memberships for the wireless client
       description: Wireless client connection, traffic, and location statistics
-    dot11_band3:
-      title: dot11_band3
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    dot11_proto2:
+      title: dot11_proto2
       enum:
-      - '24'
-      - '5'
-      - 5-dedicated
-      - 5-selectable
-      - '6'
-      - 6-dedicated
-      - 6-selectable
+      - a
+      - ac
+      - ax
+      - b
+      - be
+      - g
+      - n
       type: string
-      description: 'Wi-Fi radio band used by the wireless client connection. enum: `24`, `5`, `5-dedicated`, `5-selectable`, `6`, `6-dedicated`, `6-selectable`.'
+      description: '802.11 protocol amendment used by the wireless client. enum: `a`, `ac`, `ax`, `b`, `be`, `g`, `n`.'
     response_http401:
       title: response_http401
       type: object
@@ -1986,6 +1891,126 @@ components:
           type: boolean
           description: Whether the wireless client is authorized by AirWatch
       description: Mobile device management authorization information from AirWatch for the wireless client
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    dot11_band3:
+      title: dot11_band3
+      enum:
+      - '24'
+      - '5'
+      - 5-dedicated
+      - 5-selectable
+      - '6'
+      - 6-dedicated
+      - 6-selectable
+      type: string
+      description: 'Wi-Fi radio band used by the wireless client connection. enum: `24`, `5`, `5-dedicated`, `5-selectable`, `6`, `6-dedicated`, `6-selectable`.'
+    guest1:
+      title: guest1
+      type: object
+      properties:
+        access_code_email:
+          type: string
+          description: If `auth_method`==`email`, the email address where the authorization code has been sent to
+          readOnly: true
+        ap_mac:
+          type: string
+          description: MAC address of the AP used during guest registration
+          readOnly: true
+        auth_method:
+          type: string
+          description: Guest authentication method used for the authorization
+          readOnly: true
+        authorized:
+          type: boolean
+          description: Whether the guest is currently authorized
+          default: true
+        authorized_expiring_time:
+          type: number
+          description: Unix timestamp when the guest authorization expires
+          readOnly: true
+          examples:
+          - 1480704955
+        authorized_time:
+          type: number
+          description: Unix timestamp when the guest was authorized
+          readOnly: true
+          examples:
+          - 1480704355
+        company:
+          type: string
+          description: Optional company name provided by the guest during registration
+          examples:
+          - abc
+        email:
+          type: string
+          description: Optional email address provided by the guest during registration
+          contentEncoding: email
+          examples:
+          - john@abc.com
+        field1:
+          type: string
+          description: Optional custom field 1 value provided by the guest during registration
+        field2:
+          type: string
+          description: Optional custom field 2 value provided by the guest during registration
+        field3:
+          type: string
+          description: Optional custom field 3 value provided by the guest during registration
+        field4:
+          type: string
+          description: Optional custom field 4 value provided by the guest during registration
+        mac:
+          type: string
+          description: Device MAC address captured during guest registration
+          readOnly: true
+        minutes:
+          maximum: 259200
+          minimum: 0
+          type: integer
+          description: Authorization duration, in minutes. Default is 1440 minutes (1 day), maximum is 259200 (180 days)
+          contentEncoding: int32
+          default: 1440
+        name:
+          type: string
+          description: Optional name provided by the guest during registration
+          readOnly: true
+          examples:
+          - John Smith
+        random_mac:
+          type: boolean
+          description: Whether the guest device used a randomized MAC address to connect to the SSID
+          readOnly: true
+        ssid:
+          type: string
+          description: Name of the SSID
+          readOnly: true
+          examples:
+          - Guest-SSID
+        wlan_id:
+          type: string
+          description: Identifier of the WLAN used for the guest authorization
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 6748cfa6-4e12-11e6-9188-0242ac110007
+      description: Portal guest details for the wireless client
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
     stats_wireless_client_vbeacon:
       title: stats_wireless_client_vbeacon
       type: object
@@ -2001,31 +2026,6 @@ components:
           type: number
           description: Time when the wireless client began matching the virtual beacon, in epoch seconds
       description: Virtual beacon currently associated with a wireless client
-    stats_wireless_client_rssi_zone:
-      title: stats_wireless_client_rssi_zone
-      type: object
-      properties:
-        id:
-          type: string
-          description: RSSI zone identifier that currently contains the wireless client
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 53f10664-3ce8-4c27-b382-0ef66432349f
-        since:
-          type: number
-          description: Time when the wireless client entered the RSSI zone, in epoch seconds
-      description: RSSI zone currently containing a wireless client
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
   securitySchemes:
     apiToken:
       type: apiKey

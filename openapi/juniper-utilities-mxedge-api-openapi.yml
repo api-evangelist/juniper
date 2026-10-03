@@ -222,14 +222,6 @@ paths:
       deprecated: false
 components:
   schemas:
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
     response_http403:
       title: response_http403
       type: object
@@ -240,16 +232,16 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
-    response_http429:
-      title: response_http429
+    response_http400:
+      title: response_http400
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the rate limit error
+          description: Human-readable explanation of the bad request error
           examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
     response_mxtunnels_preempt_aps:
       title: response_mxtunnels_preempt_aps
       required:
@@ -263,6 +255,16 @@ components:
             type: string
           description: AP identifiers moved to the preferred MxTunnel peer
       description: Result of preempting APs onto preferred MxTunnel peers
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
     response_http401:
       title: response_http401
       type: object
@@ -273,16 +275,14 @@ components:
           examples:
           - Authentication credentials were not provided.
       description: Standard HTTP 401 authentication error response
-    response_http400:
-      title: response_http400
+    response_http404:
+      title: response_http404
       type: object
       properties:
-        detail:
+        id:
           type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
   securitySchemes:
     apiToken:
       type: apiKey

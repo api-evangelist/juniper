@@ -2813,173 +2813,6 @@ paths:
       deprecated: false
 components:
   schemas:
-    network_internal_access2:
-      title: network_internal_access2
-      type: object
-      properties:
-        enabled:
-          type: boolean
-          description: Whether internal access is enabled for this network
-      description: Internal access settings for this network
-    network_source_nat2:
-      title: network_source_nat2
-      type: object
-      properties:
-        external_ip:
-          type: string
-          description: External source NAT IP or subnet used when spoke hosts must be reachable from the hub
-          examples:
-          - 172.16.0.8/30
-      description: Source NAT settings used when non-routed spoke hosts must be reachable from the hub
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    network_vpn_access_config:
-      title: network_vpn_access_config
-      type: object
-      properties:
-        advertised_subnet:
-          type: string
-          description: If `routed`==`true`, whether to advertise an aggregated subnet toward HUB this is useful when there are multiple networks on SPOKE's side
-          examples:
-          - 172.16.0.0/24
-        allow_ping:
-          type: boolean
-          description: Whether to allow ping from vpn into this routed network
-        destination_nat:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/network_vpn_access_destination_nat_property'
-          description: Destination NAT rules applied for VPN access to this network
-        nat_pool:
-          type: string
-          description: If `routed`==`false` (usually at Spoke), but some hosts needs to be reachable from Hub, a subnet is required to create and advertise the route to Hub
-          examples:
-          - 172.16.0.0/26
-        no_readvertise_to_lan_bgp:
-          type: boolean
-          description: toward LAN-side BGP peers
-          default: false
-        no_readvertise_to_lan_ospf:
-          type: boolean
-          description: toward LAN-side OSPF peers
-          default: false
-        no_readvertise_to_overlay:
-          type: boolean
-          description: toward overlay, how HUB should deal with routes it received from Spokes
-        other_vrfs:
-          type: array
-          items:
-            type: string
-          description: Other VRFs that can receive leaked routes from this spoke network
-        routed:
-          type: boolean
-          description: Whether this network is routable
-        source_nat:
-          allOf:
-          - $ref: '#/components/schemas/network_source_nat2'
-          - description: Source NAT settings used when non-routed spoke hosts must be reachable from the hub
-        static_nat:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/network_vpn_access_static_nat_property'
-          description: Static NAT rules applied for VPN access to this network
-        summarized_subnet:
-          type: string
-          description: toward overlay, how HUB should deal with routes it received from Spokes
-          examples:
-          - 172.16.0.0/16
-        summarized_subnet_to_lan_bgp:
-          type: string
-          description: toward LAN-side BGP peers
-          examples:
-          - 172.16.0.0/16
-        summarized_subnet_to_lan_ospf:
-          type: string
-          description: toward LAN-side OSPF peers
-          examples:
-          - 172.16.0.0/16
-      description: VPN access settings for a network and VPN pair
-    network_internet_access_static_nat_property:
-      title: network_internet_access_static_nat_property
-      type: object
-      properties:
-        internal_ip:
-          type: string
-          description: The Static NAT destination IP address. Must be an IP address (i.e. "192.168.70.3") or a Variable (i.e. "{{myvar}}")
-          examples:
-          - 192.168.70.3
-        name:
-          type: string
-          description: Label for this direct internet static NAT rule
-          examples:
-          - pos_station-1
-        wan_name:
-          type: string
-          description: SRX Only. If not set, we configure the nat policies against all WAN ports for simplicity. Can be a Variable (i.e. "{{myvar}}")
-          examples:
-          - wan0
-      description: Direct-internet static NAT rule target settings
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    network_internet_access_destination_nat_property:
-      title: network_internet_access_destination_nat_property
-      type: object
-      properties:
-        internal_ip:
-          type: string
-          description: The Destination NAT destination IP address. Must be an IP (i.e. "192.168.70.30") or a Variable (i.e. "{{myvar}}")
-          examples:
-          - 192.168.70.30
-        name:
-          type: string
-          description: Label for this direct internet destination NAT rule
-          examples:
-          - web server
-        port:
-          type: string
-          description: The Destination NAT destination IP address. Must be a Port (i.e. "443") or a Variable (i.e. "{{myvar}}")
-          examples:
-          - '443'
-        wan_name:
-          type: string
-          description: SRX Only. If not set, we configure the nat policies against all WAN ports for simplicity
-          examples:
-          - wan0
-      description: Direct-internet destination NAT rule target settings
     network_vpn_access_static_nat_property:
       title: network_vpn_access_static_nat_property
       type: object
@@ -3003,26 +2836,34 @@ components:
           type: string
           description: RP (rendezvous point) IP address
       description: Multicast group rendezvous point mapping
-    network_vpn_access_destination_nat_property:
-      title: network_vpn_access_destination_nat_property
+    network_source_nat2:
+      title: network_source_nat2
       type: object
       properties:
-        internal_ip:
+        external_ip:
           type: string
-          description: The Destination NAT destination IP address. Must be an IP (i.e. "192.168.70.30") or a Variable (i.e. "{{myvar}}")
+          description: External source NAT IP or subnet used when spoke hosts must be reachable from the hub
           examples:
-          - 192.168.70.30
-        name:
+          - 172.16.0.8/30
+      description: Source NAT settings used when non-routed spoke hosts must be reachable from the hub
+    network_internal_access2:
+      title: network_internal_access2
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether internal access is enabled for this network
+      description: Internal access settings for this network
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
           type: string
-          description: Label for this VPN destination NAT rule
+          description: Human-readable explanation of the permission error
           examples:
-          - web server
-        port:
-          type: string
-          description: Destination port or variable for this VPN destination NAT rule
-          examples:
-          - '443'
-      description: VPN access destination NAT rule target settings
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
     network:
       title: network
       required:
@@ -3119,6 +2960,183 @@ components:
             $ref: '#/components/schemas/network_vpn_access_config'
           description: VPN access settings keyed by VPN name for this network
       description: Organization-level Layer 3 network definition that can be merged into site settings and used for service routes. Networks are used to define the service routes in the Gateway settings or templates
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    network_multicast2:
+      title: network_multicast2
+      type: object
+      properties:
+        disable_igmp:
+          type: boolean
+          description: If the network will only be the source of the multicast traffic, IGMP can be disabled
+          default: false
+        enabled:
+          type: boolean
+          description: Whether multicast support is enabled for this network
+          default: false
+        groups:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/network_multicast_group'
+          description: Multicast group-to-RP mappings for this network
+      description: Settings for multicast routing on this network
+    network_tenant:
+      title: network_tenant
+      type: object
+      properties:
+        addresses:
+          type: array
+          items:
+            type: string
+          description: IP addresses or subnets assigned to this tenant in the network
+      description: Tenant address entry for a network
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    network_internet_access_destination_nat_property:
+      title: network_internet_access_destination_nat_property
+      type: object
+      properties:
+        internal_ip:
+          type: string
+          description: The Destination NAT destination IP address. Must be an IP (i.e. "192.168.70.30") or a Variable (i.e. "{{myvar}}")
+          examples:
+          - 192.168.70.30
+        name:
+          type: string
+          description: Label for this direct internet destination NAT rule
+          examples:
+          - web server
+        port:
+          type: string
+          description: The Destination NAT destination IP address. Must be a Port (i.e. "443") or a Variable (i.e. "{{myvar}}")
+          examples:
+          - '443'
+        wan_name:
+          type: string
+          description: SRX Only. If not set, we configure the nat policies against all WAN ports for simplicity
+          examples:
+          - wan0
+      description: Direct-internet destination NAT rule target settings
+    network_internet_access_static_nat_property:
+      title: network_internet_access_static_nat_property
+      type: object
+      properties:
+        internal_ip:
+          type: string
+          description: The Static NAT destination IP address. Must be an IP address (i.e. "192.168.70.3") or a Variable (i.e. "{{myvar}}")
+          examples:
+          - 192.168.70.3
+        name:
+          type: string
+          description: Label for this direct internet static NAT rule
+          examples:
+          - pos_station-1
+        wan_name:
+          type: string
+          description: SRX Only. If not set, we configure the nat policies against all WAN ports for simplicity. Can be a Variable (i.e. "{{myvar}}")
+          examples:
+          - wan0
+      description: Direct-internet static NAT rule target settings
+    network_vpn_access_config:
+      title: network_vpn_access_config
+      type: object
+      properties:
+        advertised_subnet:
+          type: string
+          description: If `routed`==`true`, whether to advertise an aggregated subnet toward HUB this is useful when there are multiple networks on SPOKE's side
+          examples:
+          - 172.16.0.0/24
+        allow_ping:
+          type: boolean
+          description: Whether to allow ping from vpn into this routed network
+        destination_nat:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/network_vpn_access_destination_nat_property'
+          description: Destination NAT rules applied for VPN access to this network
+        nat_pool:
+          type: string
+          description: If `routed`==`false` (usually at Spoke), but some hosts needs to be reachable from Hub, a subnet is required to create and advertise the route to Hub
+          examples:
+          - 172.16.0.0/26
+        no_readvertise_to_lan_bgp:
+          type: boolean
+          description: toward LAN-side BGP peers
+          default: false
+        no_readvertise_to_lan_ospf:
+          type: boolean
+          description: toward LAN-side OSPF peers
+          default: false
+        no_readvertise_to_overlay:
+          type: boolean
+          description: toward overlay, how HUB should deal with routes it received from Spokes
+        other_vrfs:
+          type: array
+          items:
+            type: string
+          description: Other VRFs that can receive leaked routes from this spoke network
+        routed:
+          type: boolean
+          description: Whether this network is routable
+        source_nat:
+          allOf:
+          - $ref: '#/components/schemas/network_source_nat2'
+          - description: Source NAT settings used when non-routed spoke hosts must be reachable from the hub
+        static_nat:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/network_vpn_access_static_nat_property'
+          description: Static NAT rules applied for VPN access to this network
+        summarized_subnet:
+          type: string
+          description: toward overlay, how HUB should deal with routes it received from Spokes
+          examples:
+          - 172.16.0.0/16
+        summarized_subnet_to_lan_bgp:
+          type: string
+          description: toward LAN-side BGP peers
+          examples:
+          - 172.16.0.0/16
+        summarized_subnet_to_lan_ospf:
+          type: string
+          description: toward LAN-side OSPF peers
+          examples:
+          - 172.16.0.0/16
+      description: VPN access settings for a network and VPN pair
     network_internet_access2:
       title: network_internet_access2
       type: object
@@ -3145,44 +3163,26 @@ components:
             $ref: '#/components/schemas/network_internet_access_static_nat_property'
           description: Static NAT rules for direct internet access
       description: Direct internet access and NAT settings for this network
-    network_multicast2:
-      title: network_multicast2
+    network_vpn_access_destination_nat_property:
+      title: network_vpn_access_destination_nat_property
       type: object
       properties:
-        disable_igmp:
-          type: boolean
-          description: If the network will only be the source of the multicast traffic, IGMP can be disabled
-          default: false
-        enabled:
-          type: boolean
-          description: Whether multicast support is enabled for this network
-          default: false
-        groups:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/network_multicast_group'
-          description: Multicast group-to-RP mappings for this network
-      description: Settings for multicast routing on this network
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
+        internal_ip:
           type: string
-          description: Human-readable explanation of the bad request error
+          description: The Destination NAT destination IP address. Must be an IP (i.e. "192.168.70.30") or a Variable (i.e. "{{myvar}}")
           examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    network_tenant:
-      title: network_tenant
-      type: object
-      properties:
-        addresses:
-          type: array
-          items:
-            type: string
-          description: IP addresses or subnets assigned to this tenant in the network
-      description: Tenant address entry for a network
+          - 192.168.70.30
+        name:
+          type: string
+          description: Label for this VPN destination NAT rule
+          examples:
+          - web server
+        port:
+          type: string
+          description: Destination port or variable for this VPN destination NAT rule
+          examples:
+          - '443'
+      description: VPN access destination NAT rule target settings
   securitySchemes:
     apiToken:
       type: apiKey

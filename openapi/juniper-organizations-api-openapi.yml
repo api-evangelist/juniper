@@ -102,6 +102,25 @@ paths:
                 $ref: '#/components/schemas/OrgStats'
 components:
   schemas:
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Error message
+    OrgStats:
+      type: object
+      properties:
+        num_sites:
+          type: integer
+        num_devices:
+          type: integer
+        num_devices_connected:
+          type: integer
+        num_devices_disconnected:
+          type: integer
+        num_clients:
+          type: integer
     Organization:
       type: object
       properties:
@@ -125,25 +144,6 @@ components:
           type: number
         modified_time:
           type: number
-    Error:
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Error message
-    OrgStats:
-      type: object
-      properties:
-        num_sites:
-          type: integer
-        num_devices:
-          type: integer
-        num_devices_connected:
-          type: integer
-        num_devices_disconnected:
-          type: integer
-        num_clients:
-          type: integer
   parameters:
     OrgId:
       name: org_id
@@ -154,6 +154,12 @@ components:
         type: string
         format: uuid
   responses:
+    Unauthorized:
+      description: Unauthorized - invalid or missing authentication
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
     BadRequest:
       description: Bad request - invalid parameters
       content:
@@ -162,12 +168,6 @@ components:
             $ref: '#/components/schemas/Error'
     NotFound:
       description: Resource not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized - invalid or missing authentication
       content:
         application/json:
           schema:

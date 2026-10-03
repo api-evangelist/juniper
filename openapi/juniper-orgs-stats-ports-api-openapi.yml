@@ -924,27 +924,117 @@ paths:
       deprecated: false
 components:
   schemas:
-    port_stp_role:
-      title: port_stp_role
-      enum:
-      - alternate
-      - backup
-      - designated
-      - disabled
-      - root
-      - root-prevented
-      type: string
-      description: 'Spanning Tree Protocol role for the port. enum: `""`, `alternate`, `backup`, `designated`, `disabled`, `root`, `root-prevented`'
-    response_http403:
-      title: response_http403
+    count_result:
+      title: count_result
+      required:
+      - count
       type: object
       properties:
-        detail:
+        count:
+          type: integer
+          description: Number of matching items for the distinct value or values in this result
+          contentEncoding: int32
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
+    port_stp_state1:
+      title: port_stp_state1
+      enum:
+      - blocking
+      - disabled
+      - forwarding
+      - learning
+      - listening
+      type: string
+      description: 'Current spanning tree state of the port. enum: ``, `blocking`, `disabled`, `forwarding`, `learning`, `listening`.'
+    site_ports_count_distinct:
+      title: site_ports_count_distinct
+      enum:
+      - full_duplex
+      - mac
+      - neighbor_mac
+      - neighbor_port_desc
+      - neighbor_system_name
+      - poe_disabled
+      - poe_mode
+      - poe_on
+      - port_id
+      - port_mac
+      - speed
+      - up
+      type: string
+      description: 'enum: `full_duplex`, `mac`, `neighbor_mac`, `neighbor_port_desc`, `neighbor_system_name`, `poe_disabled`, `poe_mode`, `poe_on`, `port_id`, `port_mac`, `speed`, `up`'
+    stats_switch_port_poe_mode1:
+      title: stats_switch_port_poe_mode1
+      enum:
+      - 802.3af
+      - 802.3at
+      - 802.3bt
+      type: string
+      description: 'PoE mode reported for the port. enum: `802.3af`, `802.3at`, `802.3bt`.'
+    response_port_stats_search:
+      title: response_port_stats_search
+      required:
+      - limit
+      - results
+      - total
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Epoch timestamp, in seconds, for the end of the port statistics reporting window
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of port statistics records returned in this page
+          contentEncoding: int32
+        next:
           type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
+          description: URL for retrieving the next page of port statistics search results
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/stats_switch_port'
+          description: Switch and gateway port statistics records matching the search filters
+        start:
+          type: integer
+          description: Epoch timestamp, in seconds, for the start of the port statistics reporting window
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of port statistics records matching the search filters across all pages
+          contentEncoding: int32
+      description: Paginated response for switch and gateway port statistics search results
+    stats_switch_port_type1:
+      title: stats_switch_port_type1
+      enum:
+      - ap
+      - ble
+      - gateway
+      - mxedge
+      - nac
+      - switch
+      type: string
+      description: 'Detected device category connected to the port, when available. enum: `ap`, `ble`, `gateway`, `mxedge`, `nac`, `switch`.'
+      examples:
+      - gateway
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    port_auth_state1:
+      title: port_auth_state1
+      enum:
+      - authenticated
+      - authenticating
+      - held
+      - init
+      type: string
+      description: 'Authentication state of the port. enum: ``, `authenticated`, `authenticating`, `held`, `init`.'
     response_count:
       title: response_count
       required:
@@ -982,19 +1072,66 @@ components:
           description: Number of distinct result buckets returned
           contentEncoding: int32
       description: Distinct count response for time-bounded search results
-    count_result:
-      title: count_result
-      required:
-      - count
+    response_http403:
+      title: response_http403
       type: object
       properties:
-        count:
-          type: integer
-          description: Number of matching items for the distinct value or values in this result
-          contentEncoding: int32
-      additionalProperties:
-        type: string
-      description: Count result row with the matching distinct field values
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    port_stp_state:
+      title: port_stp_state
+      enum:
+      - blocking
+      - disabled
+      - forwarding
+      - learning
+      - listening
+      type: string
+      description: 'Spanning Tree Protocol state for the port. enum: `""`, `blocking`, `disabled`, `forwarding`, `learning`, `listening`'
+    port_stp_role:
+      title: port_stp_role
+      enum:
+      - alternate
+      - backup
+      - designated
+      - disabled
+      - root
+      - root-prevented
+      type: string
+      description: 'Spanning Tree Protocol role for the port. enum: `""`, `alternate`, `backup`, `designated`, `disabled`, `root`, `root-prevented`'
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    port_auth_state:
+      title: port_auth_state
+      enum:
+      - authenticated
+      - authenticating
+      - held
+      - init
+      type: string
+      description: 'Port authentication state. enum: `""`, `authenticated`, `authenticating`, `held`, `init`'
     poe_priority2:
       title: poe_priority2
       enum:
@@ -1002,23 +1139,24 @@ components:
       - high
       type: string
       description: 'PoE priority configured for the port. enum: `low`, `high`.'
-    site_ports_count_distinct:
-      title: site_ports_count_distinct
+    poe_priority:
+      title: poe_priority
       enum:
-      - full_duplex
-      - mac
-      - neighbor_mac
-      - neighbor_port_desc
-      - neighbor_system_name
-      - poe_disabled
-      - poe_mode
-      - poe_on
-      - port_id
-      - port_mac
-      - speed
-      - up
+      - low
+      - high
       type: string
-      description: 'enum: `full_duplex`, `mac`, `neighbor_mac`, `neighbor_port_desc`, `neighbor_system_name`, `poe_disabled`, `poe_mode`, `poe_on`, `port_id`, `port_mac`, `speed`, `up`'
+      description: 'PoE priority. enum: `low`, `high`'
+    port_stp_role1:
+      title: port_stp_role1
+      enum:
+      - alternate
+      - backup
+      - designated
+      - disabled
+      - root
+      - root-prevented
+      type: string
+      description: 'Current spanning tree role of the port. enum: ``, `alternate`, `backup`, `designated`, `disabled`, `root`, `root-prevented`.'
     stats_switch_port:
       title: stats_switch_port
       required:
@@ -1302,135 +1440,6 @@ components:
           examples:
           - N6AA9HT
       description: Switch port statistics record returned by stats APIs
-    port_stp_state1:
-      title: port_stp_state1
-      enum:
-      - blocking
-      - disabled
-      - forwarding
-      - learning
-      - listening
-      type: string
-      description: 'Current spanning tree state of the port. enum: ``, `blocking`, `disabled`, `forwarding`, `learning`, `listening`.'
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    stats_switch_port_type1:
-      title: stats_switch_port_type1
-      enum:
-      - ap
-      - ble
-      - gateway
-      - mxedge
-      - nac
-      - switch
-      type: string
-      description: 'Detected device category connected to the port, when available. enum: `ap`, `ble`, `gateway`, `mxedge`, `nac`, `switch`.'
-      examples:
-      - gateway
-    port_stp_state:
-      title: port_stp_state
-      enum:
-      - blocking
-      - disabled
-      - forwarding
-      - learning
-      - listening
-      type: string
-      description: 'Spanning Tree Protocol state for the port. enum: `""`, `blocking`, `disabled`, `forwarding`, `learning`, `listening`'
-    response_port_stats_search:
-      title: response_port_stats_search
-      required:
-      - limit
-      - results
-      - total
-      type: object
-      properties:
-        end:
-          type: integer
-          description: Epoch timestamp, in seconds, for the end of the port statistics reporting window
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of port statistics records returned in this page
-          contentEncoding: int32
-        next:
-          type: string
-          description: URL for retrieving the next page of port statistics search results
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/stats_switch_port'
-          description: Switch and gateway port statistics records matching the search filters
-        start:
-          type: integer
-          description: Epoch timestamp, in seconds, for the start of the port statistics reporting window
-          contentEncoding: int32
-        total:
-          type: integer
-          description: Number of port statistics records matching the search filters across all pages
-          contentEncoding: int32
-      description: Paginated response for switch and gateway port statistics search results
-    port_stp_role1:
-      title: port_stp_role1
-      enum:
-      - alternate
-      - backup
-      - designated
-      - disabled
-      - root
-      - root-prevented
-      type: string
-      description: 'Current spanning tree role of the port. enum: ``, `alternate`, `backup`, `designated`, `disabled`, `root`, `root-prevented`.'
-    stats_switch_port_poe_mode1:
-      title: stats_switch_port_poe_mode1
-      enum:
-      - 802.3af
-      - 802.3at
-      - 802.3bt
-      type: string
-      description: 'PoE mode reported for the port. enum: `802.3af`, `802.3at`, `802.3bt`.'
-    poe_priority:
-      title: poe_priority
-      enum:
-      - low
-      - high
-      type: string
-      description: 'PoE priority. enum: `low`, `high`'
-    port_auth_state1:
-      title: port_auth_state1
-      enum:
-      - authenticated
-      - authenticating
-      - held
-      - init
-      type: string
-      description: 'Authentication state of the port. enum: ``, `authenticated`, `authenticating`, `held`, `init`.'
     response_http401:
       title: response_http401
       type: object
@@ -1441,15 +1450,6 @@ components:
           examples:
           - Authentication credentials were not provided.
       description: Standard HTTP 401 authentication error response
-    port_auth_state:
-      title: port_auth_state
-      enum:
-      - authenticated
-      - authenticating
-      - held
-      - init
-      type: string
-      description: 'Port authentication state. enum: `""`, `authenticated`, `authenticating`, `held`, `init`'
   securitySchemes:
     apiToken:
       type: apiKey

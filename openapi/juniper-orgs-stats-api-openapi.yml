@@ -301,6 +301,36 @@ paths:
       deprecated: false
 components:
   schemas:
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
     stats_org_sle_user_minutes2:
       title: stats_org_sle_user_minutes2
       required:
@@ -315,48 +345,16 @@ components:
           type: number
           description: Observed total user minutes for the SLE path
       description: User-minute totals for this SLE path
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    stats_org_sle:
-      title: stats_org_sle
-      required:
-      - path
-      type: object
-      properties:
-        path:
-          type: string
-          description: SLE path represented by this organization summary
-        user_minutes:
-          allOf:
-          - $ref: '#/components/schemas/stats_org_sle_user_minutes2'
-          - description: User-minute totals for this SLE path
-      description: Organization SLE summary for a service path
-    response_http403:
-      title: response_http403
+    response_http401:
+      title: response_http401
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the permission error
+          description: Human-readable explanation of the authentication error
           examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
     stats_org:
       title: stats_org
       required:
@@ -446,26 +444,28 @@ components:
             $ref: '#/components/schemas/stats_org_sle'
           description: Service level expectation summaries for the organization
       description: Organization statistics summary returned by the org stats endpoint
-    response_http401:
-      title: response_http401
+    response_http404:
+      title: response_http404
       type: object
       properties:
-        detail:
+        id:
           type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    response_http400:
-      title: response_http400
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    stats_org_sle:
+      title: stats_org_sle
+      required:
+      - path
       type: object
       properties:
-        detail:
+        path:
           type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
+          description: SLE path represented by this organization summary
+        user_minutes:
+          allOf:
+          - $ref: '#/components/schemas/stats_org_sle_user_minutes2'
+          - description: User-minute totals for this SLE path
+      description: Organization SLE summary for a service path
   securitySchemes:
     apiToken:
       type: apiKey

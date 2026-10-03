@@ -3534,6 +3534,133 @@ paths:
       deprecated: false
 components:
   schemas:
+    utils_clear_bpdu:
+      title: utils_clear_bpdu
+      type: object
+      properties:
+        ports:
+          type: array
+          items:
+            type: string
+          description: Switch ports on which to clear detected BPDU errors
+      description: Request to clear detected BPDU errors on switch ports
+    upgrade_bios_multi:
+      title: upgrade_bios_multi
+      type: object
+      properties:
+        device_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: Specific device IDs to include in the BIOS upgrade
+        models:
+          type: array
+          items:
+            type: string
+          description: Device models to include in the BIOS upgrade
+        reboot:
+          type: boolean
+          description: Whether to restart the selected devices immediately after the upgrade completes
+          default: false
+        version:
+          type: string
+          description: BIOS version to install on the selected devices
+          examples:
+          - CDEN_P_EX1_00.15.01.00
+      description: BIOS upgrade request for multiple devices
+    ha_cluster_node_enum10:
+      title: ha_cluster_node_enum10
+      enum:
+      - node0
+      - node1
+      type: string
+      description: 'HA cluster node to run the command on, required for Gateways. enum: `node0`, `node1`.'
+    upgrade_fpga_multi:
+      title: upgrade_fpga_multi
+      type: object
+      properties:
+        device_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: Specific device IDs to include in the FPGA upgrade
+        models:
+          type: array
+          items:
+            type: string
+          description: Device models to include in the FPGA upgrade
+        reboot:
+          type: boolean
+          description: Whether to restart the selected devices immediately after the upgrade completes
+          default: false
+        version:
+          type: string
+          description: FPGA version to install on the selected devices
+          examples:
+          - REV37
+      description: FPGA upgrade request for multiple devices
+    response_device_flow_records_search:
+      title: response_device_flow_records_search
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Epoch timestamp, in seconds, for the end of the flow record search window
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of flow records returned in this page
+          contentEncoding: int32
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/flow_record'
+          description: Flow records matching the search filters
+        search_after:
+          type: string
+          description: Cursor token for retrieving the next page of flow records
+        start:
+          type: integer
+          description: Epoch timestamp, in seconds, for the start of the flow record search window
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of flow records matching the search filters
+          contentEncoding: int32
+      description: Paginated response for device flow record search results
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    devices_ids:
+      title: devices_ids
+      required:
+      - device_ids
+      type: object
+      properties:
+        device_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: Device identifiers to operate on in the request
+      description: Request body containing device identifiers
+    utils_cable_tests:
+      title: utils_cable_tests
+      required:
+      - port
+      type: object
+      properties:
+        port:
+          type: string
+          description: The port to run the cable test
+      description: Request body for running a switch cable test on a port
     response_http403:
       title: response_http403
       type: object
@@ -3544,26 +3671,54 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
-    flow_record_state:
-      title: flow_record_state
-      enum:
-      - active
-      - aged-out
-      type: string
-      description: 'Flow state. enum: `active`, `aged-out`'
-    clear_dot1x_session:
-      title: clear_dot1x_session
+    upgrade_fpga:
+      title: upgrade_fpga
       type: object
       properties:
-        ports:
-          type: array
-          items:
-            type: string
-          description: Port IDs whose dot1x sessions should be cleared
+        reboot:
+          type: boolean
+          description: Whether to restart the device immediately after the upgrade completes
+          default: false
+        version:
+          type: string
+          description: FPGA version to install on the device
           examples:
-          - - ge-0/0/0
-            - ge-0/0/1
-      description: Request body for clearing dot1x sessions on switch ports
+          - REV37
+      description: FPGA upgrade request for a single device
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    upgrade_bios:
+      title: upgrade_bios
+      type: object
+      properties:
+        reboot:
+          type: boolean
+          description: Whether to restart the device immediately after the upgrade completes
+          default: false
+        version:
+          type: string
+          description: BIOS version to install on the device
+          examples:
+          - CDEN_P_EX1_00.20.01.00
+      description: BIOS upgrade request for a single device
     flow_record:
       title: flow_record
       type: object
@@ -3642,142 +3797,39 @@ components:
           description: Total number of packets in the flow
           contentEncoding: int64
       description: Network flow record reported by a switch device
-    devices_ids:
-      title: devices_ids
+    websocket_session:
+      title: websocket_session
       required:
-      - device_ids
+      - session
       type: object
       properties:
-        device_ids:
-          type: array
-          items:
-            type: string
-            contentEncoding: uuid
-          description: Device identifiers to operate on in the request
-      description: Request body containing device identifiers
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
+        session:
           type: string
-          description: Human-readable explanation of the bad request error
+          description: Identifier used to correlate output on the WebSocket stream
           examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http404:
-      title: response_http404
+          - 19e73828-937f-05e6-f709-e29efdb0a82b
+      description: Response containing the WebSocket session handle for asynchronous command output
+    response_wired_coa:
+      title: response_wired_coa
       type: object
       properties:
-        id:
+        device_mac:
           type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
+          description: MAC address of the switch or gateway hosting the wired client session
           examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    upgrade_fpga_multi:
-      title: upgrade_fpga_multi
-      type: object
-      properties:
-        device_ids:
-          type: array
-          items:
-            type: string
-            contentEncoding: uuid
-          description: Specific device IDs to include in the FPGA upgrade
-        models:
-          type: array
-          items:
-            type: string
-          description: Device models to include in the FPGA upgrade
-        reboot:
-          type: boolean
-          description: Whether to restart the selected devices immediately after the upgrade completes
-          default: false
-        version:
+          - 5c5b35000002
+        port_id:
           type: string
-          description: FPGA version to install on the selected devices
+          description: Interface identifier for the wired client session
           examples:
-          - REV37
-      description: FPGA upgrade request for multiple devices
-    upgrade_bios:
-      title: upgrade_bios
-      type: object
-      properties:
-        reboot:
-          type: boolean
-          description: Whether to restart the device immediately after the upgrade completes
-          default: false
-        version:
+          - ge-0/0/0
+        session:
           type: string
-          description: BIOS version to install on the device
+          description: RADIUS session identifier used for the CoA request
+          contentEncoding: uuid
           examples:
-          - CDEN_P_EX1_00.20.01.00
-      description: BIOS upgrade request for a single device
-    utils_clear_macs:
-      title: utils_clear_macs
-      type: object
-      properties:
-        ports:
-          type: array
-          items:
-            type: string
-          description: Switch ports on which to clear learned MAC addresses
-      description: Request to clear learned MAC addresses from device ports
-    upgrade_fpga:
-      title: upgrade_fpga
-      type: object
-      properties:
-        reboot:
-          type: boolean
-          description: Whether to restart the device immediately after the upgrade completes
-          default: false
-        version:
-          type: string
-          description: FPGA version to install on the device
-          examples:
-          - REV37
-      description: FPGA upgrade request for a single device
-    flow_record_direction:
-      title: flow_record_direction
-      enum:
-      - egress
-      - ingress
-      type: string
-      description: 'Flow direction. enum: `egress`, `ingress`'
-    upgrade_bios_multi:
-      title: upgrade_bios_multi
-      type: object
-      properties:
-        device_ids:
-          type: array
-          items:
-            type: string
-            contentEncoding: uuid
-          description: Specific device IDs to include in the BIOS upgrade
-        models:
-          type: array
-          items:
-            type: string
-          description: Device models to include in the BIOS upgrade
-        reboot:
-          type: boolean
-          description: Whether to restart the selected devices immediately after the upgrade completes
-          default: false
-        version:
-          type: string
-          description: BIOS version to install on the selected devices
-          examples:
-          - CDEN_P_EX1_00.15.01.00
-      description: BIOS upgrade request for multiple devices
+          - 0a2a11b8-4b30-40d8-a6d1-e91ea540d86f
+      description: Response returned after triggering wired client CoA reauthentication
     utils_show_arp:
       title: utils_show_arp
       type: object
@@ -3816,6 +3868,40 @@ components:
           examples:
           - guest
       description: ARP table lookup request for device command output
+    flow_record_state:
+      title: flow_record_state
+      enum:
+      - active
+      - aged-out
+      type: string
+      description: 'Flow state. enum: `active`, `aged-out`'
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    utils_clear_macs:
+      title: utils_clear_macs
+      type: object
+      properties:
+        ports:
+          type: array
+          items:
+            type: string
+          description: Switch ports on which to clear learned MAC addresses
+      description: Request to clear learned MAC addresses from device ports
+    flow_record_direction:
+      title: flow_record_direction
+      enum:
+      - egress
+      - ingress
+      type: string
+      description: 'Flow direction. enum: `egress`, `ingress`'
     response_device_bios_upgrade:
       title: response_device_bios_upgrade
       type: object
@@ -3828,105 +3914,19 @@ components:
           description: Epoch timestamp when the BIOS upgrade status was reported
           readOnly: true
       description: Device BIOS upgrade status response
-    response_wired_coa:
-      title: response_wired_coa
-      type: object
-      properties:
-        device_mac:
-          type: string
-          description: MAC address of the switch or gateway hosting the wired client session
-          examples:
-          - 5c5b35000002
-        port_id:
-          type: string
-          description: Interface identifier for the wired client session
-          examples:
-          - ge-0/0/0
-        session:
-          type: string
-          description: RADIUS session identifier used for the CoA request
-          contentEncoding: uuid
-          examples:
-          - 0a2a11b8-4b30-40d8-a6d1-e91ea540d86f
-      description: Response returned after triggering wired client CoA reauthentication
-    utils_clear_bpdu:
-      title: utils_clear_bpdu
+    clear_dot1x_session:
+      title: clear_dot1x_session
       type: object
       properties:
         ports:
           type: array
           items:
             type: string
-          description: Switch ports on which to clear detected BPDU errors
-      description: Request to clear detected BPDU errors on switch ports
-    utils_cable_tests:
-      title: utils_cable_tests
-      required:
-      - port
-      type: object
-      properties:
-        port:
-          type: string
-          description: The port to run the cable test
-      description: Request body for running a switch cable test on a port
-    websocket_session:
-      title: websocket_session
-      required:
-      - session
-      type: object
-      properties:
-        session:
-          type: string
-          description: Identifier used to correlate output on the WebSocket stream
+          description: Port IDs whose dot1x sessions should be cleared
           examples:
-          - 19e73828-937f-05e6-f709-e29efdb0a82b
-      description: Response containing the WebSocket session handle for asynchronous command output
-    response_device_flow_records_search:
-      title: response_device_flow_records_search
-      type: object
-      properties:
-        end:
-          type: integer
-          description: Epoch timestamp, in seconds, for the end of the flow record search window
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of flow records returned in this page
-          contentEncoding: int32
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/flow_record'
-          description: Flow records matching the search filters
-        search_after:
-          type: string
-          description: Cursor token for retrieving the next page of flow records
-        start:
-          type: integer
-          description: Epoch timestamp, in seconds, for the start of the flow record search window
-          contentEncoding: int32
-        total:
-          type: integer
-          description: Number of flow records matching the search filters
-          contentEncoding: int32
-      description: Paginated response for device flow record search results
-    ha_cluster_node_enum10:
-      title: ha_cluster_node_enum10
-      enum:
-      - node0
-      - node1
-      type: string
-      description: 'HA cluster node to run the command on, required for Gateways. enum: `node0`, `node1`.'
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
+          - - ge-0/0/0
+            - ge-0/0/1
+      description: Request body for clearing dot1x sessions on switch ports
   securitySchemes:
     apiToken:
       type: apiKey

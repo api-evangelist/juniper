@@ -1403,58 +1403,19 @@ paths:
       deprecated: false
 components:
   schemas:
-    insight_rogue_client:
-      title: insight_rogue_client
+    count_result:
+      title: count_result
       required:
-      - annotation
-      - ap_mac
-      - avg_rssi
-      - band
-      - bssid
-      - client_mac
-      - num_aps
+      - count
       type: object
       properties:
-        annotation:
-          type: string
-          description: Rogue client annotation or classification
-        ap_mac:
-          type: string
-          description: Reporting AP MAC address that observed the rogue client
-        avg_rssi:
-          type: number
-          description: Average RSSI for the rogue client as heard by reporting APs
-        band:
-          type: string
-          description: Radio band on which the rogue client was observed
-        bssid:
-          type: string
-          description: Rogue BSSID associated with the client
-        client_mac:
-          type: string
-          description: Observed client MAC address on the rogue BSSID
-        num_aps:
+        count:
           type: integer
-          description: Number of APs that observed the rogue client
+          description: Number of matching items for the distinct value or values in this result
           contentEncoding: int32
-      description: Rogue client observation returned by site insights
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    site_rogue_events_count_distinct:
-      title: site_rogue_events_count_distinct
-      enum:
-      - ap
-      - bssid
-      - ssid
-      - type
-      type: string
-      description: 'enum: `ap`, `bssid`, `ssid`, `type`'
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
     response_insight_rogue:
       title: response_insight_rogue
       required:
@@ -1486,6 +1447,43 @@ components:
           description: Epoch timestamp for the start of the rogue AP insight window
           contentEncoding: int32
       description: Paginated response for rogue or neighbor AP insight results
+    response_count:
+      title: response_count
+      required:
+      - distinct
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        distinct:
+          type: string
+          description: Field used to group the count results
+        end:
+          type: integer
+          description: Search window end timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of distinct count results requested
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/count_result'
+          description: Count results grouped by the distinct field
+        start:
+          type: integer
+          description: Search window start timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of distinct result buckets returned
+          contentEncoding: int32
+      description: Distinct count response for time-bounded search results
     response_http403:
       title: response_http403
       type: object
@@ -1496,116 +1494,6 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
-    events_rogue:
-      title: events_rogue
-      required:
-      - ap
-      - bssid
-      - channel
-      - rssi
-      - ssid
-      - timestamp
-      type: object
-      properties:
-        ap:
-          type: string
-          description: Access point MAC address that detected the rogue BSSID
-        bssid:
-          type: string
-          description: Rogue BSSID observed by the AP
-        channel:
-          type: integer
-          description: Radio channel where the rogue BSSID was observed
-          contentEncoding: int32
-        rssi:
-          type: integer
-          description: Received signal strength of the rogue BSSID, in dBm
-          contentEncoding: int32
-        ssid:
-          type: string
-          description: Wireless network SSID advertised by the rogue BSSID
-        timestamp:
-          type: number
-          description: Time when the rogue event was observed
-          readOnly: true
-      description: Rogue wireless network event detected by a site AP
-    count_result:
-      title: count_result
-      required:
-      - count
-      type: object
-      properties:
-        count:
-          type: integer
-          description: Number of matching items for the distinct value or values in this result
-          contentEncoding: int32
-      additionalProperties:
-        type: string
-      description: Count result row with the matching distinct field values
-    response_insight_rogue_client:
-      title: response_insight_rogue_client
-      required:
-      - end
-      - limit
-      - results
-      - start
-      type: object
-      properties:
-        end:
-          type: integer
-          description: Epoch timestamp for the end of the rogue client insight window
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of rogue client observations returned in this page
-          contentEncoding: int32
-        next:
-          type: string
-          description: Pagination cursor or URL for retrieving the next page of rogue client observations
-        results:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/insight_rogue_client'
-          description: Rogue client observations returned for the site insight query
-        start:
-          type: integer
-          description: Epoch timestamp for the start of the rogue client insight window
-          contentEncoding: int32
-      description: Paginated response for rogue client insight results
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    rogue_type:
-      title: rogue_type
-      enum:
-      - honeypot
-      - lan
-      - others
-      - spoof
-      type: string
-      description: 'enum: `honeypot`, `lan`, `others`, `spoof`'
-    rogue_details:
-      title: rogue_details
-      required:
-      - manufacture
-      - seen_as_client
-      type: object
-      properties:
-        manufacture:
-          type: string
-          description: Vendor or manufacturer name reported for the rogue AP
-        seen_as_client:
-          type: boolean
-          description: Whether this rogue AP was also observed as a client
-      description: Rogue AP detail response
     response_events_rogue_search:
       title: response_events_rogue_search
       required:
@@ -1642,6 +1530,35 @@ components:
           description: Number of rogue AP event records matching the search filters across all pages
           contentEncoding: int32
       description: Paginated response for rogue AP event search results
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    site_rogue_events_count_distinct:
+      title: site_rogue_events_count_distinct
+      enum:
+      - ap
+      - bssid
+      - ssid
+      - type
+      type: string
+      description: 'enum: `ap`, `bssid`, `ssid`, `type`'
     response_http401:
       title: response_http401
       type: object
@@ -1652,6 +1569,39 @@ components:
           examples:
           - Authentication credentials were not provided.
       description: Standard HTTP 401 authentication error response
+    events_rogue:
+      title: events_rogue
+      required:
+      - ap
+      - bssid
+      - channel
+      - rssi
+      - ssid
+      - timestamp
+      type: object
+      properties:
+        ap:
+          type: string
+          description: Access point MAC address that detected the rogue BSSID
+        bssid:
+          type: string
+          description: Rogue BSSID observed by the AP
+        channel:
+          type: integer
+          description: Radio channel where the rogue BSSID was observed
+          contentEncoding: int32
+        rssi:
+          type: integer
+          description: Received signal strength of the rogue BSSID, in dBm
+          contentEncoding: int32
+        ssid:
+          type: string
+          description: Wireless network SSID advertised by the rogue BSSID
+        timestamp:
+          type: number
+          description: Time when the rogue event was observed
+          readOnly: true
+      description: Rogue wireless network event detected by a site AP
     insight_rogue_ap:
       title: insight_rogue_ap
       required:
@@ -1695,53 +1645,103 @@ components:
           description: Represents number of times the pair was heard in the interval. Each count roughly corresponds to a minute.
           contentEncoding: int32
       description: Rogue or neighbor AP observation returned by site insights
-    response_http400:
-      title: response_http400
+    response_http404:
+      title: response_http404
       type: object
       properties:
-        detail:
+        id:
           type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_count:
-      title: response_count
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    rogue_type:
+      title: rogue_type
+      enum:
+      - honeypot
+      - lan
+      - others
+      - spoof
+      type: string
+      description: 'enum: `honeypot`, `lan`, `others`, `spoof`'
+    insight_rogue_client:
+      title: insight_rogue_client
       required:
-      - distinct
+      - annotation
+      - ap_mac
+      - avg_rssi
+      - band
+      - bssid
+      - client_mac
+      - num_aps
+      type: object
+      properties:
+        annotation:
+          type: string
+          description: Rogue client annotation or classification
+        ap_mac:
+          type: string
+          description: Reporting AP MAC address that observed the rogue client
+        avg_rssi:
+          type: number
+          description: Average RSSI for the rogue client as heard by reporting APs
+        band:
+          type: string
+          description: Radio band on which the rogue client was observed
+        bssid:
+          type: string
+          description: Rogue BSSID associated with the client
+        client_mac:
+          type: string
+          description: Observed client MAC address on the rogue BSSID
+        num_aps:
+          type: integer
+          description: Number of APs that observed the rogue client
+          contentEncoding: int32
+      description: Rogue client observation returned by site insights
+    response_insight_rogue_client:
+      title: response_insight_rogue_client
+      required:
       - end
       - limit
       - results
       - start
-      - total
       type: object
       properties:
-        distinct:
-          type: string
-          description: Field used to group the count results
         end:
           type: integer
-          description: Search window end timestamp for the count request, in epoch seconds
+          description: Epoch timestamp for the end of the rogue client insight window
           contentEncoding: int32
         limit:
           type: integer
-          description: Maximum number of distinct count results requested
+          description: Maximum number of rogue client observations returned in this page
           contentEncoding: int32
+        next:
+          type: string
+          description: Pagination cursor or URL for retrieving the next page of rogue client observations
         results:
           uniqueItems: true
           type: array
           items:
-            $ref: '#/components/schemas/count_result'
-          description: Count results grouped by the distinct field
+            $ref: '#/components/schemas/insight_rogue_client'
+          description: Rogue client observations returned for the site insight query
         start:
           type: integer
-          description: Search window start timestamp for the count request, in epoch seconds
+          description: Epoch timestamp for the start of the rogue client insight window
           contentEncoding: int32
-        total:
-          type: integer
-          description: Number of distinct result buckets returned
-          contentEncoding: int32
-      description: Distinct count response for time-bounded search results
+      description: Paginated response for rogue client insight results
+    rogue_details:
+      title: rogue_details
+      required:
+      - manufacture
+      - seen_as_client
+      type: object
+      properties:
+        manufacture:
+          type: string
+          description: Vendor or manufacturer name reported for the rogue AP
+        seen_as_client:
+          type: boolean
+          description: Whether this rogue AP was also observed as a client
+      description: Rogue AP detail response
   securitySchemes:
     apiToken:
       type: apiKey

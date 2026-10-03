@@ -655,42 +655,19 @@ paths:
       deprecated: false
 components:
   schemas:
-    response_events_sky_atp_search:
-      title: response_events_sky_atp_search
+    count_result:
+      title: count_result
       required:
-      - end
-      - limit
-      - results
-      - start
-      - total
+      - count
       type: object
       properties:
-        end:
+        count:
           type: integer
-          description: Epoch timestamp for the end of the Sky ATP event search window
+          description: Number of matching items for the distinct value or values in this result
           contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of Sky ATP event records returned in this page
-          contentEncoding: int32
-        next:
-          type: string
-          description: Pagination cursor or URL for retrieving the next page of Sky ATP event records
-        results:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/events_skyatp'
-          description: Sky ATP event records matching the search filters
-        start:
-          type: integer
-          description: Epoch timestamp for the start of the Sky ATP event search window
-          contentEncoding: int32
-        total:
-          type: integer
-          description: Number of Sky ATP event records matching the search filters across all pages
-          contentEncoding: int32
-      description: Paginated response for Sky ATP event search results
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
     events_skyatp:
       title: events_skyatp
       required:
@@ -748,76 +725,6 @@ components:
           description: SkyATP event type, such as `cc`, `fs`, or `mw`
           readOnly: true
       description: SkyATP threat event returned by SkyATP event search APIs
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    site_sky_atp_events_count_distinct:
-      title: site_sky_atp_events_count_distinct
-      enum:
-      - device_mac
-      - mac
-      - threat_level
-      - type
-      type: string
-      description: 'enum: `device_mac`, `mac`, `threat_level`, `type`'
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    count_result:
-      title: count_result
-      required:
-      - count
-      type: object
-      properties:
-        count:
-          type: integer
-          description: Number of matching items for the distinct value or values in this result
-          contentEncoding: int32
-      additionalProperties:
-        type: string
-      description: Count result row with the matching distinct field values
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
     response_count:
       title: response_count
       required:
@@ -855,6 +762,99 @@ components:
           description: Number of distinct result buckets returned
           contentEncoding: int32
       description: Distinct count response for time-bounded search results
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_events_sky_atp_search:
+      title: response_events_sky_atp_search
+      required:
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Epoch timestamp for the end of the Sky ATP event search window
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of Sky ATP event records returned in this page
+          contentEncoding: int32
+        next:
+          type: string
+          description: Pagination cursor or URL for retrieving the next page of Sky ATP event records
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/events_skyatp'
+          description: Sky ATP event records matching the search filters
+        start:
+          type: integer
+          description: Epoch timestamp for the start of the Sky ATP event search window
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of Sky ATP event records matching the search filters across all pages
+          contentEncoding: int32
+      description: Paginated response for Sky ATP event search results
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    site_sky_atp_events_count_distinct:
+      title: site_sky_atp_events_count_distinct
+      enum:
+      - device_mac
+      - mac
+      - threat_level
+      - type
+      type: string
+      description: 'enum: `device_mac`, `mac`, `threat_level`, `type`'
   securitySchemes:
     apiToken:
       type: apiKey

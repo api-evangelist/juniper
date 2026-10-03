@@ -1844,6 +1844,60 @@ paths:
       deprecated: false
 components:
   schemas:
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    psk_id_list:
+      title: psk_id_list
+      type: object
+      properties:
+        psk_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: PSK IDs to delete
+          examples:
+          - - 0039c16c-ca87-4d3f-bb94-b97c58199f18
+            - 6562cc8e-5893-418a-acaa-4d7c1af8084f
+      description: PSK delete request payload
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
     response_http404:
       title: response_http404
       type: object
@@ -1852,6 +1906,15 @@ components:
           type: string
           description: Missing resource identifier, when the API includes one
       description: Standard HTTP 404 not found error response
+    psk_usage2:
+      title: psk_usage2
+      enum:
+      - macs
+      - multi
+      - single
+      - usermac_labels
+      type: string
+      description: 'Binding mode for this PSK, enum: `macs`, `multi`, `single`, `usermac_labels`'
     psk:
       title: psk
       required:
@@ -1979,69 +2042,6 @@ components:
           type: string
           description: VLAN name to be assigned. Optional, `vlan_id` takes precedence if both are provided
       description: Personal pre-shared key configuration for WLAN access
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    psk_usage2:
-      title: psk_usage2
-      enum:
-      - macs
-      - multi
-      - single
-      - usermac_labels
-      type: string
-      description: 'Binding mode for this PSK, enum: `macs`, `multi`, `single`, `usermac_labels`'
-    psk_id_list:
-      title: psk_id_list
-      type: object
-      properties:
-        psk_ids:
-          type: array
-          items:
-            type: string
-            contentEncoding: uuid
-          description: PSK IDs to delete
-          examples:
-          - - 0039c16c-ca87-4d3f-bb94-b97c58199f18
-            - 6562cc8e-5893-418a-acaa-4d7c1af8084f
-      description: PSK delete request payload
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
   securitySchemes:
     apiToken:
       type: apiKey

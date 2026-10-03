@@ -2114,6 +2114,181 @@ paths:
       deprecated: false
 components:
   schemas:
+    msp_license_action:
+      title: msp_license_action
+      required:
+      - op
+      type: object
+      properties:
+        amendment_id:
+          type: string
+          description: Required if `op`==`unamend`; identifies the license amendment to undo
+        dst_org_id:
+          type: string
+          description: Required if `op`==`amend`; destination org ID that receives the amended license quantity
+          contentEncoding: uuid
+        notes:
+          type: string
+          description: Required if `op`==`annotate`; note text to attach to the license action
+        op:
+          allOf:
+          - $ref: '#/components/schemas/msp_license_action_operation2'
+          - minLength: 1
+            description: 'License operation to perform for this MSP request. enum: `amend`, `annotate`, `delete`, `unamend`.'
+        quantity:
+          type: number
+          description: Required if `op`==`amend`; license quantity to move to the destination org
+        subscription_id:
+          minLength: 1
+          type: string
+          description: Required if `op`==`annotate`; subscription ID for the license action
+      description: License operation request for an MSP account
+    response_claim_license_inventory_item:
+      title: response_claim_license_inventory_item
+      required:
+      - mac
+      - magic
+      - model
+      - serial
+      - type
+      type: object
+      properties:
+        mac:
+          type: string
+          description: Device MAC address for the claimed inventory item
+        magic:
+          type: string
+          description: Activation code or claim code associated with the inventory item
+        model:
+          type: string
+          description: Device model for the claimed inventory item
+        serial:
+          type: string
+          description: Device serial number for the claimed inventory item
+        type:
+          type: string
+          description: Device type for the claimed inventory item
+      description: Inventory device returned by a license claim
+    response_claim_license_license_item:
+      title: response_claim_license_license_item
+      required:
+      - end
+      - quantity
+      - start
+      - type
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Epoch timestamp when the license entitlement ends
+          contentEncoding: int32
+        quantity:
+          type: integer
+          description: Number of license units included in the entitlement
+          contentEncoding: int32
+        start:
+          type: integer
+          description: Epoch timestamp when the license entitlement starts
+          contentEncoding: int32
+        type:
+          type: string
+          description: License SKU or subscription type
+      description: License entitlement returned by a claim operation
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_claim_license_inventory_pending_item:
+      title: response_claim_license_inventory_pending_item
+      type: object
+      properties:
+        mac:
+          type: string
+          description: Device MAC address pending asynchronous inventory claim
+      description: Inventory device pending asynchronous claim processing
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_claim_license:
+      title: response_claim_license
+      required:
+      - inventory_added
+      - inventory_duplicated
+      - license_added
+      - license_duplicated
+      - license_error
+      type: object
+      properties:
+        inventory_added:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/response_claim_license_inventory_item'
+          description: Inventory devices added by the claim operation
+        inventory_duplicated:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/response_claim_license_inventory_item'
+          description: Inventory devices already present during the claim operation
+        inventory_pending:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/response_claim_license_inventory_pending_item'
+          description: Inventory devices pending asynchronous claim processing
+        license_added:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/response_claim_license_license_item'
+          description: License entitlements added by the claim operation
+        license_duplicated:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/response_claim_license_license_item'
+          description: License entitlements already present during the claim operation
+        license_error:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/response_claim_license_license_error_item'
+          description: License claim errors returned by order number
+      description: Result of claiming licenses or activation codes
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
     license_sub:
       title: license_sub
       type: object
@@ -2172,35 +2347,25 @@ components:
           description: License type for this subscription
           readOnly: true
       description: Read-only license subscription record
-    msp_license_action:
-      title: msp_license_action
+    code_string:
+      title: code_string
       required:
-      - op
+      - code
       type: object
       properties:
-        amendment_id:
+        code:
           type: string
-          description: Required if `op`==`unamend`; identifies the license amendment to undo
-        dst_org_id:
-          type: string
-          description: Required if `op`==`amend`; destination org ID that receives the amended license quantity
-          contentEncoding: uuid
-        notes:
-          type: string
-          description: Required if `op`==`annotate`; note text to attach to the license action
-        op:
-          allOf:
-          - $ref: '#/components/schemas/msp_license_action_operation2'
-          - minLength: 1
-            description: 'License operation to perform for this MSP request. enum: `amend`, `annotate`, `delete`, `unamend`.'
-        quantity:
-          type: number
-          description: Required if `op`==`amend`; license quantity to move to the destination org
-        subscription_id:
-          minLength: 1
-          type: string
-          description: Required if `op`==`annotate`; subscription ID for the license action
-      description: License operation request for an MSP account
+          description: Request-supplied authorization or claim code value
+      description: Request body containing a single authorization or claim code
+    msp_license_action_operation2:
+      title: msp_license_action_operation2
+      enum:
+      - amend
+      - annotate
+      - delete
+      - unamend
+      type: string
+      description: 'License operation to perform for this MSP request. enum: `amend`, `annotate`, `delete`, `unamend`.'
     response_http404:
       title: response_http404
       type: object
@@ -2209,49 +2374,6 @@ components:
           type: string
           description: Missing resource identifier, when the API includes one
       description: Standard HTTP 404 not found error response
-    license_amendment:
-      title: license_amendment
-      type: object
-      properties:
-        created_time:
-          type: number
-          description: Timestamp when the license amendment was created
-          readOnly: true
-        end_time:
-          type: integer
-          description: End time of the license amendment
-          contentEncoding: int32
-          readOnly: true
-        id:
-          type: string
-          description: Unique identifier of the license amendment
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 53f10664-3ce8-4c27-b382-0ef66432349f
-        modified_time:
-          type: number
-          description: Timestamp when the license amendment was last modified
-          readOnly: true
-        quantity:
-          type: integer
-          description: License quantity associated with this amendment
-          contentEncoding: int32
-          readOnly: true
-        start_time:
-          type: integer
-          description: Start time of the license amendment
-          contentEncoding: int32
-          readOnly: true
-        subscription_id:
-          type: string
-          description: Subscription identifier associated with this amendment
-          readOnly: true
-        type:
-          type: string
-          description: License type affected by this amendment
-          readOnly: true
-      description: Read-only change applied to a license subscription
     license:
       title: license
       type: object
@@ -2297,106 +2419,6 @@ components:
           description: Available license counts by service
           readOnly: true
       description: Organization license entitlement, subscription, and usage summary
-    code_string:
-      title: code_string
-      required:
-      - code
-      type: object
-      properties:
-        code:
-          type: string
-          description: Request-supplied authorization or claim code value
-      description: Request body containing a single authorization or claim code
-    msp_license_action_operation2:
-      title: msp_license_action_operation2
-      enum:
-      - amend
-      - annotate
-      - delete
-      - unamend
-      type: string
-      description: 'License operation to perform for this MSP request. enum: `amend`, `annotate`, `delete`, `unamend`.'
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    response_claim_license_inventory_item:
-      title: response_claim_license_inventory_item
-      required:
-      - mac
-      - magic
-      - model
-      - serial
-      - type
-      type: object
-      properties:
-        mac:
-          type: string
-          description: Device MAC address for the claimed inventory item
-        magic:
-          type: string
-          description: Activation code or claim code associated with the inventory item
-        model:
-          type: string
-          description: Device model for the claimed inventory item
-        serial:
-          type: string
-          description: Device serial number for the claimed inventory item
-        type:
-          type: string
-          description: Device type for the claimed inventory item
-      description: Inventory device returned by a license claim
-    response_claim_license_license_item:
-      title: response_claim_license_license_item
-      required:
-      - end
-      - quantity
-      - start
-      - type
-      type: object
-      properties:
-        end:
-          type: integer
-          description: Epoch timestamp when the license entitlement ends
-          contentEncoding: int32
-        quantity:
-          type: integer
-          description: Number of license units included in the entitlement
-          contentEncoding: int32
-        start:
-          type: integer
-          description: Epoch timestamp when the license entitlement starts
-          contentEncoding: int32
-        type:
-          type: string
-          description: License SKU or subscription type
-      description: License entitlement returned by a claim operation
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
     response_claim_license_license_error_item:
       title: response_claim_license_license_error_item
       required:
@@ -2411,71 +2433,49 @@ components:
           type: string
           description: Explanation of why the license order could not be claimed
       description: License order that could not be claimed
-    response_http400:
-      title: response_http400
+    license_amendment:
+      title: license_amendment
       type: object
       properties:
-        detail:
+        created_time:
+          type: number
+          description: Timestamp when the license amendment was created
+          readOnly: true
+        end_time:
+          type: integer
+          description: End time of the license amendment
+          contentEncoding: int32
+          readOnly: true
+        id:
           type: string
-          description: Human-readable explanation of the bad request error
+          description: Unique identifier of the license amendment
+          contentEncoding: uuid
+          readOnly: true
           examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_claim_license_inventory_pending_item:
-      title: response_claim_license_inventory_pending_item
-      type: object
-      properties:
-        mac:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        modified_time:
+          type: number
+          description: Timestamp when the license amendment was last modified
+          readOnly: true
+        quantity:
+          type: integer
+          description: License quantity associated with this amendment
+          contentEncoding: int32
+          readOnly: true
+        start_time:
+          type: integer
+          description: Start time of the license amendment
+          contentEncoding: int32
+          readOnly: true
+        subscription_id:
           type: string
-          description: Device MAC address pending asynchronous inventory claim
-      description: Inventory device pending asynchronous claim processing
-    response_claim_license:
-      title: response_claim_license
-      required:
-      - inventory_added
-      - inventory_duplicated
-      - license_added
-      - license_duplicated
-      - license_error
-      type: object
-      properties:
-        inventory_added:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/response_claim_license_inventory_item'
-          description: Inventory devices added by the claim operation
-        inventory_duplicated:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/response_claim_license_inventory_item'
-          description: Inventory devices already present during the claim operation
-        inventory_pending:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/response_claim_license_inventory_pending_item'
-          description: Inventory devices pending asynchronous claim processing
-        license_added:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/response_claim_license_license_item'
-          description: License entitlements added by the claim operation
-        license_duplicated:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/response_claim_license_license_item'
-          description: License entitlements already present during the claim operation
-        license_error:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/response_claim_license_license_error_item'
-          description: License claim errors returned by order number
-      description: Result of claiming licenses or activation codes
+          description: Subscription identifier associated with this amendment
+          readOnly: true
+        type:
+          type: string
+          description: License type affected by this amendment
+          readOnly: true
+      description: Read-only change applied to a license subscription
   securitySchemes:
     apiToken:
       type: apiKey

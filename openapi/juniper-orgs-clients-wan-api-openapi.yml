@@ -1300,82 +1300,6 @@ paths:
       deprecated: false
 components:
   schemas:
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    search_wan_client:
-      title: search_wan_client
-      type: object
-      properties:
-        end:
-          type: integer
-          description: Upper bound timestamp of the WAN client search window, in epoch seconds
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of WAN client records returned by this page
-          contentEncoding: int32
-        next:
-          type: string
-          description: URL for the next page of WAN client records, when more results are available
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/stats_wan_client'
-          description: WAN client records returned by the search response
-        start:
-          type: integer
-          description: Lower bound timestamp of the WAN client search window, in epoch seconds
-          contentEncoding: int32
-        total:
-          type: integer
-          description: Count of WAN client records matching the search
-          contentEncoding: int32
-      description: Paginated response for WAN client searches
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    search_events_wan_client:
-      title: search_events_wan_client
-      type: object
-      properties:
-        end:
-          type: integer
-          description: Upper bound timestamp of the WAN client event search window, in epoch seconds
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of WAN client event results returned by this page
-          contentEncoding: int32
-        next:
-          type: string
-          description: URL for the next page of WAN client event results, when more results are available
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/events_client_wan'
-          description: List of WAN client event result data returned by the search response
-        start:
-          type: integer
-          description: Lower bound timestamp of the WAN client event search window, in epoch seconds
-          contentEncoding: int32
-        total:
-          type: integer
-          description: Count of WAN client event results matching the search
-          contentEncoding: int32
-      description: Paginated response for WAN client event searches
     count_result:
       title: count_result
       required:
@@ -1389,72 +1313,6 @@ components:
       additionalProperties:
         type: string
       description: Count result row with the matching distinct field values
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    events_client_wan:
-      title: events_client_wan
-      type: object
-      properties:
-        When:
-          type: string
-          description: Event timestamp string reported by the WAN client event source
-          examples:
-          - 2022-12-31 23:59:59.293000+00:00
-        ev_type:
-          type: string
-          description: WAN client event type identifier
-          examples:
-          - CLIENT_IP_ASSIGNED
-        metadata:
-          type: object
-          description: Additional attributes provided with the WAN client event
-        org_id:
-          type: string
-          description: Organization that contains the WAN client event
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
-        random_mac:
-          type: boolean
-          description: Whether the WAN client used a randomized MAC address
-        site_id:
-          type: string
-          description: Site where the WAN client event occurred
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
-        text:
-          type: string
-          description: Human-readable message for the WAN client event
-          examples:
-          - DHCP Ack IP 192.168.88.216
-        wcid:
-          type: string
-          description: WAN client identifier associated with the event
-          contentEncoding: uuid
-          examples:
-          - 62bbfb75-10d8-49d1-dec7-d2df91624287
-      description: WAN client event returned by WAN client event search APIs
-    org_wan_clients_count_distinct:
-      title: org_wan_clients_count_distinct
-      enum:
-      - hostname
-      - ip
-      - mac
-      - mfg
-      - network
-      type: string
-      description: 'enum: `hostname`, `ip`, `mac`, `mfg`, `network`'
     org_wan_clients_events_count_distinct:
       title: org_wan_clients_events_count_distinct
       enum:
@@ -1465,16 +1323,53 @@ components:
       - type
       type: string
       description: 'enum: `hostname`, `ip`, `mac`, `mfg`, `type`'
-    response_http401:
-      title: response_http401
+    response_count:
+      title: response_count
+      required:
+      - distinct
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        distinct:
+          type: string
+          description: Field used to group the count results
+        end:
+          type: integer
+          description: Search window end timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of distinct count results requested
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/count_result'
+          description: Count results grouped by the distinct field
+        start:
+          type: integer
+          description: Search window start timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of distinct result buckets returned
+          contentEncoding: int32
+      description: Distinct count response for time-bounded search results
+    response_http403:
+      title: response_http403
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the authentication error
+          description: Human-readable explanation of the permission error
           examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
     response_http400:
       title: response_http400
       type: object
@@ -1485,6 +1380,16 @@ components:
           examples:
           - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
       description: Standard HTTP 400 bad request error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
     stats_wan_client:
       title: stats_wan_client
       type: object
@@ -1554,43 +1459,138 @@ components:
           examples:
           - 8bbe7389-212b-c65d-2208-00fab2017936
       description: WAN client record returned by WAN client search
-    response_count:
-      title: response_count
-      required:
-      - distinct
-      - end
-      - limit
-      - results
-      - start
-      - total
+    search_events_wan_client:
+      title: search_events_wan_client
       type: object
       properties:
-        distinct:
-          type: string
-          description: Field used to group the count results
         end:
           type: integer
-          description: Search window end timestamp for the count request, in epoch seconds
+          description: Upper bound timestamp of the WAN client event search window, in epoch seconds
           contentEncoding: int32
         limit:
           type: integer
-          description: Maximum number of distinct count results requested
+          description: Maximum number of WAN client event results returned by this page
           contentEncoding: int32
+        next:
+          type: string
+          description: URL for the next page of WAN client event results, when more results are available
         results:
-          uniqueItems: true
           type: array
           items:
-            $ref: '#/components/schemas/count_result'
-          description: Count results grouped by the distinct field
+            $ref: '#/components/schemas/events_client_wan'
+          description: List of WAN client event result data returned by the search response
         start:
           type: integer
-          description: Search window start timestamp for the count request, in epoch seconds
+          description: Lower bound timestamp of the WAN client event search window, in epoch seconds
           contentEncoding: int32
         total:
           type: integer
-          description: Number of distinct result buckets returned
+          description: Count of WAN client event results matching the search
           contentEncoding: int32
-      description: Distinct count response for time-bounded search results
+      description: Paginated response for WAN client event searches
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    search_wan_client:
+      title: search_wan_client
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Upper bound timestamp of the WAN client search window, in epoch seconds
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of WAN client records returned by this page
+          contentEncoding: int32
+        next:
+          type: string
+          description: URL for the next page of WAN client records, when more results are available
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/stats_wan_client'
+          description: WAN client records returned by the search response
+        start:
+          type: integer
+          description: Lower bound timestamp of the WAN client search window, in epoch seconds
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Count of WAN client records matching the search
+          contentEncoding: int32
+      description: Paginated response for WAN client searches
+    org_wan_clients_count_distinct:
+      title: org_wan_clients_count_distinct
+      enum:
+      - hostname
+      - ip
+      - mac
+      - mfg
+      - network
+      type: string
+      description: 'enum: `hostname`, `ip`, `mac`, `mfg`, `network`'
+    events_client_wan:
+      title: events_client_wan
+      type: object
+      properties:
+        When:
+          type: string
+          description: Event timestamp string reported by the WAN client event source
+          examples:
+          - 2022-12-31 23:59:59.293000+00:00
+        ev_type:
+          type: string
+          description: WAN client event type identifier
+          examples:
+          - CLIENT_IP_ASSIGNED
+        metadata:
+          type: object
+          description: Additional attributes provided with the WAN client event
+        org_id:
+          type: string
+          description: Organization that contains the WAN client event
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        random_mac:
+          type: boolean
+          description: Whether the WAN client used a randomized MAC address
+        site_id:
+          type: string
+          description: Site where the WAN client event occurred
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        text:
+          type: string
+          description: Human-readable message for the WAN client event
+          examples:
+          - DHCP Ack IP 192.168.88.216
+        wcid:
+          type: string
+          description: WAN client identifier associated with the event
+          contentEncoding: uuid
+          examples:
+          - 62bbfb75-10d8-49d1-dec7-d2df91624287
+      description: WAN client event returned by WAN client event search APIs
   securitySchemes:
     apiToken:
       type: apiKey

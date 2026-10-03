@@ -879,6 +879,188 @@ paths:
       deprecated: false
 components:
   schemas:
+    count_result:
+      title: count_result
+      required:
+      - count
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of matching items for the distinct value or values in this result
+          contentEncoding: int32
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
+    site_other_device_events_count_distinct:
+      title: site_other_device_events_count_distinct
+      enum:
+      - mac
+      - site_id
+      - type
+      - vendor
+      type: string
+      description: 'enum: `mac`, `site_id`, `type`, `vendor`'
+    response_count:
+      title: response_count
+      required:
+      - distinct
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        distinct:
+          type: string
+          description: Field used to group the count results
+        end:
+          type: integer
+          description: Search window end timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of distinct count results requested
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/count_result'
+          description: Count results grouped by the distinct field
+        start:
+          type: integer
+          description: Search window start timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of distinct result buckets returned
+          contentEncoding: int32
+      description: Distinct count response for time-bounded search results
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_events_other_devices_search:
+      title: response_events_other_devices_search
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Epoch timestamp for the end of the other-device event search window
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of other-device event records returned in this page
+          contentEncoding: int32
+        next:
+          type: string
+          description: Pagination cursor or URL for retrieving the next page of other-device event records
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/event_otherdevice'
+          description: list of other-device event records matching the search filters
+        start:
+          type: integer
+          description: Epoch timestamp for the start of the other-device event search window
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of other-device event records matching the search filters across all pages
+          contentEncoding: int32
+      description: Paginated response for other-device event search results
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    event_otherdevice:
+      title: event_otherdevice
+      type: object
+      properties:
+        device_mac:
+          type: string
+          description: Attached device MAC address associated with the other-device event
+        mac:
+          type: string
+          description: Other-device MAC address associated with the event
+          examples:
+          - 5c5b351e13b5
+        org_id:
+          type: string
+          description: Organization that contains the other-device event
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        site_id:
+          type: string
+          description: Site where the other-device event occurred
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        text:
+          type: string
+          description: Human-readable message for the other-device event
+          examples:
+          - 'Plugged: The Internal 5GB (SIM1) has been inserted into Internal 1.'
+        timestamp:
+          type: number
+          description: Time when the other-device event occurred
+          readOnly: true
+        type:
+          type: string
+          description: Event type for the other-device event
+          examples:
+          - CELLULAR_EDGE_MODEM_WAN_PLUGGED
+        vendor:
+          type: string
+          description: Manufacturer or vendor name reported for the other device
+          examples:
+          - cradlepoint
+      description: Event generated by an other-device integration or attached device
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
     device_other:
       title: device_other
       type: object
@@ -937,188 +1119,6 @@ components:
           type: string
           description: Identifier assigned by the vendor API for this third-party device
       description: Third-party device discovered or managed through an external vendor integration
-    event_otherdevice:
-      title: event_otherdevice
-      type: object
-      properties:
-        device_mac:
-          type: string
-          description: Attached device MAC address associated with the other-device event
-        mac:
-          type: string
-          description: Other-device MAC address associated with the event
-          examples:
-          - 5c5b351e13b5
-        org_id:
-          type: string
-          description: Organization that contains the other-device event
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
-        site_id:
-          type: string
-          description: Site where the other-device event occurred
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
-        text:
-          type: string
-          description: Human-readable message for the other-device event
-          examples:
-          - 'Plugged: The Internal 5GB (SIM1) has been inserted into Internal 1.'
-        timestamp:
-          type: number
-          description: Time when the other-device event occurred
-          readOnly: true
-        type:
-          type: string
-          description: Event type for the other-device event
-          examples:
-          - CELLULAR_EDGE_MODEM_WAN_PLUGGED
-        vendor:
-          type: string
-          description: Manufacturer or vendor name reported for the other device
-          examples:
-          - cradlepoint
-      description: Event generated by an other-device integration or attached device
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    count_result:
-      title: count_result
-      required:
-      - count
-      type: object
-      properties:
-        count:
-          type: integer
-          description: Number of matching items for the distinct value or values in this result
-          contentEncoding: int32
-      additionalProperties:
-        type: string
-      description: Count result row with the matching distinct field values
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    site_other_device_events_count_distinct:
-      title: site_other_device_events_count_distinct
-      enum:
-      - mac
-      - site_id
-      - type
-      - vendor
-      type: string
-      description: 'enum: `mac`, `site_id`, `type`, `vendor`'
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_events_other_devices_search:
-      title: response_events_other_devices_search
-      type: object
-      properties:
-        end:
-          type: integer
-          description: Epoch timestamp for the end of the other-device event search window
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of other-device event records returned in this page
-          contentEncoding: int32
-        next:
-          type: string
-          description: Pagination cursor or URL for retrieving the next page of other-device event records
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/event_otherdevice'
-          description: list of other-device event records matching the search filters
-        start:
-          type: integer
-          description: Epoch timestamp for the start of the other-device event search window
-          contentEncoding: int32
-        total:
-          type: integer
-          description: Number of other-device event records matching the search filters across all pages
-          contentEncoding: int32
-      description: Paginated response for other-device event search results
-    response_count:
-      title: response_count
-      required:
-      - distinct
-      - end
-      - limit
-      - results
-      - start
-      - total
-      type: object
-      properties:
-        distinct:
-          type: string
-          description: Field used to group the count results
-        end:
-          type: integer
-          description: Search window end timestamp for the count request, in epoch seconds
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of distinct count results requested
-          contentEncoding: int32
-        results:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/count_result'
-          description: Count results grouped by the distinct field
-        start:
-          type: integer
-          description: Search window start timestamp for the count request, in epoch seconds
-          contentEncoding: int32
-        total:
-          type: integer
-          description: Number of distinct result buckets returned
-          contentEncoding: int32
-      description: Distinct count response for time-bounded search results
   securitySchemes:
     apiToken:
       type: apiKey

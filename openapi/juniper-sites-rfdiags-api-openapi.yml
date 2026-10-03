@@ -1635,14 +1635,90 @@ paths:
       deprecated: false
 components:
   schemas:
-    response_http404:
-      title: response_http404
+    rf_client_type1:
+      title: rf_client_type1
+      enum:
+      - asset
+      - client
+      - sdkclient
+      type: string
+      description: 'Target device category for the RF diagnostic recording. enum: `asset`, `client`, `sdkclient`.'
+    response_http403:
+      title: response_http403
       type: object
       properties:
-        id:
+        detail:
           type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    rf_client_type2:
+      title: rf_client_type2
+      enum:
+      - asset
+      - client
+      - sdkclient
+      type: string
+      description: 'Target device category for the recording. enum: `asset`, `client`, `sdkclient`.'
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    rf_diag:
+      title: rf_diag
+      required:
+      - name
+      - type
+      type: object
+      properties:
+        duration:
+          maximum: 180
+          type: integer
+          description: Recording length, in seconds; maximum and default are 180
+          contentEncoding: int32
+          default: 180
+        mac:
+          type: string
+          description: If `type`==`client` or `asset`, MAC address of the device being recorded
+        name:
+          type: string
+          description: Recording name; the SDK client name is a good default for SDK-client recordings
+        sdkclient_id:
+          type: string
+          description: If `type`==`sdkclient`, SDK client identifier for this recording
+          contentEncoding: uuid
+        type:
+          allOf:
+          - $ref: '#/components/schemas/rf_client_type1'
+          - description: 'Target device category for the RF diagnostic recording. enum: `asset`, `client`, `sdkclient`.'
+      description: RF diagnostic recording request
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
     rf_diag_info_item:
       title: rf_diag_info_item
       required:
@@ -1729,90 +1805,14 @@ components:
           type: string
           description: JSON file URL for frame data captured by the recording
       description: RF diagnostic recording metadata and output links
-    response_http403:
-      title: response_http403
+    response_http404:
+      title: response_http404
       type: object
       properties:
-        detail:
+        id:
           type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    rf_client_type2:
-      title: rf_client_type2
-      enum:
-      - asset
-      - client
-      - sdkclient
-      type: string
-      description: 'Target device category for the recording. enum: `asset`, `client`, `sdkclient`.'
-    rf_client_type1:
-      title: rf_client_type1
-      enum:
-      - asset
-      - client
-      - sdkclient
-      type: string
-      description: 'Target device category for the RF diagnostic recording. enum: `asset`, `client`, `sdkclient`.'
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    rf_diag:
-      title: rf_diag
-      required:
-      - name
-      - type
-      type: object
-      properties:
-        duration:
-          maximum: 180
-          type: integer
-          description: Recording length, in seconds; maximum and default are 180
-          contentEncoding: int32
-          default: 180
-        mac:
-          type: string
-          description: If `type`==`client` or `asset`, MAC address of the device being recorded
-        name:
-          type: string
-          description: Recording name; the SDK client name is a good default for SDK-client recordings
-        sdkclient_id:
-          type: string
-          description: If `type`==`sdkclient`, SDK client identifier for this recording
-          contentEncoding: uuid
-        type:
-          allOf:
-          - $ref: '#/components/schemas/rf_client_type1'
-          - description: 'Target device category for the RF diagnostic recording. enum: `asset`, `client`, `sdkclient`.'
-      description: RF diagnostic recording request
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
   securitySchemes:
     apiToken:
       type: apiKey

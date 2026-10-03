@@ -322,14 +322,53 @@ paths:
       deprecated: false
 components:
   schemas:
-    response_http404:
-      title: response_http404
+    response_http403:
+      title: response_http403
       type: object
       properties:
-        id:
+        detail:
           type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    var_source:
+      title: var_source
+      enum:
+      - deviceprofile
+      - site
+      type: string
+      description: 'Source level where a variable is defined. enum: `deviceprofile`, `site`'
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
     response_search_var:
       title: response_search_var
       type: object
@@ -359,33 +398,6 @@ components:
           description: Number of variable records matching the search filters across all pages
           contentEncoding: int32
       description: Paginated response for organization variable search results
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    var_source:
-      title: var_source
-      enum:
-      - deviceprofile
-      - site
-      type: string
-      description: 'Source level where a variable is defined. enum: `deviceprofile`, `site`'
     response_search_var_item:
       title: response_search_var_item
       type: object
@@ -419,26 +431,14 @@ components:
           type: string
           description: Name of the variable matched by the search
       description: Organization variable record returned by search
-    response_http401:
-      title: response_http401
+    response_http404:
+      title: response_http404
       type: object
       properties:
-        detail:
+        id:
           type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
   securitySchemes:
     apiToken:
       type: apiKey

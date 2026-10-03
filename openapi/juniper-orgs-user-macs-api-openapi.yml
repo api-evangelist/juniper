@@ -2085,14 +2085,6 @@ paths:
       deprecated: false
 components:
   schemas:
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
     user_macs_count:
       title: user_macs_count
       type: object
@@ -2119,57 +2111,6 @@ components:
           description: Overall number of user MAC count results
           contentEncoding: int32
       description: User MACs count response
-    count_usermac_distinct:
-      title: count_usermac_distinct
-      enum:
-      - mac
-      - name
-      - labels
-      - org_id
-      type: string
-      description: 'Fields that can be used to group user MAC count results. enum: `mac`, `name`, `labels`, `org_id`'
-      examples:
-      - org_id
-    user_macs_update:
-      title: user_macs_update
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Status message returned for asynchronous batch updates
-        errors:
-          uniqueItems: true
-          type: array
-          items:
-            type: string
-          description: Update errors reported for user MAC entries
-        updated:
-          type: array
-          items:
-            type: string
-            contentEncoding: uuid
-          description: User MAC entry IDs updated by the request
-      description: Result of a bulk user MAC update
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
     usermacs_id:
       title: usermacs_id
       type: object
@@ -2181,16 +2122,16 @@ components:
             contentEncoding: uuid
           description: User MAC entry IDs to delete
       description: Request body for deleting multiple user MAC entries
-    response_http401:
-      title: response_http401
+    response_http403:
+      title: response_http403
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the authentication error
+          description: Human-readable explanation of the permission error
           examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
     user_mac:
       title: user_mac
       required:
@@ -2244,6 +2185,36 @@ components:
           examples:
           - '30'
       description: Organization user MAC entry
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
     user_mac_import:
       title: user_mac_import
       type: object
@@ -2275,16 +2246,45 @@ components:
           - - 721b638445ef
             - 721b638445ee
       description: Result of importing user MAC entries
-    response_http400:
-      title: response_http400
+    count_usermac_distinct:
+      title: count_usermac_distinct
+      enum:
+      - mac
+      - name
+      - labels
+      - org_id
+      type: string
+      description: 'Fields that can be used to group user MAC count results. enum: `mac`, `name`, `labels`, `org_id`'
+      examples:
+      - org_id
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    user_macs_update:
+      title: user_macs_update
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
+          description: Status message returned for asynchronous batch updates
+        errors:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Update errors reported for user MAC entries
+        updated:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: User MAC entry IDs updated by the request
+      description: Result of a bulk user MAC update
   securitySchemes:
     apiToken:
       type: apiKey

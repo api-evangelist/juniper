@@ -1313,6 +1313,16 @@ paths:
       deprecated: false
 components:
   schemas:
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
     mxtunnel:
       title: mxtunnel
       type: object
@@ -1411,75 +1421,16 @@ components:
             contentEncoding: int32
           description: List of VLAN IDs carried by this Mist Tunnel
       description: Mist Tunnel configuration for tunneling AP user VLANs to Mist Edge clusters
-    auto_preemption1:
-      title: auto_preemption1
-      type: object
-      properties:
-        day_of_week:
-          allOf:
-          - $ref: '#/components/schemas/day_of_week7'
-          - description: 'Scheduled weekday for auto preemption. enum: `any`, `fri`, `mon`, `sat`, `sun`, `thu`, `tue`, `wed`.'
-        enabled:
-          type: boolean
-          description: Whether auto preemption is enabled
-          default: false
-        time_of_day:
-          type: string
-          description: Scheduled time of day for auto preemption
-          default: any
-          examples:
-          - 720
-      description: Preemption behavior for restoring preferred tunnel peers after failover
-    day_of_week7:
-      title: day_of_week7
-      enum:
-      - any
-      - fri
-      - mon
-      - sat
-      - sun
-      - thu
-      - tue
-      - wed
-      type: string
-      description: 'Scheduled weekday for auto preemption. enum: `any`, `fri`, `mon`, `sat`, `sun`, `thu`, `tue`, `wed`.'
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    mxtunnel_protocol3:
-      title: mxtunnel_protocol3
-      enum:
-      - ip
-      - udp
-      type: string
-      description: 'Encapsulation protocol used for the Mist Tunnel. enum: `ip`, `udp`.'
-    mxtunnel_ipsec_extra_route:
-      title: mxtunnel_ipsec_extra_route
-      type: object
-      properties:
-        dest:
-          type: string
-          description: Route destination CIDR for the IPsec extra route
-        next_hop:
-          type: string
-          description: Route next-hop IPv4 address for the IPsec extra route
-          contentEncoding: ipv4
-      description: Extra route advertised for an IPsec tunnel
-    response_http403:
-      title: response_http403
+    response_http400:
+      title: response_http400
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the permission error
+          description: Human-readable explanation of the bad request error
           examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
     response_http429:
       title: response_http429
       type: object
@@ -1532,16 +1483,65 @@ components:
           examples:
           - Authentication credentials were not provided.
       description: Standard HTTP 401 authentication error response
-    response_http400:
-      title: response_http400
+    day_of_week7:
+      title: day_of_week7
+      enum:
+      - any
+      - fri
+      - mon
+      - sat
+      - sun
+      - thu
+      - tue
+      - wed
+      type: string
+      description: 'Scheduled weekday for auto preemption. enum: `any`, `fri`, `mon`, `sat`, `sun`, `thu`, `tue`, `wed`.'
+    mxtunnel_ipsec_extra_route:
+      title: mxtunnel_ipsec_extra_route
       type: object
       properties:
-        detail:
+        dest:
           type: string
-          description: Human-readable explanation of the bad request error
+          description: Route destination CIDR for the IPsec extra route
+        next_hop:
+          type: string
+          description: Route next-hop IPv4 address for the IPsec extra route
+          contentEncoding: ipv4
+      description: Extra route advertised for an IPsec tunnel
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    auto_preemption1:
+      title: auto_preemption1
+      type: object
+      properties:
+        day_of_week:
+          allOf:
+          - $ref: '#/components/schemas/day_of_week7'
+          - description: 'Scheduled weekday for auto preemption. enum: `any`, `fri`, `mon`, `sat`, `sun`, `thu`, `tue`, `wed`.'
+        enabled:
+          type: boolean
+          description: Whether auto preemption is enabled
+          default: false
+        time_of_day:
+          type: string
+          description: Scheduled time of day for auto preemption
+          default: any
           examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
+          - 720
+      description: Preemption behavior for restoring preferred tunnel peers after failover
+    mxtunnel_protocol3:
+      title: mxtunnel_protocol3
+      enum:
+      - ip
+      - udp
+      type: string
+      description: 'Encapsulation protocol used for the Mist Tunnel. enum: `ip`, `udp`.'
   securitySchemes:
     apiToken:
       type: apiKey

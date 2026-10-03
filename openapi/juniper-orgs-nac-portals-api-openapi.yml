@@ -2456,6 +2456,129 @@ paths:
       deprecated: false
 components:
   schemas:
+    nac_portal_type2:
+      title: nac_portal_type2
+      enum:
+      - guest_admin
+      - guest_portal
+      - marvis_client
+      type: string
+      description: 'NAC portal mode, such as guest admin, guest portal, or Marvis client onboarding. enum: `guest_admin`, `guest_portal`, `marvis_client`.'
+    nac_portal_eap_type2:
+      title: nac_portal_eap_type2
+      enum:
+      - wpa2
+      - wpa3
+      type: string
+      description: 'EAP mode used when onboarding wireless clients through the NAC portal. enum: `wpa2`, `wpa3`.'
+    portal_template_alignment4:
+      title: portal_template_alignment4
+      enum:
+      - center
+      - left
+      - right
+      type: string
+      description: 'Text and content alignment for the NAC portal page. enum: `center`, `left`, `right`.'
+    nac_portal_guest_portal_auth2:
+      title: nac_portal_guest_portal_auth2
+      enum:
+      - external
+      - multi
+      - none
+      type: string
+      description: 'Mode presented by the NAC guest portal for user authentication. enum: `external`, `multi`, `none`.'
+    nac_portal_sso2:
+      title: nac_portal_sso2
+      type: object
+      properties:
+        idp_cert:
+          type: string
+          description: Identity provider certificate used to verify signed SAML responses
+          examples:
+          - '-----BEGIN CERTIFICATE-----\n<redacted>\n-----END CERTIFICATE-----'
+        idp_sign_algo:
+          allOf:
+          - $ref: '#/components/schemas/nac_portal_sso_idp_sign_algo2'
+          - description: 'Signing algorithm expected for SAML assertions from the identity provider. enum: `sha1`, `sha256`, `sha384`, `sha512`.'
+        idp_sso_url:
+          type: string
+          description: Identity provider Single Sign-On URL for SAML authentication
+          examples:
+          - https://yourorg.onelogin.com/trust/saml2/http-post/sso/138130
+        issuer:
+          type: string
+          description: Identity provider issuer URL for SAML authentication
+          examples:
+          - https://app.onelogin.com/saml/metadata/138130
+        nameid_format:
+          type: string
+          description: SAML NameID format expected from the identity provider
+          examples:
+          - email
+        sso_role_matching:
+          type: array
+          items:
+            $ref: '#/components/schemas/nac_portal_sso_role_matching'
+          description: Rules that map SSO role values from the identity provider to NAC portal roles
+        use_sso_role_for_cert:
+          type: boolean
+          description: Whether to include the matched SSO role in the issued certificate subject for later policy matching
+      description: SAML SSO settings for NAC portal authentication and role mapping
+    response_sso_failure_search:
+      title: response_sso_failure_search
+      required:
+      - results
+      type: object
+      properties:
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/response_sso_failure_search_item'
+          description: SSO authentication failure records returned by the request
+      description: Response containing recent SSO authentication failure records
+    response_sso_failure_search_item:
+      title: response_sso_failure_search_item
+      required:
+      - detail
+      - saml_assertion_xml
+      - timestamp
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Failure details reported for the SSO authentication attempt
+        saml_assertion_xml:
+          type: string
+          description: SAML assertion XML captured for the failed SSO authentication attempt
+        timestamp:
+          type: number
+          description: Epoch timestamp, in seconds, when the SSO authentication failure occurred
+          readOnly: true
+      description: SSO authentication failure record
+    nac_portal_sso_role_matching:
+      title: nac_portal_sso_role_matching
+      type: object
+      properties:
+        assigned:
+          type: string
+          description: NAC portal role assigned when the SSO role value matches
+          examples:
+          - user
+        match:
+          type: string
+          description: SSO role value to match from the SAML assertion
+          examples:
+          - Student
+      description: Mapping rule from an SSO role claim value to a NAC portal role
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
     response_http403:
       title: response_http403
       type: object
@@ -2466,14 +2589,33 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
-    nac_portal_guest_portal_auth2:
-      title: nac_portal_guest_portal_auth2
+    nac_portal_access_type2:
+      title: nac_portal_access_type2
       enum:
-      - external
-      - multi
-      - none
+      - wireless
+      - wireless+wired
       type: string
-      description: 'Mode presented by the NAC guest portal for user authentication. enum: `external`, `multi`, `none`.'
+      description: 'If `type`==`marvis_client`, whether onboarding applies to wireless clients or both wireless and wired clients. enum: `wireless`, `wireless+wired`.'
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
     nac_portal:
       title: nac_portal
       type: object
@@ -2595,44 +2737,26 @@ components:
           examples:
           - https://guest-mistnac.mist.com/admin/51908ea7-dea7-4581-a578-f7320c4d5216/login
       description: NAC portal configuration for 802.1X onboarding, guest access, or Marvis client certificate provisioning
-    response_http400:
-      title: response_http400
+    nac_portal_template:
+      title: nac_portal_template
       type: object
       properties:
-        detail:
+        alignment:
+          allOf:
+          - $ref: '#/components/schemas/portal_template_alignment4'
+          - description: 'Text and content alignment for the NAC portal page. enum: `center`, `left`, `right`.'
+        color:
           type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_sso_failure_search:
-      title: response_sso_failure_search
-      required:
-      - results
-      type: object
-      properties:
-        results:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/response_sso_failure_search_item'
-          description: SSO authentication failure records returned by the request
-      description: Response containing recent SSO authentication failure records
-    nac_portal_sso_role_matching:
-      title: nac_portal_sso_role_matching
-      type: object
-      properties:
-        assigned:
+          description: Primary color used by the NAC portal template
+          default: '#1074bc'
+        logo:
           type: string
-          description: NAC portal role assigned when the SSO role value matches
-          examples:
-          - user
-        match:
-          type: string
-          description: SSO role value to match from the SAML assertion
-          examples:
-          - Student
-      description: Mapping rule from an SSO role claim value to a NAC portal role
+          description: Custom logo custom logo with "data:image/png;base64," format. default null, uses Juniper Mist Logo.
+        poweredBy:
+          type: boolean
+          description: Whether to hide "Powered by Juniper Mist" and email footers
+          default: false
+      description: Visual template settings for a NAC portal
     nac_portal_sso_idp_sign_algo2:
       title: nac_portal_sso_idp_sign_algo2
       enum:
@@ -2642,14 +2766,6 @@ components:
       - sha512
       type: string
       description: 'Signing algorithm expected for SAML assertions from the identity provider. enum: `sha1`, `sha256`, `sha384`, `sha512`.'
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
     nac_portal_guest_portal2:
       title: nac_portal_guest_portal2
       type: object
@@ -2697,86 +2813,16 @@ components:
           examples:
           - true
       description: Guest portal settings used when `type`==`guest_portal`
-    response_http429:
-      title: response_http429
+    response_http401:
+      title: response_http401
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the rate limit error
+          description: Human-readable explanation of the authentication error
           examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    nac_portal_access_type2:
-      title: nac_portal_access_type2
-      enum:
-      - wireless
-      - wireless+wired
-      type: string
-      description: 'If `type`==`marvis_client`, whether onboarding applies to wireless clients or both wireless and wired clients. enum: `wireless`, `wireless+wired`.'
-    response_sso_failure_search_item:
-      title: response_sso_failure_search_item
-      required:
-      - detail
-      - saml_assertion_xml
-      - timestamp
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Failure details reported for the SSO authentication attempt
-        saml_assertion_xml:
-          type: string
-          description: SAML assertion XML captured for the failed SSO authentication attempt
-        timestamp:
-          type: number
-          description: Epoch timestamp, in seconds, when the SSO authentication failure occurred
-          readOnly: true
-      description: SSO authentication failure record
-    nac_portal_eap_type2:
-      title: nac_portal_eap_type2
-      enum:
-      - wpa2
-      - wpa3
-      type: string
-      description: 'EAP mode used when onboarding wireless clients through the NAC portal. enum: `wpa2`, `wpa3`.'
-    nac_portal_sso2:
-      title: nac_portal_sso2
-      type: object
-      properties:
-        idp_cert:
-          type: string
-          description: Identity provider certificate used to verify signed SAML responses
-          examples:
-          - '-----BEGIN CERTIFICATE-----\n<redacted>\n-----END CERTIFICATE-----'
-        idp_sign_algo:
-          allOf:
-          - $ref: '#/components/schemas/nac_portal_sso_idp_sign_algo2'
-          - description: 'Signing algorithm expected for SAML assertions from the identity provider. enum: `sha1`, `sha256`, `sha384`, `sha512`.'
-        idp_sso_url:
-          type: string
-          description: Identity provider Single Sign-On URL for SAML authentication
-          examples:
-          - https://yourorg.onelogin.com/trust/saml2/http-post/sso/138130
-        issuer:
-          type: string
-          description: Identity provider issuer URL for SAML authentication
-          examples:
-          - https://app.onelogin.com/saml/metadata/138130
-        nameid_format:
-          type: string
-          description: SAML NameID format expected from the identity provider
-          examples:
-          - email
-        sso_role_matching:
-          type: array
-          items:
-            $ref: '#/components/schemas/nac_portal_sso_role_matching'
-          description: Rules that map SSO role values from the identity provider to NAC portal roles
-        use_sso_role_for_cert:
-          type: boolean
-          description: Whether to include the matched SSO role in the issued certificate subject for later policy matching
-      description: SAML SSO settings for NAC portal authentication and role mapping
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
     saml_metadata:
       title: saml_metadata
       type: object
@@ -2811,52 +2857,6 @@ components:
           examples:
           - https://scim.nac-staging.mistsys.com/S_41b2525a-e8b8-4809-8168-f1d8dcbe9735/azure/4d72b1dc-7503-4717-81ea-80d0125b886e
       description: Read-only SAML and SCIM metadata generated for an SSO configuration
-    portal_template_alignment4:
-      title: portal_template_alignment4
-      enum:
-      - center
-      - left
-      - right
-      type: string
-      description: 'Text and content alignment for the NAC portal page. enum: `center`, `left`, `right`.'
-    nac_portal_type2:
-      title: nac_portal_type2
-      enum:
-      - guest_admin
-      - guest_portal
-      - marvis_client
-      type: string
-      description: 'NAC portal mode, such as guest admin, guest portal, or Marvis client onboarding. enum: `guest_admin`, `guest_portal`, `marvis_client`.'
-    nac_portal_template:
-      title: nac_portal_template
-      type: object
-      properties:
-        alignment:
-          allOf:
-          - $ref: '#/components/schemas/portal_template_alignment4'
-          - description: 'Text and content alignment for the NAC portal page. enum: `center`, `left`, `right`.'
-        color:
-          type: string
-          description: Primary color used by the NAC portal template
-          default: '#1074bc'
-        logo:
-          type: string
-          description: Custom logo custom logo with "data:image/png;base64," format. default null, uses Juniper Mist Logo.
-        poweredBy:
-          type: boolean
-          description: Whether to hide "Powered by Juniper Mist" and email footers
-          default: false
-      description: Visual template settings for a NAC portal
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
   securitySchemes:
     apiToken:
       type: apiKey

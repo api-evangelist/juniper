@@ -1888,6 +1888,194 @@ paths:
       deprecated: false
 components:
   schemas:
+    count_result:
+      title: count_result
+      required:
+      - count
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of matching items for the distinct value or values in this result
+          contentEncoding: int32
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
+    alarm_ack:
+      title: alarm_ack
+      required:
+      - alarm_ids
+      type: object
+      properties:
+        alarm_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: Alarm identifiers to acknowledge or unacknowledge
+          examples:
+          - - ccb8c94d-ca56-4075-932f-1f2ab444ff2c
+            - 98ff4a3d-ec9b-4138-a42e-54fc3335179d
+        note:
+          type: string
+          description: Some text note describing the intent
+          examples:
+          - maintenance window
+      description: Request body for acknowledging or unacknowledging alarms
+    response_count:
+      title: response_count
+      required:
+      - distinct
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        distinct:
+          type: string
+          description: Field used to group the count results
+        end:
+          type: integer
+          description: Search window end timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of distinct count results requested
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/count_result'
+          description: Count results grouped by the distinct field
+        start:
+          type: integer
+          description: Search window start timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of distinct result buckets returned
+          contentEncoding: int32
+      description: Distinct count response for time-bounded search results
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    alarm_search_result:
+      title: alarm_search_result
+      required:
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        component:
+          type: string
+          description: Alarm component matched by the search result
+        end:
+          type: integer
+          description: Upper bound of the alarm search window, in epoch seconds
+          contentEncoding: int32
+          examples:
+          - 1711035686
+        limit:
+          type: integer
+          description: Maximum number of alarm results returned
+          contentEncoding: int32
+          examples:
+          - 10
+        next:
+          type: string
+          description: URL for the next page of alarm search results
+          examples:
+          - /api/v1/orgs/b3b9f5e6-67b1-4112-9b4c-6824c565eaeb/alarms/search?end=1711035686&limit=10&search_after=%5B1711031354000%2C+%2256bfa7af-b2db-43ee-a4c8-9b820bbba0e1%22%5D&start=1710949286
+        page:
+          type: integer
+          description: Current page number for paginated alarm search results
+          contentEncoding: int32
+          examples:
+          - 1
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/alarm'
+          description: Alarm records returned for this search
+        start:
+          type: integer
+          description: Lower bound of the alarm search window, in epoch seconds
+          contentEncoding: int32
+          examples:
+          - 1710949286
+        total:
+          type: integer
+          description: Number of alarm records matching the search
+          contentEncoding: int32
+          examples:
+          - 232
+      description: Paginated response returned by an alarm search
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    alarm_severity:
+      title: alarm_severity
+      enum:
+      - critical
+      - info
+      - warn
+      type: string
+      description: 'Severity of the alarm. enum: `critical`, `info`, `warn`'
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    alarm_status2:
+      title: alarm_status2
+      enum:
+      - open
+      - resolved
+      type: string
+      description: 'Current lifecycle status of this alarm. enum: `open`, `resolved`.'
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
     alarm_count_distinct:
       title: alarm_count_distinct
       enum:
@@ -1897,22 +2085,6 @@ components:
       - type
       type: string
       description: 'enum: `acked`, `group`, `severity`, `type`'
-    alarm_severity:
-      title: alarm_severity
-      enum:
-      - critical
-      - info
-      - warn
-      type: string
-      description: 'Severity of the alarm. enum: `critical`, `info`, `warn`'
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
     alarm_group:
       title: alarm_group
       enum:
@@ -2066,114 +2238,6 @@ components:
           examples:
           - rogue_client
       description: Additional information per alarm type
-    alarm_ack:
-      title: alarm_ack
-      required:
-      - alarm_ids
-      type: object
-      properties:
-        alarm_ids:
-          type: array
-          items:
-            type: string
-            contentEncoding: uuid
-          description: Alarm identifiers to acknowledge or unacknowledge
-          examples:
-          - - ccb8c94d-ca56-4075-932f-1f2ab444ff2c
-            - 98ff4a3d-ec9b-4138-a42e-54fc3335179d
-        note:
-          type: string
-          description: Some text note describing the intent
-          examples:
-          - maintenance window
-      description: Request body for acknowledging or unacknowledging alarms
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    count_result:
-      title: count_result
-      required:
-      - count
-      type: object
-      properties:
-        count:
-          type: integer
-          description: Number of matching items for the distinct value or values in this result
-          contentEncoding: int32
-      additionalProperties:
-        type: string
-      description: Count result row with the matching distinct field values
-    alarm_search_result:
-      title: alarm_search_result
-      required:
-      - end
-      - limit
-      - results
-      - start
-      - total
-      type: object
-      properties:
-        component:
-          type: string
-          description: Alarm component matched by the search result
-        end:
-          type: integer
-          description: Upper bound of the alarm search window, in epoch seconds
-          contentEncoding: int32
-          examples:
-          - 1711035686
-        limit:
-          type: integer
-          description: Maximum number of alarm results returned
-          contentEncoding: int32
-          examples:
-          - 10
-        next:
-          type: string
-          description: URL for the next page of alarm search results
-          examples:
-          - /api/v1/orgs/b3b9f5e6-67b1-4112-9b4c-6824c565eaeb/alarms/search?end=1711035686&limit=10&search_after=%5B1711031354000%2C+%2256bfa7af-b2db-43ee-a4c8-9b820bbba0e1%22%5D&start=1710949286
-        page:
-          type: integer
-          description: Current page number for paginated alarm search results
-          contentEncoding: int32
-          examples:
-          - 1
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/alarm'
-          description: Alarm records returned for this search
-        start:
-          type: integer
-          description: Lower bound of the alarm search window, in epoch seconds
-          contentEncoding: int32
-          examples:
-          - 1710949286
-        total:
-          type: integer
-          description: Number of alarm records matching the search
-          contentEncoding: int32
-          examples:
-          - 232
-      description: Paginated response returned by an alarm search
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
     note_string:
       title: note_string
       type: object
@@ -2184,70 +2248,6 @@ components:
           examples:
           - maintenance window
       description: Request body containing a note value
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    alarm_status2:
-      title: alarm_status2
-      enum:
-      - open
-      - resolved
-      type: string
-      description: 'Current lifecycle status of this alarm. enum: `open`, `resolved`.'
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_count:
-      title: response_count
-      required:
-      - distinct
-      - end
-      - limit
-      - results
-      - start
-      - total
-      type: object
-      properties:
-        distinct:
-          type: string
-          description: Field used to group the count results
-        end:
-          type: integer
-          description: Search window end timestamp for the count request, in epoch seconds
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of distinct count results requested
-          contentEncoding: int32
-        results:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/count_result'
-          description: Count results grouped by the distinct field
-        start:
-          type: integer
-          description: Search window start timestamp for the count request, in epoch seconds
-          contentEncoding: int32
-        total:
-          type: integer
-          description: Number of distinct result buckets returned
-          contentEncoding: int32
-      description: Distinct count response for time-bounded search results
   securitySchemes:
     apiToken:
       type: apiKey

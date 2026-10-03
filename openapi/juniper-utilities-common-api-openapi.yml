@@ -4693,237 +4693,75 @@ paths:
       deprecated: false
 components:
   schemas:
-    utils_mac_table:
-      title: utils_mac_table
-      type: object
-      properties:
-        mac_address:
-          type: string
-          description: Client MAC address filter for the MAC table lookup
-          examples:
-          - f8c1165c6400
-        port_id:
-          type: string
-          description: Interface identifier filter for the MAC table lookup
-          examples:
-          - ge-0/0/0.0
-        vlan_id:
-          type: string
-          description: VLAN identifier filter for the MAC table lookup
-          examples:
-          - ge-0/0/0.0
-      description: MAC table lookup filters
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    utils_ping:
-      title: utils_ping
+    utils_show_dhcp_leases:
+      title: utils_show_dhcp_leases
       required:
-      - host
+      - network
       type: object
       properties:
-        count:
-          type: integer
-          description: Number of echo requests to send
-          contentEncoding: int32
-          default: 10
-        egress_interface:
-          type: string
-          description: Interface through which ping packets should egress
-        host:
-          type: string
-          description: Destination IP address, IPv6 address, or hostname to ping
-          examples:
-          - 1.1.1.1
-        node:
-          allOf:
-          - $ref: '#/components/schemas/ha_cluster_node_enum6'
-          - description: 'HA cluster node from which to send ping packets. enum: `node0`, `node1`.'
-        size:
-          maximum: 65535
-          minimum: 56
-          type: integer
-          description: ICMP payload size, in bytes
-          contentEncoding: int32
-          default: 56
-        use_ipv6:
-          type: boolean
-          description: applicable when host is hostname
-          default: false
-        vrf:
-          type: string
-          description: Routing instance or VRF through which ping packets are sent
-      description: Request body for running a ping utility command
-    root_password_string:
-      title: root_password_string
-      required:
-      - root_password
-      type: object
-      properties:
-        root_password:
-          minLength: 1
-          type: string
-          description: Temporary root password returned for ZTP recovery
-          contentEncoding: password
-      description: Temporary root password response for device ZTP recovery
-    utils_send_support_logs_info2:
-      title: utils_send_support_logs_info2
-      enum:
-      - code-dumps
-      - full
-      - messages
-      - outbound-ssh
-      - process
-      - var-logs
-      type: string
-      description: 'Support file bundle type to upload. enum: `code-dumps`, `full`, `messages`, `outbound-ssh`, `process`, `var-logs`.'
-    utils_traceroute_protocol2:
-      title: utils_traceroute_protocol2
-      enum:
-      - icmp
-      - udp
-      type: string
-      description: 'Transport protocol to use for traceroute. enum: `icmp`, `udp`.'
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    websocket_session_with_url:
-      title: websocket_session_with_url
-      required:
-      - session
-      - url
-      type: object
-      properties:
-        session:
-          type: string
-          description: Identifier used to correlate output on the WebSocket stream
-          examples:
-          - 19e73828-937f-05e6-f709-e29efdb0a82b
-        url:
-          type: string
-          description: WebSocket URL returned for connecting to this session
-          examples:
-          - wss://api-ws.mist.com/ssh?jwt=xxxx
-      description: Response containing a WebSocket session handle and connection URL
-    ha_cluster_node_enum8:
-      title: ha_cluster_node_enum8
-      enum:
-      - node0
-      - node1
-      type: string
-      description: 'HA cluster node on which to release DHCP leases. enum: `node0`, `node1`.'
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    utils_release_dhcp_leases:
-      title: utils_release_dhcp_leases
-      required:
-      - port_id
-      type: object
-      properties:
-        macs:
-          type: array
-          items:
-            type: string
-          description: Client MAC addresses whose DHCP leases should be released
-          examples:
-          - - 90ec77aabbcc
-            - 90ec77aabbdd
         network:
           type: string
-          description: DHCP network containing the leases to release
+          description: DHCP network for the leases, returns full table if not specified
           examples:
           - guest
         node:
           allOf:
-          - $ref: '#/components/schemas/ha_cluster_node_enum8'
-          - description: 'HA cluster node on which to release DHCP leases. enum: `node0`, `node1`.'
-        port_id:
-          minLength: 1
-          type: string
-          description: Network interface containing the DHCP leases to release
-          examples:
-          - ge-0/0/1.10
-      description: "Note: \n  * valid combinations for Junos: \n    * `port_id` \n    * `macs` + `network`\n  * valid combinations for SSR: \n    * `port_id` \n    * `macs` + `network`\n    * `port_id` + `network`\n    * `network`\n  * if network or port_id is specified and macs is empty, it means all clients under network or port_id"
-    ha_cluster_node_enum6:
-      title: ha_cluster_node_enum6
+          - $ref: '#/components/schemas/ha_cluster_node_enum12'
+          - description: 'HA cluster node on which to show DHCP leases. enum: `node0`, `node1`.'
+      description: DHCP leases command request
+    ha_cluster_node:
+      title: ha_cluster_node
+      type: object
+      properties:
+        node:
+          allOf:
+          - $ref: '#/components/schemas/ha_cluster_node_enum22'
+          - description: 'HA cluster node on which to run the device operation. enum: `node0`, `node1`.'
+      description: HA cluster node selector for device operations
+    ha_cluster_node_enum13:
+      title: ha_cluster_node_enum13
       enum:
       - node0
       - node1
       type: string
-      description: 'HA cluster node from which to send ping packets. enum: `node0`, `node1`.'
-    response_http429:
-      title: response_http429
+      description: 'HA cluster node on which to show the forwarding table. enum: `node0`, `node1`.'
+    utils_traceroute:
+      title: utils_traceroute
       type: object
       properties:
-        detail:
+        host:
           type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    utils_send_support_logs:
-      title: utils_send_support_logs
-      type: object
-      properties:
-        info:
-          allOf:
-          - $ref: '#/components/schemas/utils_send_support_logs_info2'
-          - description: 'Support file bundle type to upload. enum: `code-dumps`, `full`, `messages`, `outbound-ssh`, `process`, `var-logs`.'
+          description: Destination IP address, IPv6 address, or hostname for traceroute
+        network:
+          type: string
+          description: For SSR, source network from which to initiate traceroute
+          default: internal
         node:
+          allOf:
+          - $ref: '#/components/schemas/ha_cluster_node_enum20'
+          - description: 'HA cluster node from which to run traceroute. enum: `node0`, `node1`.'
+        port:
+          type: integer
+          description: When `protocol`==`udp`, not supported in SSR. The udp port to use
+          contentEncoding: int32
+          default: 33434
+        protocol:
+          allOf:
+          - $ref: '#/components/schemas/utils_traceroute_protocol2'
+          - description: 'Transport protocol to use for traceroute. enum: `icmp`, `udp`.'
+        timeout:
+          type: integer
+          description: Not supported in SSR. Maximum time in seconds to wait for the response
+          contentEncoding: int32
+          default: 60
+        use_ipv6:
+          type: boolean
+          description: Whether to resolve hostname targets over IPv6
+          default: false
+        vrf:
           type: string
-          description: 'Optional for SSR: if node is not present, both nodes support files are uploaded'
-        num_messages_files:
-          maximum: 10
-          minimum: 1
-          type: integer
-          description: Number of most recent messages files to upload when `info`==`messages`
-          contentEncoding: int32
-          default: 1
-      description: Request to upload support files from a device
-    utils_show_dot1x:
-      title: utils_show_dot1x
-      type: object
-      properties:
-        duration:
-          maximum: 300
-          minimum: 0
-          type: integer
-          description: Refresh duration in seconds; set only when `interval` is nonzero
-          contentEncoding: int32
-          default: 0
-        interval:
-          maximum: 10
-          minimum: 0
-          type: integer
-          description: Refresh interval in seconds for repeated command output
-          contentEncoding: int32
-          default: 0
-        port_id:
-          type: string
-          description: Device port identifier filter for the 802.1X table lookup
-          examples:
-          - ge-0/0/0.0
-      description: 802.1X table lookup request for device command output
+          description: For SRX, routing instance or VRF from which to initiate traceroute; master VRF/RI is used by default
+      description: Request body for running a traceroute utility command
     utils_show_forwarding_table:
       title: utils_show_forwarding_table
       type: object
@@ -4969,23 +4807,6 @@ components:
           examples:
           - guest
       description: Forwarding table lookup request for device command output
-    locate_switch:
-      title: locate_switch
-      type: object
-      properties:
-        duration:
-          maximum: 120
-          minimum: 1
-          type: integer
-          description: Minutes the leds should keep flashing
-          contentEncoding: int32
-          default: 5
-        mac:
-          type: string
-          description: For virtual chassis, the MAC of the member
-          examples:
-          - f01c2d4ff760
-      description: Request body for locating a switch or virtual chassis member by MAC address for a limited duration
     ha_cluster_node_enum12:
       title: ha_cluster_node_enum12
       enum:
@@ -4993,90 +4814,6 @@ components:
       - node1
       type: string
       description: 'HA cluster node on which to show DHCP leases. enum: `node0`, `node1`.'
-    shell_node:
-      title: shell_node
-      type: object
-      properties:
-        node:
-          allOf:
-          - $ref: '#/components/schemas/ha_cluster_node_enum2'
-          - description: 'HA cluster node on which to create the shell session. enum: `node0`, `node1`.'
-      description: Request body for creating a shell session on a specific HA node
-    utils_show_dhcp_leases:
-      title: utils_show_dhcp_leases
-      required:
-      - network
-      type: object
-      properties:
-        network:
-          type: string
-          description: DHCP network for the leases, returns full table if not specified
-          examples:
-          - guest
-        node:
-          allOf:
-          - $ref: '#/components/schemas/ha_cluster_node_enum12'
-          - description: 'HA cluster node on which to show DHCP leases. enum: `node0`, `node1`.'
-      description: DHCP leases command request
-    ha_cluster_node:
-      title: ha_cluster_node
-      type: object
-      properties:
-        node:
-          allOf:
-          - $ref: '#/components/schemas/ha_cluster_node_enum22'
-          - description: 'HA cluster node on which to run the device operation. enum: `node0`, `node1`.'
-      description: HA cluster node selector for device operations
-    utils_monitor_traffic:
-      title: utils_monitor_traffic
-      type: object
-      properties:
-        port:
-          type: string
-          description: Interface name to monitor; omit this field to monitor all ports
-          examples:
-          - ge-0/0/1
-      description: Request body for monitoring traffic on one port or all ports
-    ha_cluster_node_enum2:
-      title: ha_cluster_node_enum2
-      enum:
-      - node0
-      - node1
-      type: string
-      description: 'HA cluster node on which to create the shell session. enum: `node0`, `node1`.'
-    utils_devices_restart_node2:
-      title: utils_devices_restart_node2
-      enum:
-      - node0
-      - node1
-      type: string
-      description: 'SRX or SSR node to restart. enum: `node0`, `node1`.'
-    ha_cluster_node_enum20:
-      title: ha_cluster_node_enum20
-      enum:
-      - node0
-      - node1
-      type: string
-      description: 'HA cluster node from which to run traceroute. enum: `node0`, `node1`.'
-    websocket_session:
-      title: websocket_session
-      required:
-      - session
-      type: object
-      properties:
-        session:
-          type: string
-          description: Identifier used to correlate output on the WebSocket stream
-          examples:
-          - 19e73828-937f-05e6-f709-e29efdb0a82b
-      description: Response containing the WebSocket session handle for asynchronous command output
-    ha_cluster_node_enum22:
-      title: ha_cluster_node_enum22
-      enum:
-      - node0
-      - node1
-      type: string
-      description: 'HA cluster node on which to run the device operation. enum: `node0`, `node1`.'
     ha_cluster_node_enum11:
       title: ha_cluster_node_enum11
       enum:
@@ -5084,59 +4821,26 @@ components:
       - node1
       type: string
       description: 'HA cluster node on which to show the BGP summary. enum: `node0`, `node1`.'
-    utils_traceroute:
-      title: utils_traceroute
+    utils_mac_table:
+      title: utils_mac_table
       type: object
       properties:
-        host:
+        mac_address:
           type: string
-          description: Destination IP address, IPv6 address, or hostname for traceroute
-        network:
+          description: Client MAC address filter for the MAC table lookup
+          examples:
+          - f8c1165c6400
+        port_id:
           type: string
-          description: For SSR, source network from which to initiate traceroute
-          default: internal
-        node:
-          allOf:
-          - $ref: '#/components/schemas/ha_cluster_node_enum20'
-          - description: 'HA cluster node from which to run traceroute. enum: `node0`, `node1`.'
-        port:
-          type: integer
-          description: When `protocol`==`udp`, not supported in SSR. The udp port to use
-          contentEncoding: int32
-          default: 33434
-        protocol:
-          allOf:
-          - $ref: '#/components/schemas/utils_traceroute_protocol2'
-          - description: 'Transport protocol to use for traceroute. enum: `icmp`, `udp`.'
-        timeout:
-          type: integer
-          description: Not supported in SSR. Maximum time in seconds to wait for the response
-          contentEncoding: int32
-          default: 60
-        use_ipv6:
-          type: boolean
-          description: Whether to resolve hostname targets over IPv6
-          default: false
-        vrf:
+          description: Interface identifier filter for the MAC table lookup
+          examples:
+          - ge-0/0/0.0
+        vlan_id:
           type: string
-          description: For SRX, routing instance or VRF from which to initiate traceroute; master VRF/RI is used by default
-      description: Request body for running a traceroute utility command
-    ha_cluster_node_enum13:
-      title: ha_cluster_node_enum13
-      enum:
-      - node0
-      - node1
-      type: string
-      description: 'HA cluster node on which to show the forwarding table. enum: `node0`, `node1`.'
-    utils_show_bgp_summary:
-      title: utils_show_bgp_summary
-      type: object
-      properties:
-        node:
-          allOf:
-          - $ref: '#/components/schemas/ha_cluster_node_enum11'
-          - description: 'HA cluster node on which to show the BGP summary. enum: `node0`, `node1`.'
-      description: BGP summary command request
+          description: VLAN identifier filter for the MAC table lookup
+          examples:
+          - ge-0/0/0.0
+      description: MAC table lookup filters
     utils_show_evpn_database:
       title: utils_show_evpn_database
       type: object
@@ -5166,47 +4870,86 @@ components:
           examples:
           - ge-0/0/0.0
       description: EVPN database lookup request for device command output
-    utils_devices_restart:
-      title: utils_devices_restart
-      type: object
-      properties:
-        member:
-          maximum: 9
-          minimum: 0
-          type: integer
-          description: Virtual Chassis member number to restart
-          contentEncoding: int32
-        node:
-          allOf:
-          - $ref: '#/components/schemas/utils_devices_restart_node2'
-          - description: 'SRX or SSR node to restart. enum: `node0`, `node1`.'
-      description: Request to restart a device or device node
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    utils_devices_restart_multi:
-      title: utils_devices_restart_multi
+    utils_release_dhcp_leases:
+      title: utils_release_dhcp_leases
       required:
-      - device_ids
+      - port_id
       type: object
       properties:
-        device_ids:
+        macs:
           type: array
           items:
             type: string
-            contentEncoding: uuid
-          description: Identifiers of devices to restart
-        node:
+          description: Client MAC addresses whose DHCP leases should be released
+          examples:
+          - - 90ec77aabbcc
+            - 90ec77aabbdd
+        network:
           type: string
-          description: 'Only for SSR: if node is not present, both nodes are restarted. For other devices: node should not be present'
-      description: Request to restart multiple devices
+          description: DHCP network containing the leases to release
+          examples:
+          - guest
+        node:
+          allOf:
+          - $ref: '#/components/schemas/ha_cluster_node_enum8'
+          - description: 'HA cluster node on which to release DHCP leases. enum: `node0`, `node1`.'
+        port_id:
+          minLength: 1
+          type: string
+          description: Network interface containing the DHCP leases to release
+          examples:
+          - ge-0/0/1.10
+      description: "Note: \n  * valid combinations for Junos: \n    * `port_id` \n    * `macs` + `network`\n  * valid combinations for SSR: \n    * `port_id` \n    * `macs` + `network`\n    * `port_id` + `network`\n    * `network`\n  * if network or port_id is specified and macs is empty, it means all clients under network or port_id"
+    utils_send_support_logs_info2:
+      title: utils_send_support_logs_info2
+      enum:
+      - code-dumps
+      - full
+      - messages
+      - outbound-ssh
+      - process
+      - var-logs
+      type: string
+      description: 'Support file bundle type to upload. enum: `code-dumps`, `full`, `messages`, `outbound-ssh`, `process`, `var-logs`.'
+    ha_cluster_node_enum20:
+      title: ha_cluster_node_enum20
+      enum:
+      - node0
+      - node1
+      type: string
+      description: 'HA cluster node from which to run traceroute. enum: `node0`, `node1`.'
+    root_password_string:
+      title: root_password_string
+      required:
+      - root_password
+      type: object
+      properties:
+        root_password:
+          minLength: 1
+          type: string
+          description: Temporary root password returned for ZTP recovery
+          contentEncoding: password
+      description: Temporary root password response for device ZTP recovery
+    response_device_config_cli:
+      title: response_device_config_cli
+      required:
+      - cli
+      type: object
+      properties:
+        cli:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Command lines generated for the device configuration in CLI syntax
+      description: Device configuration rendered as CLI commands
+    ha_cluster_node_enum22:
+      title: ha_cluster_node_enum22
+      enum:
+      - node0
+      - node1
+      type: string
+      description: 'HA cluster node on which to run the device operation. enum: `node0`, `node1`.'
     clear_policy_hit_count:
       title: clear_policy_hit_count
       required:
@@ -5227,19 +4970,276 @@ components:
             type: string
           description: Device ports to bounce
       description: Request to bounce one or more device ports
-    response_device_config_cli:
-      title: response_device_config_cli
-      required:
-      - cli
+    utils_devices_restart:
+      title: utils_devices_restart
       type: object
       properties:
-        cli:
-          uniqueItems: true
+        member:
+          maximum: 9
+          minimum: 0
+          type: integer
+          description: Virtual Chassis member number to restart
+          contentEncoding: int32
+        node:
+          allOf:
+          - $ref: '#/components/schemas/utils_devices_restart_node2'
+          - description: 'SRX or SSR node to restart. enum: `node0`, `node1`.'
+      description: Request to restart a device or device node
+    utils_monitor_traffic:
+      title: utils_monitor_traffic
+      type: object
+      properties:
+        port:
+          type: string
+          description: Interface name to monitor; omit this field to monitor all ports
+          examples:
+          - ge-0/0/1
+      description: Request body for monitoring traffic on one port or all ports
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    utils_show_dot1x:
+      title: utils_show_dot1x
+      type: object
+      properties:
+        duration:
+          maximum: 300
+          minimum: 0
+          type: integer
+          description: Refresh duration in seconds; set only when `interval` is nonzero
+          contentEncoding: int32
+          default: 0
+        interval:
+          maximum: 10
+          minimum: 0
+          type: integer
+          description: Refresh interval in seconds for repeated command output
+          contentEncoding: int32
+          default: 0
+        port_id:
+          type: string
+          description: Device port identifier filter for the 802.1X table lookup
+          examples:
+          - ge-0/0/0.0
+      description: 802.1X table lookup request for device command output
+    utils_traceroute_protocol2:
+      title: utils_traceroute_protocol2
+      enum:
+      - icmp
+      - udp
+      type: string
+      description: 'Transport protocol to use for traceroute. enum: `icmp`, `udp`.'
+    locate_switch:
+      title: locate_switch
+      type: object
+      properties:
+        duration:
+          maximum: 120
+          minimum: 1
+          type: integer
+          description: Minutes the leds should keep flashing
+          contentEncoding: int32
+          default: 5
+        mac:
+          type: string
+          description: For virtual chassis, the MAC of the member
+          examples:
+          - f01c2d4ff760
+      description: Request body for locating a switch or virtual chassis member by MAC address for a limited duration
+    ha_cluster_node_enum8:
+      title: ha_cluster_node_enum8
+      enum:
+      - node0
+      - node1
+      type: string
+      description: 'HA cluster node on which to release DHCP leases. enum: `node0`, `node1`.'
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    utils_ping:
+      title: utils_ping
+      required:
+      - host
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of echo requests to send
+          contentEncoding: int32
+          default: 10
+        egress_interface:
+          type: string
+          description: Interface through which ping packets should egress
+        host:
+          type: string
+          description: Destination IP address, IPv6 address, or hostname to ping
+          examples:
+          - 1.1.1.1
+        node:
+          allOf:
+          - $ref: '#/components/schemas/ha_cluster_node_enum6'
+          - description: 'HA cluster node from which to send ping packets. enum: `node0`, `node1`.'
+        size:
+          maximum: 65535
+          minimum: 56
+          type: integer
+          description: ICMP payload size, in bytes
+          contentEncoding: int32
+          default: 56
+        use_ipv6:
+          type: boolean
+          description: applicable when host is hostname
+          default: false
+        vrf:
+          type: string
+          description: Routing instance or VRF through which ping packets are sent
+      description: Request body for running a ping utility command
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    websocket_session:
+      title: websocket_session
+      required:
+      - session
+      type: object
+      properties:
+        session:
+          type: string
+          description: Identifier used to correlate output on the WebSocket stream
+          examples:
+          - 19e73828-937f-05e6-f709-e29efdb0a82b
+      description: Response containing the WebSocket session handle for asynchronous command output
+    websocket_session_with_url:
+      title: websocket_session_with_url
+      required:
+      - session
+      - url
+      type: object
+      properties:
+        session:
+          type: string
+          description: Identifier used to correlate output on the WebSocket stream
+          examples:
+          - 19e73828-937f-05e6-f709-e29efdb0a82b
+        url:
+          type: string
+          description: WebSocket URL returned for connecting to this session
+          examples:
+          - wss://api-ws.mist.com/ssh?jwt=xxxx
+      description: Response containing a WebSocket session handle and connection URL
+    utils_devices_restart_multi:
+      title: utils_devices_restart_multi
+      required:
+      - device_ids
+      type: object
+      properties:
+        device_ids:
           type: array
           items:
             type: string
-          description: Command lines generated for the device configuration in CLI syntax
-      description: Device configuration rendered as CLI commands
+            contentEncoding: uuid
+          description: Identifiers of devices to restart
+        node:
+          type: string
+          description: 'Only for SSR: if node is not present, both nodes are restarted. For other devices: node should not be present'
+      description: Request to restart multiple devices
+    ha_cluster_node_enum2:
+      title: ha_cluster_node_enum2
+      enum:
+      - node0
+      - node1
+      type: string
+      description: 'HA cluster node on which to create the shell session. enum: `node0`, `node1`.'
+    utils_devices_restart_node2:
+      title: utils_devices_restart_node2
+      enum:
+      - node0
+      - node1
+      type: string
+      description: 'SRX or SSR node to restart. enum: `node0`, `node1`.'
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    utils_show_bgp_summary:
+      title: utils_show_bgp_summary
+      type: object
+      properties:
+        node:
+          allOf:
+          - $ref: '#/components/schemas/ha_cluster_node_enum11'
+          - description: 'HA cluster node on which to show the BGP summary. enum: `node0`, `node1`.'
+      description: BGP summary command request
+    ha_cluster_node_enum6:
+      title: ha_cluster_node_enum6
+      enum:
+      - node0
+      - node1
+      type: string
+      description: 'HA cluster node from which to send ping packets. enum: `node0`, `node1`.'
+    shell_node:
+      title: shell_node
+      type: object
+      properties:
+        node:
+          allOf:
+          - $ref: '#/components/schemas/ha_cluster_node_enum2'
+          - description: 'HA cluster node on which to create the shell session. enum: `node0`, `node1`.'
+      description: Request body for creating a shell session on a specific HA node
+    utils_send_support_logs:
+      title: utils_send_support_logs
+      type: object
+      properties:
+        info:
+          allOf:
+          - $ref: '#/components/schemas/utils_send_support_logs_info2'
+          - description: 'Support file bundle type to upload. enum: `code-dumps`, `full`, `messages`, `outbound-ssh`, `process`, `var-logs`.'
+        node:
+          type: string
+          description: 'Optional for SSR: if node is not present, both nodes support files are uploaded'
+        num_messages_files:
+          maximum: 10
+          minimum: 1
+          type: integer
+          description: Number of most recent messages files to upload when `info`==`messages`
+          contentEncoding: int32
+          default: 1
+      description: Request to upload support files from a device
   securitySchemes:
     apiToken:
       type: apiKey

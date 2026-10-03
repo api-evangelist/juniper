@@ -839,37 +839,6 @@ paths:
       deprecated: false
 components:
   schemas:
-    admin_privilege_view:
-      title: admin_privilege_view
-      enum:
-      - lobby_admin
-      - location
-      - marketing
-      - mxedge_admin
-      - reporting
-      - security
-      - super_observer
-      - switch_admin
-      type: string
-      description: 'UI view name allowed by a custom admin role. enum: `lobby_admin`, `location`, `marketing`, `mxedge_admin`, `reporting`, `security`, `super_observer`, `switch_admin`'
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    privilege_msp_role2:
-      title: privilege_msp_role2
-      enum:
-      - admin
-      - helpdesk
-      - installer
-      - read
-      - write
-      type: string
-      description: 'Access role granted by this MSP privilege. enum: `admin`, `helpdesk`, `installer`, `read`, `write`.'
     response_http403:
       title: response_http403
       type: object
@@ -880,6 +849,16 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
     response_http429:
       title: response_http429
       type: object
@@ -941,6 +920,16 @@ components:
             $ref: '#/components/schemas/privilege_msp'
           description: Access privileges granted by this MSP SSO role
       description: MSP SSO role definition
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
     privilege_msp:
       title: privilege_msp
       required:
@@ -974,16 +963,27 @@ components:
             $ref: '#/components/schemas/admin_privilege_view'
           description: UI views allowed by custom role restrictions
       description: MSP privilege scope and role settings
-    response_http401:
-      title: response_http401
+    admin_privilege_view:
+      title: admin_privilege_view
+      enum:
+      - lobby_admin
+      - location
+      - marketing
+      - mxedge_admin
+      - reporting
+      - security
+      - super_observer
+      - switch_admin
+      type: string
+      description: 'UI view name allowed by a custom admin role. enum: `lobby_admin`, `location`, `marketing`, `mxedge_admin`, `reporting`, `security`, `super_observer`, `switch_admin`'
+    response_http404:
+      title: response_http404
       type: object
       properties:
-        detail:
+        id:
           type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
     privilege_msp_scope2:
       title: privilege_msp_scope2
       enum:
@@ -992,16 +992,16 @@ components:
       - orggroup
       type: string
       description: 'MSP hierarchy level where this privilege applies. enum: `msp`, `org`, `orggroup`.'
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
+    privilege_msp_role2:
+      title: privilege_msp_role2
+      enum:
+      - admin
+      - helpdesk
+      - installer
+      - read
+      - write
+      type: string
+      description: 'Access role granted by this MSP privilege. enum: `admin`, `helpdesk`, `installer`, `read`, `write`.'
   securitySchemes:
     apiToken:
       type: apiKey

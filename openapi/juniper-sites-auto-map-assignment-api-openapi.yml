@@ -996,31 +996,56 @@ paths:
       deprecated: false
 components:
   schemas:
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    response_auto_map_assignment_clear:
-      title: response_auto_map_assignment_clear
+    response_auto_map_assignment_apply:
+      title: response_auto_map_assignment_apply
       required:
+      - accepted_maps
       - message
-      - rejected_maps
       type: object
       properties:
-        message:
-          type: string
-          description: Human-readable description of the operation result
-        rejected_maps:
+        accepted_maps:
           type: array
           items:
             type: string
             contentEncoding: uuid
-          description: List of map IDs that were successfully rejected
-      description: Result returned after clearing auto map assignment candidates
+          description: List of map IDs that were successfully accepted
+        message:
+          type: string
+          description: Human-readable description of the operation result
+      description: Result returned after applying accepted auto map assignments
+    response_auto_map_assignment_info_status2:
+      title: response_auto_map_assignment_info_status2
+      enum:
+      - not_started
+      - in_progress
+      - completed
+      - error
+      type: string
+      description: 'Current auto map assignment processing state. enum: `not_started`, `in_progress`, `completed`, `error`.'
+    auto_map_assignment_request:
+      title: auto_map_assignment_request
+      type: object
+      properties:
+        map_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: Optional list of specific map IDs to apply/clear. If not provided or empty, all pending map assignments are accepted/rejected.
+      description: Request body for accepting or clearing pending map assignments
+    auto_map_assignment:
+      title: auto_map_assignment
+      type: object
+      properties:
+        dryrun:
+          type: boolean
+          description: If `true`, validates the site's APs without starting the map assignment process. Returns device validity and estimated runtime.
+          default: false
+        force_collection:
+          type: boolean
+          description: If `true`, forces data collection via orchestration. If `false`, attempts to use existing BLE data first.
+          default: false
+      description: Request options for validating or starting automatic AP map assignment
     response_auto_map_assignment_info:
       title: response_auto_map_assignment_info
       required:
@@ -1044,16 +1069,33 @@ components:
           type: number
           description: Unix timestamp when status was last updated
       description: Auto map assignment status response
-    response_http403:
-      title: response_http403
+    response_auto_map_assignment_clear:
+      title: response_auto_map_assignment_clear
+      required:
+      - message
+      - rejected_maps
+      type: object
+      properties:
+        message:
+          type: string
+          description: Human-readable description of the operation result
+        rejected_maps:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: List of map IDs that were successfully rejected
+      description: Result returned after clearing auto map assignment candidates
+    response_http400:
+      title: response_http400
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the permission error
+          description: Human-readable explanation of the bad request error
           examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
     response_http429:
       title: response_http429
       type: object
@@ -1064,39 +1106,16 @@ components:
           examples:
           - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
       description: Standard HTTP 429 rate limit error response
-    response_auto_map_assignment_info_status2:
-      title: response_auto_map_assignment_info_status2
-      enum:
-      - not_started
-      - in_progress
-      - completed
-      - error
-      type: string
-      description: 'Current auto map assignment processing state. enum: `not_started`, `in_progress`, `completed`, `error`.'
-    response_auto_map_assignment_device:
-      title: response_auto_map_assignment_device
+    response_http403:
+      title: response_http403
       type: object
       properties:
-        reason:
+        detail:
           type: string
-          description: Provides the reason for the status if the AP is invalid
-        valid:
-          type: boolean
-          description: Indicates whether the device meets requirements for auto map assignment
-      description: Per-device validation result for auto map assignment
-    auto_map_assignment:
-      title: auto_map_assignment
-      type: object
-      properties:
-        dryrun:
-          type: boolean
-          description: If `true`, validates the site's APs without starting the map assignment process. Returns device validity and estimated runtime.
-          default: false
-        force_collection:
-          type: boolean
-          description: If `true`, forces data collection via orchestration. If `false`, attempts to use existing BLE data first.
-          default: false
-      description: Request options for validating or starting automatic AP map assignment
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
     response_http401:
       title: response_http401
       type: object
@@ -1107,6 +1126,14 @@ components:
           examples:
           - Authentication credentials were not provided.
       description: Standard HTTP 401 authentication error response
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
     response_auto_map_assignment:
       title: response_auto_map_assignment
       type: object
@@ -1130,44 +1157,17 @@ components:
           type: boolean
           description: Indicates whether the auto map assignment request is valid
       description: Auto map assignment start response
-    response_http400:
-      title: response_http400
+    response_auto_map_assignment_device:
+      title: response_auto_map_assignment_device
       type: object
       properties:
-        detail:
+        reason:
           type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    auto_map_assignment_request:
-      title: auto_map_assignment_request
-      type: object
-      properties:
-        map_ids:
-          type: array
-          items:
-            type: string
-            contentEncoding: uuid
-          description: Optional list of specific map IDs to apply/clear. If not provided or empty, all pending map assignments are accepted/rejected.
-      description: Request body for accepting or clearing pending map assignments
-    response_auto_map_assignment_apply:
-      title: response_auto_map_assignment_apply
-      required:
-      - accepted_maps
-      - message
-      type: object
-      properties:
-        accepted_maps:
-          type: array
-          items:
-            type: string
-            contentEncoding: uuid
-          description: List of map IDs that were successfully accepted
-        message:
-          type: string
-          description: Human-readable description of the operation result
-      description: Result returned after applying accepted auto map assignments
+          description: Provides the reason for the status if the AP is invalid
+        valid:
+          type: boolean
+          description: Indicates whether the device meets requirements for auto map assignment
+      description: Per-device validation result for auto map assignment
   securitySchemes:
     apiToken:
       type: apiKey

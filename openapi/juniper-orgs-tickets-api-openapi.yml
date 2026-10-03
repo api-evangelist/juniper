@@ -1939,6 +1939,95 @@ paths:
       deprecated: false
 components:
   schemas:
+    count_result:
+      title: count_result
+      required:
+      - count
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of matching items for the distinct value or values in this result
+          contentEncoding: int32
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
+    response_count:
+      title: response_count
+      required:
+      - distinct
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        distinct:
+          type: string
+          description: Field used to group the count results
+        end:
+          type: integer
+          description: Search window end timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of distinct count results requested
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/count_result'
+          description: Count results grouped by the distinct field
+        start:
+          type: integer
+          description: Search window start timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of distinct result buckets returned
+          contentEncoding: int32
+      description: Distinct count response for time-bounded search results
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    ticket_status2:
+      title: ticket_status2
+      enum:
+      - closed
+      - open
+      - pending
+      - solved
+      type: string
+      description: 'Current lifecycle status of this support ticket. enum: `closed`, `open`, `pending`, `solved`.'
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
     ticket:
       title: ticket
       required:
@@ -1991,109 +2080,6 @@ components:
           contentEncoding: int32
           readOnly: true
       description: Support ticket record with status, comments, and metadata
-    ticket_attachment:
-      title: ticket_attachment
-      type: object
-      properties:
-        content_url:
-          type: string
-          description: Download URL for the support ticket attachment
-          examples:
-          - https://api.mist.com/api/v1/forward/download?jwt=...
-      description: Download information for a support ticket attachment
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    ticket_status2:
-      title: ticket_status2
-      enum:
-      - closed
-      - open
-      - pending
-      - solved
-      type: string
-      description: 'Current lifecycle status of this support ticket. enum: `closed`, `open`, `pending`, `solved`.'
-    org_tickets_count_distinct:
-      title: org_tickets_count_distinct
-      enum:
-      - status
-      - type
-      type: string
-      description: 'Distinct field used when counting organization tickets. enum: `status`, `type`'
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    count_result:
-      title: count_result
-      required:
-      - count
-      type: object
-      properties:
-        count:
-          type: integer
-          description: Number of matching items for the distinct value or values in this result
-          contentEncoding: int32
-      additionalProperties:
-        type: string
-      description: Count result row with the matching distinct field values
-    ticket_comment:
-      title: ticket_comment
-      required:
-      - author
-      - comment
-      - created_at
-      type: object
-      properties:
-        attachment_ids:
-          type: array
-          items:
-            type: string
-            contentEncoding: uuid
-          description: Identifiers of attachments linked to this ticket comment
-          readOnly: true
-          examples:
-          - - 00000000-0000-0000-0000-15231a659c78
-        attachments:
-          type: array
-          items:
-            $ref: '#/components/schemas/ticket_comments_attachment'
-          description: Attachment metadata returned with this ticket comment
-          readOnly: true
-        author:
-          type: string
-          description: User who wrote this ticket comment
-          readOnly: true
-        comment:
-          type: string
-          description: Text body of this ticket comment
-        created_at:
-          type: integer
-          description: Time when this ticket comment was created, in epoch seconds
-          contentEncoding: int32
-          readOnly: true
-      description: Comment on a support ticket
     response_http401:
       title: response_http401
       type: object
@@ -2143,53 +2129,67 @@ components:
           examples:
           - 1943
       description: Metadata for an attachment on a ticket comment
-    response_http400:
-      title: response_http400
+    response_http404:
+      title: response_http404
       type: object
       properties:
-        detail:
+        id:
           type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_count:
-      title: response_count
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    org_tickets_count_distinct:
+      title: org_tickets_count_distinct
+      enum:
+      - status
+      - type
+      type: string
+      description: 'Distinct field used when counting organization tickets. enum: `status`, `type`'
+    ticket_comment:
+      title: ticket_comment
       required:
-      - distinct
-      - end
-      - limit
-      - results
-      - start
-      - total
+      - author
+      - comment
+      - created_at
       type: object
       properties:
-        distinct:
-          type: string
-          description: Field used to group the count results
-        end:
-          type: integer
-          description: Search window end timestamp for the count request, in epoch seconds
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of distinct count results requested
-          contentEncoding: int32
-        results:
-          uniqueItems: true
+        attachment_ids:
           type: array
           items:
-            $ref: '#/components/schemas/count_result'
-          description: Count results grouped by the distinct field
-        start:
+            type: string
+            contentEncoding: uuid
+          description: Identifiers of attachments linked to this ticket comment
+          readOnly: true
+          examples:
+          - - 00000000-0000-0000-0000-15231a659c78
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/ticket_comments_attachment'
+          description: Attachment metadata returned with this ticket comment
+          readOnly: true
+        author:
+          type: string
+          description: User who wrote this ticket comment
+          readOnly: true
+        comment:
+          type: string
+          description: Text body of this ticket comment
+        created_at:
           type: integer
-          description: Search window start timestamp for the count request, in epoch seconds
+          description: Time when this ticket comment was created, in epoch seconds
           contentEncoding: int32
-        total:
-          type: integer
-          description: Number of distinct result buckets returned
-          contentEncoding: int32
-      description: Distinct count response for time-bounded search results
+          readOnly: true
+      description: Comment on a support ticket
+    ticket_attachment:
+      title: ticket_attachment
+      type: object
+      properties:
+        content_url:
+          type: string
+          description: Download URL for the support ticket attachment
+          examples:
+          - https://api.mist.com/api/v1/forward/download?jwt=...
+      description: Download information for a support ticket attachment
   securitySchemes:
     apiToken:
       type: apiKey

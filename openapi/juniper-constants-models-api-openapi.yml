@@ -1078,111 +1078,70 @@ paths:
       deprecated: false
 components:
   schemas:
-    response_http403:
-      title: response_http403
+    const_device_ap_band242:
+      title: const_device_ap_band242
       type: object
       properties:
-        detail:
+        band5_channels_op:
           type: string
-          description: Human-readable explanation of the permission error
+          description: 5 GHz channel set used when this radio operates on 5 GHz
           examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    const_device_gateway:
-      title: const_device_gateway
-      required:
-      - type
+          - low
+        max_clients:
+          type: integer
+          description: Maximum client count supported on the 2.4 GHz radio
+          contentEncoding: int32
+          examples:
+          - 128
+        max_power:
+          type: integer
+          description: Maximum transmit power for the 2.4 GHz radio, in dBm
+          contentEncoding: int32
+          examples:
+          - 19
+        min_power:
+          type: integer
+          description: Minimum transmit power for the 2.4 GHz radio, in dBm
+          contentEncoding: int32
+          examples:
+          - 8
+      description: 2.4 GHz radio capability limits for this AP model
+    const_device_model:
+      oneOf:
+      - $ref: '#/components/schemas/const_device_ap'
+      - $ref: '#/components/schemas/const_device_switch'
+      - $ref: '#/components/schemas/const_device_gateway'
+      description: Device model definition returned by the constants API
+      discriminator:
+        propertyName: type
+        mapping:
+          ap: const_device_ap
+          gateway: const_device_switch
+          switch: const_device_gateway
+    const_device_ap_band_24_usage:
+      title: const_device_ap_band_24_usage
+      enum:
+      - '24'
+      - '5'
+      - '6'
+      type: string
+      description: 'enum: `24`, `5`, `6`'
+    const_mxedge_model_port:
+      title: const_mxedge_model_port
       type: object
       properties:
-        defaults:
-          type: object
-          additionalProperties:
-            type: string
-          description: Default interface group mappings for this gateway model
-        description:
+        display:
           type: string
-          description: Product description for the gateway model
-        experimental:
-          type: boolean
-          description: Whether this gateway model is marked experimental in the constants catalog
-          default: false
-        fans_pluggable:
-          type: boolean
-          description: Whether the gateway model has field-replaceable fans
-          default: true
-        ha_node0_fpc:
+          description: User-facing interface name for this Mist Edge port
+          examples:
+          - xe0
+        speed:
           type: integer
-          description: FPC number used for node0 in HA deployments
+          description: Port speed for the Mist Edge interface, in Mbps
           contentEncoding: int32
-        ha_node1_fpc:
-          type: integer
-          description: FPC number used for node1 in HA deployments
-          contentEncoding: int32
-        has_bgp:
-          type: boolean
-          description: Whether the gateway model supports BGP
-          default: false
-        has_fxp0:
-          type: boolean
-          description: Whether the gateway model includes an fxp0 management interface
-          default: true
-        has_ha_control:
-          type: boolean
-          description: Whether the gateway model has a dedicated HA control port
-          default: false
-        has_ha_data:
-          type: boolean
-          description: Whether the gateway model has dedicated HA data ports
-          default: false
-        has_irb:
-          type: boolean
-          description: Whether the gateway model supports IRB interfaces
-          default: false
-        has_poe_out:
-          type: boolean
-          description: Whether the gateway model supports PoE output
-          default: true
-        has_snapshot:
-          type: boolean
-          description: Whether the gateway model supports configuration snapshots
-          default: true
-        irb_disabled_by_default:
-          type: boolean
-          description: Whether IRB interfaces are disabled by default on this gateway model
-          default: false
-        model:
-          type: string
-          description: Gateway model identifier for this capability definition
-        number_fans:
-          type: integer
-          description: Number of fans in the gateway model
-          contentEncoding: int32
-        oc_device:
-          type: boolean
-          description: Whether this gateway model is identified as an OpenConfig-managed device
-          default: false
-        pic:
-          type: object
-          additionalProperties:
-            type: string
-          description: Physical Interface Card port layout for this gateway model
-        ports:
-          allOf:
-          - $ref: '#/components/schemas/const_device_gateway_ports2'
-          - description: Per-interface metadata for this gateway model
-        sub_required:
-          type: string
-          description: Subscription type required for this gateway model
-        t128_device:
-          type: boolean
-          description: Whether this gateway model is a 128 Technology or SSR device
-          default: false
-        type:
-          const: gateway
-          type: string
-          description: Device type for this gateway model definition
-          readOnly: true
-      description: Gateway model capability definition returned by the constants API
+          examples:
+          - 10000
+      description: Mist Edge model port metadata
     const_device_ap:
       title: const_device_ap
       required:
@@ -1359,57 +1318,6 @@ components:
           - $ref: '#/components/schemas/const_device_ap_vble2'
           - description: Virtual BLE (vBLE) capability settings for this AP model
       description: AP model capability definition returned by the constants API
-    const_device_ap_vble2:
-      title: const_device_ap_vble2
-      type: object
-      properties:
-        beacon_rate:
-          type: integer
-          description: Advertisement rate for the virtual BLE beacon
-          contentEncoding: int32
-          examples:
-          - 4
-        beams:
-          type: integer
-          description: Number of virtual BLE beams supported by the AP model
-          contentEncoding: int32
-          examples:
-          - 9
-        power:
-          type: integer
-          description: Transmit power for virtual BLE beacons, in dBm
-          contentEncoding: int32
-          examples:
-          - 8
-      description: Virtual BLE (vBLE) capability settings for this AP model
-    const_device_ap_band242:
-      title: const_device_ap_band242
-      type: object
-      properties:
-        band5_channels_op:
-          type: string
-          description: 5 GHz channel set used when this radio operates on 5 GHz
-          examples:
-          - low
-        max_clients:
-          type: integer
-          description: Maximum client count supported on the 2.4 GHz radio
-          contentEncoding: int32
-          examples:
-          - 128
-        max_power:
-          type: integer
-          description: Maximum transmit power for the 2.4 GHz radio, in dBm
-          contentEncoding: int32
-          examples:
-          - 19
-        min_power:
-          type: integer
-          description: Minimum transmit power for the 2.4 GHz radio, in dBm
-          contentEncoding: int32
-          examples:
-          - 8
-      description: 2.4 GHz radio capability limits for this AP model
     const_device_ap_band62:
       title: const_device_ap_band62
       type: object
@@ -1433,36 +1341,101 @@ components:
           examples:
           - 8
       description: 6 GHz radio capability limits for this AP model
-    response_http400:
-      title: response_http400
+    const_device_gateway:
+      title: const_device_gateway
+      required:
+      - type
       type: object
       properties:
-        detail:
+        defaults:
+          type: object
+          additionalProperties:
+            type: string
+          description: Default interface group mappings for this gateway model
+        description:
           type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    const_other_device_model:
-      title: const_other_device_model
-      type: object
-      properties:
-        _vendor_model_id:
-          type: string
-          description: Vendor-specific model identifier for this other-device model
-        display:
-          type: string
-          description: User-facing model name shown for the other-device model
+          description: Product description for the gateway model
+        experimental:
+          type: boolean
+          description: Whether this gateway model is marked experimental in the constants catalog
+          default: false
+        fans_pluggable:
+          type: boolean
+          description: Whether the gateway model has field-replaceable fans
+          default: true
+        ha_node0_fpc:
+          type: integer
+          description: FPC number used for node0 in HA deployments
+          contentEncoding: int32
+        ha_node1_fpc:
+          type: integer
+          description: FPC number used for node1 in HA deployments
+          contentEncoding: int32
+        has_bgp:
+          type: boolean
+          description: Whether the gateway model supports BGP
+          default: false
+        has_fxp0:
+          type: boolean
+          description: Whether the gateway model includes an fxp0 management interface
+          default: true
+        has_ha_control:
+          type: boolean
+          description: Whether the gateway model has a dedicated HA control port
+          default: false
+        has_ha_data:
+          type: boolean
+          description: Whether the gateway model has dedicated HA data ports
+          default: false
+        has_irb:
+          type: boolean
+          description: Whether the gateway model supports IRB interfaces
+          default: false
+        has_poe_out:
+          type: boolean
+          description: Whether the gateway model supports PoE output
+          default: true
+        has_snapshot:
+          type: boolean
+          description: Whether the gateway model supports configuration snapshots
+          default: true
+        irb_disabled_by_default:
+          type: boolean
+          description: Whether IRB interfaces are disabled by default on this gateway model
+          default: false
         model:
           type: string
-          description: Device model identifier for this other-device definition
+          description: Gateway model identifier for this capability definition
+        number_fans:
+          type: integer
+          description: Number of fans in the gateway model
+          contentEncoding: int32
+        oc_device:
+          type: boolean
+          description: Whether this gateway model is identified as an OpenConfig-managed device
+          default: false
+        pic:
+          type: object
+          additionalProperties:
+            type: string
+          description: Physical Interface Card port layout for this gateway model
+        ports:
+          allOf:
+          - $ref: '#/components/schemas/const_device_gateway_ports2'
+          - description: Per-interface metadata for this gateway model
+        sub_required:
+          type: string
+          description: Subscription type required for this gateway model
+        t128_device:
+          type: boolean
+          description: Whether this gateway model is a 128 Technology or SSR device
+          default: false
         type:
+          const: gateway
           type: string
-          description: Device category for this other-device model
-        vendor:
-          type: string
-          description: Manufacturer name for this other-device model
-      description: Other-device model definition returned by the constants API
+          description: Device type for this gateway model definition
+          readOnly: true
+      description: Gateway model capability definition returned by the constants API
     response_http404:
       title: response_http404
       type: object
@@ -1471,51 +1444,6 @@ components:
           type: string
           description: Missing resource identifier, when the API includes one
       description: Standard HTTP 404 not found error response
-    const_device_model:
-      oneOf:
-      - $ref: '#/components/schemas/const_device_ap'
-      - $ref: '#/components/schemas/const_device_switch'
-      - $ref: '#/components/schemas/const_device_gateway'
-      description: Device model definition returned by the constants API
-      discriminator:
-        propertyName: type
-        mapping:
-          ap: const_device_ap
-          gateway: const_device_switch
-          switch: const_device_gateway
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    const_device_ap_band52:
-      title: const_device_ap_band52
-      type: object
-      properties:
-        max_clients:
-          type: integer
-          description: Maximum client count supported on the 5 GHz radio
-          contentEncoding: int32
-          examples:
-          - 128
-        max_power:
-          type: integer
-          description: Maximum transmit power for the 5 GHz radio, in dBm
-          contentEncoding: int32
-          examples:
-          - 17
-        min_power:
-          type: integer
-          description: Minimum transmit power for the 5 GHz radio, in dBm
-          contentEncoding: int32
-          examples:
-          - 8
-      description: 5 GHz radio capability limits for this AP model
     const_device_ap_extios_default_dir2:
       title: const_device_ap_extios_default_dir2
       enum:
@@ -1523,16 +1451,16 @@ components:
       - OUT
       type: string
       description: 'Default direction for this external I/O port. enum: `IN`, `OUT`.'
-    const_device_switch_default2:
-      title: const_device_switch_default2
+    response_http403:
+      title: response_http403
       type: object
       properties:
-        _ports:
+        detail:
           type: string
-          description: Default switch port range list for this model
+          description: Human-readable explanation of the permission error
           examples:
-          - ge-0/0/0-47, et-0/1/0-3, xe-0/2/0-3, ge-0/2/0-3
-      description: Default port mappings for this switch model
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
     const_device_gateway_ports2:
       title: const_device_gateway_ports2
       type: object
@@ -1548,31 +1476,36 @@ components:
           description: Port speed for the gateway interface, in Mbps
           contentEncoding: int32
       description: Per-interface metadata for this gateway model
-    const_device_ap_extios:
-      title: const_device_ap_extios
-      type: object
-      properties:
-        default_dir:
-          allOf:
-          - $ref: '#/components/schemas/const_device_ap_extios_default_dir2'
-          - description: 'Default direction for this external I/O port. enum: `IN`, `OUT`.'
-        input:
-          type: boolean
-          description: Whether this external I/O port supports input mode
-        output:
-          type: boolean
-          description: Whether this external I/O port supports output mode
-      description: External I/O port capabilities for an AP model
-    response_http401:
-      title: response_http401
+    response_http400:
+      title: response_http400
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the authentication error
+          description: Human-readable explanation of the bad request error
           examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    const_device_switch_default2:
+      title: const_device_switch_default2
+      type: object
+      properties:
+        _ports:
+          type: string
+          description: Default switch port range list for this model
+          examples:
+          - ge-0/0/0-47, et-0/1/0-3, xe-0/2/0-3, ge-0/2/0-3
+      description: Default port mappings for this switch model
     const_device_switch:
       title: const_device_switch
       required:
@@ -1707,22 +1640,54 @@ components:
           description: Device type for this switch model definition
           readOnly: true
       description: Switch model capability definition returned by the constants API
-    const_mxedge_model_port:
-      title: const_mxedge_model_port
+    const_device_ap_extios:
+      title: const_device_ap_extios
       type: object
       properties:
-        display:
+        default_dir:
+          allOf:
+          - $ref: '#/components/schemas/const_device_ap_extios_default_dir2'
+          - description: 'Default direction for this external I/O port. enum: `IN`, `OUT`.'
+        input:
+          type: boolean
+          description: Whether this external I/O port supports input mode
+        output:
+          type: boolean
+          description: Whether this external I/O port supports output mode
+      description: External I/O port capabilities for an AP model
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
           type: string
-          description: User-facing interface name for this Mist Edge port
+          description: Human-readable explanation of the authentication error
           examples:
-          - xe0
-        speed:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    const_device_ap_band52:
+      title: const_device_ap_band52
+      type: object
+      properties:
+        max_clients:
           type: integer
-          description: Port speed for the Mist Edge interface, in Mbps
+          description: Maximum client count supported on the 5 GHz radio
           contentEncoding: int32
           examples:
-          - 10000
-      description: Mist Edge model port metadata
+          - 128
+        max_power:
+          type: integer
+          description: Maximum transmit power for the 5 GHz radio, in dBm
+          contentEncoding: int32
+          examples:
+          - 17
+        min_power:
+          type: integer
+          description: Minimum transmit power for the 5 GHz radio, in dBm
+          contentEncoding: int32
+          examples:
+          - 8
+      description: 5 GHz radio capability limits for this AP model
     const_mxedge_model:
       title: const_mxedge_model
       type: object
@@ -1746,14 +1711,49 @@ components:
             $ref: '#/components/schemas/const_mxedge_model_port'
           description: Port metadata keyed by interface number for this Mist Edge model
       description: Mist Edge model definition returned by the constants API
-    const_device_ap_band_24_usage:
-      title: const_device_ap_band_24_usage
-      enum:
-      - '24'
-      - '5'
-      - '6'
-      type: string
-      description: 'enum: `24`, `5`, `6`'
+    const_device_ap_vble2:
+      title: const_device_ap_vble2
+      type: object
+      properties:
+        beacon_rate:
+          type: integer
+          description: Advertisement rate for the virtual BLE beacon
+          contentEncoding: int32
+          examples:
+          - 4
+        beams:
+          type: integer
+          description: Number of virtual BLE beams supported by the AP model
+          contentEncoding: int32
+          examples:
+          - 9
+        power:
+          type: integer
+          description: Transmit power for virtual BLE beacons, in dBm
+          contentEncoding: int32
+          examples:
+          - 8
+      description: Virtual BLE (vBLE) capability settings for this AP model
+    const_other_device_model:
+      title: const_other_device_model
+      type: object
+      properties:
+        _vendor_model_id:
+          type: string
+          description: Vendor-specific model identifier for this other-device model
+        display:
+          type: string
+          description: User-facing model name shown for the other-device model
+        model:
+          type: string
+          description: Device model identifier for this other-device definition
+        type:
+          type: string
+          description: Device category for this other-device model
+        vendor:
+          type: string
+          description: Manufacturer name for this other-device model
+      description: Other-device model definition returned by the constants API
   securitySchemes:
     apiToken:
       type: apiKey

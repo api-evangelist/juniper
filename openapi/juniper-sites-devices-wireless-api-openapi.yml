@@ -2203,26 +2203,33 @@ paths:
       deprecated: false
 components:
   schemas:
-    utils_zigbee_join:
-      title: utils_zigbee_join
+    utils_zigbee_kick:
+      title: utils_zigbee_kick
+      required:
+      - macs
       type: object
       properties:
-        duration:
-          maximum: 600
-          minimum: 60
-          type: integer
-          description: Number of seconds to permit new Zigbee end-device joins; range is 60-600
-          contentEncoding: int32
-          default: 600
-      description: Request body for temporarily allowing Zigbee end-device joins
-    response_http404:
-      title: response_http404
+        macs:
+          minItems: 1
+          type: array
+          items:
+            type: string
+          description: One or more Zigbee EUI-64 (8-byte) MACs. Accepts colon-separated (`00:17:7a:01:06:0c:ae:9f`) or plain hex (`00177a01060cae9f`). Must be non-empty.
+          examples:
+          - - 00177a01060cae9f
+            - 00177a01060caea1
+      description: Request body for kicking one or more Zigbee clients from an AP
+    zigbee_trail_response:
+      title: zigbee_trail_response
       type: object
       properties:
-        id:
+        session:
           type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
+          description: Session ID the UI can use to stream trail results
+          contentEncoding: uuid
+          examples:
+          - 7a5f7796-83ee-11e5-95c6-1258369c38a9
+      description: Response containing the session identifier for a Zigbee event or packet trail operation
     response_http403:
       title: response_http403
       type: object
@@ -2233,16 +2240,6 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
     zigbee_join_response:
       title: zigbee_join_response
       type: object
@@ -2254,6 +2251,26 @@ components:
           examples:
           - 19e73828-937f-05e6-f709-e29efdb0a82b
       description: Response containing the session identifier for a Zigbee join operation
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
     response_device_radio_channels:
       title: response_device_radio_channels
       required:
@@ -3119,33 +3136,6 @@ components:
           type: string
           description: Regulatory ruleset used for AP channel validation
       description: Country and regulatory-domain channel capabilities for AP radios
-    zigbee_trail_response:
-      title: zigbee_trail_response
-      type: object
-      properties:
-        session:
-          type: string
-          description: Session ID the UI can use to stream trail results
-          contentEncoding: uuid
-          examples:
-          - 7a5f7796-83ee-11e5-95c6-1258369c38a9
-      description: Response containing the session identifier for a Zigbee event or packet trail operation
-    utils_zigbee_kick:
-      title: utils_zigbee_kick
-      required:
-      - macs
-      type: object
-      properties:
-        macs:
-          minItems: 1
-          type: array
-          items:
-            type: string
-          description: One or more Zigbee EUI-64 (8-byte) MACs. Accepts colon-separated (`00:17:7a:01:06:0c:ae:9f`) or plain hex (`00177a01060cae9f`). Must be non-empty.
-          examples:
-          - - 00177a01060cae9f
-            - 00177a01060caea1
-      description: Request body for kicking one or more Zigbee clients from an AP
     response_http401:
       title: response_http401
       type: object
@@ -3156,16 +3146,26 @@ components:
           examples:
           - Authentication credentials were not provided.
       description: Standard HTTP 401 authentication error response
-    response_http400:
-      title: response_http400
+    response_http404:
+      title: response_http404
       type: object
       properties:
-        detail:
+        id:
           type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    utils_zigbee_join:
+      title: utils_zigbee_join
+      type: object
+      properties:
+        duration:
+          maximum: 600
+          minimum: 60
+          type: integer
+          description: Number of seconds to permit new Zigbee end-device joins; range is 60-600
+          contentEncoding: int32
+          default: 600
+      description: Request body for temporarily allowing Zigbee end-device joins
   securitySchemes:
     apiToken:
       type: apiKey

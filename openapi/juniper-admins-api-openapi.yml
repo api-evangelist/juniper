@@ -829,49 +829,6 @@ paths:
       security: []
 components:
   schemas:
-    response_detail_string:
-      title: response_detail_string
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable detail message returned by the API
-      description: Response containing a human-readable detail message
-    response_verify_token_success:
-      title: response_verify_token_success
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Result message returned with the verification response
-        invite_not_applied:
-          type: boolean
-          description: Whether the invitation was verified but not applied automatically
-        min_length:
-          type: integer
-          description: Required minimum password length from the applicable password policy
-          contentEncoding: int32
-        return_to:
-          type: string
-          description: URL to redirect the user to after successful registration verification
-      description: Successful registration token verification response
-    recaptcha_flavor1:
-      title: recaptcha_flavor1
-      enum:
-      - google
-      - hcaptcha
-      type: string
-      description: CAPTCHA provider used for registration, such as Google reCAPTCHA or hCaptcha
-      examples:
-      - hcaptcha
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
     response_http403:
       title: response_http403
       type: object
@@ -882,25 +839,6 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    recaptcha_flavor:
-      title: recaptcha_flavor
-      enum:
-      - google
-      - hcaptcha
-      type: string
-      description: 'CAPTCHA provider flavor. enum: `google`, `hcaptcha`'
-      examples:
-      - hcaptcha
     admin_invite:
       title: admin_invite
       required:
@@ -1002,6 +940,88 @@ components:
           examples:
           - '95014'
       description: Administrator invitation and initial registration payload
+    recaptcha_flavor:
+      title: recaptcha_flavor
+      enum:
+      - google
+      - hcaptcha
+      type: string
+      description: 'CAPTCHA provider flavor. enum: `google`, `hcaptcha`'
+      examples:
+      - hcaptcha
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    recaptcha_flavor4:
+      title: recaptcha_flavor4
+      enum:
+      - google
+      - hcaptcha
+      type: string
+      description: 'CAPTCHA provider flavor used for registration verification. enum: `google`, `hcaptcha`.'
+      examples:
+      - hcaptcha
+    response_detail_string:
+      title: response_detail_string
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable detail message returned by the API
+      description: Response containing a human-readable detail message
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    response_verify_token_success:
+      title: response_verify_token_success
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Result message returned with the verification response
+        invite_not_applied:
+          type: boolean
+          description: Whether the invitation was verified but not applied automatically
+        min_length:
+          type: integer
+          description: Required minimum password length from the applicable password policy
+          contentEncoding: int32
+        return_to:
+          type: string
+          description: URL to redirect the user to after successful registration verification
+      description: Successful registration token verification response
     recaptcha:
       title: recaptcha
       type: object
@@ -1019,35 +1039,15 @@ components:
           type: string
           description: Public site key used to render the selected CAPTCHA provider
       description: CAPTCHA settings returned for admin registration
-    recaptcha_flavor4:
-      title: recaptcha_flavor4
+    recaptcha_flavor1:
+      title: recaptcha_flavor1
       enum:
       - google
       - hcaptcha
       type: string
-      description: 'CAPTCHA provider flavor used for registration verification. enum: `google`, `hcaptcha`.'
+      description: CAPTCHA provider used for registration, such as Google reCAPTCHA or hCaptcha
       examples:
       - hcaptcha
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
   securitySchemes:
     apiToken:
       type: apiKey

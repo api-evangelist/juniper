@@ -9762,6 +9762,499 @@ paths:
       deprecated: false
 components:
   schemas:
+    sle_impacted_gateways_gateway:
+      title: sle_impacted_gateways_gateway
+      type: object
+      properties:
+        degraded:
+          type: number
+          description: Portion of the SLE total that was degraded for this gateway
+        duration:
+          type: integer
+          description: Observation time represented by this gateway impact row
+          contentEncoding: int32
+        gateway_mac:
+          type: string
+          description: MAC address of the gateway represented by this impacted row
+        gateway_model:
+          type: string
+          description: Model of the gateway represented by this impacted row
+        gateway_version:
+          type: string
+          description: Firmware version of the gateway represented by this impacted row
+        name:
+          type: string
+          description: Display name for the gateway impact row
+        total:
+          type: integer
+          description: Overall SLE total measured for this gateway impact row
+          contentEncoding: int32
+      description: SLE impact row for a gateway
+    sle_threshold:
+      title: sle_threshold
+      type: object
+      properties:
+        default:
+          type: number
+          description: Built-in threshold value for this SLE metric
+          readOnly: true
+        direction:
+          minLength: 1
+          type: string
+          description: Comparison direction used for SLE threshold evaluation
+          readOnly: true
+        maximum:
+          type: number
+          description: Highest allowed threshold value for this SLE metric
+        metric:
+          minLength: 1
+          type: string
+          description: SLE metric name associated with this threshold
+          readOnly: true
+        minimum:
+          type: number
+          description: Lowest allowed threshold value for this SLE metric
+        threshold:
+          minLength: 1
+          type: string
+          description: Configured threshold value for this SLE metric
+          readOnly: true
+        units:
+          minLength: 1
+          type: string
+          description: Measurement units for this SLE threshold
+          readOnly: true
+      description: Threshold metadata and configured value for an SLE metric
+    sle_impacted_switches:
+      title: sle_impacted_switches
+      type: object
+      properties:
+        classifier:
+          type: string
+          description: Requested SLE classifier filter applied to the query
+        end:
+          type: integer
+          description: Last timestamp in the impacted switches window
+          contentEncoding: int32
+        failure:
+          type: string
+          description: Requested SLE failure filter applied to the query
+        limit:
+          type: integer
+          description: Maximum number of impacted switch rows returned per page
+          contentEncoding: int32
+        metric:
+          type: string
+          description: SLE metric name used for the impacted switches query
+        page:
+          type: integer
+          description: Current page number for impacted switch results
+          contentEncoding: int32
+        start:
+          type: integer
+          description: First timestamp in the impacted switches window
+          contentEncoding: int32
+        switches:
+          type: array
+          items:
+            $ref: '#/components/schemas/sle_impacted_switches_switch'
+          description: Impacted switch rows returned for the SLE query
+        total_count:
+          type: integer
+          description: Number of impacted switch rows matching the query
+          contentEncoding: int32
+      description: Paginated list of switches impacted by an SLE metric
+    sle_summary_scope:
+      title: sle_summary_scope
+      enum:
+      - ap
+      - client
+      - gateway
+      - site
+      - switch
+      type: string
+      description: 'enum: `ap`, `client`, `gateway`, `site`, `switch`'
+    sle_classifier_impact2:
+      title: sle_classifier_impact2
+      required:
+      - num_aps
+      - num_users
+      - total_aps
+      - total_users
+      type: object
+      properties:
+        num_aps:
+          type: number
+          description: Number of APs affected by degraded SLE experience
+        num_users:
+          type: number
+          description: Number of users affected by degraded SLE experience
+        total_aps:
+          type: number
+          description: Total number of APs considered for the classifier
+        total_users:
+          type: number
+          description: Total number of users considered for the classifier
+      description: Counts of affected APs and users for this classifier
+    sle_impact_summary_device_os_item:
+      title: sle_impact_summary_device_os_item
+      required:
+      - degraded
+      - device_os
+      - duration
+      - name
+      - total
+      type: object
+      properties:
+        degraded:
+          type: number
+          description: Portion of the SLE total that was degraded for this device OS
+        device_os:
+          type: string
+          description: Client device OS represented by this impact row
+        duration:
+          type: number
+          description: Observation time represented by this device-OS impact row
+        name:
+          minLength: 1
+          type: string
+          description: Display name for the device-OS impact row
+        total:
+          type: number
+          description: Overall SLE total measured for this device-OS impact row
+      description: SLE impact summary row for a client device OS
+    sle_impacted_aps_ap:
+      title: sle_impacted_aps_ap
+      required:
+      - ap_mac
+      - degraded
+      - duration
+      - name
+      - total
+      type: object
+      properties:
+        ap_mac:
+          minLength: 1
+          type: string
+          description: MAC address of the AP represented by this impacted row
+        degraded:
+          type: number
+          description: Portion of the SLE total that was degraded for this AP
+        duration:
+          type: number
+          description: Observation time represented by this AP impact row
+        name:
+          minLength: 1
+          type: string
+          description: Display name for the AP impact row
+        total:
+          type: number
+          description: Overall SLE total measured for this AP impact row
+      description: SLE impact row for an AP
+    sle_classifier_samples2:
+      title: sle_classifier_samples2
+      required:
+      - degraded
+      - duration
+      - total
+      type: object
+      properties:
+        degraded:
+          type: array
+          items:
+            $ref: '#/components/schemas/number_or_null'
+          description: Per-interval degraded SLE values for the classifier
+        duration:
+          type: array
+          items:
+            type: number
+          description: Per-interval observation durations for the classifier
+        total:
+          type: array
+          items:
+            $ref: '#/components/schemas/number_or_null'
+          description: Per-interval total SLE values for the classifier
+      description: Time-series sample arrays for the classifier trend
+    sle_impact_summary_band_item:
+      title: sle_impact_summary_band_item
+      required:
+      - band
+      - degraded
+      - duration
+      - name
+      - total
+      type: object
+      properties:
+        band:
+          minLength: 1
+          type: string
+          description: Radio band represented by this impact row
+        degraded:
+          type: number
+          description: Portion of the SLE total that was degraded for this radio band
+        duration:
+          type: number
+          description: Observation time represented by this radio-band impact row
+        name:
+          minLength: 1
+          type: string
+          description: Display name for the radio-band impact row
+        total:
+          type: number
+          description: Overall SLE total measured for this radio-band impact row
+      description: SLE impact summary row for a radio band
+    sle_impacted_users:
+      title: sle_impacted_users
+      required:
+      - classifier
+      - end
+      - failure
+      - limit
+      - metric
+      - page
+      - start
+      - total_count
+      type: object
+      properties:
+        classifier:
+          type: string
+          description: Requested SLE classifier filter applied to the query
+        clients:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/sle_impacted_users_client'
+          description: Impacted client rows returned for the SLE query
+        end:
+          type: number
+          description: Last timestamp in the impacted users window
+        failure:
+          type: string
+          description: Requested SLE failure filter applied to the query
+        limit:
+          type: integer
+          description: Maximum number of impacted user rows returned per page
+          contentEncoding: int32
+        metric:
+          minLength: 1
+          type: string
+          description: SLE metric name used for the impacted users query
+        page:
+          type: number
+          description: Current page number for impacted user results
+        start:
+          type: number
+          description: First timestamp in the impacted users window
+        total_count:
+          type: number
+          description: Number of impacted user rows matching the query
+        users:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/sle_impacted_users_user'
+          description: Impacted user rows returned for the SLE query
+      description: Paginated list of users impacted by an SLE metric
+    site_sle_impact_summary_fields_parameter:
+      title: site_sle_impact_summary_fields_parameter
+      enum:
+      - ap
+      - band
+      - chassis
+      - client
+      - device_os
+      - device_type
+      - gateway
+      - gateway_zones
+      - interface
+      - mxedge
+      - peer_path
+      - server
+      - switch
+      - vlan
+      - wlan
+      type: string
+      description: 'enum: `ap`, `band`, `chassis`, `client`, `device_os`, `device_type`, `gateway`, `gateway_zones`, `interface`, `mxedge`, `peer_path`, `server`, `switch`, `vlan`, `wlan`'
+    sle_histogram:
+      title: sle_histogram
+      required:
+      - data
+      - end
+      - metric
+      - start
+      - x_label
+      - y_label
+      type: object
+      properties:
+        data:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/sle_histogram_data_item'
+          description: Histogram buckets for the SLE metric
+        end:
+          type: number
+          description: Last timestamp in the histogram window
+        metric:
+          minLength: 1
+          type: string
+          description: SLE metric name represented by the histogram
+        start:
+          type: number
+          description: First timestamp in the histogram window
+        x_label:
+          minLength: 1
+          type: string
+          description: Label for the histogram x-axis
+        y_label:
+          minLength: 1
+          type: string
+          description: Label for the histogram y-axis
+      description: Histogram response for an SLE metric
+    sle_impacted_clients_client:
+      title: sle_impacted_clients_client
+      type: object
+      properties:
+        degraded:
+          type: integer
+          description: Portion of the SLE total that was degraded for this client
+          contentEncoding: int32
+        duration:
+          type: integer
+          description: Observation time represented by this client impact row
+          contentEncoding: int32
+        mac:
+          type: string
+          description: Client MAC address for the impacted client
+        name:
+          type: string
+          description: Display name for the client impact row
+        switches:
+          type: array
+          items:
+            $ref: '#/components/schemas/sle_impacted_clients_client_switch'
+          description: Switch rows associated with the impacted client
+        total:
+          type: integer
+          description: Overall SLE total measured for this client impact row
+          contentEncoding: int32
+      description: SLE impact row for a client
+    site_sle_impacted_gateways_scope_parameters:
+      title: site_sle_impacted_gateways_scope_parameters
+      const: site
+      type: string
+      description: 'Scope parameter value for impacted gateway SLE queries. enum: `site`'
+    sle_impacted_client_gateway:
+      title: sle_impacted_client_gateway
+      type: object
+      properties:
+        chassis_mac:
+          type: string
+          description: MAC address of the chassis associated with this client gateway row
+        gateway_mac:
+          type: string
+          description: MAC address of the gateway associated with this client row
+        gateway_name:
+          type: string
+          description: Display name of the gateway associated with this client row
+        interfaces:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Network interfaces associated with this client gateway row
+      description: Gateway association for an impacted client
+    site_sle_metric_summary_scope_parameters:
+      title: site_sle_metric_summary_scope_parameters
+      enum:
+      - ap
+      - client
+      - gateway
+      - site
+      - switch
+      type: string
+      description: 'enum: `ap`, `client`, `gateway`, `site`, `switch`'
+    sle_impacted_interfaces_interface:
+      title: sle_impacted_interfaces_interface
+      type: object
+      properties:
+        degraded:
+          type: number
+          description: Portion of the SLE total that was degraded for this interface
+        duration:
+          type: number
+          description: Observation time represented by this interface impact row
+        interface_name:
+          type: string
+          description: Name of the switch interface represented by this impacted row
+        switch_mac:
+          type: string
+          description: MAC address of the switch associated with this interface
+        switch_name:
+          type: string
+          description: Display name of the switch associated with this interface
+        total:
+          type: number
+          description: Overall SLE total measured for this interface impact row
+      description: SLE impact row for a switch interface
+    sle_summary_impact2:
+      title: sle_summary_impact2
+      required:
+      - num_aps
+      - num_users
+      - total_aps
+      - total_users
+      type: object
+      properties:
+        num_aps:
+          type: number
+          description: Number of APs affected by degraded SLE experience
+        num_users:
+          type: number
+          description: Number of users affected by degraded SLE experience
+        total_aps:
+          type: number
+          description: Total number of APs considered in the summary window
+        total_users:
+          type: number
+          description: Total number of users considered in the summary window
+      description: AP and user impact counts for the summary window
+    sle_classifier_summary:
+      title: sle_classifier_summary
+      required:
+      - classifier
+      - end
+      - failures
+      - impact
+      - metric
+      - start
+      type: object
+      properties:
+        classifier:
+          allOf:
+          - $ref: '#/components/schemas/sle_classifier1'
+          - description: Requested SLE classifier detail for the metric
+        end:
+          type: number
+          description: Last timestamp in the classifier summary window
+        failures:
+          type: array
+          items:
+            type: object
+          description: Failure records included in the classifier summary
+        impact:
+          allOf:
+          - $ref: '#/components/schemas/sle_classifier_summary_impact2'
+          - description: AP and user impact counts for the classifier summary window
+        metric:
+          minLength: 1
+          type: string
+          description: SLE metric name summarized by this response
+        start:
+          type: number
+          description: First timestamp in the classifier summary window
+      description: Deprecated SLE classifier summary response
+      deprecated: true
     sle_classifier_summary_impact2:
       title: sle_classifier_summary_impact2
       required:
@@ -9784,146 +10277,6 @@ components:
           type: number
           description: Total number of users considered in the summary window
       description: AP and user impact counts for the classifier summary window
-    sle_impacted_clients_client_switch:
-      title: sle_impacted_clients_client_switch
-      type: object
-      properties:
-        interfaces:
-          uniqueItems: true
-          type: array
-          items:
-            type: string
-          description: Switch interfaces associated with this impacted client
-        switch_mac:
-          type: string
-          description: MAC address of the switch associated with this impacted client
-        switch_name:
-          type: string
-          description: Display name of the switch associated with this impacted client
-      description: Switch association for an impacted client
-    sle_impacted_users_user:
-      title: sle_impacted_users_user
-      type: object
-      properties:
-        ap_mac:
-          type: string
-          description: MAC address of the AP associated with this impacted user
-        ap_name:
-          type: string
-          description: Display name of the AP associated with this impacted user
-        degraded:
-          type: number
-          description: Portion of the SLE total that was degraded for this user
-        device_os:
-          type: string
-          description: Client device OS for this impacted user
-        device_type:
-          type: string
-          description: Client device type for this impacted user
-        duration:
-          type: number
-          description: Observation time represented by this user impact row
-        mac:
-          type: string
-          description: Client MAC address for this impacted user
-        name:
-          type: string
-          description: Display name for the user impact row
-        ssid:
-          type: string
-          description: Wireless network SSID used by this impacted user
-        total:
-          type: number
-          description: Overall SLE total measured for this user impact row
-        wlan_id:
-          type: string
-          description: Identifier of the WLAN used by this impacted user
-      description: SLE impact row for a user
-    sle_impacted_client_gateway:
-      title: sle_impacted_client_gateway
-      type: object
-      properties:
-        chassis_mac:
-          type: string
-          description: MAC address of the chassis associated with this client gateway row
-        gateway_mac:
-          type: string
-          description: MAC address of the gateway associated with this client row
-        gateway_name:
-          type: string
-          description: Display name of the gateway associated with this client row
-        interfaces:
-          uniqueItems: true
-          type: array
-          items:
-            type: string
-          description: Network interfaces associated with this client gateway row
-      description: Gateway association for an impacted client
-    site_sle_scope:
-      title: site_sle_scope
-      enum:
-      - gateway
-      - site
-      - switch
-      type: string
-      description: 'enum: `gateway`, `site`, `switch`'
-    sle_summary_sle3:
-      title: sle_summary_sle3
-      required:
-      - interval
-      - name
-      - samples
-      - x_label
-      - y_label
-      type: object
-      properties:
-        interval:
-          type: number
-          description: Sample interval in seconds for SLE summary data
-        name:
-          minLength: 1
-          type: string
-          description: SLE metric name represented by the summary samples
-        samples:
-          allOf:
-          - $ref: '#/components/schemas/sle_summary_sle_samples2'
-          - description: Per-interval sample arrays for the SLE metric
-        x_label:
-          minLength: 1
-          type: string
-          description: Label for the SLE summary x-axis
-        y_label:
-          minLength: 1
-          type: string
-          description: Label for the SLE summary y-axis
-      description: Time-series SLE samples for the summary window
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    sle_summary_scope:
-      title: sle_summary_scope
-      enum:
-      - ap
-      - client
-      - gateway
-      - site
-      - switch
-      type: string
-      description: 'enum: `ap`, `client`, `gateway`, `site`, `switch`'
-    site_sle_impacted_users_scope_parameter:
-      title: site_sle_impacted_users_scope_parameter
-      enum:
-      - ap
-      - site
-      type: string
-      description: 'Scope parameter value for impacted user SLE queries. enum: `ap`, `site`'
     sle_impact_summary_wlan_item:
       title: sle_impact_summary_wlan_item
       required:
@@ -9952,30 +10305,242 @@ components:
           type: string
           description: Identifier of the WLAN represented by this impact row
       description: SLE impact summary row for a WLAN
-    sle_classifier_samples2:
-      title: sle_classifier_samples2
+    sle_impact_summary_device_type_item:
+      title: sle_impact_summary_device_type_item
       required:
       - degraded
+      - device_type
       - duration
+      - name
       - total
       type: object
       properties:
         degraded:
-          type: array
-          items:
-            $ref: '#/components/schemas/number_or_null'
-          description: Per-interval degraded SLE values for the classifier
+          type: number
+          description: Portion of the SLE total that was degraded for this device type
+        device_type:
+          type: string
+          description: Client device type represented by this impact row
         duration:
-          type: array
-          items:
-            type: number
-          description: Per-interval observation durations for the classifier
+          type: number
+          description: Observation time represented by this device-type impact row
+        name:
+          minLength: 1
+          type: string
+          description: Display name for the device-type impact row
         total:
+          type: number
+          description: Overall SLE total measured for this device-type impact row
+      description: SLE impact summary row for a client device type
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    sle_summary_trend:
+      title: sle_summary_trend
+      required:
+      - classifiers
+      - end
+      - sle
+      - start
+      type: object
+      properties:
+        classifiers:
+          uniqueItems: true
           type: array
           items:
-            $ref: '#/components/schemas/number_or_null'
-          description: Per-interval total SLE values for the classifier
-      description: Time-series sample arrays for the classifier trend
+            $ref: '#/components/schemas/sle_trend_classifier'
+          description: SLE classifier trend details included in the response
+        end:
+          type: number
+          description: Last timestamp in the SLE summary trend window
+        sle:
+          allOf:
+          - $ref: '#/components/schemas/sle_summary_sle2'
+          - description: Time-series SLE samples for the trend window
+        start:
+          type: number
+          description: First timestamp in the SLE summary trend window
+      description: Time-series SLE summary trend response
+    site_sle_impacted_aps_scope_parameters:
+      title: site_sle_impacted_aps_scope_parameters
+      const: site
+      type: string
+      description: 'Scope parameter value for impacted AP SLE queries. enum: `site`'
+    site_sle_metrics:
+      title: site_sle_metrics
+      required:
+      - enabled
+      - supported
+      type: object
+      properties:
+        enabled:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: SLE metric names enabled for the site
+        supported:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: SLE metric names supported for the site
+      description: SLE metrics available for a site
+    sle_impacted_gateways:
+      title: sle_impacted_gateways
+      type: object
+      properties:
+        classifier:
+          type: string
+          description: Requested SLE classifier filter applied to the query
+        end:
+          type: integer
+          description: Last timestamp in the impacted gateways window
+          contentEncoding: int32
+        failure:
+          type: string
+          description: Requested SLE failure filter applied to the query
+        gateways:
+          type: array
+          items:
+            $ref: '#/components/schemas/sle_impacted_gateways_gateway'
+          description: Impacted gateway rows returned for the SLE query
+        limit:
+          type: integer
+          description: Maximum number of impacted gateway rows returned per page
+          contentEncoding: int32
+        metric:
+          type: string
+          description: SLE metric name used for the impacted gateways query
+        page:
+          type: integer
+          description: Current page number for impacted gateway results
+          contentEncoding: int32
+        start:
+          type: integer
+          description: First timestamp in the impacted gateways window
+          contentEncoding: int32
+        total_count:
+          type: integer
+          description: Number of impacted gateway rows matching the query
+          contentEncoding: int32
+      description: Paginated list of gateways impacted by an SLE metric
+    site_sle_impacted_clients_scope_parameters:
+      title: site_sle_impacted_clients_scope_parameters
+      enum:
+      - gateway
+      - site
+      - switch
+      type: string
+      description: 'enum: `gateway`, `site`, `switch`'
+    site_sle_impacted_chassis_scope_parameters:
+      title: site_sle_impacted_chassis_scope_parameters
+      enum:
+      - gateway
+      - site
+      - switch
+      type: string
+      description: 'enum: `gateway`, `site`, `switch`'
+    sle_summary:
+      title: sle_summary
+      required:
+      - classifiers
+      - end
+      - events
+      - impact
+      - sle
+      - start
+      type: object
+      properties:
+        classifiers:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/sle_classifier'
+          description: SLE classifier details included in the summary
+        end:
+          type: number
+          description: Last timestamp in the SLE summary window
+        events:
+          type: array
+          items:
+            type: object
+          description: Event records included in the SLE summary
+        impact:
+          allOf:
+          - $ref: '#/components/schemas/sle_summary_impact2'
+          - description: AP and user impact counts for the summary window
+        sle:
+          allOf:
+          - $ref: '#/components/schemas/sle_summary_sle3'
+          - description: Time-series SLE samples for the summary window
+        start:
+          type: number
+          description: First timestamp in the SLE summary window
+      description: Deprecated SLE summary response for a metric window
+      deprecated: true
+    sle_impacted_clients_client_switch:
+      title: sle_impacted_clients_client_switch
+      type: object
+      properties:
+        interfaces:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Switch interfaces associated with this impacted client
+        switch_mac:
+          type: string
+          description: MAC address of the switch associated with this impacted client
+        switch_name:
+          type: string
+          description: Display name of the switch associated with this impacted client
+      description: Switch association for an impacted client
+    site_sle_metrics_scope_parameters:
+      title: site_sle_metrics_scope_parameters
+      enum:
+      - ap
+      - client
+      - gateway
+      - site
+      - switch
+      type: string
+      description: 'enum: `ap`, `client`, `gateway`, `site`, `switch`'
+    site_sle_histogram_scope_parameters:
+      title: site_sle_histogram_scope_parameters
+      enum:
+      - ap
+      - client
+      - gateway
+      - site
+      - switch
+      type: string
+      description: 'enum: `ap`, `client`, `gateway`, `site`, `switch`'
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    site_sle_threshold_scope_parameter:
+      title: site_sle_threshold_scope_parameter
+      enum:
+      - ap
+      - client
+      - gateway
+      - site
+      - switch
+      type: string
+      description: 'enum: `ap`, `client`, `gateway`, `site`, `switch`'
     sle_impact_summary:
       title: sle_impact_summary
       required:
@@ -10038,58 +10603,24 @@ components:
             $ref: '#/components/schemas/sle_impact_summary_wlan_item'
           description: Impact rows grouped by WLAN
       description: SLE impact summary grouped by client, device, AP, WLAN, and band dimensions
-    sle_impacted_users:
-      title: sle_impacted_users
-      required:
-      - classifier
-      - end
-      - failure
-      - limit
-      - metric
-      - page
-      - start
-      - total_count
+    response_http429:
+      title: response_http429
       type: object
       properties:
-        classifier:
+        detail:
           type: string
-          description: Requested SLE classifier filter applied to the query
-        clients:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/sle_impacted_users_client'
-          description: Impacted client rows returned for the SLE query
-        end:
-          type: number
-          description: Last timestamp in the impacted users window
-        failure:
-          type: string
-          description: Requested SLE failure filter applied to the query
-        limit:
-          type: integer
-          description: Maximum number of impacted user rows returned per page
-          contentEncoding: int32
-        metric:
-          minLength: 1
-          type: string
-          description: SLE metric name used for the impacted users query
-        page:
-          type: number
-          description: Current page number for impacted user results
-        start:
-          type: number
-          description: First timestamp in the impacted users window
-        total_count:
-          type: number
-          description: Number of impacted user rows matching the query
-        users:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/sle_impacted_users_user'
-          description: Impacted user rows returned for the SLE query
-      description: Paginated list of users impacted by an SLE metric
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    site_sle_scope:
+      title: site_sle_scope
+      enum:
+      - gateway
+      - site
+      - switch
+      type: string
+      description: 'enum: `gateway`, `site`, `switch`'
     response_http400:
       title: response_http400
       type: object
@@ -10100,48 +10631,110 @@ components:
           examples:
           - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
       description: Standard HTTP 400 bad request error response
-    response_http404:
-      title: response_http404
+    sle_impacted_chassis_chassis_item:
+      title: sle_impacted_chassis_chassis_item
       type: object
       properties:
-        id:
+        chassis:
           type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    sle_classifier:
-      title: sle_classifier
-      required:
-      - impact
-      - interval
-      - name
-      - x_label
-      - y_label
-      type: object
-      properties:
-        impact:
-          allOf:
-          - $ref: '#/components/schemas/sle_classifier_impact2'
-          - description: Counts of affected APs and users for this classifier
-        interval:
+          description: Identifier of the chassis represented by this impacted row
+        degraded:
           type: number
-          description: Sample interval in seconds for classifier time-series data
-        name:
-          minLength: 1
+          description: Portion of the SLE total that was degraded for this chassis
+        duration:
+          type: number
+          description: Observation time represented by this chassis impact row
+        role:
           type: string
-          description: Classifier name for the SLE metric
-        samples:
+          description: Virtual Chassis role for the switch member
+        switch_mac:
+          type: string
+          description: MAC address of the switch represented by this chassis row
+        switch_name:
+          type: string
+          description: Display name of the switch represented by this chassis row
+        total:
+          type: number
+          description: Overall SLE total measured for this chassis impact row
+      description: SLE impact row for a chassis
+    site_sle_impacted_switches_scope_parameters:
+      title: site_sle_impacted_switches_scope_parameters
+      const: site
+      type: string
+      description: 'Scope parameter value for impacted switch SLE queries. enum: `site`'
+    sle_classifier_summary_trend:
+      title: sle_classifier_summary_trend
+      required:
+      - classifier
+      - end
+      - metric
+      - start
+      type: object
+      properties:
+        classifier:
           allOf:
-          - $ref: '#/components/schemas/sle_classifier_samples3'
-          - description: Time-series sample arrays for the classifier
-        x_label:
+          - $ref: '#/components/schemas/sle_trend_classifier2'
+          - description: Requested SLE classifier trend detail for the metric
+        end:
+          type: number
+          description: Last timestamp in the classifier trend window
+        metric:
           minLength: 1
           type: string
-          description: Label for the classifier sample x-axis
-        y_label:
-          minLength: 1
+          description: SLE metric name represented by the trend
+        start:
+          type: number
+          description: First timestamp in the classifier trend window
+      description: Time-series trend response for an SLE classifier
+    sle_impacted_switches_switch:
+      title: sle_impacted_switches_switch
+      type: object
+      properties:
+        degraded:
+          type: number
+          description: Portion of the SLE total that was degraded for this switch
+        duration:
+          type: number
+          description: Observation time represented by this switch impact row
+        interface:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Switch interfaces contributing to this impacted switch row
+        name:
           type: string
-          description: Label for the classifier sample y-axis
-      description: Time-series classifier detail for an SLE metric
+          description: Display name for the switch impact row
+        switch_mac:
+          type: string
+          description: MAC address of the switch represented by this impacted row
+        switch_model:
+          type: string
+          description: Model of the switch represented by this impacted row
+        switch_version:
+          type: string
+          description: Firmware version of the switch represented by this impacted row
+        total:
+          type: number
+          description: Overall SLE total measured for this switch impact row
+      description: SLE impact row for a switch
+    site_sle_impacted_users_scope_parameter:
+      title: site_sle_impacted_users_scope_parameter
+      enum:
+      - ap
+      - site
+      type: string
+      description: 'Scope parameter value for impacted user SLE queries. enum: `ap`, `site`'
+    site_sle_impact_summary_scope_parameters:
+      title: site_sle_impact_summary_scope_parameters
+      enum:
+      - ap
+      - client
+      - gateway
+      - site
+      - switch
+      type: string
+      description: 'enum: `ap`, `client`, `gateway`, `site`, `switch`'
     sle_impacted_chassis:
       title: sle_impacted_chassis
       type: object
@@ -10181,691 +10774,44 @@ components:
           description: Number of impacted chassis rows matching the query
           contentEncoding: int32
       description: Paginated list of chassis impacted by an SLE metric
-    number_or_null:
-      oneOf:
-      - type: number
-      description: Numeric value or null
-    sle_classifier_samples3:
-      title: sle_classifier_samples3
-      required:
-      - degraded
-      - duration
-      - total
-      type: object
-      properties:
-        degraded:
-          type: array
-          items:
-            $ref: '#/components/schemas/number_or_null'
-          description: Per-interval degraded SLE values for the classifier
-        duration:
-          type: array
-          items:
-            type: number
-          description: Per-interval observation durations for the classifier
-        total:
-          type: array
-          items:
-            $ref: '#/components/schemas/number_or_null'
-          description: Per-interval total SLE values for the classifier
-      description: Time-series sample arrays for the classifier
-    sle_impacted_clients_client:
-      title: sle_impacted_clients_client
-      type: object
-      properties:
-        degraded:
-          type: integer
-          description: Portion of the SLE total that was degraded for this client
-          contentEncoding: int32
-        duration:
-          type: integer
-          description: Observation time represented by this client impact row
-          contentEncoding: int32
-        mac:
-          type: string
-          description: Client MAC address for the impacted client
-        name:
-          type: string
-          description: Display name for the client impact row
-        switches:
-          type: array
-          items:
-            $ref: '#/components/schemas/sle_impacted_clients_client_switch'
-          description: Switch rows associated with the impacted client
-        total:
-          type: integer
-          description: Overall SLE total measured for this client impact row
-          contentEncoding: int32
-      description: SLE impact row for a client
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    sle_threshold:
-      title: sle_threshold
-      type: object
-      properties:
-        default:
-          type: number
-          description: Built-in threshold value for this SLE metric
-          readOnly: true
-        direction:
-          minLength: 1
-          type: string
-          description: Comparison direction used for SLE threshold evaluation
-          readOnly: true
-        maximum:
-          type: number
-          description: Highest allowed threshold value for this SLE metric
-        metric:
-          minLength: 1
-          type: string
-          description: SLE metric name associated with this threshold
-          readOnly: true
-        minimum:
-          type: number
-          description: Lowest allowed threshold value for this SLE metric
-        threshold:
-          minLength: 1
-          type: string
-          description: Configured threshold value for this SLE metric
-          readOnly: true
-        units:
-          minLength: 1
-          type: string
-          description: Measurement units for this SLE threshold
-          readOnly: true
-      description: Threshold metadata and configured value for an SLE metric
-    sle_impacted_chassis_chassis_item:
-      title: sle_impacted_chassis_chassis_item
-      type: object
-      properties:
-        chassis:
-          type: string
-          description: Identifier of the chassis represented by this impacted row
-        degraded:
-          type: number
-          description: Portion of the SLE total that was degraded for this chassis
-        duration:
-          type: number
-          description: Observation time represented by this chassis impact row
-        role:
-          type: string
-          description: Virtual Chassis role for the switch member
-        switch_mac:
-          type: string
-          description: MAC address of the switch represented by this chassis row
-        switch_name:
-          type: string
-          description: Display name of the switch represented by this chassis row
-        total:
-          type: number
-          description: Overall SLE total measured for this chassis impact row
-      description: SLE impact row for a chassis
-    sle_summary_impact2:
-      title: sle_summary_impact2
-      required:
-      - num_aps
-      - num_users
-      - total_aps
-      - total_users
-      type: object
-      properties:
-        num_aps:
-          type: number
-          description: Number of APs affected by degraded SLE experience
-        num_users:
-          type: number
-          description: Number of users affected by degraded SLE experience
-        total_aps:
-          type: number
-          description: Total number of APs considered in the summary window
-        total_users:
-          type: number
-          description: Total number of users considered in the summary window
-      description: AP and user impact counts for the summary window
-    site_sle_impacted_switches_scope_parameters:
-      title: site_sle_impacted_switches_scope_parameters
-      const: site
-      type: string
-      description: 'Scope parameter value for impacted switch SLE queries. enum: `site`'
-    sle_impacted_gateways:
-      title: sle_impacted_gateways
-      type: object
-      properties:
-        classifier:
-          type: string
-          description: Requested SLE classifier filter applied to the query
-        end:
-          type: integer
-          description: Last timestamp in the impacted gateways window
-          contentEncoding: int32
-        failure:
-          type: string
-          description: Requested SLE failure filter applied to the query
-        gateways:
-          type: array
-          items:
-            $ref: '#/components/schemas/sle_impacted_gateways_gateway'
-          description: Impacted gateway rows returned for the SLE query
-        limit:
-          type: integer
-          description: Maximum number of impacted gateway rows returned per page
-          contentEncoding: int32
-        metric:
-          type: string
-          description: SLE metric name used for the impacted gateways query
-        page:
-          type: integer
-          description: Current page number for impacted gateway results
-          contentEncoding: int32
-        start:
-          type: integer
-          description: First timestamp in the impacted gateways window
-          contentEncoding: int32
-        total_count:
-          type: integer
-          description: Number of impacted gateway rows matching the query
-          contentEncoding: int32
-      description: Paginated list of gateways impacted by an SLE metric
-    sle_impact_summary_device_os_item:
-      title: sle_impact_summary_device_os_item
-      required:
-      - degraded
-      - device_os
-      - duration
-      - name
-      - total
-      type: object
-      properties:
-        degraded:
-          type: number
-          description: Portion of the SLE total that was degraded for this device OS
-        device_os:
-          type: string
-          description: Client device OS represented by this impact row
-        duration:
-          type: number
-          description: Observation time represented by this device-OS impact row
-        name:
-          minLength: 1
-          type: string
-          description: Display name for the device-OS impact row
-        total:
-          type: number
-          description: Overall SLE total measured for this device-OS impact row
-      description: SLE impact summary row for a client device OS
-    sle_impact_summary_ap_item:
-      title: sle_impact_summary_ap_item
-      required:
-      - ap_mac
-      - degraded
-      - duration
-      - name
-      - total
+    sle_impacted_users_user:
+      title: sle_impacted_users_user
       type: object
       properties:
         ap_mac:
-          minLength: 1
           type: string
-          description: MAC address of the AP represented by this impact row
+          description: MAC address of the AP associated with this impacted user
+        ap_name:
+          type: string
+          description: Display name of the AP associated with this impacted user
         degraded:
           type: number
-          description: Portion of the SLE total that was degraded for this AP
-        duration:
-          type: number
-          description: Observation time represented by this AP impact row
-        name:
-          minLength: 1
+          description: Portion of the SLE total that was degraded for this user
+        device_os:
           type: string
-          description: Display name for the AP impact row
-        total:
-          type: number
-          description: Overall SLE total measured for this AP impact row
-      description: SLE impact summary row for an AP
-    sle_classifier_impact2:
-      title: sle_classifier_impact2
-      required:
-      - num_aps
-      - num_users
-      - total_aps
-      - total_users
-      type: object
-      properties:
-        num_aps:
-          type: number
-          description: Number of APs affected by degraded SLE experience
-        num_users:
-          type: number
-          description: Number of users affected by degraded SLE experience
-        total_aps:
-          type: number
-          description: Total number of APs considered for the classifier
-        total_users:
-          type: number
-          description: Total number of users considered for the classifier
-      description: Counts of affected APs and users for this classifier
-    sle_summary_sle2:
-      title: sle_summary_sle2
-      required:
-      - interval
-      - name
-      - samples
-      - x_label
-      - y_label
-      type: object
-      properties:
-        interval:
-          type: number
-          description: Sample interval in seconds for SLE summary data
-        name:
-          minLength: 1
-          type: string
-          description: SLE metric name represented by the summary samples
-        samples:
-          allOf:
-          - $ref: '#/components/schemas/sle_summary_sle_samples2'
-          - description: Per-interval sample arrays for the SLE metric
-        x_label:
-          minLength: 1
-          type: string
-          description: Label for the SLE summary x-axis
-        y_label:
-          minLength: 1
-          type: string
-          description: Label for the SLE summary y-axis
-      description: Time-series SLE samples for the trend window
-    sle_impacted_clients:
-      title: sle_impacted_clients
-      type: object
-      properties:
-        classifier:
-          type: string
-          description: Requested SLE classifier filter applied to the query
-        clients:
-          type: array
-          items:
-            $ref: '#/components/schemas/sle_impacted_clients_client'
-          description: Impacted client rows returned for the SLE query
-        end:
-          type: integer
-          description: Last timestamp in the impacted clients window
-          contentEncoding: int32
-        failure:
-          type: string
-          description: Requested SLE failure filter applied to the query
-        limit:
-          type: integer
-          description: Maximum number of impacted client rows returned per page
-          contentEncoding: int32
-        metric:
-          type: string
-          description: SLE metric name used for the impacted clients query
-        page:
-          type: integer
-          description: Current page number for impacted client results
-          contentEncoding: int32
-        start:
-          type: integer
-          description: First timestamp in the impacted clients window
-          contentEncoding: int32
-        total_count:
-          type: integer
-          description: Number of impacted client rows matching the query
-          contentEncoding: int32
-      description: Paginated list of clients impacted by an SLE metric
-    sle_impacted_switches_switch:
-      title: sle_impacted_switches_switch
-      type: object
-      properties:
-        degraded:
-          type: number
-          description: Portion of the SLE total that was degraded for this switch
-        duration:
-          type: number
-          description: Observation time represented by this switch impact row
-        interface:
-          uniqueItems: true
-          type: array
-          items:
-            type: string
-          description: Switch interfaces contributing to this impacted switch row
-        name:
-          type: string
-          description: Display name for the switch impact row
-        switch_mac:
-          type: string
-          description: MAC address of the switch represented by this impacted row
-        switch_model:
-          type: string
-          description: Model of the switch represented by this impacted row
-        switch_version:
-          type: string
-          description: Firmware version of the switch represented by this impacted row
-        total:
-          type: number
-          description: Overall SLE total measured for this switch impact row
-      description: SLE impact row for a switch
-    site_sle_impact_summary_scope_parameters:
-      title: site_sle_impact_summary_scope_parameters
-      enum:
-      - ap
-      - client
-      - gateway
-      - site
-      - switch
-      type: string
-      description: 'enum: `ap`, `client`, `gateway`, `site`, `switch`'
-    sle_impacted_interfaces_interface:
-      title: sle_impacted_interfaces_interface
-      type: object
-      properties:
-        degraded:
-          type: number
-          description: Portion of the SLE total that was degraded for this interface
-        duration:
-          type: number
-          description: Observation time represented by this interface impact row
-        interface_name:
-          type: string
-          description: Name of the switch interface represented by this impacted row
-        switch_mac:
-          type: string
-          description: MAC address of the switch associated with this interface
-        switch_name:
-          type: string
-          description: Display name of the switch associated with this interface
-        total:
-          type: number
-          description: Overall SLE total measured for this interface impact row
-      description: SLE impact row for a switch interface
-    sle_classifier_summary_trend:
-      title: sle_classifier_summary_trend
-      required:
-      - classifier
-      - end
-      - metric
-      - start
-      type: object
-      properties:
-        classifier:
-          allOf:
-          - $ref: '#/components/schemas/sle_trend_classifier2'
-          - description: Requested SLE classifier trend detail for the metric
-        end:
-          type: number
-          description: Last timestamp in the classifier trend window
-        metric:
-          minLength: 1
-          type: string
-          description: SLE metric name represented by the trend
-        start:
-          type: number
-          description: First timestamp in the classifier trend window
-      description: Time-series trend response for an SLE classifier
-    site_sle_metrics_scope_parameters:
-      title: site_sle_metrics_scope_parameters
-      enum:
-      - ap
-      - client
-      - gateway
-      - site
-      - switch
-      type: string
-      description: 'enum: `ap`, `client`, `gateway`, `site`, `switch`'
-    sle_summary_trend:
-      title: sle_summary_trend
-      required:
-      - classifiers
-      - end
-      - sle
-      - start
-      type: object
-      properties:
-        classifiers:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/sle_trend_classifier'
-          description: SLE classifier trend details included in the response
-        end:
-          type: number
-          description: Last timestamp in the SLE summary trend window
-        sle:
-          allOf:
-          - $ref: '#/components/schemas/sle_summary_sle2'
-          - description: Time-series SLE samples for the trend window
-        start:
-          type: number
-          description: First timestamp in the SLE summary trend window
-      description: Time-series SLE summary trend response
-    sle_trend_classifier:
-      title: sle_trend_classifier
-      required:
-      - interval
-      - name
-      - x_label
-      - y_label
-      type: object
-      properties:
-        interval:
-          type: number
-          description: Sample interval in seconds for classifier trend data
-        name:
-          minLength: 1
-          type: string
-          description: Classifier name for the SLE metric trend
-        samples:
-          allOf:
-          - $ref: '#/components/schemas/sle_classifier_samples2'
-          - description: Time-series sample arrays for the classifier trend
-        x_label:
-          minLength: 1
-          type: string
-          description: Label for the classifier trend x-axis
-        y_label:
-          minLength: 1
-          type: string
-          description: Label for the classifier trend y-axis
-      description: Time-series classifier trend detail for an SLE metric
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    site_sle_impacted_aps_scope_parameters:
-      title: site_sle_impacted_aps_scope_parameters
-      const: site
-      type: string
-      description: 'Scope parameter value for impacted AP SLE queries. enum: `site`'
-    sle_trend_classifier2:
-      title: sle_trend_classifier2
-      required:
-      - interval
-      - name
-      - x_label
-      - y_label
-      type: object
-      properties:
-        interval:
-          type: number
-          description: Sample interval in seconds for classifier trend data
-        name:
-          minLength: 1
-          type: string
-          description: Classifier name for the SLE metric trend
-        samples:
-          allOf:
-          - $ref: '#/components/schemas/sle_classifier_samples2'
-          - description: Time-series sample arrays for the classifier trend
-        x_label:
-          minLength: 1
-          type: string
-          description: Label for the classifier trend x-axis
-        y_label:
-          minLength: 1
-          type: string
-          description: Label for the classifier trend y-axis
-      description: Requested SLE classifier trend detail for the metric
-    sle_impact_summary_device_type_item:
-      title: sle_impact_summary_device_type_item
-      required:
-      - degraded
-      - device_type
-      - duration
-      - name
-      - total
-      type: object
-      properties:
-        degraded:
-          type: number
-          description: Portion of the SLE total that was degraded for this device type
+          description: Client device OS for this impacted user
         device_type:
           type: string
-          description: Client device type represented by this impact row
+          description: Client device type for this impacted user
         duration:
           type: number
-          description: Observation time represented by this device-type impact row
-        name:
-          minLength: 1
+          description: Observation time represented by this user impact row
+        mac:
           type: string
-          description: Display name for the device-type impact row
-        total:
-          type: number
-          description: Overall SLE total measured for this device-type impact row
-      description: SLE impact summary row for a client device type
-    site_sle_metric_classifiers_scope_parameters:
-      title: site_sle_metric_classifiers_scope_parameters
-      enum:
-      - ap
-      - client
-      - gateway
-      - site
-      - switch
-      type: string
-      description: 'enum: `ap`, `client`, `gateway`, `site`, `switch`'
-    site_sle_impacted_clients_scope_parameters:
-      title: site_sle_impacted_clients_scope_parameters
-      enum:
-      - gateway
-      - site
-      - switch
-      type: string
-      description: 'enum: `gateway`, `site`, `switch`'
-    sle_impacted_gateways_gateway:
-      title: sle_impacted_gateways_gateway
-      type: object
-      properties:
-        degraded:
-          type: number
-          description: Portion of the SLE total that was degraded for this gateway
-        duration:
-          type: integer
-          description: Observation time represented by this gateway impact row
-          contentEncoding: int32
-        gateway_mac:
-          type: string
-          description: MAC address of the gateway represented by this impacted row
-        gateway_model:
-          type: string
-          description: Model of the gateway represented by this impacted row
-        gateway_version:
-          type: string
-          description: Firmware version of the gateway represented by this impacted row
+          description: Client MAC address for this impacted user
         name:
           type: string
-          description: Display name for the gateway impact row
+          description: Display name for the user impact row
+        ssid:
+          type: string
+          description: Wireless network SSID used by this impacted user
         total:
-          type: integer
-          description: Overall SLE total measured for this gateway impact row
-          contentEncoding: int32
-      description: SLE impact row for a gateway
-    sle_impacted_applications:
-      title: sle_impacted_applications
-      type: object
-      properties:
-        apps:
-          type: array
-          items:
-            $ref: '#/components/schemas/sle_impacted_applications_app'
-          description: Impacted application rows returned for the SLE query
-        classifier:
-          type: string
-          description: Requested SLE classifier filter applied to the query
-        end:
-          type: integer
-          description: Last timestamp in the impacted applications window
-          contentEncoding: int32
-        failure:
-          type: string
-          description: Requested SLE failure filter applied to the query
-        limit:
-          type: integer
-          description: Maximum number of impacted application rows returned per page
-          contentEncoding: int32
-        metric:
-          type: string
-          description: SLE metric name used for the impacted applications query
-        page:
-          type: integer
-          description: Current page number for impacted application results
-          contentEncoding: int32
-        start:
-          type: integer
-          description: First timestamp in the impacted applications window
-          contentEncoding: int32
-        total_count:
-          type: integer
-          description: Number of impacted application rows matching the query
-          contentEncoding: int32
-      description: Paginated list of applications impacted by an SLE metric
-    sle_histogram:
-      title: sle_histogram
-      required:
-      - data
-      - end
-      - metric
-      - start
-      - x_label
-      - y_label
-      type: object
-      properties:
-        data:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/sle_histogram_data_item'
-          description: Histogram buckets for the SLE metric
-        end:
           type: number
-          description: Last timestamp in the histogram window
-        metric:
-          minLength: 1
+          description: Overall SLE total measured for this user impact row
+        wlan_id:
           type: string
-          description: SLE metric name represented by the histogram
-        start:
-          type: number
-          description: First timestamp in the histogram window
-        x_label:
-          minLength: 1
-          type: string
-          description: Label for the histogram x-axis
-        y_label:
-          minLength: 1
-          type: string
-          description: Label for the histogram y-axis
-      description: Histogram response for an SLE metric
+          description: Identifier of the WLAN used by this impacted user
+      description: SLE impact row for a user
     sle_impacted_applications_app:
       title: sle_impacted_applications_app
       type: object
@@ -10932,228 +10878,65 @@ components:
           description: Number of impacted interface rows matching the query
           contentEncoding: int32
       description: Paginated list of interfaces impacted by an SLE metric
-    site_sle_impacted_interfaces_scope_parameters:
-      title: site_sle_impacted_interfaces_scope_parameters
-      enum:
-      - gateway
-      - site
-      - switch
-      type: string
-      description: 'enum: `gateway`, `site`, `switch`'
-    sle_summary_sle_samples2:
-      title: sle_summary_sle_samples2
+    sle_summary_sle3:
+      title: sle_summary_sle3
       required:
-      - degraded
-      - total
-      - value
-      type: object
-      properties:
-        degraded:
-          type: array
-          items:
-            $ref: '#/components/schemas/number_or_null'
-          description: Per-interval degraded SLE values for the summary
-        total:
-          type: array
-          items:
-            $ref: '#/components/schemas/number_or_null'
-          description: Per-interval total SLE values for the summary
-        value:
-          type: array
-          items:
-            $ref: '#/components/schemas/number_or_null'
-          description: Per-interval SLE score values for the summary
-      description: Per-interval sample arrays for the SLE metric
-    sle_classifier_summary:
-      title: sle_classifier_summary
-      required:
-      - classifier
-      - end
-      - failures
-      - impact
-      - metric
-      - start
-      type: object
-      properties:
-        classifier:
-          allOf:
-          - $ref: '#/components/schemas/sle_classifier1'
-          - description: Requested SLE classifier detail for the metric
-        end:
-          type: number
-          description: Last timestamp in the classifier summary window
-        failures:
-          type: array
-          items:
-            type: object
-          description: Failure records included in the classifier summary
-        impact:
-          allOf:
-          - $ref: '#/components/schemas/sle_classifier_summary_impact2'
-          - description: AP and user impact counts for the classifier summary window
-        metric:
-          minLength: 1
-          type: string
-          description: SLE metric name summarized by this response
-        start:
-          type: number
-          description: First timestamp in the classifier summary window
-      description: Deprecated SLE classifier summary response
-      deprecated: true
-    sle_impact_summary_band_item:
-      title: sle_impact_summary_band_item
-      required:
-      - band
-      - degraded
-      - duration
+      - interval
       - name
-      - total
+      - samples
+      - x_label
+      - y_label
       type: object
       properties:
-        band:
-          minLength: 1
-          type: string
-          description: Radio band represented by this impact row
-        degraded:
+        interval:
           type: number
-          description: Portion of the SLE total that was degraded for this radio band
-        duration:
-          type: number
-          description: Observation time represented by this radio-band impact row
+          description: Sample interval in seconds for SLE summary data
         name:
           minLength: 1
           type: string
-          description: Display name for the radio-band impact row
-        total:
-          type: number
-          description: Overall SLE total measured for this radio-band impact row
-      description: SLE impact summary row for a radio band
-    site_sle_impacted_gateways_scope_parameters:
-      title: site_sle_impacted_gateways_scope_parameters
-      const: site
-      type: string
-      description: 'Scope parameter value for impacted gateway SLE queries. enum: `site`'
-    site_sle_impact_summary_fields_parameter:
-      title: site_sle_impact_summary_fields_parameter
-      enum:
-      - ap
-      - band
-      - chassis
-      - client
-      - device_os
-      - device_type
-      - gateway
-      - gateway_zones
-      - interface
-      - mxedge
-      - peer_path
-      - server
-      - switch
-      - vlan
-      - wlan
-      type: string
-      description: 'enum: `ap`, `band`, `chassis`, `client`, `device_os`, `device_type`, `gateway`, `gateway_zones`, `interface`, `mxedge`, `peer_path`, `server`, `switch`, `vlan`, `wlan`'
-    sle_classifier1:
-      title: sle_classifier1
+          description: SLE metric name represented by the summary samples
+        samples:
+          allOf:
+          - $ref: '#/components/schemas/sle_summary_sle_samples2'
+          - description: Per-interval sample arrays for the SLE metric
+        x_label:
+          minLength: 1
+          type: string
+          description: Label for the SLE summary x-axis
+        y_label:
+          minLength: 1
+          type: string
+          description: Label for the SLE summary y-axis
+      description: Time-series SLE samples for the summary window
+    sle_trend_classifier:
+      title: sle_trend_classifier
       required:
-      - impact
       - interval
       - name
       - x_label
       - y_label
       type: object
       properties:
-        impact:
-          allOf:
-          - $ref: '#/components/schemas/sle_classifier_impact2'
-          - description: Counts of affected APs and users for this classifier
         interval:
           type: number
-          description: Sample interval in seconds for classifier time-series data
+          description: Sample interval in seconds for classifier trend data
         name:
           minLength: 1
           type: string
-          description: Classifier name for the SLE metric
+          description: Classifier name for the SLE metric trend
         samples:
           allOf:
-          - $ref: '#/components/schemas/sle_classifier_samples3'
-          - description: Time-series sample arrays for the classifier
+          - $ref: '#/components/schemas/sle_classifier_samples2'
+          - description: Time-series sample arrays for the classifier trend
         x_label:
           minLength: 1
           type: string
-          description: Label for the classifier sample x-axis
+          description: Label for the classifier trend x-axis
         y_label:
           minLength: 1
           type: string
-          description: Label for the classifier sample y-axis
-      description: Requested SLE classifier detail for the metric
-    sle_impacted_users_client:
-      title: sle_impacted_users_client
-      type: object
-      properties:
-        degraded:
-          type: number
-          description: Portion of the SLE total that was degraded for this client
-        duration:
-          type: number
-          description: Observation time represented by this client impact row
-        gateways:
-          type: array
-          items:
-            $ref: '#/components/schemas/sle_impacted_client_gateway'
-          description: Gateway rows associated with the impacted client
-        mac:
-          type: string
-          description: Client MAC address for the impacted client
-        name:
-          type: string
-          description: Display name for the client impact row
-        src_ip:
-          type: string
-          description: Client source IP address for the impacted client
-        total:
-          type: number
-          description: Overall SLE total measured for this client impact row
-      description: SLE impact row for a client in an impacted users response
-    sle_impacted_switches:
-      title: sle_impacted_switches
-      type: object
-      properties:
-        classifier:
-          type: string
-          description: Requested SLE classifier filter applied to the query
-        end:
-          type: integer
-          description: Last timestamp in the impacted switches window
-          contentEncoding: int32
-        failure:
-          type: string
-          description: Requested SLE failure filter applied to the query
-        limit:
-          type: integer
-          description: Maximum number of impacted switch rows returned per page
-          contentEncoding: int32
-        metric:
-          type: string
-          description: SLE metric name used for the impacted switches query
-        page:
-          type: integer
-          description: Current page number for impacted switch results
-          contentEncoding: int32
-        start:
-          type: integer
-          description: First timestamp in the impacted switches window
-          contentEncoding: int32
-        switches:
-          type: array
-          items:
-            $ref: '#/components/schemas/sle_impacted_switches_switch'
-          description: Impacted switch rows returned for the SLE query
-        total_count:
-          type: integer
-          description: Number of impacted switch rows matching the query
-          contentEncoding: int32
-      description: Paginated list of switches impacted by an SLE metric
+          description: Label for the classifier trend y-axis
+      description: Time-series classifier trend detail for an SLE metric
     sle_impacted_aps:
       title: sle_impacted_aps
       required:
@@ -11201,6 +10984,319 @@ components:
           type: number
           description: Number of impacted AP rows matching the query
       description: Paginated list of APs impacted by an SLE metric
+    sle_classifier_samples3:
+      title: sle_classifier_samples3
+      required:
+      - degraded
+      - duration
+      - total
+      type: object
+      properties:
+        degraded:
+          type: array
+          items:
+            $ref: '#/components/schemas/number_or_null'
+          description: Per-interval degraded SLE values for the classifier
+        duration:
+          type: array
+          items:
+            type: number
+          description: Per-interval observation durations for the classifier
+        total:
+          type: array
+          items:
+            $ref: '#/components/schemas/number_or_null'
+          description: Per-interval total SLE values for the classifier
+      description: Time-series sample arrays for the classifier
+    sle_classifier1:
+      title: sle_classifier1
+      required:
+      - impact
+      - interval
+      - name
+      - x_label
+      - y_label
+      type: object
+      properties:
+        impact:
+          allOf:
+          - $ref: '#/components/schemas/sle_classifier_impact2'
+          - description: Counts of affected APs and users for this classifier
+        interval:
+          type: number
+          description: Sample interval in seconds for classifier time-series data
+        name:
+          minLength: 1
+          type: string
+          description: Classifier name for the SLE metric
+        samples:
+          allOf:
+          - $ref: '#/components/schemas/sle_classifier_samples3'
+          - description: Time-series sample arrays for the classifier
+        x_label:
+          minLength: 1
+          type: string
+          description: Label for the classifier sample x-axis
+        y_label:
+          minLength: 1
+          type: string
+          description: Label for the classifier sample y-axis
+      description: Requested SLE classifier detail for the metric
+    site_sle_impacted_interfaces_scope_parameters:
+      title: site_sle_impacted_interfaces_scope_parameters
+      enum:
+      - gateway
+      - site
+      - switch
+      type: string
+      description: 'enum: `gateway`, `site`, `switch`'
+    sle_impacted_applications:
+      title: sle_impacted_applications
+      type: object
+      properties:
+        apps:
+          type: array
+          items:
+            $ref: '#/components/schemas/sle_impacted_applications_app'
+          description: Impacted application rows returned for the SLE query
+        classifier:
+          type: string
+          description: Requested SLE classifier filter applied to the query
+        end:
+          type: integer
+          description: Last timestamp in the impacted applications window
+          contentEncoding: int32
+        failure:
+          type: string
+          description: Requested SLE failure filter applied to the query
+        limit:
+          type: integer
+          description: Maximum number of impacted application rows returned per page
+          contentEncoding: int32
+        metric:
+          type: string
+          description: SLE metric name used for the impacted applications query
+        page:
+          type: integer
+          description: Current page number for impacted application results
+          contentEncoding: int32
+        start:
+          type: integer
+          description: First timestamp in the impacted applications window
+          contentEncoding: int32
+        total_count:
+          type: integer
+          description: Number of impacted application rows matching the query
+          contentEncoding: int32
+      description: Paginated list of applications impacted by an SLE metric
+    sle_trend_classifier2:
+      title: sle_trend_classifier2
+      required:
+      - interval
+      - name
+      - x_label
+      - y_label
+      type: object
+      properties:
+        interval:
+          type: number
+          description: Sample interval in seconds for classifier trend data
+        name:
+          minLength: 1
+          type: string
+          description: Classifier name for the SLE metric trend
+        samples:
+          allOf:
+          - $ref: '#/components/schemas/sle_classifier_samples2'
+          - description: Time-series sample arrays for the classifier trend
+        x_label:
+          minLength: 1
+          type: string
+          description: Label for the classifier trend x-axis
+        y_label:
+          minLength: 1
+          type: string
+          description: Label for the classifier trend y-axis
+      description: Requested SLE classifier trend detail for the metric
+    sle_classifier:
+      title: sle_classifier
+      required:
+      - impact
+      - interval
+      - name
+      - x_label
+      - y_label
+      type: object
+      properties:
+        impact:
+          allOf:
+          - $ref: '#/components/schemas/sle_classifier_impact2'
+          - description: Counts of affected APs and users for this classifier
+        interval:
+          type: number
+          description: Sample interval in seconds for classifier time-series data
+        name:
+          minLength: 1
+          type: string
+          description: Classifier name for the SLE metric
+        samples:
+          allOf:
+          - $ref: '#/components/schemas/sle_classifier_samples3'
+          - description: Time-series sample arrays for the classifier
+        x_label:
+          minLength: 1
+          type: string
+          description: Label for the classifier sample x-axis
+        y_label:
+          minLength: 1
+          type: string
+          description: Label for the classifier sample y-axis
+      description: Time-series classifier detail for an SLE metric
+    sle_summary_sle_samples2:
+      title: sle_summary_sle_samples2
+      required:
+      - degraded
+      - total
+      - value
+      type: object
+      properties:
+        degraded:
+          type: array
+          items:
+            $ref: '#/components/schemas/number_or_null'
+          description: Per-interval degraded SLE values for the summary
+        total:
+          type: array
+          items:
+            $ref: '#/components/schemas/number_or_null'
+          description: Per-interval total SLE values for the summary
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/number_or_null'
+          description: Per-interval SLE score values for the summary
+      description: Per-interval sample arrays for the SLE metric
+    site_sle_metric_classifiers_scope_parameters:
+      title: site_sle_metric_classifiers_scope_parameters
+      enum:
+      - ap
+      - client
+      - gateway
+      - site
+      - switch
+      type: string
+      description: 'enum: `ap`, `client`, `gateway`, `site`, `switch`'
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    sle_impacted_clients:
+      title: sle_impacted_clients
+      type: object
+      properties:
+        classifier:
+          type: string
+          description: Requested SLE classifier filter applied to the query
+        clients:
+          type: array
+          items:
+            $ref: '#/components/schemas/sle_impacted_clients_client'
+          description: Impacted client rows returned for the SLE query
+        end:
+          type: integer
+          description: Last timestamp in the impacted clients window
+          contentEncoding: int32
+        failure:
+          type: string
+          description: Requested SLE failure filter applied to the query
+        limit:
+          type: integer
+          description: Maximum number of impacted client rows returned per page
+          contentEncoding: int32
+        metric:
+          type: string
+          description: SLE metric name used for the impacted clients query
+        page:
+          type: integer
+          description: Current page number for impacted client results
+          contentEncoding: int32
+        start:
+          type: integer
+          description: First timestamp in the impacted clients window
+          contentEncoding: int32
+        total_count:
+          type: integer
+          description: Number of impacted client rows matching the query
+          contentEncoding: int32
+      description: Paginated list of clients impacted by an SLE metric
+    number_or_null:
+      oneOf:
+      - type: number
+      description: Numeric value or null
+    sle_summary_sle2:
+      title: sle_summary_sle2
+      required:
+      - interval
+      - name
+      - samples
+      - x_label
+      - y_label
+      type: object
+      properties:
+        interval:
+          type: number
+          description: Sample interval in seconds for SLE summary data
+        name:
+          minLength: 1
+          type: string
+          description: SLE metric name represented by the summary samples
+        samples:
+          allOf:
+          - $ref: '#/components/schemas/sle_summary_sle_samples2'
+          - description: Per-interval sample arrays for the SLE metric
+        x_label:
+          minLength: 1
+          type: string
+          description: Label for the SLE summary x-axis
+        y_label:
+          minLength: 1
+          type: string
+          description: Label for the SLE summary y-axis
+      description: Time-series SLE samples for the trend window
+    sle_impacted_users_client:
+      title: sle_impacted_users_client
+      type: object
+      properties:
+        degraded:
+          type: number
+          description: Portion of the SLE total that was degraded for this client
+        duration:
+          type: number
+          description: Observation time represented by this client impact row
+        gateways:
+          type: array
+          items:
+            $ref: '#/components/schemas/sle_impacted_client_gateway'
+          description: Gateway rows associated with the impacted client
+        mac:
+          type: string
+          description: Client MAC address for the impacted client
+        name:
+          type: string
+          description: Display name for the client impact row
+        src_ip:
+          type: string
+          description: Client source IP address for the impacted client
+        total:
+          type: number
+          description: Overall SLE total measured for this client impact row
+      description: SLE impact row for a client in an impacted users response
     sle_histogram_data_item:
       title: sle_histogram_data_item
       required:
@@ -11218,28 +11314,8 @@ components:
           type: number
           description: Measured amount for this histogram bucket
       description: Single bucket in an SLE histogram
-    site_sle_metrics:
-      title: site_sle_metrics
-      required:
-      - enabled
-      - supported
-      type: object
-      properties:
-        enabled:
-          uniqueItems: true
-          type: array
-          items:
-            type: string
-          description: SLE metric names enabled for the site
-        supported:
-          uniqueItems: true
-          type: array
-          items:
-            type: string
-          description: SLE metric names supported for the site
-      description: SLE metrics available for a site
-    sle_impacted_aps_ap:
-      title: sle_impacted_aps_ap
+    sle_impact_summary_ap_item:
+      title: sle_impact_summary_ap_item
       required:
       - ap_mac
       - degraded
@@ -11251,7 +11327,7 @@ components:
         ap_mac:
           minLength: 1
           type: string
-          description: MAC address of the AP represented by this impacted row
+          description: MAC address of the AP represented by this impact row
         degraded:
           type: number
           description: Portion of the SLE total that was degraded for this AP
@@ -11265,83 +11341,7 @@ components:
         total:
           type: number
           description: Overall SLE total measured for this AP impact row
-      description: SLE impact row for an AP
-    site_sle_metric_summary_scope_parameters:
-      title: site_sle_metric_summary_scope_parameters
-      enum:
-      - ap
-      - client
-      - gateway
-      - site
-      - switch
-      type: string
-      description: 'enum: `ap`, `client`, `gateway`, `site`, `switch`'
-    site_sle_threshold_scope_parameter:
-      title: site_sle_threshold_scope_parameter
-      enum:
-      - ap
-      - client
-      - gateway
-      - site
-      - switch
-      type: string
-      description: 'enum: `ap`, `client`, `gateway`, `site`, `switch`'
-    site_sle_impacted_chassis_scope_parameters:
-      title: site_sle_impacted_chassis_scope_parameters
-      enum:
-      - gateway
-      - site
-      - switch
-      type: string
-      description: 'enum: `gateway`, `site`, `switch`'
-    sle_summary:
-      title: sle_summary
-      required:
-      - classifiers
-      - end
-      - events
-      - impact
-      - sle
-      - start
-      type: object
-      properties:
-        classifiers:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/sle_classifier'
-          description: SLE classifier details included in the summary
-        end:
-          type: number
-          description: Last timestamp in the SLE summary window
-        events:
-          type: array
-          items:
-            type: object
-          description: Event records included in the SLE summary
-        impact:
-          allOf:
-          - $ref: '#/components/schemas/sle_summary_impact2'
-          - description: AP and user impact counts for the summary window
-        sle:
-          allOf:
-          - $ref: '#/components/schemas/sle_summary_sle3'
-          - description: Time-series SLE samples for the summary window
-        start:
-          type: number
-          description: First timestamp in the SLE summary window
-      description: Deprecated SLE summary response for a metric window
-      deprecated: true
-    site_sle_histogram_scope_parameters:
-      title: site_sle_histogram_scope_parameters
-      enum:
-      - ap
-      - client
-      - gateway
-      - site
-      - switch
-      type: string
-      description: 'enum: `ap`, `client`, `gateway`, `site`, `switch`'
+      description: SLE impact summary row for an AP
   securitySchemes:
     apiToken:
       type: apiKey

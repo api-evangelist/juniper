@@ -1282,93 +1282,32 @@ paths:
       deprecated: false
 components:
   schemas:
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    account_oauth_info:
-      title: account_oauth_info
-      required:
-      - accounts
-      - linked
-      type: object
-      properties:
-        accounts:
-          type: array
-          items:
-            $ref: '#/components/schemas/account_oauth_info_account'
-          description: Linked third-party application accounts for this OAuth application
-        authorization_url:
-          type: string
-          description: OAuth authorization URL to open when linking an account
-          readOnly: true
-        linked:
-          type: boolean
-          description: Whether at least one account is linked for this OAuth application
-          readOnly: true
-      description: OAuth-linked application account status and authorization details
-    account_crowdstrike_config:
-      title: account_crowdstrike_config
+    account_jamf_config:
+      title: account_jamf_config
       required:
       - client_id
       - client_secret
-      - customer_id
+      - instance_url
+      - smartgroup_name
       type: object
       properties:
         client_id:
           type: string
-          description: Customer account api client ID
+          description: Customer account api client id. Required if `app_name`==`crowdstrike`
         client_secret:
           type: string
-          description: Customer account api client Secret
-        customer_id:
+          description: Customer account api client secret
+        instance_url:
           type: string
-          description: Customer id of an admin
-      description: OAuth linked CrowdStrike apps account details
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
+          description: Customer account Jamf instance URL
           examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
+          - junipertest.jamfcloud.com
+        smartgroup_name:
           type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
+          description: Smart group membership for determining compliance status
           examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    account_oauth_info_account_service_connection:
-      title: account_oauth_info_account_service_connection
-      type: object
-      properties:
-        region:
-          type: string
-          description: Prisma Access region where this service connection is provisioned
-          examples:
-          - us-southwest
-      description: Prisma Access service connection region for a linked OAuth account
+          - CompliantGroup1
+      description: OAuth linked Jamf apps account details
     account_zdx_config:
       title: account_zdx_config
       required:
@@ -1397,6 +1336,161 @@ components:
           examples:
           - '123456'
       description: OAuth linked ZDX apps account details
+    account_prisma_config:
+      title: account_prisma_config
+      required:
+      - client_id
+      - client_secret
+      - tsg_id
+      type: object
+      properties:
+        auto_probe_subnet:
+          type: string
+          description: Required If `enable_probe`==`true`. This field will accept an IPv4 cidr and an IP address will be picked from this range to be used as tunnel probe source IP address and as well as BGP neighbour IP address. The subnet should be big enough for num_devices * num_tunnel * 2
+          examples:
+          - 11.0.0.0/8
+        client_id:
+          type: string
+          description: Customer account api client ID
+        client_secret:
+          type: string
+          description: Customer account api client Secret
+        enable_probe:
+          type: boolean
+          description: To enable/disable tunnel probe
+          default: false
+        tsg_id:
+          type: string
+          description: Prisma Tenant Service Group id
+      description: OAuth linked CrowdStrike apps account details
+    account_oauth_config:
+      title: account_oauth_config
+      required:
+      - account_id
+      type: object
+      properties:
+        account_id:
+          type: string
+          description: Linked app(zoom/teams/intune) account id
+          examples:
+          - iojzXIJWEuiD73ZvydOfg
+        discard_guest_info:
+          type: boolean
+          description: Optional, for Zoom/Teams. Whether to redact identifying information for call participants that are not part of the Zoom/Teams account identified by `account_id`
+        max_daily_api_requests:
+          type: integer
+          description: Zoom daily api request quota, https://developers.zoom.us/docs/api/rest/rate-limits/
+          contentEncoding: int32
+          examples:
+          - 5000
+      description: OAuth linked apps (zoom/teams/intune) account details
+    account_oauth_info_account_region:
+      title: account_oauth_info_account_region
+      type: object
+      properties:
+        aggregate_region:
+          type: string
+          description: Bandwidth Aggregate region for this region
+          examples:
+          - us-southwest
+        allocated_bandwidth:
+          type: integer
+          description: Allocated bandwidth for the region, in Mbps
+          contentEncoding: int32
+          readOnly: true
+          examples:
+          - 1000
+        name:
+          type: string
+          description: Display name for this region
+          examples:
+          - US West
+      description: Prisma Access region bandwidth allocation for a linked OAuth account
+    account_vmware_config:
+      title: account_vmware_config
+      required:
+      - client_id
+      - client_secret
+      - instance_url
+      - webhook_enabled
+      type: object
+      properties:
+        client_id:
+          type: string
+          description: Customer account Client ID
+        client_secret:
+          type: string
+          description: Customer account Client Secret
+        instance_url:
+          type: string
+          description: Customer account VMware instance URL
+        webhook_enabled:
+          type: boolean
+          description: Enables or disables the webhook integration
+      description: VMware account credentials and webhook settings for OAuth application linking
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    oauth_app_name:
+      title: oauth_app_name
+      enum:
+      - crowdstrike
+      - intune
+      - jamf
+      - mobicontrol
+      - prisma
+      - sentinelone
+      - teams
+      - vmware
+      - zdx
+      - zoom
+      type: string
+      description: 'enum: `crowdstrike`, `intune`, `jamf`, `mobicontrol`, `prisma`, `sentinelone`, `teams`, `vmware`, `zdx`, `zoom`'
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    account_oauth_info_account_service_connection:
+      title: account_oauth_info_account_service_connection
+      type: object
+      properties:
+        region:
+          type: string
+          description: Prisma Access region where this service connection is provisioned
+          examples:
+          - us-southwest
+      description: Prisma Access service connection region for a linked OAuth account
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
     account_oauth_info_account:
       title: account_oauth_info_account
       type: object
@@ -1585,53 +1679,37 @@ components:
           examples:
           - '123456'
       description: OAuth linked apps account info
-    account_jamf_config:
-      title: account_jamf_config
+    account_oauth_add:
+      oneOf:
+      - $ref: '#/components/schemas/account_jamf_config'
+      - $ref: '#/components/schemas/account_vmware_config'
+      - $ref: '#/components/schemas/account_mobicontrol_config'
+      - $ref: '#/components/schemas/account_zdx_config'
+      - $ref: '#/components/schemas/account_crowdstrike_config'
+      - $ref: '#/components/schemas/account_prisma_config'
+      - $ref: '#/components/schemas/account_sentinelone_config'
+      description: Account configuration payload for adding a supported OAuth-linked application
+    account_oauth_info:
+      title: account_oauth_info
       required:
-      - client_id
-      - client_secret
-      - instance_url
-      - smartgroup_name
+      - accounts
+      - linked
       type: object
       properties:
-        client_id:
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/account_oauth_info_account'
+          description: Linked third-party application accounts for this OAuth application
+        authorization_url:
           type: string
-          description: Customer account api client id. Required if `app_name`==`crowdstrike`
-        client_secret:
-          type: string
-          description: Customer account api client secret
-        instance_url:
-          type: string
-          description: Customer account Jamf instance URL
-          examples:
-          - junipertest.jamfcloud.com
-        smartgroup_name:
-          type: string
-          description: Smart group membership for determining compliance status
-          examples:
-          - CompliantGroup1
-      description: OAuth linked Jamf apps account details
-    account_oauth_config:
-      title: account_oauth_config
-      required:
-      - account_id
-      type: object
-      properties:
-        account_id:
-          type: string
-          description: Linked app(zoom/teams/intune) account id
-          examples:
-          - iojzXIJWEuiD73ZvydOfg
-        discard_guest_info:
+          description: OAuth authorization URL to open when linking an account
+          readOnly: true
+        linked:
           type: boolean
-          description: Optional, for Zoom/Teams. Whether to redact identifying information for call participants that are not part of the Zoom/Teams account identified by `account_id`
-        max_daily_api_requests:
-          type: integer
-          description: Zoom daily api request quota, https://developers.zoom.us/docs/api/rest/rate-limits/
-          contentEncoding: int32
-          examples:
-          - 5000
-      description: OAuth linked apps (zoom/teams/intune) account details
+          description: Whether at least one account is linked for this OAuth application
+          readOnly: true
+      description: OAuth-linked application account status and authorization details
     account_mobicontrol_config:
       title: account_mobicontrol_config
       required:
@@ -1659,6 +1737,24 @@ components:
           type: string
           description: Login username used to authenticate to the MobiControl account
       description: MobiControl account credentials used for OAuth application linking
+    account_crowdstrike_config:
+      title: account_crowdstrike_config
+      required:
+      - client_id
+      - client_secret
+      - customer_id
+      type: object
+      properties:
+        client_id:
+          type: string
+          description: Customer account api client ID
+        client_secret:
+          type: string
+          description: Customer account api client Secret
+        customer_id:
+          type: string
+          description: Customer id of an admin
+      description: OAuth linked CrowdStrike apps account details
     account_sentinelone_config:
       title: account_sentinelone_config
       required:
@@ -1673,70 +1769,6 @@ components:
           type: string
           description: Customer account SentinelOne instance URL
       description: OAuth linked CrowdStrike apps account details
-    account_prisma_config:
-      title: account_prisma_config
-      required:
-      - client_id
-      - client_secret
-      - tsg_id
-      type: object
-      properties:
-        auto_probe_subnet:
-          type: string
-          description: Required If `enable_probe`==`true`. This field will accept an IPv4 cidr and an IP address will be picked from this range to be used as tunnel probe source IP address and as well as BGP neighbour IP address. The subnet should be big enough for num_devices * num_tunnel * 2
-          examples:
-          - 11.0.0.0/8
-        client_id:
-          type: string
-          description: Customer account api client ID
-        client_secret:
-          type: string
-          description: Customer account api client Secret
-        enable_probe:
-          type: boolean
-          description: To enable/disable tunnel probe
-          default: false
-        tsg_id:
-          type: string
-          description: Prisma Tenant Service Group id
-      description: OAuth linked CrowdStrike apps account details
-    account_oauth_info_account_region:
-      title: account_oauth_info_account_region
-      type: object
-      properties:
-        aggregate_region:
-          type: string
-          description: Bandwidth Aggregate region for this region
-          examples:
-          - us-southwest
-        allocated_bandwidth:
-          type: integer
-          description: Allocated bandwidth for the region, in Mbps
-          contentEncoding: int32
-          readOnly: true
-          examples:
-          - 1000
-        name:
-          type: string
-          description: Display name for this region
-          examples:
-          - US West
-      description: Prisma Access region bandwidth allocation for a linked OAuth account
-    oauth_app_name:
-      title: oauth_app_name
-      enum:
-      - crowdstrike
-      - intune
-      - jamf
-      - mobicontrol
-      - prisma
-      - sentinelone
-      - teams
-      - vmware
-      - zdx
-      - zoom
-      type: string
-      description: 'enum: `crowdstrike`, `intune`, `jamf`, `mobicontrol`, `prisma`, `sentinelone`, `teams`, `vmware`, `zdx`, `zoom`'
     response_http401:
       title: response_http401
       type: object
@@ -1747,38 +1779,6 @@ components:
           examples:
           - Authentication credentials were not provided.
       description: Standard HTTP 401 authentication error response
-    account_vmware_config:
-      title: account_vmware_config
-      required:
-      - client_id
-      - client_secret
-      - instance_url
-      - webhook_enabled
-      type: object
-      properties:
-        client_id:
-          type: string
-          description: Customer account Client ID
-        client_secret:
-          type: string
-          description: Customer account Client Secret
-        instance_url:
-          type: string
-          description: Customer account VMware instance URL
-        webhook_enabled:
-          type: boolean
-          description: Enables or disables the webhook integration
-      description: VMware account credentials and webhook settings for OAuth application linking
-    account_oauth_add:
-      oneOf:
-      - $ref: '#/components/schemas/account_jamf_config'
-      - $ref: '#/components/schemas/account_vmware_config'
-      - $ref: '#/components/schemas/account_mobicontrol_config'
-      - $ref: '#/components/schemas/account_zdx_config'
-      - $ref: '#/components/schemas/account_crowdstrike_config'
-      - $ref: '#/components/schemas/account_prisma_config'
-      - $ref: '#/components/schemas/account_sentinelone_config'
-      description: Account configuration payload for adding a supported OAuth-linked application
   securitySchemes:
     apiToken:
       type: apiKey

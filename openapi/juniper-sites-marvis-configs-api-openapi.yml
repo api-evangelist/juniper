@@ -1095,47 +1095,6 @@ paths:
       deprecated: false
 components:
   schemas:
-    marvis_config_feedback_response:
-      title: marvis_config_feedback_response
-      type: object
-      properties:
-        feedback_note:
-          type: string
-          description: The note provided with the feedback
-        feedback_type:
-          type: string
-          description: The feedback type that was submitted
-      description: Response after submitting feedback on a Marvis config action
-    marvis_config_feedback:
-      title: marvis_config_feedback
-      type: object
-      properties:
-        note:
-          type: string
-          description: Free-text note about the feedback
-        type:
-          allOf:
-          - $ref: '#/components/schemas/marvis_config_feedback_type'
-          - description: 'Feedback type. enum: `invalid`'
-      description: Feedback submission for a Marvis config action
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
     count_result:
       title: count_result
       required:
@@ -1149,31 +1108,79 @@ components:
       additionalProperties:
         type: string
       description: Count result row with the matching distinct field values
-    response_http429:
-      title: response_http429
+    marvis_config_actions_search:
+      title: marvis_config_actions_search
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Search window end timestamp, in epoch seconds
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of results requested
+          contentEncoding: int32
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/marvis_config_action'
+          description: List of Marvis config actions
+        start:
+          type: integer
+          description: Search window start timestamp, in epoch seconds
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Total number of matching results
+          contentEncoding: int32
+      description: Paginated list of Marvis config actions
+    response_count:
+      title: response_count
+      required:
+      - distinct
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        distinct:
+          type: string
+          description: Field used to group the count results
+        end:
+          type: integer
+          description: Search window end timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of distinct count results requested
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/count_result'
+          description: Count results grouped by the distinct field
+        start:
+          type: integer
+          description: Search window start timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of distinct result buckets returned
+          contentEncoding: int32
+      description: Distinct count response for time-bounded search results
+    response_http403:
+      title: response_http403
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the rate limit error
+          description: Human-readable explanation of the permission error
           examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    marvis_config_feedback_type:
-      title: marvis_config_feedback_type
-      const: invalid
-      type: string
-      description: 'Feedback type. enum: `invalid`'
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
     response_http400:
       title: response_http400
       type: object
@@ -1184,6 +1191,16 @@ components:
           examples:
           - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
       description: Standard HTTP 400 bad request error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
     marvis_config_action:
       title: marvis_config_action
       type: object
@@ -1232,69 +1249,52 @@ components:
             contentEncoding: int32
           description: List of VLAN IDs involved in the config action
       description: A Marvis-injected config action record
-    response_count:
-      title: response_count
-      required:
-      - distinct
-      - end
-      - limit
-      - results
-      - start
-      - total
+    marvis_config_feedback:
+      title: marvis_config_feedback
       type: object
       properties:
-        distinct:
+        note:
           type: string
-          description: Field used to group the count results
-        end:
-          type: integer
-          description: Search window end timestamp for the count request, in epoch seconds
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of distinct count results requested
-          contentEncoding: int32
-        results:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/count_result'
-          description: Count results grouped by the distinct field
-        start:
-          type: integer
-          description: Search window start timestamp for the count request, in epoch seconds
-          contentEncoding: int32
-        total:
-          type: integer
-          description: Number of distinct result buckets returned
-          contentEncoding: int32
-      description: Distinct count response for time-bounded search results
-    marvis_config_actions_search:
-      title: marvis_config_actions_search
+          description: Free-text note about the feedback
+        type:
+          allOf:
+          - $ref: '#/components/schemas/marvis_config_feedback_type'
+          - description: 'Feedback type. enum: `invalid`'
+      description: Feedback submission for a Marvis config action
+    response_http401:
+      title: response_http401
       type: object
       properties:
-        end:
-          type: integer
-          description: Search window end timestamp, in epoch seconds
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of results requested
-          contentEncoding: int32
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/marvis_config_action'
-          description: List of Marvis config actions
-        start:
-          type: integer
-          description: Search window start timestamp, in epoch seconds
-          contentEncoding: int32
-        total:
-          type: integer
-          description: Total number of matching results
-          contentEncoding: int32
-      description: Paginated list of Marvis config actions
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    marvis_config_feedback_type:
+      title: marvis_config_feedback_type
+      const: invalid
+      type: string
+      description: 'Feedback type. enum: `invalid`'
+    marvis_config_feedback_response:
+      title: marvis_config_feedback_response
+      type: object
+      properties:
+        feedback_note:
+          type: string
+          description: The note provided with the feedback
+        feedback_type:
+          type: string
+          description: The feedback type that was submitted
+      description: Response after submitting feedback on a Marvis config action
   securitySchemes:
     apiToken:
       type: apiKey
