@@ -2051,6 +2051,23 @@ paths:
       deprecated: false
 components:
   schemas:
+    module_stat_item_pics_item:
+      title: module_stat_item_pics_item
+      type: object
+      properties:
+        index:
+          type: integer
+          description: PIC index within the device module
+          contentEncoding: int32
+        model_number:
+          type: string
+          description: Model number reported for the PIC
+        port_groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/module_stat_item_pics_item_port_groups_item'
+          description: Port groups provided by this PIC
+      description: Physical Interface Card summary for a device module
     module_stat_item_errors_items:
       title: module_stat_item_errors_items
       required:
@@ -2083,196 +2100,6 @@ components:
           examples:
           - FW_UPGRADE_REQUIRED_BY_FEATURE
       description: Error condition reported for a device module
-    module_stat_item_temperatures_item:
-      title: module_stat_item_temperatures_item
-      type: object
-      properties:
-        celsius:
-          type: number
-          description: Temperature reading for the sensor, in degrees Celsius
-          examples:
-          - 45
-        name:
-          type: string
-          description: Temperature sensor label reported by the device
-          examples:
-          - CPU
-        status:
-          type: string
-          description: Operational status reported for the temperature sensor
-          examples:
-          - ok
-      description: Temperature sensor reading for a device module
-    virtual_chassis_update_op2:
-      title: virtual_chassis_update_op2
-      enum:
-      - add
-      - preprovision
-      - remove
-      - renumber
-      type: string
-      description: 'Action to perform on the Virtual Chassis. enum: `add`, `preprovision`, `remove`, `renumber`.'
-    cpu_stat1:
-      title: cpu_stat1
-      type: object
-      properties:
-        idle:
-          type:
-          - number
-          - 'null'
-          description: Percentage of CPU time that is idle
-          readOnly: true
-        interrupt:
-          type:
-          - number
-          - 'null'
-          description: Percentage of CPU time being used by interrupts
-          readOnly: true
-        load_avg:
-          type: array
-          items:
-            type: number
-          description: Load averages for the last 1, 5, and 15 minutes
-        system:
-          type:
-          - number
-          - 'null'
-          description: Percentage of CPU time being used by system processes
-          readOnly: true
-        usage:
-          type:
-          - number
-          - 'null'
-          description: Overall CPU usage percentage
-          readOnly: true
-        user:
-          type:
-          - number
-          - 'null'
-          description: Percentage of CPU time being used by user processes
-          readOnly: true
-      description: Processor utilization statistics for the switch module
-    virtual_chassis_update:
-      title: virtual_chassis_update
-      type: object
-      properties:
-        member:
-          type: integer
-          description: Only if `op`==`renumber`; existing member ID to renumber
-          contentEncoding: int32
-        members:
-          type: array
-          items:
-            $ref: '#/components/schemas/virtual_chassis_member_update'
-          description: Member updates for add, remove, or preprovision operations
-        new-member:
-          type: integer
-          description: Only if `op`==`renumber`; new member ID to assign
-          contentEncoding: int32
-        op:
-          allOf:
-          - $ref: '#/components/schemas/virtual_chassis_update_op2'
-          - description: 'Action to perform on the Virtual Chassis. enum: `add`, `preprovision`, `remove`, `renumber`.'
-        remove_inventory:
-          type: boolean
-          description: Only if `op`==`preprovision`. When removing members from a pre-provisioned VC, set to `true` to delete the inventory records for removed members (e.g. for RMA). Members being removed must be in "not-present" state.
-          default: false
-      description: Virtual Chassis member update request
-    response_virtual_chassis_config:
-      title: response_virtual_chassis_config
-      type: object
-      properties:
-        config_type:
-          type: string
-          description: Provisioning mode of the virtual chassis configuration
-          readOnly: true
-        id:
-          type: string
-          description: Unique value identifying the virtual chassis device record
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 53f10664-3ce8-4c27-b382-0ef66432349f
-        locating:
-          type: boolean
-          description: Whether locate mode is active for the virtual chassis device
-          readOnly: true
-        mac:
-          type: string
-          description: Device MAC address for the virtual chassis device record
-        members:
-          minItems: 1
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/stats_switch_module_stat_item'
-          description: Virtual chassis member module statistics and topology details
-        model:
-          type: string
-          description: Switch model for the virtual chassis device record
-          readOnly: true
-        num_routing_engines:
-          type: integer
-          description: Number of routing engines in the virtual chassis
-          contentEncoding: int32
-          examples:
-          - 1
-        org_id:
-          type: string
-          description: Organization identifier for the virtual chassis device
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
-        serial:
-          type: string
-          description: Device serial number reported for the virtual chassis
-          readOnly: true
-        site_id:
-          type: string
-          description: Identifier of the site containing the virtual chassis
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
-        status:
-          type: string
-          description: Connection status of the virtual chassis device
-          readOnly: true
-        type:
-          type: string
-          description: Device type for the virtual chassis record
-        vc_mac:
-          type: string
-          description: Virtual Chassis MAC address used to identify the VC device
-          readOnly: true
-      description: Combined virtual chassis status, topology, and member statistics
-    vc_port_mode2:
-      title: vc_port_mode2
-      enum:
-      - network
-      - vcp-higig
-      - vcp-hgoe
-      type: string
-      description: 'Virtual Chassis port mode to apply. enum: `network`, `vcp-higig`, `vcp-hgoe`.'
-    module_stat_item_poe1:
-      title: module_stat_item_poe1
-      type: object
-      properties:
-        max_power:
-          type: number
-          description: Total PoE power budget available to the module, in watts
-          examples:
-          - 250
-        power_draw:
-          type: number
-          description: Current PoE power draw on the module, in watts
-          examples:
-          - 120.3
-        status:
-          type: string
-          description: Operational status of PoE on the module
-      description: Power over Ethernet telemetry for the switch module
     virtual_chassis_config_member_vc_role2:
       title: virtual_chassis_config_member_vc_role2
       enum:
@@ -2281,6 +2108,21 @@ components:
       - master
       type: string
       description: 'Role of this member in the Virtual Chassis. enum: `backup`, `linecard`, `master`.'
+    virtual_chassis_port_operation2:
+      title: virtual_chassis_port_operation2
+      enum:
+      - delete
+      - set
+      type: string
+      description: 'Action to perform on the specified Virtual Chassis ports. enum: `delete`, `set`.'
+    vc_port_mode2:
+      title: vc_port_mode2
+      enum:
+      - network
+      - vcp-higig
+      - vcp-hgoe
+      type: string
+      description: 'Virtual Chassis port mode to apply. enum: `network`, `vcp-higig`, `vcp-hgoe`.'
     stats_switch_module_stat_item:
       title: stats_switch_module_stat_item
       type: object
@@ -2489,56 +2331,15 @@ components:
           description: Software version running on the switch module
           readOnly: true
       description: Hardware module status and firmware inventory for a switch
-    virtual_chassis_config:
-      title: virtual_chassis_config
-      type: object
-      properties:
-        locating:
-          type: boolean
-          description: Whether the Virtual Chassis is currently in locate mode
-          readOnly: true
-        members:
-          type: array
-          items:
-            $ref: '#/components/schemas/virtual_chassis_config_member'
-          description: Virtual Chassis members and their expected roles and VC ports
-        preprovisioned:
-          type: boolean
-          description: Whether to create the Virtual Chassis in pre-provisioned mode
-          default: false
-      description: Virtual Chassis creation or configuration request
-    memory_stat1:
-      title: memory_stat1
-      required:
-      - usage
-      type: object
-      properties:
-        usage:
-          type: number
-          description: Current memory utilization percentage for the device or master Routing Engine
-      description: Utilization statistics for switch module memory
-    virtual_chassis_port_operation2:
-      title: virtual_chassis_port_operation2
+    virtual_chassis_update_op2:
+      title: virtual_chassis_update_op2
       enum:
-      - delete
-      - set
+      - add
+      - preprovision
+      - remove
+      - renumber
       type: string
-      description: 'Action to perform on the specified Virtual Chassis ports. enum: `delete`, `set`.'
-    module_stat_item_psus_item:
-      title: module_stat_item_psus_item
-      type: object
-      properties:
-        name:
-          type: string
-          description: Power supply label reported by the device
-          examples:
-          - Power Supply 0
-        status:
-          type: string
-          description: Operational status reported for the power supply
-          examples:
-          - ok
-      description: Power supply status for a device module
+      description: 'Action to perform on the Virtual Chassis. enum: `add`, `preprovision`, `remove`, `renumber`.'
     response_http404:
       title: response_http404
       type: object
@@ -2547,18 +2348,6 @@ components:
           type: string
           description: Missing resource identifier, when the API includes one
       description: Standard HTTP 404 not found error response
-    module_stat_item_pics_item_port_groups_item:
-      title: module_stat_item_pics_item_port_groups_item
-      type: object
-      properties:
-        count:
-          type: integer
-          description: Number of ports in this PIC port group
-          contentEncoding: int32
-        type:
-          type: string
-          description: Port media or interface type for this PIC port group
-      description: Port group summary for a PIC
     virtual_chassis_port:
       title: virtual_chassis_port
       required:
@@ -2578,26 +2367,16 @@ components:
           - minLength: 1
             description: 'Action to perform on the specified Virtual Chassis ports. enum: `delete`, `set`.'
       description: Request to set or delete Virtual Chassis ports on members
-    response_http403:
-      title: response_http403
+    response_http401:
+      title: response_http401
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the permission error
+          description: Human-readable explanation of the authentication error
           examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
     response_http429:
       title: response_http429
       type: object
@@ -2608,22 +2387,52 @@ components:
           examples:
           - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
       description: Standard HTTP 429 rate limit error response
-    config_vc_port_member:
-      title: config_vc_port_member
-      required:
-      - member
+    virtual_chassis_update:
+      title: virtual_chassis_update
       type: object
       properties:
         member:
-          type: number
-          description: Virtual Chassis member ID whose VC ports are being configured
-        vc_ports:
-          uniqueItems: true
+          type: integer
+          description: Only if `op`==`renumber`; existing member ID to renumber
+          contentEncoding: int32
+        members:
           type: array
           items:
-            type: string
-          description: Port names to configure as Virtual Chassis ports on the member
-      description: Virtual Chassis member and port list for a VC port operation
+            $ref: '#/components/schemas/virtual_chassis_member_update'
+          description: Member updates for add, remove, or preprovision operations
+        new-member:
+          type: integer
+          description: Only if `op`==`renumber`; new member ID to assign
+          contentEncoding: int32
+        op:
+          allOf:
+          - $ref: '#/components/schemas/virtual_chassis_update_op2'
+          - description: 'Action to perform on the Virtual Chassis. enum: `add`, `preprovision`, `remove`, `renumber`.'
+        remove_inventory:
+          type: boolean
+          description: Only if `op`==`preprovision`. When removing members from a pre-provisioned VC, set to `true` to delete the inventory records for removed members (e.g. for RMA). Members being removed must be in "not-present" state.
+          default: false
+      description: Virtual Chassis member update request
+    module_stat_item_temperatures_item:
+      title: module_stat_item_temperatures_item
+      type: object
+      properties:
+        celsius:
+          type: number
+          description: Temperature reading for the sensor, in degrees Celsius
+          examples:
+          - 45
+        name:
+          type: string
+          description: Temperature sensor label reported by the device
+          examples:
+          - CPU
+        status:
+          type: string
+          description: Operational status reported for the temperature sensor
+          examples:
+          - ok
+      description: Temperature sensor reading for a device module
     virtual_chassis_config_member:
       title: virtual_chassis_config_member
       required:
@@ -2653,71 +2462,108 @@ components:
           - $ref: '#/components/schemas/virtual_chassis_config_member_vc_role2'
           - description: 'Role of this member in the Virtual Chassis. enum: `backup`, `linecard`, `master`.'
       description: Virtual Chassis member configuration
-    vc_port:
-      title: vc_port
+    virtual_chassis_config:
+      title: virtual_chassis_config
       type: object
       properties:
-        mode:
-          allOf:
-          - $ref: '#/components/schemas/vc_port_mode2'
-          - description: 'Virtual Chassis port mode to apply. enum: `network`, `vcp-higig`, `vcp-hgoe`.'
-      description: Request to change the Virtual Chassis port mode on a switch
-    virtual_chassis_member_update_vc_role2:
-      title: virtual_chassis_member_update_vc_role2
-      enum:
-      - backup
-      - linecard
-      - master
-      type: string
-      description: 'Required if `op`==`add` or `op`==`preprovision`; role of the member in the Virtual Chassis. enum: `backup`, `linecard`, `master`.'
-    module_stat_item_pics_item:
-      title: module_stat_item_pics_item
-      type: object
-      properties:
-        index:
-          type: integer
-          description: PIC index within the device module
-          contentEncoding: int32
-        model_number:
-          type: string
-          description: Model number reported for the PIC
-        port_groups:
+        locating:
+          type: boolean
+          description: Whether the Virtual Chassis is currently in locate mode
+          readOnly: true
+        members:
           type: array
           items:
-            $ref: '#/components/schemas/module_stat_item_pics_item_port_groups_item'
-          description: Port groups provided by this PIC
-      description: Physical Interface Card summary for a device module
-    module_stat_item_vc_links_item:
-      title: module_stat_item_vc_links_item
+            $ref: '#/components/schemas/virtual_chassis_config_member'
+          description: Virtual Chassis members and their expected roles and VC ports
+        preprovisioned:
+          type: boolean
+          description: Whether to create the Virtual Chassis in pre-provisioned mode
+          default: false
+      description: Virtual Chassis creation or configuration request
+    response_virtual_chassis_config:
+      title: response_virtual_chassis_config
       type: object
       properties:
-        neighbor_module_idx:
+        config_type:
+          type: string
+          description: Provisioning mode of the virtual chassis configuration
+          readOnly: true
+        id:
+          type: string
+          description: Unique value identifying the virtual chassis device record
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        locating:
+          type: boolean
+          description: Whether locate mode is active for the virtual chassis device
+          readOnly: true
+        mac:
+          type: string
+          description: Device MAC address for the virtual chassis device record
+        members:
+          minItems: 1
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/stats_switch_module_stat_item'
+          description: Virtual chassis member module statistics and topology details
+        model:
+          type: string
+          description: Switch model for the virtual chassis device record
+          readOnly: true
+        num_routing_engines:
           type: integer
-          description: Index of the neighboring module connected through this virtual chassis link
+          description: Number of routing engines in the virtual chassis
           contentEncoding: int32
           examples:
           - 1
-        neighbor_port_id:
+        org_id:
           type: string
-          description: Port identifier on the neighboring module for this virtual chassis link
+          description: Organization identifier for the virtual chassis device
+          contentEncoding: uuid
+          readOnly: true
           examples:
-          - vcp-255/1/0
-        port_id:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        serial:
           type: string
-          description: Local port identifier for this virtual chassis link
+          description: Device serial number reported for the virtual chassis
+          readOnly: true
+        site_id:
+          type: string
+          description: Identifier of the site containing the virtual chassis
+          contentEncoding: uuid
+          readOnly: true
           examples:
-          - vcp-255/1/0
-      description: Virtual chassis link endpoint for a device module
-    response_http401:
-      title: response_http401
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        status:
+          type: string
+          description: Connection status of the virtual chassis device
+          readOnly: true
+        type:
+          type: string
+          description: Device type for the virtual chassis record
+        vc_mac:
+          type: string
+          description: Virtual Chassis MAC address used to identify the VC device
+          readOnly: true
+      description: Combined virtual chassis status, topology, and member statistics
+    module_stat_item_psus_item:
+      title: module_stat_item_psus_item
       type: object
       properties:
-        detail:
+        name:
           type: string
-          description: Human-readable explanation of the authentication error
+          description: Power supply label reported by the device
           examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
+          - Power Supply 0
+        status:
+          type: string
+          description: Operational status reported for the power supply
+          examples:
+          - ok
+      description: Power supply status for a device module
     module_stat_item_fans_items:
       title: module_stat_item_fans_items
       type: object
@@ -2742,6 +2588,122 @@ components:
           examples:
           - ok
       description: Cooling fan telemetry for a device module
+    module_stat_item_vc_links_item:
+      title: module_stat_item_vc_links_item
+      type: object
+      properties:
+        neighbor_module_idx:
+          type: integer
+          description: Index of the neighboring module connected through this virtual chassis link
+          contentEncoding: int32
+          examples:
+          - 1
+        neighbor_port_id:
+          type: string
+          description: Port identifier on the neighboring module for this virtual chassis link
+          examples:
+          - vcp-255/1/0
+        port_id:
+          type: string
+          description: Local port identifier for this virtual chassis link
+          examples:
+          - vcp-255/1/0
+      description: Virtual chassis link endpoint for a device module
+    memory_stat1:
+      title: memory_stat1
+      required:
+      - usage
+      type: object
+      properties:
+        usage:
+          type: number
+          description: Current memory utilization percentage for the device or master Routing Engine
+      description: Utilization statistics for switch module memory
+    virtual_chassis_member_update_vc_role2:
+      title: virtual_chassis_member_update_vc_role2
+      enum:
+      - backup
+      - linecard
+      - master
+      type: string
+      description: 'Required if `op`==`add` or `op`==`preprovision`; role of the member in the Virtual Chassis. enum: `backup`, `linecard`, `master`.'
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    vc_port:
+      title: vc_port
+      type: object
+      properties:
+        mode:
+          allOf:
+          - $ref: '#/components/schemas/vc_port_mode2'
+          - description: 'Virtual Chassis port mode to apply. enum: `network`, `vcp-higig`, `vcp-hgoe`.'
+      description: Request to change the Virtual Chassis port mode on a switch
+    module_stat_item_poe1:
+      title: module_stat_item_poe1
+      type: object
+      properties:
+        max_power:
+          type: number
+          description: Total PoE power budget available to the module, in watts
+          examples:
+          - 250
+        power_draw:
+          type: number
+          description: Current PoE power draw on the module, in watts
+          examples:
+          - 120.3
+        status:
+          type: string
+          description: Operational status of PoE on the module
+      description: Power over Ethernet telemetry for the switch module
+    cpu_stat1:
+      title: cpu_stat1
+      type: object
+      properties:
+        idle:
+          type:
+          - number
+          - 'null'
+          description: Percentage of CPU time that is idle
+          readOnly: true
+        interrupt:
+          type:
+          - number
+          - 'null'
+          description: Percentage of CPU time being used by interrupts
+          readOnly: true
+        load_avg:
+          type: array
+          items:
+            type: number
+          description: Load averages for the last 1, 5, and 15 minutes
+        system:
+          type:
+          - number
+          - 'null'
+          description: Percentage of CPU time being used by system processes
+          readOnly: true
+        usage:
+          type:
+          - number
+          - 'null'
+          description: Overall CPU usage percentage
+          readOnly: true
+        user:
+          type:
+          - number
+          - 'null'
+          description: Percentage of CPU time being used by user processes
+          readOnly: true
+      description: Processor utilization statistics for the switch module
     virtual_chassis_member_update:
       title: virtual_chassis_member_update
       type: object
@@ -2767,6 +2729,44 @@ components:
           - $ref: '#/components/schemas/virtual_chassis_member_update_vc_role2'
           - description: 'Required if `op`==`add` or `op`==`preprovision`; role of the member in the Virtual Chassis. enum: `backup`, `linecard`, `master`.'
       description: Member update for a Virtual Chassis add, remove, or preprovision operation
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    config_vc_port_member:
+      title: config_vc_port_member
+      required:
+      - member
+      type: object
+      properties:
+        member:
+          type: number
+          description: Virtual Chassis member ID whose VC ports are being configured
+        vc_ports:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Port names to configure as Virtual Chassis ports on the member
+      description: Virtual Chassis member and port list for a VC port operation
+    module_stat_item_pics_item_port_groups_item:
+      title: module_stat_item_pics_item_port_groups_item
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of ports in this PIC port group
+          contentEncoding: int32
+        type:
+          type: string
+          description: Port media or interface type for this PIC port group
+      description: Port group summary for a PIC
   securitySchemes:
     apiToken:
       type: apiKey

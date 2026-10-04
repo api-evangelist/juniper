@@ -1763,6 +1763,88 @@ paths:
       deprecated: false
 components:
   schemas:
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_mobile_verify_secret:
+      title: response_mobile_verify_secret
+      required:
+      - name
+      - org_id
+      - secret
+      type: object
+      properties:
+        name:
+          type: string
+          description: Organization display name associated with the verified SDK invite
+        org_id:
+          type: string
+          description: Organization identifier associated with the verified SDK invite
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        secret:
+          type: string
+          description: Device-specific secret returned for mobile SDK activation
+          contentEncoding: password
+      description: Mobile SDK invite verification response
+    device_id_string:
+      title: device_id_string
+      required:
+      - device_id
+      type: object
+      properties:
+        device_id:
+          type: string
+          description: Device identifier supplied by the request
+          contentEncoding: uuid
+      description: Request body containing a device identifier
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
     sdkinvite:
       title: sdkinvite
       required:
@@ -1818,67 +1900,6 @@ components:
           examples:
           - 441a1214-6928-442a-8e92-e1d34b8ec6a6
       description: SDK invite configuration used to onboard mobile SDK clients to an organization
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    device_id_string:
-      title: device_id_string
-      required:
-      - device_id
-      type: object
-      properties:
-        device_id:
-          type: string
-          description: Device identifier supplied by the request
-          contentEncoding: uuid
-      description: Request body containing a device identifier
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    sdk_invite_sms:
-      title: sdk_invite_sms
-      required:
-      - number
-      type: object
-      properties:
-        number:
-          type: string
-          description: Destination phone number for the SDK invite SMS
-      description: Request body for sending an SDK invite by SMS
     email_string:
       title: email_string
       required:
@@ -1890,37 +1911,16 @@ components:
           description: Request email address provided in the payload
           contentEncoding: email
       description: Request body containing an email address
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    response_mobile_verify_secret:
-      title: response_mobile_verify_secret
+    sdk_invite_sms:
+      title: sdk_invite_sms
       required:
-      - name
-      - org_id
-      - secret
+      - number
       type: object
       properties:
-        name:
+        number:
           type: string
-          description: Organization display name associated with the verified SDK invite
-        org_id:
-          type: string
-          description: Organization identifier associated with the verified SDK invite
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
-        secret:
-          type: string
-          description: Device-specific secret returned for mobile SDK activation
-          contentEncoding: password
-      description: Mobile SDK invite verification response
+          description: Destination phone number for the SDK invite SMS
+      description: Request body for sending an SDK invite by SMS
   securitySchemes:
     apiToken:
       type: apiKey

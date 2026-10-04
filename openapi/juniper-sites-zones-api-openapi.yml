@@ -1741,19 +1741,6 @@ paths:
       deprecated: false
 components:
   schemas:
-    count_result:
-      title: count_result
-      required:
-      - count
-      type: object
-      properties:
-        count:
-          type: integer
-          description: Number of matching items for the distinct value or values in this result
-          contentEncoding: int32
-      additionalProperties:
-        type: string
-      description: Count result row with the matching distinct field values
     site_zone_count_distinct:
       title: site_zone_count_distinct
       enum:
@@ -1763,6 +1750,69 @@ components:
       - user_type
       type: string
       description: 'enum: `scope`, `scope_id`, `user`, `user_type`'
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    zone_scope:
+      title: zone_scope
+      enum:
+      - map
+      - rssizone
+      - site
+      - zone
+      type: string
+      description: 'enum: `map`, `rssizone`, `site`, `zone`'
+    visits_scope:
+      title: visits_scope
+      enum:
+      - map
+      - rssizone
+      - site
+      - zone
+      type: string
+      description: 'enum: `map`, `rssizone`, `site`, `zone`'
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    zone_type:
+      title: zone_type
+      enum:
+      - rssizones
+      - zones
+      type: string
+      description: 'Zone collection type, either regular zones or RSSI zones. enum: `rssizones`, `zones`'
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    rf_client_type:
+      title: rf_client_type
+      enum:
+      - asset
+      - client
+      - sdkclient
+      type: string
+      description: 'enum: `asset`, `client`, `sdkclient`'
     response_count:
       title: response_count
       required:
@@ -1800,96 +1850,14 @@ components:
           description: Number of distinct result buckets returned
           contentEncoding: int32
       description: Distinct count response for time-bounded search results
-    zone_scope:
-      title: zone_scope
-      enum:
-      - map
-      - rssizone
-      - site
-      - zone
-      type: string
-      description: 'enum: `map`, `rssizone`, `site`, `zone`'
-    response_http403:
-      title: response_http403
+    response_http404:
+      title: response_http404
       type: object
       properties:
-        detail:
+        id:
           type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    visits_scope:
-      title: visits_scope
-      enum:
-      - map
-      - rssizone
-      - site
-      - zone
-      type: string
-      description: 'enum: `map`, `rssizone`, `site`, `zone`'
-    zone_type:
-      title: zone_type
-      enum:
-      - rssizones
-      - zones
-      type: string
-      description: 'Zone collection type, either regular zones or RSSI zones. enum: `rssizones`, `zones`'
-    response_zone_search_item:
-      title: response_zone_search_item
-      type: object
-      properties:
-        enter:
-          type: integer
-          description: Epoch timestamp, in seconds, when the zone visit started
-          contentEncoding: int32
-          examples:
-          - 1541705254
-        scope:
-          type: string
-          description: Zone scope represented by this visit record
-          examples:
-          - map
-        timestamp:
-          type: number
-          description: Time when the zone visit event was recorded
-          readOnly: true
-        user:
-          type: string
-          description: Client, asset, or SDK client identifier for the visit
-          examples:
-          - c4b301c81166
-      description: Zone visit record for a client, asset, or SDK client
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
     zone:
       title: zone
       type: object
@@ -1950,36 +1918,54 @@ components:
             - x: 839
               y: 1821
       description: Zone defined on a site map
-    zone_vertex:
-      title: zone_vertex
-      required:
-      - x
-      - y
+    response_zone_search_item:
+      title: response_zone_search_item
       type: object
       properties:
-        x:
-          type: number
-          description: Horizontal pixel coordinate of the zone vertex
-        y:
-          type: number
-          description: Vertical pixel coordinate of the zone vertex
-      description: Zone polygon vertex expressed in map pixels
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
+        enter:
+          type: integer
+          description: Epoch timestamp, in seconds, when the zone visit started
+          contentEncoding: int32
+          examples:
+          - 1541705254
+        scope:
           type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    rf_client_type:
-      title: rf_client_type
-      enum:
-      - asset
-      - client
-      - sdkclient
-      type: string
-      description: 'enum: `asset`, `client`, `sdkclient`'
+          description: Zone scope represented by this visit record
+          examples:
+          - map
+        timestamp:
+          type: number
+          description: Time when the zone visit event was recorded
+          readOnly: true
+        user:
+          type: string
+          description: Client, asset, or SDK client identifier for the visit
+          examples:
+          - c4b301c81166
+      description: Zone visit record for a client, asset, or SDK client
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    count_result:
+      title: count_result
+      required:
+      - count
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of matching items for the distinct value or values in this result
+          contentEncoding: int32
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
     response_zone_search:
       title: response_zone_search
       type: object
@@ -2017,6 +2003,20 @@ components:
           examples:
           - 5892
       description: Paginated response for site zone visit search results
+    zone_vertex:
+      title: zone_vertex
+      required:
+      - x
+      - y
+      type: object
+      properties:
+        x:
+          type: number
+          description: Horizontal pixel coordinate of the zone vertex
+        y:
+          type: number
+          description: Vertical pixel coordinate of the zone vertex
+      description: Zone polygon vertex expressed in map pixels
   securitySchemes:
     apiToken:
       type: apiKey

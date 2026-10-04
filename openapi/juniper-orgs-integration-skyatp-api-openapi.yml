@@ -1201,27 +1201,6 @@ paths:
       deprecated: false
 components:
   schemas:
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    account_skyatp_cloud_name2:
-      title: account_skyatp_cloud_name2
-      enum:
-      - www.amerskyatp.com
-      - www.apacskyatp.com
-      - www.euroskyatp.com
-      - www.canadaskyatp.com
-      type: string
-      description: 'Sky ATP cloud endpoint configured for the integration. enum: `www.amerskyatp.com`, `www.apacskyatp.com`, `www.euroskyatp.com`, `www.canadaskyatp.com`.'
-      examples:
-      - www.amerskyatp.com
     account_skyatp_data:
       title: account_skyatp_data
       type: object
@@ -1243,16 +1222,17 @@ components:
           examples:
           - https://papi.s3.amazonaws.com/secintel_blocklist/xxx...
       description: Sky ATP SecIntel feed data and generated list URLs
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
+    account_skyatp_cloud_name2:
+      title: account_skyatp_cloud_name2
+      enum:
+      - www.amerskyatp.com
+      - www.apacskyatp.com
+      - www.euroskyatp.com
+      - www.canadaskyatp.com
+      type: string
+      description: 'Sky ATP cloud endpoint configured for the integration. enum: `www.amerskyatp.com`, `www.apacskyatp.com`, `www.euroskyatp.com`, `www.canadaskyatp.com`.'
+      examples:
+      - www.amerskyatp.com
     skyatp_list_domain:
       title: skyatp_list_domain
       required:
@@ -1270,6 +1250,26 @@ components:
           examples:
           - unsafe.com
       description: Domain entry in a Sky ATP SecIntel list
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
     response_http429:
       title: response_http429
       type: object
@@ -1301,6 +1301,14 @@ components:
           examples:
           - john@abc.com
       description: Linked Sky ATP account and realm information
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
     account_skyatp_config:
       title: account_skyatp_config
       required:
@@ -1332,16 +1340,6 @@ components:
           examples:
           - john@abc.com
       description: Sky ATP account credentials and realm settings used for integration
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
     skyatp_list:
       title: skyatp_list
       type: object
@@ -1357,14 +1355,27 @@ components:
             $ref: '#/components/schemas/skyatp_list_ip'
           description: SecIntel IP address entries in this Sky ATP list
       description: Sky ATP SecIntel allowlist or blocklist entries
-    response_http404:
-      title: response_http404
+    account_skyatp_data_secintel2:
+      title: account_skyatp_data_secintel2
       type: object
       properties:
-        id:
+        third_party_threat_feeds:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Third-party threat feed names enabled for SecIntel
+      description: Juniper SecIntel threat feed configuration provided by Sky ATP
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
           type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
     skyatp_list_ip:
       title: skyatp_list_ip
       required:
@@ -1393,17 +1404,6 @@ components:
       description: 'Sky ATP cloud endpoint used for the integration. enum: `www.amerskyatp.com`, `www.apacskyatp.com`, `www.euroskyatp.com`, `www.canadaskyatp.com`.'
       examples:
       - www.amerskyatp.com
-    account_skyatp_data_secintel2:
-      title: account_skyatp_data_secintel2
-      type: object
-      properties:
-        third_party_threat_feeds:
-          uniqueItems: true
-          type: array
-          items:
-            type: string
-          description: Third-party threat feed names enabled for SecIntel
-      description: Juniper SecIntel threat feed configuration provided by Sky ATP
   securitySchemes:
     apiToken:
       type: apiKey

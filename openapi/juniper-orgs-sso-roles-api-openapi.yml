@@ -1126,16 +1126,38 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
-    response_http400:
-      title: response_http400
+    admin_privilege_view:
+      title: admin_privilege_view
+      enum:
+      - lobby_admin
+      - location
+      - marketing
+      - mxedge_admin
+      - reporting
+      - security
+      - super_observer
+      - switch_admin
+      type: string
+      description: 'UI view name allowed by a custom admin role. enum: `lobby_admin`, `location`, `marketing`, `mxedge_admin`, `reporting`, `security`, `super_observer`, `switch_admin`'
+    privilege_org_scope2:
+      title: privilege_org_scope2
+      enum:
+      - org
+      - site
+      - sitegroup
+      - orgsites
+      type: string
+      description: 'Organization hierarchy level where this privilege applies. enum: `org`, `site`, `sitegroup`, `orgsites`.'
+    response_http401:
+      title: response_http401
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the bad request error
+          description: Human-readable explanation of the authentication error
           examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
     response_http429:
       title: response_http429
       type: object
@@ -1184,29 +1206,6 @@ components:
             $ref: '#/components/schemas/admin_privilege_view'
           description: UI views allowed by custom role restrictions
       description: Organization privilege scope and role settings
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    admin_privilege_view:
-      title: admin_privilege_view
-      enum:
-      - lobby_admin
-      - location
-      - marketing
-      - mxedge_admin
-      - reporting
-      - security
-      - super_observer
-      - switch_admin
-      type: string
-      description: 'UI view name allowed by a custom admin role. enum: `lobby_admin`, `location`, `marketing`, `mxedge_admin`, `reporting`, `security`, `super_observer`, `switch_admin`'
     response_http404:
       title: response_http404
       type: object
@@ -1215,25 +1214,6 @@ components:
           type: string
           description: Missing resource identifier, when the API includes one
       description: Standard HTTP 404 not found error response
-    privilege_org_role2:
-      title: privilege_org_role2
-      enum:
-      - admin
-      - helpdesk
-      - installer
-      - read
-      - write
-      type: string
-      description: 'Access role granted by this organization privilege. enum: `admin`, `helpdesk`, `installer`, `read`, `write`.'
-    privilege_org_scope2:
-      title: privilege_org_scope2
-      enum:
-      - org
-      - site
-      - sitegroup
-      - orgsites
-      type: string
-      description: 'Organization hierarchy level where this privilege applies. enum: `org`, `site`, `sitegroup`, `orgsites`.'
     sso_role_org:
       title: sso_role_org
       required:
@@ -1284,6 +1264,26 @@ components:
             $ref: '#/components/schemas/privilege_org'
           description: Access privileges granted by this organization SSO role
       description: Organization SSO role definition
+    privilege_org_role2:
+      title: privilege_org_role2
+      enum:
+      - admin
+      - helpdesk
+      - installer
+      - read
+      - write
+      type: string
+      description: 'Access role granted by this organization privilege. enum: `admin`, `helpdesk`, `installer`, `read`, `write`.'
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
   securitySchemes:
     apiToken:
       type: apiKey

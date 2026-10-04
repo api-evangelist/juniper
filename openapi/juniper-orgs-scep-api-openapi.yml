@@ -1124,6 +1124,101 @@ paths:
       deprecated: false
 components:
   schemas:
+    org_setting_scep:
+      title: org_setting_scep
+      type: object
+      properties:
+        cert_providers:
+          type: array
+          items:
+            $ref: '#/components/schemas/org_setting_scep_cert_provider'
+          description: Certificate providers enabled for Mist SCEP
+        enable:
+          type: boolean
+          description: Whether SCEP is enabled for this org
+        suspended:
+          type: boolean
+          description: Whether SCEP is suspended for this org
+          default: false
+      description: Mist SCEP settings for certificate enrollment
+    client_cert_serial_numbers:
+      title: client_cert_serial_numbers
+      type: object
+      properties:
+        serial_numbers:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Certificate serial numbers to revoke
+      description: Client certificate serial numbers targeted by a certificate operation
+      examples:
+      - serial_numbers:
+        - 13 00 13 03 23 EE D5 84 01
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    org_setting_scep_cert_provider:
+      title: org_setting_scep_cert_provider
+      enum:
+      - intune
+      - jamf
+      - byod
+      type: string
+      description: 'enum: `intune`, `jamf`, `byod`'
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    issued_client_certificates_results:
+      title: issued_client_certificates_results
+      type: object
+      properties:
+        limit:
+          type: integer
+          description: Maximum number of results requested
+          contentEncoding: int32
+        page:
+          type: integer
+          description: Current page number
+          contentEncoding: int32
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/issued_client_certificate'
+          description: List of issued client certificates returned by the query
+      description: Issued client certificate search results wrapper
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
     issued_client_certificate:
       title: issued_client_certificate
       type: object
@@ -1159,16 +1254,6 @@ components:
           examples:
           - 91984382552102771A2B3C4E5F224719956718003374658
       description: Issued Mist SCEP client certificate metadata
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
     response_http400:
       title: response_http400
       type: object
@@ -1179,40 +1264,6 @@ components:
           examples:
           - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
       description: Standard HTTP 400 bad request error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    client_cert_serial_numbers:
-      title: client_cert_serial_numbers
-      type: object
-      properties:
-        serial_numbers:
-          uniqueItems: true
-          type: array
-          items:
-            type: string
-          description: Certificate serial numbers to revoke
-      description: Client certificate serial numbers targeted by a certificate operation
-      examples:
-      - serial_numbers:
-        - 13 00 13 03 23 EE D5 84 01
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
     org_setting_scep_response:
       title: org_setting_scep_response
       type: object
@@ -1255,57 +1306,6 @@ components:
           description: Whether SCEP is suspended for this org
           default: false
       description: Read-only Mist SCEP settings returned for the organization
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    issued_client_certificates_results:
-      title: issued_client_certificates_results
-      type: object
-      properties:
-        limit:
-          type: integer
-          description: Maximum number of results requested
-          contentEncoding: int32
-        page:
-          type: integer
-          description: Current page number
-          contentEncoding: int32
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/issued_client_certificate'
-          description: List of issued client certificates returned by the query
-      description: Issued client certificate search results wrapper
-    org_setting_scep:
-      title: org_setting_scep
-      type: object
-      properties:
-        cert_providers:
-          type: array
-          items:
-            $ref: '#/components/schemas/org_setting_scep_cert_provider'
-          description: Certificate providers enabled for Mist SCEP
-        enable:
-          type: boolean
-          description: Whether SCEP is enabled for this org
-        suspended:
-          type: boolean
-          description: Whether SCEP is suspended for this org
-          default: false
-      description: Mist SCEP settings for certificate enrollment
-    org_setting_scep_cert_provider:
-      title: org_setting_scep_cert_provider
-      enum:
-      - intune
-      - jamf
-      - byod
-      type: string
-      description: 'enum: `intune`, `jamf`, `byod`'
   securitySchemes:
     apiToken:
       type: apiKey

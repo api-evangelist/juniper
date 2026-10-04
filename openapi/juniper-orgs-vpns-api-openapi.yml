@@ -1175,13 +1175,6 @@ paths:
       deprecated: false
 components:
   schemas:
-    vpn_path_bfd_profile2:
-      title: vpn_path_bfd_profile2
-      enum:
-      - broadband
-      - lte
-      type: string
-      description: 'BFD profile used for this VPN path. enum: `broadband`, `lte`.'
     vpn_path_traffic_shaping2:
       title: vpn_path_traffic_shaping2
       type: object
@@ -1219,52 +1212,6 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    vpn_path_selection2:
-      title: vpn_path_selection2
-      type: object
-      properties:
-        strategy:
-          allOf:
-          - $ref: '#/components/schemas/vpn_path_selection_strategy2'
-          - description: 'Path selection strategy for a hub-and-spoke VPN. enum: `disabled`, `simple`, `manual`.'
-      description: Path selection settings used when `type`==`hub_spoke`
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    vpn_mode2:
-      title: vpn_mode2
-      enum:
-      - hub_spoke
-      - mesh
-      type: string
-      description: 'VPN topology mode for this configuration. enum: `hub_spoke`, `mesh`.'
     vpn:
       title: vpn
       required:
@@ -1312,23 +1259,16 @@ components:
           - $ref: '#/components/schemas/vpn_mode2'
           - description: 'VPN topology mode for this configuration. enum: `hub_spoke`, `mesh`.'
       description: Organization VPN overlay configuration
-    vpn_path_peer_paths_peer:
-      title: vpn_path_peer_paths_peer
+    response_http401:
+      title: response_http401
       type: object
       properties:
-        preference:
-          type: integer
-          description: Lower numeric value makes this outgoing WAN path more preferred
-          contentEncoding: int32
-      description: Peer path preference settings for mesh VPN routing
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
+        detail:
           type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
     vpn_path_selection_strategy2:
       title: vpn_path_selection_strategy2
       enum:
@@ -1337,6 +1277,23 @@ components:
       - manual
       type: string
       description: 'Path selection strategy for a hub-and-spoke VPN. enum: `disabled`, `simple`, `manual`.'
+    vpn_mode2:
+      title: vpn_mode2
+      enum:
+      - hub_spoke
+      - mesh
+      type: string
+      description: 'VPN topology mode for this configuration. enum: `hub_spoke`, `mesh`.'
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
     vpn_path:
       title: vpn_path
       type: object
@@ -1371,6 +1328,49 @@ components:
           - $ref: '#/components/schemas/vpn_path_traffic_shaping2'
           - description: Traffic shaping settings applied to this VPN path
       description: VPN path settings used by an organization VPN
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    vpn_path_selection2:
+      title: vpn_path_selection2
+      type: object
+      properties:
+        strategy:
+          allOf:
+          - $ref: '#/components/schemas/vpn_path_selection_strategy2'
+          - description: 'Path selection strategy for a hub-and-spoke VPN. enum: `disabled`, `simple`, `manual`.'
+      description: Path selection settings used when `type`==`hub_spoke`
+    vpn_path_bfd_profile2:
+      title: vpn_path_bfd_profile2
+      enum:
+      - broadband
+      - lte
+      type: string
+      description: 'BFD profile used for this VPN path. enum: `broadband`, `lte`.'
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    vpn_path_peer_paths_peer:
+      title: vpn_path_peer_paths_peer
+      type: object
+      properties:
+        preference:
+          type: integer
+          description: Lower numeric value makes this outgoing WAN path more preferred
+          contentEncoding: int32
+      description: Peer path preference settings for mesh VPN routing
   securitySchemes:
     apiToken:
       type: apiKey

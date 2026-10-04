@@ -1923,6 +1923,159 @@ paths:
       deprecated: false
 components:
   schemas:
+    mxedge_tunterm_switch_configs2:
+      title: mxedge_tunterm_switch_configs2
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether custom tunnel termination switch VLAN settings are enabled
+      additionalProperties:
+        allOf:
+        - $ref: '#/components/schemas/mxedge_tunterm_switch_config'
+        - description: Switch VLAN settings for one tunnel termination port
+      description: Switch VLAN settings for tunnel termination
+    mxedge_tunterm_igmp_snooping_querier2:
+      title: mxedge_tunterm_igmp_snooping_querier2
+      type: object
+      properties:
+        max_response_time:
+          type: integer
+          description: Querier's query response interval, in tenths-of-seconds
+          contentEncoding: int32
+          examples:
+          - 10
+        mtu:
+          type: integer
+          description: The MTU we use (needed when forming large IGMPv3 Reports)
+          contentEncoding: int32
+          examples:
+          - 1500
+        query_interval:
+          type: integer
+          description: Querier's query interval, in seconds
+          contentEncoding: int32
+          examples:
+          - 125
+        robustness:
+          maximum: 7
+          minimum: 1
+          type: integer
+          description: IGMP querier robustness variable
+          contentEncoding: int32
+        version:
+          type: integer
+          description: Querier's maximum protocol version
+          contentEncoding: int32
+          examples:
+          - 3
+      description: IGMP querier settings used with tunnel termination snooping
+    mxedge_tunterm_switch_config:
+      title: mxedge_tunterm_switch_config
+      type: object
+      properties:
+        port_vlan_id:
+          type: integer
+          description: Untagged VLAN ID for this tunnel termination switch port
+          contentEncoding: int32
+        vlan_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/vlan_id_with_variable'
+          description: List of tagged VLAN IDs allowed on this tunnel termination switch port
+      description: Switch VLAN settings for one tunnel termination port
+    mxedge_mgmt_oob_ip_type62:
+      title: mxedge_mgmt_oob_ip_type62
+      enum:
+      - autoconf
+      - dhcp
+      - disabled
+      - static
+      type: string
+      description: 'IPv6 address assignment mode for out-of-band management. enum: `autoconf`, `dhcp`, `disabled`, `static`.'
+    mxedge_tunterm_dhcpd_config2:
+      title: mxedge_tunterm_dhcpd_config2
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether DHCP relay is enabled for Mist Tunneled VLANs
+          default: false
+        servers:
+          type: array
+          items:
+            type: string
+          description: DHCP relay server addresses used when `type`==`relay`
+        type:
+          allOf:
+          - $ref: '#/components/schemas/mxedge_tunterm_dhcpd_type2'
+          - description: 'DHCP handling mode for the global tunnel termination config. enum: `relay`.'
+      additionalProperties:
+        allOf:
+        - $ref: '#/components/schemas/mxedge_tunterm_dhcpd_config_property'
+        - description: Per-VLAN DHCP relay settings for a Mist Tunneled VLAN
+      description: DHCP relay or server settings for Mist Tunneled VLANs
+    mxedge_tunterm_ip_config2:
+      title: mxedge_tunterm_ip_config2
+      required:
+      - gateway
+      - ip
+      - netmask
+      type: object
+      properties:
+        gateway:
+          type: string
+          description: IPv4 gateway for the Mist Tunnel interface
+          examples:
+          - 10.2.1.254
+        gateway6:
+          type: string
+          description: IPv6 gateway for the Mist Tunnel interface
+          examples:
+          - 2001:1010:1010:1010::1
+        ip:
+          type: string
+          description: Address on the untagged Mist Tunnel interface, in IPv4 format
+          examples:
+          - 10.2.1.1
+        ip6:
+          type: string
+          description: Address on the Mist Tunnel interface, in IPv6 format
+          examples:
+          - 2001:1010:1010:1010::2
+        netmask:
+          type: string
+          description: Subnet mask for the Mist Tunnel IPv4 address
+          examples:
+          - 255.255.255.0
+        netmask6:
+          type: string
+          description: Prefix length for the Mist Tunnel IPv6 address
+          examples:
+          - /64
+      description: Tunnel termination IP configuration for the Mist Edge
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    mxedge_tunterm_other_ip_config:
+      title: mxedge_tunterm_other_ip_config
+      required:
+      - ip
+      - netmask
+      type: object
+      properties:
+        ip:
+          type: string
+          description: Address for the additional Mist Tunnel interface, in IPv4 format
+        netmask:
+          type: string
+          description: Subnet mask for the additional Mist Tunnel IPv4 address
+      description: Additional IP configuration for a Mist Tunnel VLAN interface
     count_result:
       title: count_result
       required:
@@ -1936,6 +2089,160 @@ components:
       additionalProperties:
         type: string
       description: Count result row with the matching distinct field values
+    mxedge_versions2:
+      title: mxedge_versions2
+      type: object
+      properties:
+        mxagent:
+          type: string
+          description: Reported version of the mxagent service
+          readOnly: true
+        tunterm:
+          type: string
+          description: Reported version of the tunnel termination service
+          readOnly: true
+      description: Service version information reported by the Mist Edge
+    mxedge_tunterm_multicast_ssdp2:
+      title: mxedge_tunterm_multicast_ssdp2
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether SSDP forwarding is enabled for the configured VLANs
+        vlan_ids:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: List of VLAN IDs where SSDP forwarding is enabled
+      description: Settings for SSDP forwarding on tunnel termination VLANs
+    tunterm_monitoring_item:
+      title: tunterm_monitoring_item
+      type: object
+      properties:
+        host:
+          minLength: 1
+          type: string
+          description: Can be ip, ipv6, hostname
+          examples:
+          - 10.2.8.15
+        port:
+          type: integer
+          description: When `protocol`==`tcp`, TCP port checked by the monitoring probe
+          contentEncoding: int32
+          examples:
+          - 80
+        protocol:
+          allOf:
+          - $ref: '#/components/schemas/tunterm_monitoring_protocol2'
+          - minLength: 1
+            description: 'Monitoring method used for this tunnel termination check. enum: `arp`, `ping`, `tcp`.'
+            examples:
+            - tcp
+        src_vlan_id:
+          type: integer
+          description: Optional source for the monitoring check, vlan_id configured in tunterm_other_ip_configs
+          contentEncoding: int32
+          examples:
+          - 5
+        timeout:
+          type: integer
+          description: Maximum time for this monitoring check, in seconds
+          contentEncoding: int32
+          default: 300
+          examples:
+          - 300
+      description: Monitoring check for tunnel termination reachability
+    mxedge_oob_ip_config3:
+      title: mxedge_oob_ip_config3
+      type: object
+      properties:
+        autoconf6:
+          type: boolean
+          description: Whether IPv6 autoconfiguration is enabled on the out-of-band management interface
+          default: true
+        dhcp6:
+          type: boolean
+          description: Whether DHCPv6 is enabled on the out-of-band management interface
+          default: true
+        dns:
+          type: array
+          items:
+            type: string
+          description: Name server addresses for out-of-band management
+          default:
+          - 8.8.8.8
+          - 8.8.4.4
+          - 2001:4860:4860::8888
+          - 2001:4860:4860::8844
+          examples:
+          - - 8.8.8.8
+            - 4.4.4.4
+            - 2001:4860:4860::8888
+            - 2001:4860:4860::8844
+        gateway:
+          type: string
+          description: If `type`=`static`, IPv4 default gateway for the out-of-band management interface
+          examples:
+          - 10.2.1.254
+        gateway6:
+          type: string
+          description: If `type6`=`static`, IPv6 default gateway for the out-of-band management interface
+          examples:
+          - 2601:1700:43c0:dc0::1
+        ip:
+          type: string
+          description: If `type`=`static`, IPv4 address for the out-of-band management interface
+          examples:
+          - 10.2.1.2
+        ip6:
+          type: string
+          description: If `type6`=`static`, IPv6 address for the out-of-band management interface
+          examples:
+          - 2601:1700:43c0:dc0:20c:29ff:fea7:93bc
+        netmask:
+          type: string
+          description: If `type`=`static`, IPv4 netmask for the out-of-band management interface
+          examples:
+          - 255.255.255.0
+        netmask6:
+          type: string
+          description: If `type6`=`static`, IPv6 prefix length for the out-of-band management interface
+          examples:
+          - /64
+        type:
+          allOf:
+          - $ref: '#/components/schemas/ip_type9'
+          - description: 'IPv4 address assignment mode for out-of-band management. enum: `dhcp`, `static`.'
+            examples:
+            - static
+        type6:
+          allOf:
+          - $ref: '#/components/schemas/ip_type10'
+          - description: 'IPv6 address assignment mode for out-of-band management. enum: `dhcp`, `static`.'
+            examples:
+            - static
+      description: Out-of-band management IP configuration for the Mist Edge
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
     event_severity1:
       title: event_severity1
       enum:
@@ -1945,15 +2252,102 @@ components:
       - warning
       type: string
       description: 'Event severity level reported for this Mist Edge event. enum: `normal`, `critical`, `high`, `warning`.'
-    event_severity2:
-      title: event_severity2
+    ip_type9:
+      title: ip_type9
       enum:
-      - normal
-      - critical
-      - high
-      - warning
+      - dhcp
+      - static
       type: string
-      description: 'Event severity for the system resource condition. enum: `normal`, `critical`, `high`, `warning`.'
+      description: 'IPv4 address assignment mode for out-of-band management. enum: `dhcp`, `static`.'
+      examples:
+      - static
+    mxedge_event:
+      title: mxedge_event
+      type: object
+      properties:
+        audit_id:
+          type: string
+          description: Audit log identifier associated with this event, when available
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        component:
+          type:
+          - string
+          - 'null'
+          description: Mist Edge component that reported the event, such as a power supply or fan
+          examples:
+          - PS1
+          - Fan1
+        device_id:
+          type:
+          - string
+          - 'null'
+          description: Identifier of the device associated with the event, when available
+          contentEncoding: uuid
+          readOnly: true
+        device_type:
+          type: string
+          description: Device type associated with the event
+        from_version:
+          type: string
+          description: Service version before an upgrade-related event
+        mac:
+          type: string
+          description: Mist Edge MAC address associated with the event
+        mxcluster_id:
+          type: string
+          description: Mist Edge cluster identifier associated with the event
+          examples:
+          - 2815c917-58e7-472f-a190-bfd44fb58d05
+        mxedge_id:
+          type: string
+          description: Mist Edge identifier associated with the event
+          examples:
+          - 00000000-0000-0000-1000-020000dc585c
+        mxedge_name:
+          type: string
+          description: Display name of the Mist Edge associated with the event
+        org_id:
+          type: string
+          description: Identifier of the org where the event occurred
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        package:
+          type: string
+          description: Software package associated with the event
+        service:
+          type: string
+          description: Mist Edge service associated with the event
+          examples:
+          - tunterm
+        severity:
+          allOf:
+          - $ref: '#/components/schemas/event_severity1'
+          - description: 'Event severity level reported for this Mist Edge event. enum: `normal`, `critical`, `high`, `warning`.'
+        sys_info.usage:
+          allOf:
+          - $ref: '#/components/schemas/mxedge_event_sys_info2'
+          - description: System resource usage details associated with the event
+        text:
+          type: string
+          description: Human-readable message describing the Mist Edge event
+        timestamp:
+          type: number
+          description: Time when the Mist Edge event occurred
+          readOnly: true
+        to_version:
+          type: string
+          description: Service version after an upgrade-related event
+        type:
+          type: string
+          description: Mist Edge event type code
+          examples:
+          - ME_SERVICE_STOPPED
+      description: Event reported for a Mist Edge appliance or service
     proxy1:
       title: proxy1
       type: object
@@ -2123,28 +2517,6 @@ components:
           - description: Service version information reported by the Mist Edge
           readOnly: true
       description: Mist Edge appliance configuration and registration state
-    mxedge_mgmt_oob_ip_type2:
-      title: mxedge_mgmt_oob_ip_type2
-      enum:
-      - dhcp
-      - disabled
-      - static
-      type: string
-      description: 'IPv4 address assignment mode for out-of-band management. enum: `dhcp`, `disabled`, `static`.'
-    mxedge_tunterm_multicast_ssdp2:
-      title: mxedge_tunterm_multicast_ssdp2
-      type: object
-      properties:
-        enabled:
-          type: boolean
-          description: Whether SSDP forwarding is enabled for the configured VLANs
-        vlan_ids:
-          uniqueItems: true
-          type: array
-          items:
-            type: string
-          description: List of VLAN IDs where SSDP forwarding is enabled
-      description: Settings for SSDP forwarding on tunnel termination VLANs
     response_mxedge_events_search:
       title: response_mxedge_events_search
       type: object
@@ -2184,219 +2556,16 @@ components:
           examples:
           - 1694622179
       description: Search response for Mist Edge event records
-    mxedge_event:
-      title: mxedge_event
-      type: object
-      properties:
-        audit_id:
-          type: string
-          description: Audit log identifier associated with this event, when available
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 53f10664-3ce8-4c27-b382-0ef66432349f
-        component:
-          type:
-          - string
-          - 'null'
-          description: Mist Edge component that reported the event, such as a power supply or fan
-          examples:
-          - PS1
-          - Fan1
-        device_id:
-          type:
-          - string
-          - 'null'
-          description: Identifier of the device associated with the event, when available
-          contentEncoding: uuid
-          readOnly: true
-        device_type:
-          type: string
-          description: Device type associated with the event
-        from_version:
-          type: string
-          description: Service version before an upgrade-related event
-        mac:
-          type: string
-          description: Mist Edge MAC address associated with the event
-        mxcluster_id:
-          type: string
-          description: Mist Edge cluster identifier associated with the event
-          examples:
-          - 2815c917-58e7-472f-a190-bfd44fb58d05
-        mxedge_id:
-          type: string
-          description: Mist Edge identifier associated with the event
-          examples:
-          - 00000000-0000-0000-1000-020000dc585c
-        mxedge_name:
-          type: string
-          description: Display name of the Mist Edge associated with the event
-        org_id:
-          type: string
-          description: Identifier of the org where the event occurred
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
-        package:
-          type: string
-          description: Software package associated with the event
-        service:
-          type: string
-          description: Mist Edge service associated with the event
-          examples:
-          - tunterm
-        severity:
-          allOf:
-          - $ref: '#/components/schemas/event_severity1'
-          - description: 'Event severity level reported for this Mist Edge event. enum: `normal`, `critical`, `high`, `warning`.'
-        sys_info.usage:
-          allOf:
-          - $ref: '#/components/schemas/mxedge_event_sys_info2'
-          - description: System resource usage details associated with the event
-        text:
-          type: string
-          description: Human-readable message describing the Mist Edge event
-        timestamp:
-          type: number
-          description: Time when the Mist Edge event occurred
-          readOnly: true
-        to_version:
-          type: string
-          description: Service version after an upgrade-related event
-        type:
-          type: string
-          description: Mist Edge event type code
-          examples:
-          - ME_SERVICE_STOPPED
-      description: Event reported for a Mist Edge appliance or service
-    ip_type10:
-      title: ip_type10
+    tunterm_monitoring_protocol2:
+      title: tunterm_monitoring_protocol2
       enum:
-      - dhcp
-      - static
+      - arp
+      - ping
+      - tcp
       type: string
-      description: 'IPv6 address assignment mode for out-of-band management. enum: `dhcp`, `static`.'
+      description: 'Monitoring method used for this tunnel termination check. enum: `arp`, `ping`, `tcp`.'
       examples:
-      - static
-    ip_type9:
-      title: ip_type9
-      enum:
-      - dhcp
-      - static
-      type: string
-      description: 'IPv4 address assignment mode for out-of-band management. enum: `dhcp`, `static`.'
-      examples:
-      - static
-    mxedge_tunterm_extra_route:
-      title: mxedge_tunterm_extra_route
-      type: object
-      properties:
-        via:
-          type: string
-          description: Next-hop IP address for this Mist Tunnel extra route
-      description: Extra route for Mist Tunnel traffic on a Mist Edge
-    vlan_id_with_variable:
-      oneOf:
-      - type: string
-      - maximum: 4094
-        minimum: 1
-        type: integer
-        contentEncoding: int32
-      description: VLAN ID, either numeric or expressed as a template variable string
-    tunterm_port_config3:
-      title: tunterm_port_config3
-      type: object
-      properties:
-        downstream_ports:
-          type: array
-          items:
-            type: string
-          description: Ports connected downstream toward APs for tunnel termination
-          examples:
-          - - '2'
-            - '3'
-        separate_upstream_downstream:
-          type: boolean
-          description: Whether to separate upstream / downstream ports. default is false where all ports will be used.
-          default: false
-        upstream_port_vlan_id:
-          oneOf:
-          - type: string
-          - maximum: 4094
-            minimum: 1
-            type: integer
-            contentEncoding: int32
-          description: Native VLAN ID applied to upstream tunnel termination ports
-        upstream_ports:
-          type: array
-          items:
-            type: string
-          description: Ports connected upstream toward the LAN for tunnel termination
-          examples:
-          - - '0'
-            - '1'
-      description: Port configuration for tunnel termination traffic
-    mxedge_tunterm_dhcpd_type2:
-      title: mxedge_tunterm_dhcpd_type2
-      const: relay
-      type: string
-      description: 'DHCP handling mode for the global tunnel termination config. enum: `relay`.'
-    mxedge_tunterm_multicast_mdns2:
-      title: mxedge_tunterm_multicast_mdns2
-      type: object
-      properties:
-        enabled:
-          type: boolean
-          description: Whether mDNS forwarding is enabled for the configured VLANs
-        vlan_ids:
-          uniqueItems: true
-          type: array
-          items:
-            type: string
-          description: List of VLAN IDs where mDNS forwarding is enabled
-      description: Settings for mDNS forwarding on tunnel termination VLANs
-    mxedge_tunterm_dhcpd_config_type2:
-      title: mxedge_tunterm_dhcpd_config_type2
-      const: relay
-      type: string
-      description: 'DHCP handling mode for this tunneled VLAN. enum: `relay`.'
-    mxedge_tunterm_igmp_snooping_querier2:
-      title: mxedge_tunterm_igmp_snooping_querier2
-      type: object
-      properties:
-        max_response_time:
-          type: integer
-          description: Querier's query response interval, in tenths-of-seconds
-          contentEncoding: int32
-          examples:
-          - 10
-        mtu:
-          type: integer
-          description: The MTU we use (needed when forming large IGMPv3 Reports)
-          contentEncoding: int32
-          examples:
-          - 1500
-        query_interval:
-          type: integer
-          description: Querier's query interval, in seconds
-          contentEncoding: int32
-          examples:
-          - 125
-        robustness:
-          maximum: 7
-          minimum: 1
-          type: integer
-          description: IGMP querier robustness variable
-          contentEncoding: int32
-        version:
-          type: integer
-          description: Querier's maximum protocol version
-          contentEncoding: int32
-          examples:
-          - 3
-      description: IGMP querier settings used with tunnel termination snooping
+      - tcp
     mxedge_tunterm_dhcpd_config_property:
       title: mxedge_tunterm_dhcpd_config_property
       type: object
@@ -2415,108 +2584,57 @@ components:
           - $ref: '#/components/schemas/mxedge_tunterm_dhcpd_config_type2'
           - description: 'DHCP handling mode for this tunneled VLAN. enum: `relay`.'
       description: Per-VLAN DHCP relay settings for a Mist Tunneled VLAN
-    mxedge_mgmt1:
-      title: mxedge_mgmt1
+    mxedge_event_sys_info2:
+      title: mxedge_event_sys_info2
       type: object
       properties:
-        config_auto_revert:
-          type: boolean
-          description: Whether the Mist Edge automatically reverts configuration changes if connectivity is lost
-          default: false
-        fips_enabled:
-          type: boolean
-          description: Whether FIPS mode is enabled on the Mist Edge
-          default: false
-        mist_password:
+        resource:
           type: string
-          description: Password for the Mist service account on the Mist Edge
-          examples:
-          - MIST_PASSWORD
-        oob_ip_type:
+          description: System resource referenced by the event
+        severity:
           allOf:
-          - $ref: '#/components/schemas/mxedge_mgmt_oob_ip_type2'
-          - description: 'IPv4 address assignment mode for out-of-band management. enum: `dhcp`, `disabled`, `static`.'
-        oob_ip_type6:
+          - $ref: '#/components/schemas/event_severity2'
+          - description: 'Event severity for the system resource condition. enum: `normal`, `critical`, `high`, `warning`.'
+      description: System resource usage details associated with the event
+    mxedge_tunterm_extra_route:
+      title: mxedge_tunterm_extra_route
+      type: object
+      properties:
+        via:
+          type: string
+          description: Next-hop IP address for this Mist Tunnel extra route
+      description: Extra route for Mist Tunnel traffic on a Mist Edge
+    mxedge_tunterm_igmp_snooping_config2:
+      title: mxedge_tunterm_igmp_snooping_config2
+      type: object
+      properties:
+        enabled:
+          oneOf:
+          - type: boolean
+            default: false
+          - type: string
+            default: 'False'
+          description: Whether IGMP snooping is enabled for the configured VLANs
+        querier:
           allOf:
-          - $ref: '#/components/schemas/mxedge_mgmt_oob_ip_type62'
-          - description: 'IPv6 address assignment mode for out-of-band management. enum: `autoconf`, `dhcp`, `disabled`, `static`.'
-        root_password:
-          type: string
-          description: Root account password for the Mist Edge
-          contentEncoding: password
-          examples:
-          - ROOT_PASSWORD
-      description: Management credentials and settings for the Mist Edge
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    mxedge_tunterm_ip_config2:
-      title: mxedge_tunterm_ip_config2
-      required:
-      - gateway
-      - ip
-      - netmask
-      type: object
-      properties:
-        gateway:
-          type: string
-          description: IPv4 gateway for the Mist Tunnel interface
-          examples:
-          - 10.2.1.254
-        gateway6:
-          type: string
-          description: IPv6 gateway for the Mist Tunnel interface
-          examples:
-          - 2001:1010:1010:1010::1
-        ip:
-          type: string
-          description: Address on the untagged Mist Tunnel interface, in IPv4 format
-          examples:
-          - 10.2.1.1
-        ip6:
-          type: string
-          description: Address on the Mist Tunnel interface, in IPv6 format
-          examples:
-          - 2001:1010:1010:1010::2
-        netmask:
-          type: string
-          description: Subnet mask for the Mist Tunnel IPv4 address
-          examples:
-          - 255.255.255.0
-        netmask6:
-          type: string
-          description: Prefix length for the Mist Tunnel IPv6 address
-          examples:
-          - /64
-      description: Tunnel termination IP configuration for the Mist Edge
-    mxedge_mgmt_oob_ip_type62:
-      title: mxedge_mgmt_oob_ip_type62
-      enum:
-      - autoconf
-      - dhcp
-      - disabled
-      - static
+          - $ref: '#/components/schemas/mxedge_tunterm_igmp_snooping_querier2'
+          - description: IGMP querier settings used with tunnel termination snooping
+        vlan_ids:
+          anyOf:
+          - type: array
+            items:
+              maximum: 4096
+              minimum: 0
+              type: integer
+              contentEncoding: int32
+          - type: string
+          description: List of VLAN IDs where tunnel termination performs IGMP snooping
+      description: IGMP snooping settings for Mist Tunneled VLANs
+    mxedge_tunterm_dhcpd_config_type2:
+      title: mxedge_tunterm_dhcpd_config_type2
+      const: relay
       type: string
-      description: 'IPv6 address assignment mode for out-of-band management. enum: `autoconf`, `dhcp`, `disabled`, `static`.'
-    mxedge_tunterm_other_ip_config:
-      title: mxedge_tunterm_other_ip_config
-      required:
-      - ip
-      - netmask
-      type: object
-      properties:
-        ip:
-          type: string
-          description: Address for the additional Mist Tunnel interface, in IPv4 format
-        netmask:
-          type: string
-          description: Subnet mask for the additional Mist Tunnel IPv4 address
-      description: Additional IP configuration for a Mist Tunnel VLAN interface
+      description: 'DHCP handling mode for this tunneled VLAN. enum: `relay`.'
     response_count:
       title: response_count
       required:
@@ -2554,6 +2672,102 @@ components:
           description: Number of distinct result buckets returned
           contentEncoding: int32
       description: Distinct count response for time-bounded search results
+    mxedge_mgmt_oob_ip_type2:
+      title: mxedge_mgmt_oob_ip_type2
+      enum:
+      - dhcp
+      - disabled
+      - static
+      type: string
+      description: 'IPv4 address assignment mode for out-of-band management. enum: `dhcp`, `disabled`, `static`.'
+    mxedge_mgmt1:
+      title: mxedge_mgmt1
+      type: object
+      properties:
+        config_auto_revert:
+          type: boolean
+          description: Whether the Mist Edge automatically reverts configuration changes if connectivity is lost
+          default: false
+        fips_enabled:
+          type: boolean
+          description: Whether FIPS mode is enabled on the Mist Edge
+          default: false
+        mist_password:
+          type: string
+          description: Password for the Mist service account on the Mist Edge
+          examples:
+          - MIST_PASSWORD
+        oob_ip_type:
+          allOf:
+          - $ref: '#/components/schemas/mxedge_mgmt_oob_ip_type2'
+          - description: 'IPv4 address assignment mode for out-of-band management. enum: `dhcp`, `disabled`, `static`.'
+        oob_ip_type6:
+          allOf:
+          - $ref: '#/components/schemas/mxedge_mgmt_oob_ip_type62'
+          - description: 'IPv6 address assignment mode for out-of-band management. enum: `autoconf`, `dhcp`, `disabled`, `static`.'
+        root_password:
+          type: string
+          description: Root account password for the Mist Edge
+          contentEncoding: password
+          examples:
+          - ROOT_PASSWORD
+      description: Management credentials and settings for the Mist Edge
+    tunterm_port_config3:
+      title: tunterm_port_config3
+      type: object
+      properties:
+        downstream_ports:
+          type: array
+          items:
+            type: string
+          description: Ports connected downstream toward APs for tunnel termination
+          examples:
+          - - '2'
+            - '3'
+        separate_upstream_downstream:
+          type: boolean
+          description: Whether to separate upstream / downstream ports. default is false where all ports will be used.
+          default: false
+        upstream_port_vlan_id:
+          oneOf:
+          - type: string
+          - maximum: 4094
+            minimum: 1
+            type: integer
+            contentEncoding: int32
+          description: Native VLAN ID applied to upstream tunnel termination ports
+        upstream_ports:
+          type: array
+          items:
+            type: string
+          description: Ports connected upstream toward the LAN for tunnel termination
+          examples:
+          - - '0'
+            - '1'
+      description: Port configuration for tunnel termination traffic
+    site_mxedge_events_count_distinct:
+      title: site_mxedge_events_count_distinct
+      enum:
+      - mxcluster_id
+      - mxedge_id
+      - package
+      - type
+      type: string
+      description: 'enum: `mxcluster_id`, `mxedge_id`, `package`, `type`'
+    mxedge_tunterm_multicast_mdns2:
+      title: mxedge_tunterm_multicast_mdns2
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether mDNS forwarding is enabled for the configured VLANs
+        vlan_ids:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: List of VLAN IDs where mDNS forwarding is enabled
+      description: Settings for mDNS forwarding on tunnel termination VLANs
     response_http403:
       title: response_http403
       type: object
@@ -2564,247 +2778,6 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    tunterm_monitoring_item:
-      title: tunterm_monitoring_item
-      type: object
-      properties:
-        host:
-          minLength: 1
-          type: string
-          description: Can be ip, ipv6, hostname
-          examples:
-          - 10.2.8.15
-        port:
-          type: integer
-          description: When `protocol`==`tcp`, TCP port checked by the monitoring probe
-          contentEncoding: int32
-          examples:
-          - 80
-        protocol:
-          allOf:
-          - $ref: '#/components/schemas/tunterm_monitoring_protocol2'
-          - minLength: 1
-            description: 'Monitoring method used for this tunnel termination check. enum: `arp`, `ping`, `tcp`.'
-            examples:
-            - tcp
-        src_vlan_id:
-          type: integer
-          description: Optional source for the monitoring check, vlan_id configured in tunterm_other_ip_configs
-          contentEncoding: int32
-          examples:
-          - 5
-        timeout:
-          type: integer
-          description: Maximum time for this monitoring check, in seconds
-          contentEncoding: int32
-          default: 300
-          examples:
-          - 300
-      description: Monitoring check for tunnel termination reachability
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    site_mxedge_events_count_distinct:
-      title: site_mxedge_events_count_distinct
-      enum:
-      - mxcluster_id
-      - mxedge_id
-      - package
-      - type
-      type: string
-      description: 'enum: `mxcluster_id`, `mxedge_id`, `package`, `type`'
-    tunterm_monitoring_protocol2:
-      title: tunterm_monitoring_protocol2
-      enum:
-      - arp
-      - ping
-      - tcp
-      type: string
-      description: 'Monitoring method used for this tunnel termination check. enum: `arp`, `ping`, `tcp`.'
-      examples:
-      - tcp
-    mxedge_event_sys_info2:
-      title: mxedge_event_sys_info2
-      type: object
-      properties:
-        resource:
-          type: string
-          description: System resource referenced by the event
-        severity:
-          allOf:
-          - $ref: '#/components/schemas/event_severity2'
-          - description: 'Event severity for the system resource condition. enum: `normal`, `critical`, `high`, `warning`.'
-      description: System resource usage details associated with the event
-    mxedge_tunterm_igmp_snooping_config2:
-      title: mxedge_tunterm_igmp_snooping_config2
-      type: object
-      properties:
-        enabled:
-          oneOf:
-          - type: boolean
-            default: false
-          - type: string
-            default: 'False'
-          description: Whether IGMP snooping is enabled for the configured VLANs
-        querier:
-          allOf:
-          - $ref: '#/components/schemas/mxedge_tunterm_igmp_snooping_querier2'
-          - description: IGMP querier settings used with tunnel termination snooping
-        vlan_ids:
-          anyOf:
-          - type: array
-            items:
-              maximum: 4096
-              minimum: 0
-              type: integer
-              contentEncoding: int32
-          - type: string
-          description: List of VLAN IDs where tunnel termination performs IGMP snooping
-      description: IGMP snooping settings for Mist Tunneled VLANs
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    mxedge_oob_ip_config3:
-      title: mxedge_oob_ip_config3
-      type: object
-      properties:
-        autoconf6:
-          type: boolean
-          description: Whether IPv6 autoconfiguration is enabled on the out-of-band management interface
-          default: true
-        dhcp6:
-          type: boolean
-          description: Whether DHCPv6 is enabled on the out-of-band management interface
-          default: true
-        dns:
-          type: array
-          items:
-            type: string
-          description: Name server addresses for out-of-band management
-          default:
-          - 8.8.8.8
-          - 8.8.4.4
-          - 2001:4860:4860::8888
-          - 2001:4860:4860::8844
-          examples:
-          - - 8.8.8.8
-            - 4.4.4.4
-            - 2001:4860:4860::8888
-            - 2001:4860:4860::8844
-        gateway:
-          type: string
-          description: If `type`=`static`, IPv4 default gateway for the out-of-band management interface
-          examples:
-          - 10.2.1.254
-        gateway6:
-          type: string
-          description: If `type6`=`static`, IPv6 default gateway for the out-of-band management interface
-          examples:
-          - 2601:1700:43c0:dc0::1
-        ip:
-          type: string
-          description: If `type`=`static`, IPv4 address for the out-of-band management interface
-          examples:
-          - 10.2.1.2
-        ip6:
-          type: string
-          description: If `type6`=`static`, IPv6 address for the out-of-band management interface
-          examples:
-          - 2601:1700:43c0:dc0:20c:29ff:fea7:93bc
-        netmask:
-          type: string
-          description: If `type`=`static`, IPv4 netmask for the out-of-band management interface
-          examples:
-          - 255.255.255.0
-        netmask6:
-          type: string
-          description: If `type6`=`static`, IPv6 prefix length for the out-of-band management interface
-          examples:
-          - /64
-        type:
-          allOf:
-          - $ref: '#/components/schemas/ip_type9'
-          - description: 'IPv4 address assignment mode for out-of-band management. enum: `dhcp`, `static`.'
-            examples:
-            - static
-        type6:
-          allOf:
-          - $ref: '#/components/schemas/ip_type10'
-          - description: 'IPv6 address assignment mode for out-of-band management. enum: `dhcp`, `static`.'
-            examples:
-            - static
-      description: Out-of-band management IP configuration for the Mist Edge
-    mxedge_tunterm_dhcpd_config2:
-      title: mxedge_tunterm_dhcpd_config2
-      type: object
-      properties:
-        enabled:
-          type: boolean
-          description: Whether DHCP relay is enabled for Mist Tunneled VLANs
-          default: false
-        servers:
-          type: array
-          items:
-            type: string
-          description: DHCP relay server addresses used when `type`==`relay`
-        type:
-          allOf:
-          - $ref: '#/components/schemas/mxedge_tunterm_dhcpd_type2'
-          - description: 'DHCP handling mode for the global tunnel termination config. enum: `relay`.'
-      additionalProperties:
-        allOf:
-        - $ref: '#/components/schemas/mxedge_tunterm_dhcpd_config_property'
-        - description: Per-VLAN DHCP relay settings for a Mist Tunneled VLAN
-      description: DHCP relay or server settings for Mist Tunneled VLANs
-    mxedge_versions2:
-      title: mxedge_versions2
-      type: object
-      properties:
-        mxagent:
-          type: string
-          description: Reported version of the mxagent service
-          readOnly: true
-        tunterm:
-          type: string
-          description: Reported version of the tunnel termination service
-          readOnly: true
-      description: Service version information reported by the Mist Edge
-    mxedge_tunterm_switch_configs2:
-      title: mxedge_tunterm_switch_configs2
-      type: object
-      properties:
-        enabled:
-          type: boolean
-          description: Whether custom tunnel termination switch VLAN settings are enabled
-      additionalProperties:
-        allOf:
-        - $ref: '#/components/schemas/mxedge_tunterm_switch_config'
-        - description: Switch VLAN settings for one tunnel termination port
-      description: Switch VLAN settings for tunnel termination
     mxedge_tunterm_multicast_config:
       title: mxedge_tunterm_multicast_config
       type: object
@@ -2818,20 +2791,47 @@ components:
           - $ref: '#/components/schemas/mxedge_tunterm_multicast_ssdp2'
           - description: Settings for SSDP forwarding on tunnel termination VLANs
       description: Multicast forwarding settings for tunnel termination
-    mxedge_tunterm_switch_config:
-      title: mxedge_tunterm_switch_config
+    ip_type10:
+      title: ip_type10
+      enum:
+      - dhcp
+      - static
+      type: string
+      description: 'IPv6 address assignment mode for out-of-band management. enum: `dhcp`, `static`.'
+      examples:
+      - static
+    event_severity2:
+      title: event_severity2
+      enum:
+      - normal
+      - critical
+      - high
+      - warning
+      type: string
+      description: 'Event severity for the system resource condition. enum: `normal`, `critical`, `high`, `warning`.'
+    response_http400:
+      title: response_http400
       type: object
       properties:
-        port_vlan_id:
-          type: integer
-          description: Untagged VLAN ID for this tunnel termination switch port
-          contentEncoding: int32
-        vlan_ids:
-          type: array
-          items:
-            $ref: '#/components/schemas/vlan_id_with_variable'
-          description: List of tagged VLAN IDs allowed on this tunnel termination switch port
-      description: Switch VLAN settings for one tunnel termination port
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    vlan_id_with_variable:
+      oneOf:
+      - type: string
+      - maximum: 4094
+        minimum: 1
+        type: integer
+        contentEncoding: int32
+      description: VLAN ID, either numeric or expressed as a template variable string
+    mxedge_tunterm_dhcpd_type2:
+      title: mxedge_tunterm_dhcpd_type2
+      const: relay
+      type: string
+      description: 'DHCP handling mode for the global tunnel termination config. enum: `relay`.'
   securitySchemes:
     apiToken:
       type: apiKey

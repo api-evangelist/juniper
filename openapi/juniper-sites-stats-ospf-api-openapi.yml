@@ -529,19 +529,48 @@ paths:
       deprecated: false
 components:
   schemas:
-    count_result:
-      title: count_result
-      required:
-      - count
+    response_http403:
+      title: response_http403
       type: object
       properties:
-        count:
-          type: integer
-          description: Number of matching items for the distinct value or values in this result
-          contentEncoding: int32
-      additionalProperties:
-        type: string
-      description: Count result row with the matching distinct field values
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    ospf_peer_stats_count_distinct:
+      title: ospf_peer_stats_count_distinct
+      enum:
+      - site_id
+      - org_id
+      - mac
+      - peer_ip
+      - port_id
+      - state
+      - vrf_name
+      type: string
+      description: 'enum: `site_id`, `org_id`, `mac`, `peer_ip`, `port_id`, `state`, `vrf_name`'
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
     response_count:
       title: response_count
       required:
@@ -579,95 +608,6 @@ components:
           description: Number of distinct result buckets returned
           contentEncoding: int32
       description: Distinct count response for time-bounded search results
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    ospf_peer_stats_count_distinct:
-      title: ospf_peer_stats_count_distinct
-      enum:
-      - site_id
-      - org_id
-      - mac
-      - peer_ip
-      - port_id
-      - state
-      - vrf_name
-      type: string
-      description: 'enum: `site_id`, `org_id`, `mac`, `peer_ip`, `port_id`, `state`, `vrf_name`'
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    ospf_peer_stats_search_result:
-      title: ospf_peer_stats_search_result
-      type: object
-      properties:
-        end:
-          type: integer
-          description: Query end timestamp for the OSPF peer statistics search
-          contentEncoding: int32
-          examples:
-          - 1711035686
-        limit:
-          type: integer
-          description: Maximum number of OSPF peer statistics returned per page
-          contentEncoding: int32
-          examples:
-          - 10
-        next:
-          type: string
-          description: URL for the next page of OSPF peer statistics, when available
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ospf_peer_stats_search_results_items'
-          description: OSPF peer statistic records returned for the current page
-        start:
-          type: integer
-          description: Query start timestamp for the OSPF peer statistics search
-          contentEncoding: int32
-          examples:
-          - 1710949286
-        total:
-          type: integer
-          description: Number of OSPF peer statistic records matching the search
-          contentEncoding: int32
-          examples:
-          - 232
-      description: Paginated OSPF peer statistics search result
     response_http404:
       title: response_http404
       type: object
@@ -727,6 +667,66 @@ components:
           type: string
           description: Instance name, e.g. master
       description: OSPF peer statistic record reported by a router
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    count_result:
+      title: count_result
+      required:
+      - count
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of matching items for the distinct value or values in this result
+          contentEncoding: int32
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
+    ospf_peer_stats_search_result:
+      title: ospf_peer_stats_search_result
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Query end timestamp for the OSPF peer statistics search
+          contentEncoding: int32
+          examples:
+          - 1711035686
+        limit:
+          type: integer
+          description: Maximum number of OSPF peer statistics returned per page
+          contentEncoding: int32
+          examples:
+          - 10
+        next:
+          type: string
+          description: URL for the next page of OSPF peer statistics, when available
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ospf_peer_stats_search_results_items'
+          description: OSPF peer statistic records returned for the current page
+        start:
+          type: integer
+          description: Query start timestamp for the OSPF peer statistics search
+          contentEncoding: int32
+          examples:
+          - 1710949286
+        total:
+          type: integer
+          description: Number of OSPF peer statistic records matching the search
+          contentEncoding: int32
+          examples:
+          - 232
+      description: Paginated OSPF peer statistics search result
   securitySchemes:
     apiToken:
       type: apiKey

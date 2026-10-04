@@ -661,16 +661,27 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
-    response_http400:
-      title: response_http400
+    response_ssr_export_id_tokens_results_item:
+      title: response_ssr_export_id_tokens_results_item
+      type: object
+      properties:
+        mac:
+          type: string
+          description: SSR device MAC address for the exported ID token
+        token:
+          type: string
+          description: ID token to import into Conductor for SSR device onboarding
+      description: SSR ID token record for a device
+    response_http401:
+      title: response_http401
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the bad request error
+          description: Human-readable explanation of the authentication error
           examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
     response_http429:
       title: response_http429
       type: object
@@ -681,6 +692,38 @@ components:
           examples:
           - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
       description: Standard HTTP 429 rate limit error response
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    response_router_ssr_register_cmd:
+      title: response_router_ssr_register_cmd
+      type: object
+      properties:
+        conductor_cmd:
+          type: string
+          description: Command to run in the SSR conductor CLI for Mist registration
+        registration_code:
+          type: string
+          description: Registration token used by the SSR registration commands
+        router_shell_cmd:
+          type: string
+          description: Shell command to run on the SSR router for Mist registration
+      description: SSR registration token and commands used to register the router with Mist
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
     mac_addresses:
       title: mac_addresses
       required:
@@ -697,16 +740,6 @@ components:
           examples:
           - - 683b679ac024
       description: Request containing one or more MAC addresses
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
     response_ssr_export_id_tokens:
       title: response_ssr_export_id_tokens
       type: object
@@ -717,39 +750,6 @@ components:
             $ref: '#/components/schemas/response_ssr_export_id_tokens_results_item'
           description: Exported SSR ID token records for the requested devices
       description: Response containing SSR ID tokens exported for device onboarding
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    response_ssr_export_id_tokens_results_item:
-      title: response_ssr_export_id_tokens_results_item
-      type: object
-      properties:
-        mac:
-          type: string
-          description: SSR device MAC address for the exported ID token
-        token:
-          type: string
-          description: ID token to import into Conductor for SSR device onboarding
-      description: SSR ID token record for a device
-    response_router_ssr_register_cmd:
-      title: response_router_ssr_register_cmd
-      type: object
-      properties:
-        conductor_cmd:
-          type: string
-          description: Command to run in the SSR conductor CLI for Mist registration
-        registration_code:
-          type: string
-          description: Registration token used by the SSR registration commands
-        router_shell_cmd:
-          type: string
-          description: Shell command to run on the SSR router for Mist registration
-      description: SSR registration token and commands used to register the router with Mist
   securitySchemes:
     apiToken:
       type: apiKey

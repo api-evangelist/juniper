@@ -1414,6 +1414,79 @@ paths:
       deprecated: false
 components:
   schemas:
+    error_delete_failed:
+      title: error_delete_failed
+      required:
+      - detail
+      - org_id
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Reason the delete request failed
+          examples:
+          - inventory not empty
+        org_id:
+          type: string
+          description: Organization that could not be deleted and caused the delete request to fail
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+      description: Error response returned when an organization delete request is blocked
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    admin_privilege_role2:
+      title: admin_privilege_role2
+      enum:
+      - admin
+      - helpdesk
+      - installer
+      - read
+      - write
+      type: string
+      description: 'Access role granted by this privilege. enum: `admin`, `helpdesk`, `installer`, `read`, `write`.'
+    admin_privilege_view:
+      title: admin_privilege_view
+      enum:
+      - lobby_admin
+      - location
+      - marketing
+      - mxedge_admin
+      - reporting
+      - security
+      - super_observer
+      - switch_admin
+      type: string
+      description: 'UI view name allowed by a custom admin role. enum: `lobby_admin`, `location`, `marketing`, `mxedge_admin`, `reporting`, `security`, `super_observer`, `switch_admin`'
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
     login_failures:
       title: login_failures
       type: object
@@ -1454,36 +1527,14 @@ components:
             - Test UA 38
             - Test UA 37
       description: Failed login attempt summary with source IPs and user agents
-    response_http403:
-      title: response_http403
+    response_http404:
+      title: response_http404
       type: object
       properties:
-        detail:
+        id:
           type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
     admin_privilege:
       title: admin_privilege
       required:
@@ -1557,23 +1608,45 @@ components:
             $ref: '#/components/schemas/admin_privilege_view'
           description: UI view restrictions applied when custom roles limit this privilege
       description: Admin privilege scope, role, and UI access settings
-    admin_compliance_status2:
-      title: admin_compliance_status2
-      enum:
-      - blocked
-      - restricted
-      type: string
-      description: 'Trade compliance status for this administrator. enum: `blocked`, `restricted`.'
-    response_http401:
-      title: response_http401
+    response_detail_string:
+      title: response_detail_string
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the authentication error
+          description: Human-readable detail message returned by the API
+      description: Response containing a human-readable detail message
+    api_usage:
+      title: api_usage
+      required:
+      - request_limit
+      - requests
+      type: object
+      properties:
+        request_limit:
+          type: integer
+          description: Maximum API requests allowed in the current hourly rate-limit window
+          contentEncoding: int32
+          readOnly: true
+        requests:
+          type: integer
+          description: Number of API requests made in the current hourly rate-limit window
+          contentEncoding: int32
+          readOnly: true
+        seconds:
+          type: number
+          description: Time remaining, in seconds, before the current hourly rate-limit window resets
+      description: API rate-limit usage status for the current user or API token
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
           examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
     admin:
       title: admin
       type: object
@@ -1672,27 +1745,6 @@ components:
           description: If admin account is not an Org API Token, an admin login via_sso is more restircted. (password and email cannot be changed)
           readOnly: true
       description: Mist administrator account or organization API token details
-    admin_privilege_view:
-      title: admin_privilege_view
-      enum:
-      - lobby_admin
-      - location
-      - marketing
-      - mxedge_admin
-      - reporting
-      - security
-      - super_observer
-      - switch_admin
-      type: string
-      description: 'UI view name allowed by a custom admin role. enum: `lobby_admin`, `location`, `marketing`, `mxedge_admin`, `reporting`, `security`, `super_observer`, `switch_admin`'
-    response_detail_string:
-      title: response_detail_string
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable detail message returned by the API
-      description: Response containing a human-readable detail message
     email_string:
       title: email_string
       required:
@@ -1704,14 +1756,6 @@ components:
           description: Request email address provided in the payload
           contentEncoding: email
       description: Request body containing an email address
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
     admin_privilege_scope2:
       title: admin_privilege_scope2
       enum:
@@ -1722,57 +1766,13 @@ components:
       - sitegroup
       type: string
       description: 'Object scope where this privilege applies. enum: `msp`, `org`, `orggroup`, `site`, `sitegroup`.'
-    admin_privilege_role2:
-      title: admin_privilege_role2
+    admin_compliance_status2:
+      title: admin_compliance_status2
       enum:
-      - admin
-      - helpdesk
-      - installer
-      - read
-      - write
+      - blocked
+      - restricted
       type: string
-      description: 'Access role granted by this privilege. enum: `admin`, `helpdesk`, `installer`, `read`, `write`.'
-    api_usage:
-      title: api_usage
-      required:
-      - request_limit
-      - requests
-      type: object
-      properties:
-        request_limit:
-          type: integer
-          description: Maximum API requests allowed in the current hourly rate-limit window
-          contentEncoding: int32
-          readOnly: true
-        requests:
-          type: integer
-          description: Number of API requests made in the current hourly rate-limit window
-          contentEncoding: int32
-          readOnly: true
-        seconds:
-          type: number
-          description: Time remaining, in seconds, before the current hourly rate-limit window resets
-      description: API rate-limit usage status for the current user or API token
-    error_delete_failed:
-      title: error_delete_failed
-      required:
-      - detail
-      - org_id
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Reason the delete request failed
-          examples:
-          - inventory not empty
-        org_id:
-          type: string
-          description: Organization that could not be deleted and caused the delete request to fail
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
-      description: Error response returned when an organization delete request is blocked
+      description: 'Trade compliance status for this administrator. enum: `blocked`, `restricted`.'
   securitySchemes:
     apiToken:
       type: apiKey

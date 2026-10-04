@@ -1914,16 +1914,16 @@ components:
           contentEncoding: int32
           readOnly: true
       description: Paginated response for MSP organization search results
-    response_http400:
-      title: response_http400
+    response_http401:
+      title: response_http401
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the bad request error
+          description: Human-readable explanation of the authentication error
           examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
     response_http429:
       title: response_http429
       type: object
@@ -1934,6 +1934,103 @@ components:
           examples:
           - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
       description: Standard HTTP 429 rate limit error response
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    stats_org:
+      title: stats_org
+      required:
+      - alarmtemplate_id
+      - allow_mist
+      - created_time
+      - id
+      - modified_time
+      - msp_id
+      - name
+      - num_devices
+      - num_devices_connected
+      - num_devices_disconnected
+      - num_inventory
+      - num_sites
+      - orggroup_ids
+      - session_expiry
+      - sle
+      type: object
+      properties:
+        alarmtemplate_id:
+          type: string
+          description: Organization-level alarm template identifier used as the default for sites
+          contentEncoding: uuid
+        allow_mist:
+          type: boolean
+          description: Whether Mist support access is allowed for this organization
+        created_time:
+          type: number
+          description: Time when the organization was created, in epoch seconds
+          readOnly: true
+        id:
+          type: string
+          description: Unique identifier of the organization
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        modified_time:
+          type: number
+          description: Time when the organization was last modified, in epoch seconds
+          readOnly: true
+        msp_id:
+          type: string
+          description: Managed service provider identifier associated with the organization
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - b9d42c2e-88ee-41f8-b798-f009ce7fe909
+        name:
+          type: string
+          description: Display name of the organization
+        num_devices:
+          type: integer
+          description: Total number of devices in the organization
+          contentEncoding: int32
+        num_devices_connected:
+          type: integer
+          description: Number of organization devices currently connected to Mist
+          contentEncoding: int32
+        num_devices_disconnected:
+          type: integer
+          description: Number of organization devices currently disconnected from Mist
+          contentEncoding: int32
+        num_inventory:
+          type: integer
+          description: Number of devices in the organization's inventory
+          contentEncoding: int32
+        num_sites:
+          type: integer
+          description: Number of sites in the organization
+          contentEncoding: int32
+        orggroup_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: Organization group identifiers that include this organization
+        session_expiry:
+          type: integer
+          description: Admin session lifetime for the organization, in minutes
+          contentEncoding: int64
+        sle:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/stats_org_sle'
+          description: Service level expectation summaries for the organization
+      description: Organization statistics summary returned by the org stats endpoint
     stats_org_sle_user_minutes2:
       title: stats_org_sle_user_minutes2
       required:
@@ -1948,6 +2045,124 @@ components:
           type: number
           description: Observed total user minutes for the SLE path
       description: User-minute totals for this SLE path
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    stats_org_sle:
+      title: stats_org_sle
+      required:
+      - path
+      type: object
+      properties:
+        path:
+          type: string
+          description: SLE path represented by this organization summary
+        user_minutes:
+          allOf:
+          - $ref: '#/components/schemas/stats_org_sle_user_minutes2'
+          - description: User-minute totals for this SLE path
+      description: Organization SLE summary for a service path
+    msp_org_change:
+      title: msp_org_change
+      required:
+      - op
+      - org_ids
+      type: object
+      properties:
+        op:
+          allOf:
+          - $ref: '#/components/schemas/msp_org_change_operation2'
+          - description: 'Assignment operation to apply to the listed org IDs. enum: `assign`, `unassign`.'
+        org_ids:
+          type: array
+          items:
+            type: string
+          description: List of org IDs to assign to or unassign from the MSP account
+      description: Request to assign or unassign orgs for an MSP account
+    msp_org_change_operation2:
+      title: msp_org_change_operation2
+      enum:
+      - assign
+      - unassign
+      type: string
+      description: 'Assignment operation to apply to the listed org IDs. enum: `assign`, `unassign`.'
+    org:
+      title: org
+      required:
+      - name
+      type: object
+      properties:
+        alarmtemplate_id:
+          type:
+          - string
+          - 'null'
+          description: Org-level alarm template ID used as the default for sites
+          contentEncoding: uuid
+        allow_mist:
+          type: boolean
+          description: Whether Mist support access is allowed for this organization
+          default: true
+        created_time:
+          type: number
+          description: Epoch timestamp when the organization was created
+          readOnly: true
+        id:
+          type: string
+          description: Unique identifier of the organization
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        modified_time:
+          type: number
+          description: Epoch timestamp when the organization was last modified
+          readOnly: true
+        msp_id:
+          type: string
+          description: Managed service provider account that owns this organization, when applicable
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - b9d42c2e-88ee-41f8-b798-f009ce7fe909
+        msp_logo_url:
+          type: string
+          description: logo uploaded by the MSP with advanced tier, only present if provided
+          contentEncoding: uri
+          readOnly: true
+          examples:
+          - https://example.com/logo/b9d42c2e-88ee-41f8-b798-f009ce7fe909.jpeg
+        msp_name:
+          type: string
+          description: Name of the msp the org belongs to
+          readOnly: true
+          examples:
+          - MSP
+        name:
+          type: string
+          description: Display name of the organization
+          examples:
+          - Org
+        orggroup_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: Organization group IDs that include this organization
+        session_expiry:
+          maximum: 20160
+          minimum: 10
+          type: integer
+          description: Admin session lifetime for the organization, in minutes
+          contentEncoding: int32
+          default: 1440
+      description: Mist organization containing sites, devices, users, and organization-level settings
     response_org_search_item:
       title: response_org_search_item
       type: object
@@ -2074,221 +2289,6 @@ components:
           description: Subscription usage types enabled for the organization
           readOnly: true
       description: Organization record returned by MSP organization search
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    stats_org:
-      title: stats_org
-      required:
-      - alarmtemplate_id
-      - allow_mist
-      - created_time
-      - id
-      - modified_time
-      - msp_id
-      - name
-      - num_devices
-      - num_devices_connected
-      - num_devices_disconnected
-      - num_inventory
-      - num_sites
-      - orggroup_ids
-      - session_expiry
-      - sle
-      type: object
-      properties:
-        alarmtemplate_id:
-          type: string
-          description: Organization-level alarm template identifier used as the default for sites
-          contentEncoding: uuid
-        allow_mist:
-          type: boolean
-          description: Whether Mist support access is allowed for this organization
-        created_time:
-          type: number
-          description: Time when the organization was created, in epoch seconds
-          readOnly: true
-        id:
-          type: string
-          description: Unique identifier of the organization
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 53f10664-3ce8-4c27-b382-0ef66432349f
-        modified_time:
-          type: number
-          description: Time when the organization was last modified, in epoch seconds
-          readOnly: true
-        msp_id:
-          type: string
-          description: Managed service provider identifier associated with the organization
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - b9d42c2e-88ee-41f8-b798-f009ce7fe909
-        name:
-          type: string
-          description: Display name of the organization
-        num_devices:
-          type: integer
-          description: Total number of devices in the organization
-          contentEncoding: int32
-        num_devices_connected:
-          type: integer
-          description: Number of organization devices currently connected to Mist
-          contentEncoding: int32
-        num_devices_disconnected:
-          type: integer
-          description: Number of organization devices currently disconnected from Mist
-          contentEncoding: int32
-        num_inventory:
-          type: integer
-          description: Number of devices in the organization's inventory
-          contentEncoding: int32
-        num_sites:
-          type: integer
-          description: Number of sites in the organization
-          contentEncoding: int32
-        orggroup_ids:
-          type: array
-          items:
-            type: string
-            contentEncoding: uuid
-          description: Organization group identifiers that include this organization
-        session_expiry:
-          type: integer
-          description: Admin session lifetime for the organization, in minutes
-          contentEncoding: int64
-        sle:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/stats_org_sle'
-          description: Service level expectation summaries for the organization
-      description: Organization statistics summary returned by the org stats endpoint
-    msp_org_change_operation2:
-      title: msp_org_change_operation2
-      enum:
-      - assign
-      - unassign
-      type: string
-      description: 'Assignment operation to apply to the listed org IDs. enum: `assign`, `unassign`.'
-    msp_org_change:
-      title: msp_org_change
-      required:
-      - op
-      - org_ids
-      type: object
-      properties:
-        op:
-          allOf:
-          - $ref: '#/components/schemas/msp_org_change_operation2'
-          - description: 'Assignment operation to apply to the listed org IDs. enum: `assign`, `unassign`.'
-        org_ids:
-          type: array
-          items:
-            type: string
-          description: List of org IDs to assign to or unassign from the MSP account
-      description: Request to assign or unassign orgs for an MSP account
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    org:
-      title: org
-      required:
-      - name
-      type: object
-      properties:
-        alarmtemplate_id:
-          type:
-          - string
-          - 'null'
-          description: Org-level alarm template ID used as the default for sites
-          contentEncoding: uuid
-        allow_mist:
-          type: boolean
-          description: Whether Mist support access is allowed for this organization
-          default: true
-        created_time:
-          type: number
-          description: Epoch timestamp when the organization was created
-          readOnly: true
-        id:
-          type: string
-          description: Unique identifier of the organization
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 53f10664-3ce8-4c27-b382-0ef66432349f
-        modified_time:
-          type: number
-          description: Epoch timestamp when the organization was last modified
-          readOnly: true
-        msp_id:
-          type: string
-          description: Managed service provider account that owns this organization, when applicable
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - b9d42c2e-88ee-41f8-b798-f009ce7fe909
-        msp_logo_url:
-          type: string
-          description: logo uploaded by the MSP with advanced tier, only present if provided
-          contentEncoding: uri
-          readOnly: true
-          examples:
-          - https://example.com/logo/b9d42c2e-88ee-41f8-b798-f009ce7fe909.jpeg
-        msp_name:
-          type: string
-          description: Name of the msp the org belongs to
-          readOnly: true
-          examples:
-          - MSP
-        name:
-          type: string
-          description: Display name of the organization
-          examples:
-          - Org
-        orggroup_ids:
-          type: array
-          items:
-            type: string
-            contentEncoding: uuid
-          description: Organization group IDs that include this organization
-        session_expiry:
-          maximum: 20160
-          minimum: 10
-          type: integer
-          description: Admin session lifetime for the organization, in minutes
-          contentEncoding: int32
-          default: 1440
-      description: Mist organization containing sites, devices, users, and organization-level settings
-    stats_org_sle:
-      title: stats_org_sle
-      required:
-      - path
-      type: object
-      properties:
-        path:
-          type: string
-          description: SLE path represented by this organization summary
-        user_minutes:
-          allOf:
-          - $ref: '#/components/schemas/stats_org_sle_user_minutes2'
-          - description: User-minute totals for this SLE path
-      description: Organization SLE summary for a service path
   securitySchemes:
     apiToken:
       type: apiKey

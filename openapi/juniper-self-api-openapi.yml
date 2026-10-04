@@ -87,24 +87,20 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 components:
+  responses:
+    Unauthorized:
+      description: Unauthorized - invalid or missing authentication
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad request - invalid parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
-    ApiToken:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        key:
-          type: string
-          description: The API token value (only returned on creation)
-        name:
-          type: string
-        privileges:
-          type: array
-          items:
-            $ref: '#/components/schemas/Privilege'
-        created_time:
-          type: number
     Admin:
       type: object
       properties:
@@ -136,6 +132,23 @@ components:
         modified_time:
           type: number
           description: Unix timestamp
+    ApiToken:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        key:
+          type: string
+          description: The API token value (only returned on creation)
+        name:
+          type: string
+        privileges:
+          type: array
+          items:
+            $ref: '#/components/schemas/Privilege'
+        created_time:
+          type: number
     Privilege:
       type: object
       properties:
@@ -167,19 +180,6 @@ components:
         detail:
           type: string
           description: Error message
-  responses:
-    Unauthorized:
-      description: Unauthorized - invalid or missing authentication
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad request - invalid parameters
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   securitySchemes:
     apiToken:
       type: http

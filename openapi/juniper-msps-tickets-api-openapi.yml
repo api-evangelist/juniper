@@ -526,6 +526,128 @@ paths:
       deprecated: false
 components:
   schemas:
+    ticket_comments_attachment:
+      title: ticket_comments_attachment
+      type: object
+      properties:
+        content_type:
+          type: string
+          description: MIME type of the ticket comment attachment
+          examples:
+          - image/png
+        content_url:
+          type: string
+          description: Download URL for the ticket comment attachment
+          examples:
+          - https://api.mist.com/api/v1/forward/download?jwt=...
+        created_at:
+          type: integer
+          description: Time when this ticket comment attachment was created, in epoch seconds
+          contentEncoding: int32
+          examples:
+          - 1453908369
+        file_name:
+          type: string
+          description: Original file name of the ticket comment attachment
+          examples:
+          - crash.png
+        id:
+          type: string
+          description: Unique identifier for this ticket comment attachment
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        size_in_bytes:
+          type: integer
+          description: Attachment file size, in bytes
+          contentEncoding: int32
+          examples:
+          - 1943
+      description: Metadata for an attachment on a ticket comment
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    ticket_comment:
+      title: ticket_comment
+      required:
+      - author
+      - comment
+      - created_at
+      type: object
+      properties:
+        attachment_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: Identifiers of attachments linked to this ticket comment
+          readOnly: true
+          examples:
+          - - 00000000-0000-0000-0000-15231a659c78
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/ticket_comments_attachment'
+          description: Attachment metadata returned with this ticket comment
+          readOnly: true
+        author:
+          type: string
+          description: User who wrote this ticket comment
+          readOnly: true
+        comment:
+          type: string
+          description: Text body of this ticket comment
+        created_at:
+          type: integer
+          description: Time when this ticket comment was created, in epoch seconds
+          contentEncoding: int32
+          readOnly: true
+      description: Comment on a support ticket
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    ticket_status2:
+      title: ticket_status2
+      enum:
+      - closed
+      - open
+      - pending
+      - solved
+      type: string
+      description: 'Current lifecycle status of this support ticket. enum: `closed`, `open`, `pending`, `solved`.'
     count_result:
       title: count_result
       required:
@@ -539,6 +661,24 @@ components:
       additionalProperties:
         type: string
       description: Count result row with the matching distinct field values
+    msp_tickets_count_distinct:
+      title: msp_tickets_count_distinct
+      enum:
+      - org_id
+      - status
+      - type
+      type: string
+      description: 'enum: `org_id`, `status`, `type`'
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
     response_count:
       title: response_count
       required:
@@ -576,45 +716,6 @@ components:
           description: Number of distinct result buckets returned
           contentEncoding: int32
       description: Distinct count response for time-bounded search results
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    ticket_status2:
-      title: ticket_status2
-      enum:
-      - closed
-      - open
-      - pending
-      - solved
-      type: string
-      description: 'Current lifecycle status of this support ticket. enum: `closed`, `open`, `pending`, `solved`.'
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
     ticket:
       title: ticket
       required:
@@ -667,107 +768,6 @@ components:
           contentEncoding: int32
           readOnly: true
       description: Support ticket record with status, comments, and metadata
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    ticket_comments_attachment:
-      title: ticket_comments_attachment
-      type: object
-      properties:
-        content_type:
-          type: string
-          description: MIME type of the ticket comment attachment
-          examples:
-          - image/png
-        content_url:
-          type: string
-          description: Download URL for the ticket comment attachment
-          examples:
-          - https://api.mist.com/api/v1/forward/download?jwt=...
-        created_at:
-          type: integer
-          description: Time when this ticket comment attachment was created, in epoch seconds
-          contentEncoding: int32
-          examples:
-          - 1453908369
-        file_name:
-          type: string
-          description: Original file name of the ticket comment attachment
-          examples:
-          - crash.png
-        id:
-          type: string
-          description: Unique identifier for this ticket comment attachment
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 53f10664-3ce8-4c27-b382-0ef66432349f
-        size_in_bytes:
-          type: integer
-          description: Attachment file size, in bytes
-          contentEncoding: int32
-          examples:
-          - 1943
-      description: Metadata for an attachment on a ticket comment
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    ticket_comment:
-      title: ticket_comment
-      required:
-      - author
-      - comment
-      - created_at
-      type: object
-      properties:
-        attachment_ids:
-          type: array
-          items:
-            type: string
-            contentEncoding: uuid
-          description: Identifiers of attachments linked to this ticket comment
-          readOnly: true
-          examples:
-          - - 00000000-0000-0000-0000-15231a659c78
-        attachments:
-          type: array
-          items:
-            $ref: '#/components/schemas/ticket_comments_attachment'
-          description: Attachment metadata returned with this ticket comment
-          readOnly: true
-        author:
-          type: string
-          description: User who wrote this ticket comment
-          readOnly: true
-        comment:
-          type: string
-          description: Text body of this ticket comment
-        created_at:
-          type: integer
-          description: Time when this ticket comment was created, in epoch seconds
-          contentEncoding: int32
-          readOnly: true
-      description: Comment on a support ticket
-    msp_tickets_count_distinct:
-      title: msp_tickets_count_distinct
-      enum:
-      - org_id
-      - status
-      - type
-      type: string
-      description: 'enum: `org_id`, `status`, `type`'
   securitySchemes:
     apiToken:
       type: apiKey

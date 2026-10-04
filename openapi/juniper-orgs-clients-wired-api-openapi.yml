@@ -848,56 +848,39 @@ paths:
       deprecated: false
 components:
   schemas:
-    count_result:
-      title: count_result
-      required:
-      - count
+    wired_client_response_device_mac_port_item:
+      title: wired_client_response_device_mac_port_item
       type: object
       properties:
-        count:
-          type: integer
-          description: Number of matching items for the distinct value or values in this result
-          contentEncoding: int32
-      additionalProperties:
-        type: string
-      description: Count result row with the matching distinct field values
-    response_count:
-      title: response_count
-      required:
-      - distinct
-      - end
-      - limit
-      - results
-      - start
-      - total
-      type: object
-      properties:
-        distinct:
+        device_mac:
+          minLength: 1
           type: string
-          description: Field used to group the count results
-        end:
-          type: integer
-          description: Search window end timestamp for the count request, in epoch seconds
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of distinct count results requested
-          contentEncoding: int32
-        results:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/count_result'
-          description: Count results grouped by the distinct field
+          description: Switch or gateway MAC address for this wired client observation
+        ip:
+          type: string
+          description: Client IP address observed for this port entry
+          readOnly: true
+        port_id:
+          type: string
+          description: Interface identifier where the wired client was observed
+          readOnly: true
+        port_parent:
+          type: string
+          description: Parent interface or port group associated with this port entry
         start:
+          type: string
+          description: Time when this wired client observation began
+          readOnly: true
+        vlan:
           type: integer
-          description: Search window start timestamp for the count request, in epoch seconds
+          description: Client VLAN identifier observed for this port entry
           contentEncoding: int32
-        total:
-          type: integer
-          description: Number of distinct result buckets returned
-          contentEncoding: int32
-      description: Distinct count response for time-bounded search results
+          readOnly: true
+        when:
+          type: string
+          description: Time when this wired client port entry was recorded
+          readOnly: true
+      description: Switch or gateway port observation for a wired client
     response_http403:
       title: response_http403
       type: object
@@ -908,26 +891,6 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
     response_http401:
       title: response_http401
       type: object
@@ -938,6 +901,40 @@ components:
           examples:
           - Authentication credentials were not provided.
       description: Standard HTTP 401 authentication error response
+    search_wired_client:
+      title: search_wired_client
+      required:
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        end:
+          type: number
+          description: Upper bound timestamp of the wired client search window, in epoch seconds
+        limit:
+          type: integer
+          description: Maximum number of wired client records returned by this page
+          contentEncoding: int32
+        next:
+          type: string
+          description: URL for the next page of wired client records, when more results are available
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/wired_client_response'
+          description: Wired client records returned by the search response
+        start:
+          type: number
+          description: Lower bound timestamp of the wired client search window, in epoch seconds
+        total:
+          type: integer
+          description: Count of wired client records matching the search
+          contentEncoding: int32
+      description: Paginated response for wired client searches
     org_wired_clients_count_distinct:
       title: org_wired_clients_count_distinct
       enum:
@@ -949,14 +946,26 @@ components:
       - vlan
       type: string
       description: 'enum: `device_mac`, `mac`, `port_id`, `site_id`, `type`, `vlan`'
-    response_http404:
-      title: response_http404
+    response_http429:
+      title: response_http429
       type: object
       properties:
-        id:
+        detail:
           type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
     wired_client_response:
       title: wired_client_response
       type: object
@@ -1056,6 +1065,51 @@ components:
           description: Client VLAN identifiers observed for the wired client
           readOnly: true
       description: Wired client record returned by a wired client search
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    response_count:
+      title: response_count
+      required:
+      - distinct
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        distinct:
+          type: string
+          description: Field used to group the count results
+        end:
+          type: integer
+          description: Search window end timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of distinct count results requested
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/count_result'
+          description: Count results grouped by the distinct field
+        start:
+          type: integer
+          description: Search window start timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of distinct result buckets returned
+          contentEncoding: int32
+      description: Distinct count response for time-bounded search results
     dhcp_client_option:
       title: dhcp_client_option
       type: object
@@ -1071,73 +1125,19 @@ components:
           examples:
           - DHCPREQUEST
       description: DHCP client option observed in a DHCP packet
-    wired_client_response_device_mac_port_item:
-      title: wired_client_response_device_mac_port_item
-      type: object
-      properties:
-        device_mac:
-          minLength: 1
-          type: string
-          description: Switch or gateway MAC address for this wired client observation
-        ip:
-          type: string
-          description: Client IP address observed for this port entry
-          readOnly: true
-        port_id:
-          type: string
-          description: Interface identifier where the wired client was observed
-          readOnly: true
-        port_parent:
-          type: string
-          description: Parent interface or port group associated with this port entry
-        start:
-          type: string
-          description: Time when this wired client observation began
-          readOnly: true
-        vlan:
-          type: integer
-          description: Client VLAN identifier observed for this port entry
-          contentEncoding: int32
-          readOnly: true
-        when:
-          type: string
-          description: Time when this wired client port entry was recorded
-          readOnly: true
-      description: Switch or gateway port observation for a wired client
-    search_wired_client:
-      title: search_wired_client
+    count_result:
+      title: count_result
       required:
-      - end
-      - limit
-      - results
-      - start
-      - total
+      - count
       type: object
       properties:
-        end:
-          type: number
-          description: Upper bound timestamp of the wired client search window, in epoch seconds
-        limit:
+        count:
           type: integer
-          description: Maximum number of wired client records returned by this page
+          description: Number of matching items for the distinct value or values in this result
           contentEncoding: int32
-        next:
-          type: string
-          description: URL for the next page of wired client records, when more results are available
-        results:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/wired_client_response'
-          description: Wired client records returned by the search response
-        start:
-          type: number
-          description: Lower bound timestamp of the wired client search window, in epoch seconds
-        total:
-          type: integer
-          description: Count of wired client records matching the search
-          contentEncoding: int32
-      description: Paginated response for wired client searches
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
   securitySchemes:
     apiToken:
       type: apiKey

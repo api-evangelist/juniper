@@ -2926,172 +2926,32 @@ paths:
       deprecated: false
 components:
   schemas:
-    jsi_sirt_severity:
-      title: jsi_sirt_severity
+    device_type2:
+      title: device_type2
       enum:
-      - Critical
-      - High
-      - Low
-      - Medium
+      - ap
+      - gateway
+      - switch
       type: string
-      description: 'Security severity assigned to the SIRT advisory. enum: `Critical`, `High`, `Low`, `Medium`'
-    count_result:
-      title: count_result
+      description: 'Device category for the inventory item. enum: `ap`, `gateway`, `switch`.'
+    websocket_session_with_url:
+      title: websocket_session_with_url
       required:
-      - count
+      - session
+      - url
       type: object
       properties:
-        count:
-          type: integer
-          description: Number of matching items for the distinct value or values in this result
-          contentEncoding: int32
-      additionalProperties:
-        type: string
-      description: Count result row with the matching distinct field values
-    jsi_pbn_item:
-      title: jsi_pbn_item
-      type: object
-      properties:
-        bug_type:
-          allOf:
-          - $ref: '#/components/schemas/jsi_pbn_bug_type'
-          - description: 'Type of the bug. enum: `Day-1`, `Regression`'
-        customer_risk:
+        session:
           type: string
-          description: Customer impact risk level for the PBN advisory
-        fixed_in:
-          type: string
-          description: Release in which the issue was fixed
-        id:
-          type: string
-          description: Unique PBN advisory identifier from Juniper Support Insights
+          description: Identifier used to correlate output on the WebSocket stream
           examples:
-          - '1403338'
-        introduced_in:
+          - 19e73828-937f-05e6-f709-e29efdb0a82b
+        url:
           type: string
-          description: Release where the PBN issue was introduced
-        models:
-          type: array
-          items:
-            type: string
-          description: Device models affected by the PBN issue
-        product_family:
-          type: array
-          items:
-            type: string
-          description: Product families affected by the PBN issue
-        release_notes:
-          type: string
-          description: Release notes for this PBN
-        restoration:
-          type: string
-          description: Steps recommended to restore service or recover from the PBN issue
-        title:
-          type: string
-          description: Summary title for the PBN issue
-        updated_date:
-          type: integer
-          description: Time when the PBN advisory was last updated
-          contentEncoding: int32
-        versions:
-          type: array
-          items:
-            type: string
-          description: Software versions affected by the PBN issue
-        workaround:
-          type: string
-          description: Mitigation or workaround guidance for the PBN issue
-        workaround_provided:
-          type: string
-          description: Indicator of whether workaround guidance is available
-      description: PBN (Problem Bug Notification) advisory item
-    jsi_sirt_item:
-      title: jsi_sirt_item
-      type: object
-      properties:
-        cvss_score:
-          type: number
-          description: Common Vulnerability Scoring System score for the SIRT advisory
-        id:
-          type: string
-          description: Unique SIRT or JSA advisory identifier from Juniper Support Insights
+          description: WebSocket URL returned for connecting to this session
           examples:
-          - JSA100053
-        models:
-          type: array
-          items:
-            type: string
-          description: Device models affected by the SIRT advisory
-        problem:
-          type: string
-          description: Issue details described by the SIRT advisory
-        published_date:
-          type: integer
-          description: Release date of the SIRT issue
-          contentEncoding: int32
-        release_notes:
-          type: string
-          description: Release notes if any
-        severity:
-          allOf:
-          - $ref: '#/components/schemas/jsi_sirt_severity'
-          - description: 'Security severity assigned to the SIRT advisory. enum: `Critical`, `High`, `Low`, `Medium`'
-        solution:
-          type: string
-          description: Recommended fix or remediation for the security issue
-        title:
-          type: string
-          description: Summary title for the SIRT advisory
-        updated_date:
-          type: integer
-          description: Time when the JSA advisory was last updated
-          contentEncoding: int32
-        versions:
-          type: array
-          items:
-            type: string
-          description: Software versions affected by the SIRT advisory
-        workaround:
-          type: string
-          description: Mitigation or workaround guidance for the SIRT advisory
-      description: Juniper Security Intelligence SIRT advisory item
-    js_inventory_search:
-      title: js_inventory_search
-      type: object
-      properties:
-        end:
-          type: integer
-          description: Offset to end at
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Number of results to return
-          contentEncoding: int32
-        next:
-          type: string
-          description: URL for the next page of JSI inventory results
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/js_inventory_item'
-          description: JSI inventory records returned by the search
-        start:
-          type: integer
-          description: Offset to start from
-          contentEncoding: int32
-        total:
-          type: integer
-          description: Number of JSI inventory records matching the search
-          contentEncoding: int32
-      description: Paginated JSI inventory search response
-    response_detail_string:
-      title: response_detail_string
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable detail message returned by the API
-      description: Response containing a human-readable detail message
+          - wss://api-ws.mist.com/ssh?jwt=xxxx
+      description: Response containing a WebSocket session handle and connection URL
     response_device_config_cmd:
       title: response_device_config_cmd
       required:
@@ -3102,15 +2962,6 @@ components:
           type: string
           description: Configuration command returned for the device
       description: Device configuration command response
-    support_contract_status:
-      title: support_contract_status
-      enum:
-      - Active
-      - Declined
-      - EOL
-      - Service Available
-      type: string
-      description: 'Service contract status. enum: `Active`, `Declined`, `EOL`, `Service Available`'
     js_inventory_item:
       title: js_inventory_item
       type: object
@@ -3267,6 +3118,84 @@ components:
           type: string
           description: Missing resource identifier, when the API includes one
       description: Standard HTTP 404 not found error response
+    count_result:
+      title: count_result
+      required:
+      - count
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of matching items for the distinct value or values in this result
+          contentEncoding: int32
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    jsi_sirt_search:
+      title: jsi_sirt_search
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Upper bound timestamp for the SIRT search window
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Number of results to return
+          contentEncoding: int32
+        next:
+          type: string
+          description: Pagination URL for the next page of SIRT advisories
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/jsi_sirt_item'
+          description: List of SIRT advisories
+        start:
+          type: integer
+          description: Lower bound timestamp for the SIRT search window
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Count of SIRT advisories matching the search
+          contentEncoding: int32
+      description: Juniper Security Intelligence SIRT search response with result metadata
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_detail_string:
+      title: response_detail_string
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable detail message returned by the API
+      description: Response containing a human-readable detail message
+    device_status:
+      title: device_status
+      enum:
+      - all
+      - connected
+      - disconnected
+      type: string
+      description: 'enum: `all`, `connected`, `disconnected`'
     count_pbn_distinct:
       title: count_pbn_distinct
       enum:
@@ -3278,6 +3207,110 @@ components:
       description: 'Fields that can be used to group PBN advisory count results. enum: `versions`, `models`, `customer_risk`, `bug_type`'
       examples:
       - versions
+    js_inventory_search:
+      title: js_inventory_search
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Offset to end at
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Number of results to return
+          contentEncoding: int32
+        next:
+          type: string
+          description: URL for the next page of JSI inventory results
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/js_inventory_item'
+          description: JSI inventory records returned by the search
+        start:
+          type: integer
+          description: Offset to start from
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of JSI inventory records matching the search
+          contentEncoding: int32
+      description: Paginated JSI inventory search response
+    jsi_pbn_item:
+      title: jsi_pbn_item
+      type: object
+      properties:
+        bug_type:
+          allOf:
+          - $ref: '#/components/schemas/jsi_pbn_bug_type'
+          - description: 'Type of the bug. enum: `Day-1`, `Regression`'
+        customer_risk:
+          type: string
+          description: Customer impact risk level for the PBN advisory
+        fixed_in:
+          type: string
+          description: Release in which the issue was fixed
+        id:
+          type: string
+          description: Unique PBN advisory identifier from Juniper Support Insights
+          examples:
+          - '1403338'
+        introduced_in:
+          type: string
+          description: Release where the PBN issue was introduced
+        models:
+          type: array
+          items:
+            type: string
+          description: Device models affected by the PBN issue
+        product_family:
+          type: array
+          items:
+            type: string
+          description: Product families affected by the PBN issue
+        release_notes:
+          type: string
+          description: Release notes for this PBN
+        restoration:
+          type: string
+          description: Steps recommended to restore service or recover from the PBN issue
+        title:
+          type: string
+          description: Summary title for the PBN issue
+        updated_date:
+          type: integer
+          description: Time when the PBN advisory was last updated
+          contentEncoding: int32
+        versions:
+          type: array
+          items:
+            type: string
+          description: Software versions affected by the PBN issue
+        workaround:
+          type: string
+          description: Mitigation or workaround guidance for the PBN issue
+        workaround_provided:
+          type: string
+          description: Indicator of whether workaround guidance is available
+      description: PBN (Problem Bug Notification) advisory item
+    count_sirt_distinct:
+      title: count_sirt_distinct
+      enum:
+      - versions
+      - models
+      - severity
+      - jsa_updated_date
+      type: string
+      description: 'Fields that can be used to group SIRT advisory count results. enum: `versions`, `models`, `severity`, `jsa_updated_date`'
+      examples:
+      - versions
+    jsi_pbn_bug_type:
+      title: jsi_pbn_bug_type
+      enum:
+      - Day-1
+      - Regression
+      type: string
+      description: 'Type of the bug. enum: `Day-1`, `Regression`'
     response_count:
       title: response_count
       required:
@@ -3315,91 +3348,6 @@ components:
           description: Number of distinct result buckets returned
           contentEncoding: int32
       description: Distinct count response for time-bounded search results
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    jsi_sirt_search:
-      title: jsi_sirt_search
-      type: object
-      properties:
-        end:
-          type: integer
-          description: Upper bound timestamp for the SIRT search window
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Number of results to return
-          contentEncoding: int32
-        next:
-          type: string
-          description: Pagination URL for the next page of SIRT advisories
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/jsi_sirt_item'
-          description: List of SIRT advisories
-        start:
-          type: integer
-          description: Lower bound timestamp for the SIRT search window
-          contentEncoding: int32
-        total:
-          type: integer
-          description: Count of SIRT advisories matching the search
-          contentEncoding: int32
-      description: Juniper Security Intelligence SIRT search response with result metadata
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    jsi_inventory_count_distinct:
-      title: jsi_inventory_count_distinct
-      enum:
-      - account_id
-      - claimed
-      - has_support
-      - end_of_sale_time
-      - eos_time
-      - version_time
-      - model
-      - sku
-      - status
-      - type
-      - version
-      - warranty_type
-      type: string
-      description: 'Distinct field used when counting Juniper Support Insight inventory records. enum: `account_id`, `claimed`, `has_support`, `end_of_sale_time`, `eos_time`, `version_time`, `model`, `sku`, `status`, `type`, `version`, `warranty_type`'
-    support_contract_status2:
-      title: support_contract_status2
-      enum:
-      - Active
-      - Declined
-      - EOL
-      - Service Available
-      type: string
-      description: 'Service contract status; only returned for onboarded (claimed) devices. enum: `Active`, `Declined`, `EOL`, `Service Available`.'
     jsi_pbn_search:
       title: jsi_pbn_search
       type: object
@@ -3429,60 +3377,15 @@ components:
           description: Count of PBN advisories matching the search
           contentEncoding: int32
       description: Juniper Security Intelligence PBN search response with result metadata
-    websocket_session_with_url:
-      title: websocket_session_with_url
-      required:
-      - session
-      - url
-      type: object
-      properties:
-        session:
-          type: string
-          description: Identifier used to correlate output on the WebSocket stream
-          examples:
-          - 19e73828-937f-05e6-f709-e29efdb0a82b
-        url:
-          type: string
-          description: WebSocket URL returned for connecting to this session
-          examples:
-          - wss://api-ws.mist.com/ssh?jwt=xxxx
-      description: Response containing a WebSocket session handle and connection URL
-    jsi_pbn_bug_type:
-      title: jsi_pbn_bug_type
+    jsi_sirt_severity:
+      title: jsi_sirt_severity
       enum:
-      - Day-1
-      - Regression
+      - Critical
+      - High
+      - Low
+      - Medium
       type: string
-      description: 'Type of the bug. enum: `Day-1`, `Regression`'
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    device_status:
-      title: device_status
-      enum:
-      - all
-      - connected
-      - disconnected
-      type: string
-      description: 'enum: `all`, `connected`, `disconnected`'
-    count_sirt_distinct:
-      title: count_sirt_distinct
-      enum:
-      - versions
-      - models
-      - severity
-      - jsa_updated_date
-      type: string
-      description: 'Fields that can be used to group SIRT advisory count results. enum: `versions`, `models`, `severity`, `jsa_updated_date`'
-      examples:
-      - versions
+      description: 'Security severity assigned to the SIRT advisory. enum: `Critical`, `High`, `Low`, `Medium`'
     jse_device:
       title: jse_device
       type: object
@@ -3508,14 +3411,111 @@ components:
           type: string
           description: Device serial number for the JSE device
       description: JSE device reported for an organization
-    device_type2:
-      title: device_type2
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    support_contract_status2:
+      title: support_contract_status2
       enum:
-      - ap
-      - gateway
-      - switch
+      - Active
+      - Declined
+      - EOL
+      - Service Available
       type: string
-      description: 'Device category for the inventory item. enum: `ap`, `gateway`, `switch`.'
+      description: 'Service contract status; only returned for onboarded (claimed) devices. enum: `Active`, `Declined`, `EOL`, `Service Available`.'
+    support_contract_status:
+      title: support_contract_status
+      enum:
+      - Active
+      - Declined
+      - EOL
+      - Service Available
+      type: string
+      description: 'Service contract status. enum: `Active`, `Declined`, `EOL`, `Service Available`'
+    jsi_inventory_count_distinct:
+      title: jsi_inventory_count_distinct
+      enum:
+      - account_id
+      - claimed
+      - has_support
+      - end_of_sale_time
+      - eos_time
+      - version_time
+      - model
+      - sku
+      - status
+      - type
+      - version
+      - warranty_type
+      type: string
+      description: 'Distinct field used when counting Juniper Support Insight inventory records. enum: `account_id`, `claimed`, `has_support`, `end_of_sale_time`, `eos_time`, `version_time`, `model`, `sku`, `status`, `type`, `version`, `warranty_type`'
+    jsi_sirt_item:
+      title: jsi_sirt_item
+      type: object
+      properties:
+        cvss_score:
+          type: number
+          description: Common Vulnerability Scoring System score for the SIRT advisory
+        id:
+          type: string
+          description: Unique SIRT or JSA advisory identifier from Juniper Support Insights
+          examples:
+          - JSA100053
+        models:
+          type: array
+          items:
+            type: string
+          description: Device models affected by the SIRT advisory
+        problem:
+          type: string
+          description: Issue details described by the SIRT advisory
+        published_date:
+          type: integer
+          description: Release date of the SIRT issue
+          contentEncoding: int32
+        release_notes:
+          type: string
+          description: Release notes if any
+        severity:
+          allOf:
+          - $ref: '#/components/schemas/jsi_sirt_severity'
+          - description: 'Security severity assigned to the SIRT advisory. enum: `Critical`, `High`, `Low`, `Medium`'
+        solution:
+          type: string
+          description: Recommended fix or remediation for the security issue
+        title:
+          type: string
+          description: Summary title for the SIRT advisory
+        updated_date:
+          type: integer
+          description: Time when the JSA advisory was last updated
+          contentEncoding: int32
+        versions:
+          type: array
+          items:
+            type: string
+          description: Software versions affected by the SIRT advisory
+        workaround:
+          type: string
+          description: Mitigation or workaround guidance for the SIRT advisory
+      description: Juniper Security Intelligence SIRT advisory item
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
   securitySchemes:
     apiToken:
       type: apiKey

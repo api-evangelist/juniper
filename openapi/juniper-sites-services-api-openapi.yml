@@ -983,19 +983,24 @@ paths:
       deprecated: false
 components:
   schemas:
-    count_result:
-      title: count_result
-      required:
-      - count
+    service_failover_policy2:
+      title: service_failover_policy2
+      enum:
+      - non_revertible
+      - none
+      - revertible
+      type: string
+      description: 'Failover behavior for traffic matched by this service. enum: `non_revertible`, `none`, `revertible`.'
+    response_http403:
+      title: response_http403
       type: object
       properties:
-        count:
-          type: integer
-          description: Number of matching items for the distinct value or values in this result
-          contentEncoding: int32
-      additionalProperties:
-        type: string
-      description: Count result row with the matching distinct field values
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
     service_path_event:
       title: service_path_event
       type: object
@@ -1064,6 +1069,35 @@ components:
           examples:
           - Syracuse_HUB-Wan0
       description: Event describing a service path state change reported by a gateway or SSR device
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    service_traffic_class2:
+      title: service_traffic_class2
+      enum:
+      - best_effort
+      - high
+      - low
+      - medium
+      type: string
+      description: 'Traffic class applied when `traffic_type`==`custom`. enum: `best_effort`, `high`, `low`, `medium`.'
     response_count:
       title: response_count
       required:
@@ -1101,36 +1135,73 @@ components:
           description: Number of distinct result buckets returned
           contentEncoding: int32
       description: Distinct count response for time-bounded search results
-    response_http403:
-      title: response_http403
+    service_type2:
+      title: service_type2
+      enum:
+      - app_categories
+      - apps
+      - custom
+      - urls
+      type: string
+      description: 'Matching mode that determines which app, URL, or custom fields are used. enum: `app_categories`, `apps`, `custom`, `urls`.'
+    response_events_path_search:
+      title: response_events_path_search
       type: object
       properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
+        end:
+          type: integer
+          description: Epoch timestamp for the end of the service path event search window
+          contentEncoding: int32
           examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http400:
-      title: response_http400
+          - 1697096379
+        limit:
+          type: integer
+          description: Maximum number of service path event records returned in this page
+          contentEncoding: int32
+          examples:
+          - 10
+        next:
+          type: string
+          description: Pagination cursor or URL for retrieving the next page of service path event records
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/service_path_event'
+          description: Service path event records matching the search filters
+        start:
+          type: integer
+          description: Epoch timestamp for the start of the service path event search window
+          contentEncoding: int32
+          examples:
+          - 1697009979
+        total:
+          type: integer
+          description: Number of service path event records matching the search filters across all pages
+          contentEncoding: int32
+          examples:
+          - 2
+      description: Paginated response for service path event search results
+    count_result:
+      title: count_result
+      required:
+      - count
       type: object
       properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http429:
-      title: response_http429
+        count:
+          type: integer
+          description: Number of matching items for the distinct value or values in this result
+          contentEncoding: int32
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
+    response_http404:
+      title: response_http404
       type: object
       properties:
-        detail:
+        id:
           type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
     service:
       title: service
       type: object
@@ -1303,24 +1374,29 @@ components:
             type: string
           description: URL patterns matched by this service when `type`==`urls`
       description: Traffic service definition for applications or destinations used by gateway and SSR policies
-    service_failover_policy2:
-      title: service_failover_policy2
-      enum:
-      - non_revertible
-      - none
-      - revertible
-      type: string
-      description: 'Failover behavior for traffic matched by this service. enum: `non_revertible`, `none`, `revertible`.'
-    response_http401:
-      title: response_http401
+    response_http400:
+      title: response_http400
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the authentication error
+          description: Human-readable explanation of the bad request error
           examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    site_service_events_count_distinct:
+      title: site_service_events_count_distinct
+      enum:
+      - mac
+      - model
+      - policy
+      - port_id
+      - site_id
+      - type
+      - vpn_name
+      - vpn_path
+      type: string
+      description: 'enum: `mac`, `model`, `policy`, `port_id`, `site_id`, `type`, `vpn_name`, `vpn_path`'
     service_spec:
       title: service_spec
       type: object
@@ -1337,82 +1413,6 @@ components:
           examples:
           - tcp
       description: Protocol and port match rule for a custom service
-    service_type2:
-      title: service_type2
-      enum:
-      - app_categories
-      - apps
-      - custom
-      - urls
-      type: string
-      description: 'Matching mode that determines which app, URL, or custom fields are used. enum: `app_categories`, `apps`, `custom`, `urls`.'
-    response_events_path_search:
-      title: response_events_path_search
-      type: object
-      properties:
-        end:
-          type: integer
-          description: Epoch timestamp for the end of the service path event search window
-          contentEncoding: int32
-          examples:
-          - 1697096379
-        limit:
-          type: integer
-          description: Maximum number of service path event records returned in this page
-          contentEncoding: int32
-          examples:
-          - 10
-        next:
-          type: string
-          description: Pagination cursor or URL for retrieving the next page of service path event records
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/service_path_event'
-          description: Service path event records matching the search filters
-        start:
-          type: integer
-          description: Epoch timestamp for the start of the service path event search window
-          contentEncoding: int32
-          examples:
-          - 1697009979
-        total:
-          type: integer
-          description: Number of service path event records matching the search filters across all pages
-          contentEncoding: int32
-          examples:
-          - 2
-      description: Paginated response for service path event search results
-    service_traffic_class2:
-      title: service_traffic_class2
-      enum:
-      - best_effort
-      - high
-      - low
-      - medium
-      type: string
-      description: 'Traffic class applied when `traffic_type`==`custom`. enum: `best_effort`, `high`, `low`, `medium`.'
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    site_service_events_count_distinct:
-      title: site_service_events_count_distinct
-      enum:
-      - mac
-      - model
-      - policy
-      - port_id
-      - site_id
-      - type
-      - vpn_name
-      - vpn_path
-      type: string
-      description: 'enum: `mac`, `model`, `policy`, `port_id`, `site_id`, `type`, `vpn_name`, `vpn_path`'
   securitySchemes:
     apiToken:
       type: apiKey

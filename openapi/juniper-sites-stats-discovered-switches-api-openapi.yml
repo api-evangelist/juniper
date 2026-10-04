@@ -1244,97 +1244,6 @@ paths:
       deprecated: false
 components:
   schemas:
-    dswitches_metrics_version_compliance_details2:
-      title: dswitches_metrics_version_compliance_details2
-      required:
-      - major_versions
-      - total_switch_count
-      type: object
-      properties:
-        major_versions:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/dswitches_compliance_major_version'
-          description: Per-model major version groupings used for version compliance
-        total_switch_count:
-          type: integer
-          description: Number of discovered switches evaluated for version compliance
-          contentEncoding: int32
-      description: Version grouping details used to calculate the compliance score
-    count_result:
-      title: count_result
-      required:
-      - count
-      type: object
-      properties:
-        count:
-          type: integer
-          description: Number of matching items for the distinct value or values in this result
-          contentEncoding: int32
-      additionalProperties:
-        type: string
-      description: Count result row with the matching distinct field values
-    discovered_switch_metric_ap:
-      title: discovered_switch_metric_ap
-      type: object
-      properties:
-        hostname:
-          type: string
-          description: AP hostname included in the discovered switch metric
-        mac:
-          type: string
-          description: AP MAC address included in the discovered switch metric
-        poe_status:
-          type: boolean
-          description: Whether the upstream switch port provides PoE for this AP
-        port:
-          type: string
-          description: Switch port name connected to this AP
-        port_id:
-          type: string
-          description: LLDP port identifier for this AP uplink
-        power_draw:
-          type: integer
-          description: Power draw reported for this AP connection
-          contentEncoding: int32
-        when:
-          type: string
-          description: Timestamp when this AP attachment metric was observed
-      description: AP attachment details included in a discovered switch metric
-    response_discovered_switch_metrics:
-      title: response_discovered_switch_metrics
-      required:
-      - end
-      - limit
-      - results
-      - start
-      - total
-      type: object
-      properties:
-        end:
-          type: number
-          description: Epoch timestamp, in seconds, for the end of the metric search window
-        limit:
-          type: integer
-          description: Maximum number of discovered switch metric records returned in this page
-          contentEncoding: int32
-        next:
-          type: string
-          description: Pagination cursor or URL for retrieving the next page of discovered switch metric records
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/discovered_switch_metric'
-          description: Discovered switch metric records matching the search filters
-        start:
-          type: number
-          description: Epoch timestamp, in seconds, for the start of the metric search window
-        total:
-          type: integer
-          description: Number of discovered switch metric records matching the search filters across all pages
-          contentEncoding: int32
-      description: Paginated response for discovered switch metric search results
     dswitches_metrics_switch_ap_affinity1:
       title: dswitches_metrics_switch_ap_affinity1
       required:
@@ -1350,294 +1259,6 @@ components:
           type: number
           description: Compliance score for the switch/AP affinity metric
       description: Metric comparing AP counts against the switch affinity threshold
-    discovered_switches_metric_scope:
-      title: discovered_switches_metric_scope
-      enum:
-      - site
-      - switch
-      type: string
-      description: 'Scope level used when querying discovered switch metrics. enum: `site`, `switch`'
-    dswitches_metrics_poe_compliance1:
-      title: dswitches_metrics_poe_compliance1
-      required:
-      - details
-      - score
-      type: object
-      properties:
-        details:
-          allOf:
-          - $ref: '#/components/schemas/dswitches_metrics_poe_compliance_details2'
-          - description: Counts and power totals used to calculate the PoE compliance score
-        score:
-          type: number
-          description: Compliance score for the PoE compliance metric
-      description: Metric for PoE compliance across APs connected to discovered switches
-    site_discovered_switches_count_distinct:
-      title: site_discovered_switches_count_distinct
-      enum:
-      - mgmt_addr
-      - model
-      - system_name
-      - version
-      type: string
-      description: 'enum: `mgmt_addr`, `model`, `system_name`, `version`'
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    discovered_switch:
-      title: discovered_switch
-      type: object
-      properties:
-        adopted:
-          type: boolean
-          description: Whether the discovered switch has been adopted into Mist management
-        ap_redundancy:
-          allOf:
-          - $ref: '#/components/schemas/ap_redundancy1'
-          - description: AP switch redundancy summary for APs connected through the discovered switch
-        aps:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/discovered_switch_ap'
-          description: Connected APs observed on ports of the discovered switch
-        chassis_id:
-          uniqueItems: true
-          type: array
-          items:
-            type: string
-          description: LLDP chassis identifier reported by the discovered switch
-        for_site:
-          type: boolean
-          description: Whether the discovered switch is associated with the requested site
-          readOnly: true
-        mgmt_addr:
-          type: string
-          description: Management IP address advertised by the discovered switch
-        model:
-          type: string
-          description: Switch model reported for the discovered switch
-        org_id:
-          type: string
-          description: Organization that contains the discovered switch record
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
-        site_id:
-          type: string
-          description: Site where the switch was discovered
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
-        system_desc:
-          type: string
-          description: LLDP system description advertised by the discovered switch
-        system_name:
-          type: string
-          description: LLDP system name advertised by the discovered switch
-        timestamp:
-          type: number
-          description: Time when the discovered switch data was observed
-          readOnly: true
-        vendor:
-          type: string
-          description: Switch vendor reported for the discovered switch
-        version:
-          type: string
-          description: Software version reported for the discovered switch
-      description: Switch discovered from AP uplink LLDP data and site switch discovery
-    ap_redundancy_module:
-      title: ap_redundancy_module
-      type: object
-      properties:
-        num_aps:
-          type: integer
-          description: Total number of APs connected through this VC member
-          contentEncoding: int32
-          examples:
-          - 15
-        num_aps_with_switch_redundancy:
-          type: integer
-          description: Number of APs on this VC member with switch redundancy coverage
-          contentEncoding: int32
-          examples:
-          - 8
-      description: AP switch redundancy counts for one VC member
-    dswitches_metrics_inactive_wired_vlans1:
-      title: dswitches_metrics_inactive_wired_vlans1
-      required:
-      - details
-      - score
-      type: object
-      properties:
-        details:
-          type: object
-          description: Metric-specific details for inactive wired VLAN findings
-        score:
-          type: number
-          description: Compliance score for the inactive wired VLAN metric
-      description: Metric for inactive wired VLANs on discovered switches
-    discovered_switch_ap:
-      title: discovered_switch_ap
-      type: object
-      properties:
-        hostname:
-          type: string
-          description: AP hostname observed on the discovered switch
-        inactive_wired_vlans:
-          type: array
-          items:
-            type: integer
-            contentEncoding: int32
-          description: Inactive wired VLAN IDs reported for the AP attachment
-        mac:
-          type: string
-          description: AP MAC address observed on the discovered switch
-        poe_status:
-          type: boolean
-          description: Whether the upstream switch port provides PoE for the AP
-        port:
-          type: string
-          description: Switch port name connected to the AP
-        port_id:
-          type: string
-          description: LLDP port identifier for the AP uplink
-        power_draw:
-          type: number
-          description: Power draw reported for the AP connection
-        when:
-          type: string
-          description: Timestamp when this AP attachment was last observed
-      description: AP attachment details observed on a discovered switch
-    response_count:
-      title: response_count
-      required:
-      - distinct
-      - end
-      - limit
-      - results
-      - start
-      - total
-      type: object
-      properties:
-        distinct:
-          type: string
-          description: Field used to group the count results
-        end:
-          type: integer
-          description: Search window end timestamp for the count request, in epoch seconds
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of distinct count results requested
-          contentEncoding: int32
-        results:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/count_result'
-          description: Count results grouped by the distinct field
-        start:
-          type: integer
-          description: Search window start timestamp for the count request, in epoch seconds
-          contentEncoding: int32
-        total:
-          type: integer
-          description: Number of distinct result buckets returned
-          contentEncoding: int32
-      description: Distinct count response for time-bounded search results
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    dswitches_compliance_major_version:
-      title: dswitches_compliance_major_version
-      required:
-      - major_count
-      - model
-      type: object
-      properties:
-        major_count:
-          type: number
-          description: Number of major software versions observed for this switch model
-        model:
-          type: string
-          description: Switch model represented by this version-compliance grouping
-        system_names:
-          uniqueItems: true
-          type: array
-          items:
-            type: string
-          description: Discovered switch system names included in this version-compliance grouping
-      description: Version-compliance grouping for one discovered switch model
-    response_dswitches_metrics:
-      title: response_dswitches_metrics
-      required:
-      - inactive_wired_vlans
-      - poe_compliance
-      - switch_ap_affinity
-      - version_compliance
-      type: object
-      properties:
-        inactive_wired_vlans:
-          allOf:
-          - $ref: '#/components/schemas/dswitches_metrics_inactive_wired_vlans1'
-          - description: Metric for inactive wired VLANs on discovered switches
-        poe_compliance:
-          allOf:
-          - $ref: '#/components/schemas/dswitches_metrics_poe_compliance1'
-          - description: Metric for PoE compliance across APs connected to discovered switches
-        switch_ap_affinity:
-          allOf:
-          - $ref: '#/components/schemas/dswitches_metrics_switch_ap_affinity1'
-          - description: Metric comparing AP counts against the switch affinity threshold
-        version_compliance:
-          allOf:
-          - $ref: '#/components/schemas/dswitches_metrics_version_compliance1'
-          - description: Metric for discovered switch software version compliance
-      description: Metrics summary returned for discovered switch compliance checks
-    discovered_switch_metric_type:
-      title: discovered_switch_metric_type
-      enum:
-      - inactive_wired_vlans
-      - poe_compliance
-      - switch_ap_affinity
-      - version_compliance
-      type: string
-      description: 'enum: `inactive_wired_vlans`, `poe_compliance`, `switch_ap_affinity`, `version_compliance`'
     discovered_switch_metric:
       title: discovered_switch_metric
       type: object
@@ -1719,33 +1340,28 @@ components:
           type: string
           description: Software version associated with this metric result
       description: Time-series metric result for discovered switch health or compliance
-    response_http401:
-      title: response_http401
+    ap_redundancy1:
+      title: ap_redundancy1
       type: object
       properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
+        modules:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ap_redundancy_module'
+          description: Per-module AP redundancy counts keyed by switch node ID
+        num_aps:
+          type: integer
+          description: Total number of APs considered for switch redundancy
+          contentEncoding: int32
           examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    dswitches_metrics_switch_ap_affinity_details2:
-      title: dswitches_metrics_switch_ap_affinity_details2
-      required:
-      - system_name
-      - threshold
-      type: object
-      properties:
-        system_name:
-          uniqueItems: true
-          type: array
-          items:
-            type: string
-          description: Discovered switch system names reported for the affinity metric
-        threshold:
-          type: number
-          description: APs-per-switch threshold used for the affinity metric
-      description: Switch names and threshold used to calculate the affinity score
+          - 15
+        num_aps_with_switch_redundancy:
+          type: integer
+          description: Number of APs that have switch redundancy coverage
+          contentEncoding: int32
+          examples:
+          - 8
+      description: AP switch redundancy summary for APs connected through the discovered switch
     response_discovered_switches:
       title: response_discovered_switches
       required:
@@ -1780,28 +1396,113 @@ components:
           description: Number of discovered switch records matching the search filters across all pages
           contentEncoding: int32
       description: Paginated response for discovered switch search results
-    ap_redundancy1:
-      title: ap_redundancy1
+    response_http404:
+      title: response_http404
       type: object
       properties:
-        modules:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/ap_redundancy_module'
-          description: Per-module AP redundancy counts keyed by switch node ID
-        num_aps:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    discovered_switch_ap:
+      title: discovered_switch_ap
+      type: object
+      properties:
+        hostname:
+          type: string
+          description: AP hostname observed on the discovered switch
+        inactive_wired_vlans:
+          type: array
+          items:
+            type: integer
+            contentEncoding: int32
+          description: Inactive wired VLAN IDs reported for the AP attachment
+        mac:
+          type: string
+          description: AP MAC address observed on the discovered switch
+        poe_status:
+          type: boolean
+          description: Whether the upstream switch port provides PoE for the AP
+        port:
+          type: string
+          description: Switch port name connected to the AP
+        port_id:
+          type: string
+          description: LLDP port identifier for the AP uplink
+        power_draw:
+          type: number
+          description: Power draw reported for the AP connection
+        when:
+          type: string
+          description: Timestamp when this AP attachment was last observed
+      description: AP attachment details observed on a discovered switch
+    discovered_switch_metric_ap:
+      title: discovered_switch_metric_ap
+      type: object
+      properties:
+        hostname:
+          type: string
+          description: AP hostname included in the discovered switch metric
+        mac:
+          type: string
+          description: AP MAC address included in the discovered switch metric
+        poe_status:
+          type: boolean
+          description: Whether the upstream switch port provides PoE for this AP
+        port:
+          type: string
+          description: Switch port name connected to this AP
+        port_id:
+          type: string
+          description: LLDP port identifier for this AP uplink
+        power_draw:
           type: integer
-          description: Total number of APs considered for switch redundancy
+          description: Power draw reported for this AP connection
           contentEncoding: int32
-          examples:
-          - 15
-        num_aps_with_switch_redundancy:
+        when:
+          type: string
+          description: Timestamp when this AP attachment metric was observed
+      description: AP attachment details included in a discovered switch metric
+    count_result:
+      title: count_result
+      required:
+      - count
+      type: object
+      properties:
+        count:
           type: integer
-          description: Number of APs that have switch redundancy coverage
+          description: Number of matching items for the distinct value or values in this result
           contentEncoding: int32
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
           examples:
-          - 8
-      description: AP switch redundancy summary for APs connected through the discovered switch
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    discovered_switches_metric_scope:
+      title: discovered_switches_metric_scope
+      enum:
+      - site
+      - switch
+      type: string
+      description: 'Scope level used when querying discovered switch metrics. enum: `site`, `switch`'
     dswitches_metrics_poe_compliance_details2:
       title: dswitches_metrics_poe_compliance_details2
       required:
@@ -1817,6 +1518,119 @@ components:
           type: number
           description: Aggregate AP PoE power demand across evaluated APs, in mW
       description: Counts and power totals used to calculate the PoE compliance score
+    ap_redundancy_module:
+      title: ap_redundancy_module
+      type: object
+      properties:
+        num_aps:
+          type: integer
+          description: Total number of APs connected through this VC member
+          contentEncoding: int32
+          examples:
+          - 15
+        num_aps_with_switch_redundancy:
+          type: integer
+          description: Number of APs on this VC member with switch redundancy coverage
+          contentEncoding: int32
+          examples:
+          - 8
+      description: AP switch redundancy counts for one VC member
+    dswitches_metrics_version_compliance_details2:
+      title: dswitches_metrics_version_compliance_details2
+      required:
+      - major_versions
+      - total_switch_count
+      type: object
+      properties:
+        major_versions:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/dswitches_compliance_major_version'
+          description: Per-model major version groupings used for version compliance
+        total_switch_count:
+          type: integer
+          description: Number of discovered switches evaluated for version compliance
+          contentEncoding: int32
+      description: Version grouping details used to calculate the compliance score
+    dswitches_metrics_inactive_wired_vlans1:
+      title: dswitches_metrics_inactive_wired_vlans1
+      required:
+      - details
+      - score
+      type: object
+      properties:
+        details:
+          type: object
+          description: Metric-specific details for inactive wired VLAN findings
+        score:
+          type: number
+          description: Compliance score for the inactive wired VLAN metric
+      description: Metric for inactive wired VLANs on discovered switches
+    discovered_switch:
+      title: discovered_switch
+      type: object
+      properties:
+        adopted:
+          type: boolean
+          description: Whether the discovered switch has been adopted into Mist management
+        ap_redundancy:
+          allOf:
+          - $ref: '#/components/schemas/ap_redundancy1'
+          - description: AP switch redundancy summary for APs connected through the discovered switch
+        aps:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/discovered_switch_ap'
+          description: Connected APs observed on ports of the discovered switch
+        chassis_id:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: LLDP chassis identifier reported by the discovered switch
+        for_site:
+          type: boolean
+          description: Whether the discovered switch is associated with the requested site
+          readOnly: true
+        mgmt_addr:
+          type: string
+          description: Management IP address advertised by the discovered switch
+        model:
+          type: string
+          description: Switch model reported for the discovered switch
+        org_id:
+          type: string
+          description: Organization that contains the discovered switch record
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        site_id:
+          type: string
+          description: Site where the switch was discovered
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        system_desc:
+          type: string
+          description: LLDP system description advertised by the discovered switch
+        system_name:
+          type: string
+          description: LLDP system name advertised by the discovered switch
+        timestamp:
+          type: number
+          description: Time when the discovered switch data was observed
+          readOnly: true
+        vendor:
+          type: string
+          description: Switch vendor reported for the discovered switch
+        version:
+          type: string
+          description: Software version reported for the discovered switch
+      description: Switch discovered from AP uplink LLDP data and site switch discovery
     dswitches_metrics_version_compliance1:
       title: dswitches_metrics_version_compliance1
       required:
@@ -1832,6 +1646,192 @@ components:
           type: number
           description: Compliance score for the discovered-switch version metric
       description: Metric for discovered switch software version compliance
+    dswitches_compliance_major_version:
+      title: dswitches_compliance_major_version
+      required:
+      - major_count
+      - model
+      type: object
+      properties:
+        major_count:
+          type: number
+          description: Number of major software versions observed for this switch model
+        model:
+          type: string
+          description: Switch model represented by this version-compliance grouping
+        system_names:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Discovered switch system names included in this version-compliance grouping
+      description: Version-compliance grouping for one discovered switch model
+    response_dswitches_metrics:
+      title: response_dswitches_metrics
+      required:
+      - inactive_wired_vlans
+      - poe_compliance
+      - switch_ap_affinity
+      - version_compliance
+      type: object
+      properties:
+        inactive_wired_vlans:
+          allOf:
+          - $ref: '#/components/schemas/dswitches_metrics_inactive_wired_vlans1'
+          - description: Metric for inactive wired VLANs on discovered switches
+        poe_compliance:
+          allOf:
+          - $ref: '#/components/schemas/dswitches_metrics_poe_compliance1'
+          - description: Metric for PoE compliance across APs connected to discovered switches
+        switch_ap_affinity:
+          allOf:
+          - $ref: '#/components/schemas/dswitches_metrics_switch_ap_affinity1'
+          - description: Metric comparing AP counts against the switch affinity threshold
+        version_compliance:
+          allOf:
+          - $ref: '#/components/schemas/dswitches_metrics_version_compliance1'
+          - description: Metric for discovered switch software version compliance
+      description: Metrics summary returned for discovered switch compliance checks
+    site_discovered_switches_count_distinct:
+      title: site_discovered_switches_count_distinct
+      enum:
+      - mgmt_addr
+      - model
+      - system_name
+      - version
+      type: string
+      description: 'enum: `mgmt_addr`, `model`, `system_name`, `version`'
+    discovered_switch_metric_type:
+      title: discovered_switch_metric_type
+      enum:
+      - inactive_wired_vlans
+      - poe_compliance
+      - switch_ap_affinity
+      - version_compliance
+      type: string
+      description: 'enum: `inactive_wired_vlans`, `poe_compliance`, `switch_ap_affinity`, `version_compliance`'
+    dswitches_metrics_poe_compliance1:
+      title: dswitches_metrics_poe_compliance1
+      required:
+      - details
+      - score
+      type: object
+      properties:
+        details:
+          allOf:
+          - $ref: '#/components/schemas/dswitches_metrics_poe_compliance_details2'
+          - description: Counts and power totals used to calculate the PoE compliance score
+        score:
+          type: number
+          description: Compliance score for the PoE compliance metric
+      description: Metric for PoE compliance across APs connected to discovered switches
+    response_count:
+      title: response_count
+      required:
+      - distinct
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        distinct:
+          type: string
+          description: Field used to group the count results
+        end:
+          type: integer
+          description: Search window end timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of distinct count results requested
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/count_result'
+          description: Count results grouped by the distinct field
+        start:
+          type: integer
+          description: Search window start timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of distinct result buckets returned
+          contentEncoding: int32
+      description: Distinct count response for time-bounded search results
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    dswitches_metrics_switch_ap_affinity_details2:
+      title: dswitches_metrics_switch_ap_affinity_details2
+      required:
+      - system_name
+      - threshold
+      type: object
+      properties:
+        system_name:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Discovered switch system names reported for the affinity metric
+        threshold:
+          type: number
+          description: APs-per-switch threshold used for the affinity metric
+      description: Switch names and threshold used to calculate the affinity score
+    response_discovered_switch_metrics:
+      title: response_discovered_switch_metrics
+      required:
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        end:
+          type: number
+          description: Epoch timestamp, in seconds, for the end of the metric search window
+        limit:
+          type: integer
+          description: Maximum number of discovered switch metric records returned in this page
+          contentEncoding: int32
+        next:
+          type: string
+          description: Pagination cursor or URL for retrieving the next page of discovered switch metric records
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/discovered_switch_metric'
+          description: Discovered switch metric records matching the search filters
+        start:
+          type: number
+          description: Epoch timestamp, in seconds, for the start of the metric search window
+        total:
+          type: integer
+          description: Number of discovered switch metric records matching the search filters across all pages
+          contentEncoding: int32
+      description: Paginated response for discovered switch metric search results
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
   securitySchemes:
     apiToken:
       type: apiKey

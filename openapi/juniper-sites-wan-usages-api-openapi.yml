@@ -624,19 +624,120 @@ paths:
       deprecated: false
 components:
   schemas:
-    count_result:
-      title: count_result
-      required:
-      - count
+    wan_usages:
+      title: wan_usages
       type: object
       properties:
-        count:
+        mac:
+          type: string
+          description: Local router MAC address for the WAN usage record
+          examples:
+          - 5c5b35000001
+        path_type:
+          type: string
+          description: WAN path type used by this usage record
+          examples:
+          - vpn
+        path_weight:
           type: integer
-          description: Number of matching items for the distinct value or values in this result
+          description: Configured weight for the WAN path
           contentEncoding: int32
-      additionalProperties:
-        type: string
-      description: Count result row with the matching distinct field values
+          examples:
+          - 10
+        peer_mac:
+          type: string
+          description: Remote peer MAC address for the WAN path
+          examples:
+          - 0200018c95e1
+        peer_port_id:
+          type: string
+          description: Remote peer interface identifier for the WAN path
+          examples:
+          - ge-0/0/3
+        policy:
+          type: string
+          description: WAN path policy that selected this path
+          examples:
+          - policy1
+        port_id:
+          type: string
+          description: Local router interface identifier for the WAN path
+          examples:
+          - ge-0/0/0.0
+        tenant:
+          type: string
+          description: Network tenant context for the WAN usage record
+          examples:
+          - tenant1
+      description: WAN usage record returned by site WAN usage searches
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    search_wan_usage:
+      title: search_wan_usage
+      type: object
+      properties:
+        end:
+          type: number
+          description: Upper bound timestamp of the WAN usage search window, in epoch seconds
+        limit:
+          type: integer
+          description: Maximum number of WAN usage records returned by this page
+          contentEncoding: int32
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/wan_usages'
+          description: WAN usage records returned by the search response
+        start:
+          type: number
+          description: Lower bound timestamp of the WAN usage search window, in epoch seconds
+      description: Paginated response for WAN usage searches
     wan_usages_count_distinct:
       title: wan_usages_count_distinct
       enum:
@@ -686,120 +787,19 @@ components:
           description: Number of distinct result buckets returned
           contentEncoding: int32
       description: Distinct count response for time-bounded search results
-    response_http403:
-      title: response_http403
+    count_result:
+      title: count_result
+      required:
+      - count
       type: object
       properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    wan_usages:
-      title: wan_usages
-      type: object
-      properties:
-        mac:
-          type: string
-          description: Local router MAC address for the WAN usage record
-          examples:
-          - 5c5b35000001
-        path_type:
-          type: string
-          description: WAN path type used by this usage record
-          examples:
-          - vpn
-        path_weight:
+        count:
           type: integer
-          description: Configured weight for the WAN path
+          description: Number of matching items for the distinct value or values in this result
           contentEncoding: int32
-          examples:
-          - 10
-        peer_mac:
-          type: string
-          description: Remote peer MAC address for the WAN path
-          examples:
-          - 0200018c95e1
-        peer_port_id:
-          type: string
-          description: Remote peer interface identifier for the WAN path
-          examples:
-          - ge-0/0/3
-        policy:
-          type: string
-          description: WAN path policy that selected this path
-          examples:
-          - policy1
-        port_id:
-          type: string
-          description: Local router interface identifier for the WAN path
-          examples:
-          - ge-0/0/0.0
-        tenant:
-          type: string
-          description: Network tenant context for the WAN usage record
-          examples:
-          - tenant1
-      description: WAN usage record returned by site WAN usage searches
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    search_wan_usage:
-      title: search_wan_usage
-      type: object
-      properties:
-        end:
-          type: number
-          description: Upper bound timestamp of the WAN usage search window, in epoch seconds
-        limit:
-          type: integer
-          description: Maximum number of WAN usage records returned by this page
-          contentEncoding: int32
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/wan_usages'
-          description: WAN usage records returned by the search response
-        start:
-          type: number
-          description: Lower bound timestamp of the WAN usage search window, in epoch seconds
-      description: Paginated response for WAN usage searches
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
   securitySchemes:
     apiToken:
       type: apiKey

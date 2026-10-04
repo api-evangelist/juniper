@@ -1210,6 +1210,193 @@ paths:
       deprecated: false
 components:
   schemas:
+    stats_rssi_zone:
+      title: stats_rssi_zone
+      required:
+      - devices
+      - id
+      - name
+      type: object
+      properties:
+        assets_wait:
+          allOf:
+          - $ref: '#/components/schemas/stats_zone_assets_waits3'
+          - description: BLE asset wait-time summary for the RSSI zone
+        clients_wait:
+          allOf:
+          - $ref: '#/components/schemas/stats_zone_clients_waits3'
+          - description: Wi-Fi client wait-time summary for the RSSI zone
+        created_time:
+          type: number
+          description: Time when the RSSI zone was created, in epoch seconds
+          readOnly: true
+        devices:
+          type: array
+          items:
+            $ref: '#/components/schemas/stats_rssi_zones_device'
+          description: AP devices and RSSI thresholds that define the RSSI zone
+        discovered_assets_wait:
+          allOf:
+          - $ref: '#/components/schemas/stats_zone_discovered_assets_waits3'
+          - description: Discovered BLE asset wait-time summary for the RSSI zone
+        id:
+          type: string
+          description: Unique identifier of the RSSI zone
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        modified_time:
+          type: number
+          description: Time when the RSSI zone was last modified, in epoch seconds
+          readOnly: true
+        name:
+          type: string
+          description: Display name of the RSSI zone
+          examples:
+          - Zone A
+        num_assets:
+          type: integer
+          description: Number of BLE assets currently counted in the RSSI zone
+          contentEncoding: int32
+          examples:
+          - 0
+        num_clients:
+          type: integer
+          description: Number of Wi-Fi clients (unconnected + connected)
+          contentEncoding: int32
+          examples:
+          - 80
+        num_discovered_assets:
+          type: integer
+          description: Number of discovered BLE assets currently counted in the RSSI zone
+          contentEncoding: int32
+          examples:
+          - 0
+        num_sdkclients:
+          type: integer
+          description: Number of SDK clients currently counted in the RSSI zone
+          contentEncoding: int32
+          examples:
+          - 10
+        num_unconnected_clients:
+          type: integer
+          description: Number of unconnected Wi-Fi clients
+          contentEncoding: int32
+          examples:
+          - 80
+        occupancy_limit:
+          type: integer
+          description: Configured occupancy limit for the RSSI zone
+          contentEncoding: int32
+          examples:
+          - 4
+        org_id:
+          type: string
+          description: Organization identifier associated with the RSSI zone
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        sdkclients_wait:
+          allOf:
+          - $ref: '#/components/schemas/stats_zone_sdkclients_waits3'
+          - description: SDK client wait-time summary for the RSSI zone
+        site_id:
+          type: string
+          description: Site identifier associated with the RSSI zone
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        unconnected_clients_wait:
+          allOf:
+          - $ref: '#/components/schemas/stats_zone_unconnected_clients_waits3'
+          - description: Unconnected Wi-Fi client wait-time summary for the RSSI zone
+      description: RSSI-based zone statistics for a site
+    stats_zone_sdkclients_waits1:
+      title: stats_zone_sdkclients_waits1
+      type: object
+      properties:
+        avg:
+          type: number
+          description: Average wait time in seconds
+          examples:
+          - 0
+        max:
+          type: number
+          description: Longest wait time in seconds
+          examples:
+          - 0
+        min:
+          type: number
+          description: Shortest wait time in seconds
+          examples:
+          - 0
+        p95:
+          type: number
+          description: 95th percentile of all the wait time(s)
+          examples:
+          - 0
+      description: SDK client wait-time summary for the zone
+    stats_zone_discovered_assets_waits3:
+      title: stats_zone_discovered_assets_waits3
+      type: object
+      properties:
+        avg:
+          type: number
+          description: Average wait time in seconds
+          examples:
+          - 0
+        max:
+          type: number
+          description: Longest wait time in seconds
+          examples:
+          - 0
+        min:
+          type: number
+          description: Shortest wait time in seconds
+          examples:
+          - 0
+        p95:
+          type: number
+          description: 95th percentile of all the wait time(s)
+          examples:
+          - 0
+      description: Discovered BLE asset wait-time summary for the RSSI zone
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    stats_zone_assets_waits3:
+      title: stats_zone_assets_waits3
+      type: object
+      properties:
+        avg:
+          type: number
+          description: Average wait time in seconds
+          examples:
+          - 0
+        max:
+          type: number
+          description: Longest wait time in seconds
+          examples:
+          - 0
+        min:
+          type: number
+          description: Shortest wait time in seconds
+          examples:
+          - 0
+        p95:
+          type: number
+          description: 95th percentile of all the wait time(s)
+          examples:
+          - 0
+      description: BLE asset wait-time summary for the RSSI zone
     stats_zone_details_client_waits2:
       title: stats_zone_details_client_waits2
       required:
@@ -1244,22 +1431,8 @@ components:
           examples:
           - 2800
       description: Wi-Fi client wait-time summary for the zone
-    zone_vertex_m:
-      title: zone_vertex_m
-      required:
-      - x
-      - y
-      type: object
-      properties:
-        x:
-          type: number
-          description: Horizontal coordinate of the zone vertex, in meters
-        y:
-          type: number
-          description: Vertical coordinate of the zone vertex, in meters
-      description: Zone polygon vertex expressed in meters
-    stats_zone_sdkclients_waits3:
-      title: stats_zone_sdkclients_waits3
+    stats_zone_unconnected_clients_waits3:
+      title: stats_zone_unconnected_clients_waits3
       type: object
       properties:
         avg:
@@ -1282,7 +1455,77 @@ components:
           description: 95th percentile of all the wait time(s)
           examples:
           - 0
-      description: SDK client wait-time summary for the RSSI zone
+      description: Unconnected Wi-Fi client wait-time summary for the RSSI zone
+    stats_zone_discovered_assets_waits1:
+      title: stats_zone_discovered_assets_waits1
+      type: object
+      properties:
+        avg:
+          type: number
+          description: Average wait time in seconds
+          examples:
+          - 0
+        max:
+          type: number
+          description: Longest wait time in seconds
+          examples:
+          - 0
+        min:
+          type: number
+          description: Shortest wait time in seconds
+          examples:
+          - 0
+        p95:
+          type: number
+          description: 95th percentile of all the wait time(s)
+          examples:
+          - 0
+      description: Discovered BLE asset wait-time summary for the zone
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    stats_zone_assets_waits1:
+      title: stats_zone_assets_waits1
+      type: object
+      properties:
+        avg:
+          type: number
+          description: Average wait time in seconds
+          examples:
+          - 0
+        max:
+          type: number
+          description: Longest wait time in seconds
+          examples:
+          - 0
+        min:
+          type: number
+          description: Shortest wait time in seconds
+          examples:
+          - 0
+        p95:
+          type: number
+          description: 95th percentile of all the wait time(s)
+          examples:
+          - 0
+      description: BLE asset wait-time summary for the zone
     stats_zone:
       title: stats_zone
       required:
@@ -1416,6 +1659,45 @@ components:
             - x: 27.73552239029364
               y: 60.198314985369144
       description: Zone statistics and occupancy counts for a site map zone
+    stats_zone_sdkclients_waits3:
+      title: stats_zone_sdkclients_waits3
+      type: object
+      properties:
+        avg:
+          type: number
+          description: Average wait time in seconds
+          examples:
+          - 0
+        max:
+          type: number
+          description: Longest wait time in seconds
+          examples:
+          - 0
+        min:
+          type: number
+          description: Shortest wait time in seconds
+          examples:
+          - 0
+        p95:
+          type: number
+          description: 95th percentile of all the wait time(s)
+          examples:
+          - 0
+      description: SDK client wait-time summary for the RSSI zone
+    zone_vertex:
+      title: zone_vertex
+      required:
+      - x
+      - y
+      type: object
+      properties:
+        x:
+          type: number
+          description: Horizontal pixel coordinate of the zone vertex
+        y:
+          type: number
+          description: Vertical pixel coordinate of the zone vertex
+      description: Zone polygon vertex expressed in map pixels
     stats_zone_unconnected_clients_waits1:
       title: stats_zone_unconnected_clients_waits1
       type: object
@@ -1441,8 +1723,18 @@ components:
           examples:
           - 0
       description: Unconnected Wi-Fi client wait-time summary for the zone
-    zone_vertex:
-      title: zone_vertex
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    zone_vertex_m:
+      title: zone_vertex_m
       required:
       - x
       - y
@@ -1450,11 +1742,11 @@ components:
       properties:
         x:
           type: number
-          description: Horizontal pixel coordinate of the zone vertex
+          description: Horizontal coordinate of the zone vertex, in meters
         y:
           type: number
-          description: Vertical pixel coordinate of the zone vertex
-      description: Zone polygon vertex expressed in map pixels
+          description: Vertical coordinate of the zone vertex, in meters
+      description: Zone polygon vertex expressed in meters
     stats_rssi_zones_device:
       title: stats_rssi_zones_device
       type: object
@@ -1468,135 +1760,6 @@ components:
           description: Minimum RSSI threshold for considering a device inside the zone
           contentEncoding: int32
       description: AP device and RSSI threshold used by an RSSI zone
-    stats_zone_clients_waits1:
-      title: stats_zone_clients_waits1
-      type: object
-      properties:
-        avg:
-          type: number
-          description: Average wait time in seconds
-          examples:
-          - 1200
-        max:
-          type: number
-          description: Longest wait time in seconds
-          examples:
-          - 3610
-        min:
-          type: number
-          description: Shortest wait time in seconds
-          examples:
-          - 600
-        p95:
-          type: number
-          description: 95th percentile of all the wait time(s)
-          examples:
-          - 2800
-      description: Wi-Fi client wait-time summary for the zone
-    stats_rssi_zone:
-      title: stats_rssi_zone
-      required:
-      - devices
-      - id
-      - name
-      type: object
-      properties:
-        assets_wait:
-          allOf:
-          - $ref: '#/components/schemas/stats_zone_assets_waits3'
-          - description: BLE asset wait-time summary for the RSSI zone
-        clients_wait:
-          allOf:
-          - $ref: '#/components/schemas/stats_zone_clients_waits3'
-          - description: Wi-Fi client wait-time summary for the RSSI zone
-        created_time:
-          type: number
-          description: Time when the RSSI zone was created, in epoch seconds
-          readOnly: true
-        devices:
-          type: array
-          items:
-            $ref: '#/components/schemas/stats_rssi_zones_device'
-          description: AP devices and RSSI thresholds that define the RSSI zone
-        discovered_assets_wait:
-          allOf:
-          - $ref: '#/components/schemas/stats_zone_discovered_assets_waits3'
-          - description: Discovered BLE asset wait-time summary for the RSSI zone
-        id:
-          type: string
-          description: Unique identifier of the RSSI zone
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 53f10664-3ce8-4c27-b382-0ef66432349f
-        modified_time:
-          type: number
-          description: Time when the RSSI zone was last modified, in epoch seconds
-          readOnly: true
-        name:
-          type: string
-          description: Display name of the RSSI zone
-          examples:
-          - Zone A
-        num_assets:
-          type: integer
-          description: Number of BLE assets currently counted in the RSSI zone
-          contentEncoding: int32
-          examples:
-          - 0
-        num_clients:
-          type: integer
-          description: Number of Wi-Fi clients (unconnected + connected)
-          contentEncoding: int32
-          examples:
-          - 80
-        num_discovered_assets:
-          type: integer
-          description: Number of discovered BLE assets currently counted in the RSSI zone
-          contentEncoding: int32
-          examples:
-          - 0
-        num_sdkclients:
-          type: integer
-          description: Number of SDK clients currently counted in the RSSI zone
-          contentEncoding: int32
-          examples:
-          - 10
-        num_unconnected_clients:
-          type: integer
-          description: Number of unconnected Wi-Fi clients
-          contentEncoding: int32
-          examples:
-          - 80
-        occupancy_limit:
-          type: integer
-          description: Configured occupancy limit for the RSSI zone
-          contentEncoding: int32
-          examples:
-          - 4
-        org_id:
-          type: string
-          description: Organization identifier associated with the RSSI zone
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
-        sdkclients_wait:
-          allOf:
-          - $ref: '#/components/schemas/stats_zone_sdkclients_waits3'
-          - description: SDK client wait-time summary for the RSSI zone
-        site_id:
-          type: string
-          description: Site identifier associated with the RSSI zone
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
-        unconnected_clients_wait:
-          allOf:
-          - $ref: '#/components/schemas/stats_zone_unconnected_clients_waits3'
-          - description: Unconnected Wi-Fi client wait-time summary for the RSSI zone
-      description: RSSI-based zone statistics for a site
     stats_zone_clients_waits3:
       title: stats_zone_clients_waits3
       type: object
@@ -1622,99 +1785,6 @@ components:
           examples:
           - 2800
       description: Wi-Fi client wait-time summary for the RSSI zone
-    stats_zone_discovered_assets_waits1:
-      title: stats_zone_discovered_assets_waits1
-      type: object
-      properties:
-        avg:
-          type: number
-          description: Average wait time in seconds
-          examples:
-          - 0
-        max:
-          type: number
-          description: Longest wait time in seconds
-          examples:
-          - 0
-        min:
-          type: number
-          description: Shortest wait time in seconds
-          examples:
-          - 0
-        p95:
-          type: number
-          description: 95th percentile of all the wait time(s)
-          examples:
-          - 0
-      description: Discovered BLE asset wait-time summary for the zone
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    stats_zone_assets_waits3:
-      title: stats_zone_assets_waits3
-      type: object
-      properties:
-        avg:
-          type: number
-          description: Average wait time in seconds
-          examples:
-          - 0
-        max:
-          type: number
-          description: Longest wait time in seconds
-          examples:
-          - 0
-        min:
-          type: number
-          description: Shortest wait time in seconds
-          examples:
-          - 0
-        p95:
-          type: number
-          description: 95th percentile of all the wait time(s)
-          examples:
-          - 0
-      description: BLE asset wait-time summary for the RSSI zone
-    stats_zone_discovered_assets_waits3:
-      title: stats_zone_discovered_assets_waits3
-      type: object
-      properties:
-        avg:
-          type: number
-          description: Average wait time in seconds
-          examples:
-          - 0
-        max:
-          type: number
-          description: Longest wait time in seconds
-          examples:
-          - 0
-        min:
-          type: number
-          description: Shortest wait time in seconds
-          examples:
-          - 0
-        p95:
-          type: number
-          description: 95th percentile of all the wait time(s)
-          examples:
-          - 0
-      description: Discovered BLE asset wait-time summary for the RSSI zone
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
     response_http400:
       title: response_http400
       type: object
@@ -1725,101 +1795,6 @@ components:
           examples:
           - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
       description: Standard HTTP 400 bad request error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    stats_zone_assets_waits1:
-      title: stats_zone_assets_waits1
-      type: object
-      properties:
-        avg:
-          type: number
-          description: Average wait time in seconds
-          examples:
-          - 0
-        max:
-          type: number
-          description: Longest wait time in seconds
-          examples:
-          - 0
-        min:
-          type: number
-          description: Shortest wait time in seconds
-          examples:
-          - 0
-        p95:
-          type: number
-          description: 95th percentile of all the wait time(s)
-          examples:
-          - 0
-      description: BLE asset wait-time summary for the zone
-    stats_zone_unconnected_clients_waits3:
-      title: stats_zone_unconnected_clients_waits3
-      type: object
-      properties:
-        avg:
-          type: number
-          description: Average wait time in seconds
-          examples:
-          - 0
-        max:
-          type: number
-          description: Longest wait time in seconds
-          examples:
-          - 0
-        min:
-          type: number
-          description: Shortest wait time in seconds
-          examples:
-          - 0
-        p95:
-          type: number
-          description: 95th percentile of all the wait time(s)
-          examples:
-          - 0
-      description: Unconnected Wi-Fi client wait-time summary for the RSSI zone
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    stats_zone_sdkclients_waits1:
-      title: stats_zone_sdkclients_waits1
-      type: object
-      properties:
-        avg:
-          type: number
-          description: Average wait time in seconds
-          examples:
-          - 0
-        max:
-          type: number
-          description: Longest wait time in seconds
-          examples:
-          - 0
-        min:
-          type: number
-          description: Shortest wait time in seconds
-          examples:
-          - 0
-        p95:
-          type: number
-          description: 95th percentile of all the wait time(s)
-          examples:
-          - 0
-      description: SDK client wait-time summary for the zone
     stats_zone_details:
       title: stats_zone_details
       required:
@@ -1881,6 +1856,31 @@ components:
             type: string
           description: SDK client identifiers currently in the zone
       description: Detailed zone statistics and occupants for a site map zone
+    stats_zone_clients_waits1:
+      title: stats_zone_clients_waits1
+      type: object
+      properties:
+        avg:
+          type: number
+          description: Average wait time in seconds
+          examples:
+          - 1200
+        max:
+          type: number
+          description: Longest wait time in seconds
+          examples:
+          - 3610
+        min:
+          type: number
+          description: Shortest wait time in seconds
+          examples:
+          - 600
+        p95:
+          type: number
+          description: 95th percentile of all the wait time(s)
+          examples:
+          - 2800
+      description: Wi-Fi client wait-time summary for the zone
   securitySchemes:
     apiToken:
       type: apiKey

@@ -2494,26 +2494,25 @@ paths:
       deprecated: false
 components:
   schemas:
-    capture_gateway_gateways:
-      title: capture_gateway_gateways
+    capture_radiotap_format2:
+      title: capture_radiotap_format2
+      enum:
+      - pcap
+      - stream
+      type: string
+      description: 'Output format for the radiotap packet capture. enum: `pcap`, `stream`.'
+      examples:
+      - stream
+    response_pcap_status_mxedges_item:
+      title: response_pcap_status_mxedges_item
       type: object
       properties:
-        ports:
+        interfaces:
           type: object
           additionalProperties:
-            $ref: '#/components/schemas/capture_gateway_gateways_port'
-          description: Gateway ports to include in the capture, keyed by port ID
-      description: Gateway-specific packet capture settings keyed under a gateway MAC address
-    capture_switch_ports_tcpdump_expression:
-      title: capture_switch_ports_tcpdump_expression
-      type: object
-      properties:
-        tcpdump_expression:
-          type: string
-          description: tcpdump expression, port specific if specified under ports dict, otherwise applicable across ports if specified at top level of payload. Port specific value overrides top level value when both exist.
-          examples:
-          - port 443
-      description: Per-port tcpdump filter for a switch packet capture
+            $ref: '#/components/schemas/capture_mxedge_mxedges_interfaces'
+          description: Dict of interfaces to capture on, property key is the port name
+      description: Mist Edge interface settings for a packet capture
     pcap_type1:
       title: pcap_type1
       enum:
@@ -2528,25 +2527,60 @@ components:
       description: 'Packet capture type for the current session. enum: `client`, `gateway`, `new_assoc`, `radiotap`, `radiotap,wired`, `wired`, `wireless`.'
       examples:
       - client
-    response_pcap_status_mxedges_item:
-      title: response_pcap_status_mxedges_item
+    capture_scan_band2:
+      title: capture_scan_band2
+      enum:
+      - '24'
+      - '5'
+      - '6'
+      type: string
+      description: 'Radio band to capture for scan radio packets. enum: `24`, `5`, `6`.'
+      examples:
+      - '24'
+    capture_scan_aps_band2:
+      title: capture_scan_aps_band2
+      enum:
+      - '24'
+      - '5'
+      - '6'
+      type: string
+      description: 'Radio band on which to start the scan capture. enum: `24`, `5`, `6`.'
+    response_pcap_search_item_pcap_aps_item:
+      title: response_pcap_search_item_pcap_aps_item
       type: object
       properties:
-        interfaces:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/capture_mxedge_mxedges_interfaces'
-          description: Dict of interfaces to capture on, property key is the port name
-      description: Mist Edge interface settings for a packet capture
-    capture_radiotap_format2:
-      title: capture_radiotap_format2
+        band:
+          type: string
+          description: Radio band used for this AP capture
+        bandwidth:
+          type: string
+          description: Channel bandwidth used for this AP capture, in MHz
+        channel:
+          type: integer
+          description: Radio channel used for this AP capture
+          contentEncoding: int32
+        tcpdump_expression:
+          type:
+          - string
+          - 'null'
+          description: Tcpdump filter expression applied to this AP capture, or null when no filter is applied
+      description: AP radio settings captured for a packet capture record
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    capture_wireless_band2:
+      title: capture_wireless_band2
       enum:
-      - pcap
-      - stream
+      - '24'
+      - '5'
+      - '6'
       type: string
-      description: 'Output format for the radiotap packet capture. enum: `pcap`, `stream`.'
-      examples:
-      - stream
+      description: 'Radio band to capture for wireless packets. enum: `24`, `5`, `6`.'
     capture_gateway_format2:
       title: capture_gateway_format2
       const: stream
@@ -2554,68 +2588,35 @@ components:
       description: 'Output format for the gateway packet capture. enum: `stream`.'
       examples:
       - stream
-    capture_wired:
-      title: capture_wired
-      required:
-      - type
+    response_pcap_ap:
+      title: response_pcap_ap
       type: object
       properties:
-        ap_mac:
-          type:
-          - string
-          - 'null'
-          description: AP MAC address used to target the wired packet capture
-        duration:
-          maximum: 86400
-          minimum: 60
-          type:
-          - integer
-          - 'null'
-          description: Packet capture duration, in seconds
+        band:
+          type: integer
+          description: Radio band used for the AP packet capture
           contentEncoding: int32
-          default: 600
-          examples:
-          - 300
-        format:
-          allOf:
-          - $ref: '#/components/schemas/capture_wired_format2'
-          - description: 'Output format for the wired packet capture. enum: `pcap`, `stream`.'
-        max_pkt_len:
-          maximum: 2048
-          minimum: 64
-          type:
-          - integer
-          - 'null'
-          description: Maximum number of bytes captured from each packet
+        bandwidth:
+          type: integer
+          description: Channel bandwidth used for the AP packet capture, in MHz
           contentEncoding: int32
-          default: 512
-          examples:
-          - 128
-        num_packets:
-          maximum: 10000
-          minimum: 0
-          type:
-          - integer
-          - 'null'
-          description: Maximum number of packets to capture; use 0 for unlimited
+        channel:
+          type: integer
+          description: Radio channel used for the AP packet capture
           contentEncoding: int32
-          default: 1024
-          examples:
-          - 1000
         tcpdump_expression:
           type:
           - string
           - 'null'
-          description: Filter expression applied to the wired packet capture
-          examples:
-          - tcp port 80
-        type:
-          const: wired
-          type: string
-          description: Packet capture type discriminator for wired captures
-          examples:
-          - wired
-      description: Initiate a Wired Packet Capture
+          description: Tcpdump filter expression applied to the AP packet capture, or null when no filter is applied
+      description: AP radio settings used for a packet capture
+    capture_mxedge_format2:
+      title: capture_mxedge_format2
+      enum:
+      - stream
+      - tzsp
+      type: string
+      description: 'Output format for packet capture data. enum: `stream`, `tzsp`.'
     capture_new_assoc:
       title: capture_new_assoc
       required:
@@ -2679,622 +2680,16 @@ components:
           examples:
           - new_assoc
       description: Initiate a packet Capture for New Wireless Client Associations
-    capture_radiotapwired_band2:
-      title: capture_radiotapwired_band2
-      enum:
-      - '24'
-      - 24,5,6
-      - '5'
-      - '6'
-      type: string
-      description: 'Radio band to capture for the radiotap portion. enum: `24`, `24,5,6`, `5`, `6`.'
-      examples:
-      - '24'
-    response_pcap_search_item:
-      title: response_pcap_search_item
-      required:
-      - timestamp
-      - type
-      - url
+    capture_switch_switches:
+      title: capture_switch_switches
       type: object
       properties:
-        ap_macs:
-          uniqueItems: true
-          type: array
-          items:
-            type: string
-          description: AP MAC addresses associated with the packet capture
-        aps:
-          type: array
-          items:
-            type: string
-          description: AP MAC addresses included in the packet capture
-        duration:
-          type: number
-          description: Packet capture duration in seconds
-          examples:
-          - 600
-        format:
-          type: string
-          description: Output format requested for the packet capture
-          examples:
-          - stream
-        id:
-          type: string
-          description: Unique identifier for the packet capture
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 53f10664-3ce8-4c27-b382-0ef66432349f
-        last_seen:
-          type: number
-          description: Last seen timestamp of the capture
-          examples:
-          - 1693482149.417
-        max_num_packets:
-          type: number
-          description: Maximum number of packets requested for the capture
-          examples:
-          - 1024
-        mxedges:
-          type: array
-          items:
-            type: string
-          description: List of Mist Edge IDs included in the capture
-        org_id:
-          type: string
-          description: Organization associated with the packet capture
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
-        pcap_aps:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/response_pcap_search_item_pcap_aps_item'
-          description: Per-AP radio capture settings keyed by AP MAC address
-          examples:
-          - 5c5b35000010:
-              band: '6'
-              bandwidth: '20'
-              channel: 133
-              tcpdump_expression: null
-        pcap_url:
-          type: string
-          description: URL for downloading the generated PCAP file
-        site_id:
-          type:
-          - string
-          - 'null'
-          description: Site associated with the packet capture, when the capture is site-scoped
-          contentEncoding: uuid
-        termination_reason:
-          type: string
-          description: Reason the packet capture session ended
-          examples:
-          - default
-        timestamp:
-          type: number
-          description: Epoch timestamp, in seconds, when the packet capture record was created
-          readOnly: true
-        type:
-          type: string
-          description: Packet capture type represented by this record
-        url:
-          type: string
-          description: Link for accessing the packet capture output or stream
-      description: Packet capture record returned by organization or site packet capture search
-    capture_scan_format2:
-      title: capture_scan_format2
-      enum:
-      - pcap
-      - stream
-      type: string
-      description: 'Output format for the scan radio packet capture. enum: `pcap`, `stream`.'
-      examples:
-      - stream
-    capture_switch:
-      title: capture_switch
-      required:
-      - switches
-      - type
-      type: object
-      properties:
-        duration:
-          maximum: 86400
-          minimum: 60
-          type:
-          - integer
-          - 'null'
-          description: Packet capture duration, in seconds
-          contentEncoding: int32
-          default: 600
-          examples:
-          - 300
-        format:
-          allOf:
-          - $ref: '#/components/schemas/capture_switch_format2'
-          - description: 'Output format for the switch packet capture. enum: `stream`.'
-        max_pkt_len:
-          maximum: 2048
-          minimum: 64
-          type:
-          - integer
-          - 'null'
-          description: Maximum number of bytes captured from each packet
-          contentEncoding: int32
-          default: 512
-          examples:
-          - 128
-        num_packets:
-          maximum: 10000
-          minimum: 0
-          type:
-          - integer
-          - 'null'
-          description: Maximum number of packets to capture; use 0 for unlimited
-          contentEncoding: int32
-          default: 1024
-          examples:
-          - 1000
         ports:
           type: object
           additionalProperties:
             $ref: '#/components/schemas/capture_switch_ports_tcpdump_expression'
-          description: Switch ports to include in the packet capture
-        switches:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/capture_switch_switches'
-          description: Property key is the switch MAC address
-        tcpdump_expression:
-          type: string
-          description: tcpdump expression, port specific if specified under ports dict, otherwise applicable across ports if specified at top level of payload. Port specific value overrides top level value when both exist.
-          examples:
-          - port 443
-        type:
-          const: switch
-          type: string
-          description: Packet capture type discriminator for switch captures
-          examples:
-          - switch
-      description: Initiate a Switch (Junos) Packet Capture
-    capture_gateway:
-      title: capture_gateway
-      required:
-      - gateways
-      - type
-      type: object
-      properties:
-        duration:
-          maximum: 86400
-          minimum: 60
-          type:
-          - integer
-          - 'null'
-          description: Packet capture duration, in seconds
-          contentEncoding: int32
-          default: 600
-          examples:
-          - 300
-        format:
-          allOf:
-          - $ref: '#/components/schemas/capture_gateway_format2'
-          - description: 'Output format for the gateway packet capture. enum: `stream`.'
-            examples:
-            - stream
-        gateways:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/capture_gateway_gateways'
-          description: List of SSRs. Property key is the SSR MAC
-        max_pkt_len:
-          maximum: 1520
-          minimum: 64
-          type:
-          - integer
-          - 'null'
-          description: minimum is 64 (SSR) / 68 (SRX) maximum is 10240 (SSR) / 1520 (SRX)
-          contentEncoding: int32
-          default: 512
-          examples:
-          - 128
-        num_packets:
-          maximum: 10000
-          minimum: 0
-          type:
-          - integer
-          - 'null'
-          description: Maximum number of packets to capture; use 0 for unlimited
-          contentEncoding: int32
-          default: 1024
-          examples:
-          - 1000
-        ports:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/capture_gateway_gateways_port'
-          description: Gateway ports to include in the packet capture
-        type:
-          const: gateway
-          type: string
-          description: Packet capture type discriminator for gateway captures
-          examples:
-          - gateway
-      description: Initiate a Gateway (SSR/SRX) Packet Capture
-    dot11_bandwidth1:
-      title: dot11_bandwidth1
-      enum:
-      - 0
-      - 20
-      - 40
-      - 80
-      - 160
-      type: integer
-      description: 'Channel bandwidth to use for the scan radio packet capture. enum: `0`, `20`, `40`, `80`, `160`.'
-      examples:
-      - 20
-    capture_radiotapwired_format2:
-      title: capture_radiotapwired_format2
-      enum:
-      - pcap
-      - stream
-      type: string
-      description: 'Output format for the combined packet capture. enum: `pcap`, `stream`.'
-      examples:
-      - stream
-    capture_radiotap:
-      title: capture_radiotap
-      required:
-      - type
-      type: object
-      properties:
-        ap_mac:
-          type: string
-          description: AP MAC address used to target the radiotap packet capture
-          examples:
-          - a83a79a947ee
-        band:
-          allOf:
-          - $ref: '#/components/schemas/capture_radiotap_band2'
-          - description: 'Radio band to capture for radiotap packets. enum: `24`, `24,5,6`, `5`, `6`.'
-            examples:
-            - '24'
-        client_mac:
-          type: string
-          description: Client MAC address used to filter the radiotap packet capture
-          examples:
-          - 38f9d3972ff1
-        duration:
-          maximum: 86400
-          minimum: 60
-          type:
-          - integer
-          - 'null'
-          description: Packet capture duration, in seconds
-          contentEncoding: int32
-          default: 600
-          examples:
-          - 300
-        format:
-          allOf:
-          - $ref: '#/components/schemas/capture_radiotap_format2'
-          - description: 'Output format for the radiotap packet capture. enum: `pcap`, `stream`.'
-            examples:
-            - stream
-        max_pkt_len:
-          maximum: 2048
-          minimum: 64
-          type:
-          - integer
-          - 'null'
-          description: Maximum number of bytes captured from each packet
-          contentEncoding: int32
-          default: 512
-          examples:
-          - 128
-        num_packets:
-          maximum: 10000
-          minimum: 0
-          type:
-          - integer
-          - 'null'
-          description: Maximum number of packets to capture; use 0 for unlimited
-          contentEncoding: int32
-          default: 1024
-          examples:
-          - 1000
-        ssid:
-          type: string
-          description: Wireless network SSID used to filter the radiotap packet capture
-          examples:
-          - test
-        tcpdump_expression:
-          type:
-          - string
-          - 'null'
-          description: Filter expression applied to the radiotap packet capture
-          examples:
-          - tcp port 80
-        type:
-          const: radiotap
-          type: string
-          description: Packet capture type discriminator for radiotap captures
-          examples:
-          - radiotap
-        wlan_id:
-          type: string
-          description: WLAN id associated with the respective ssid.
-          contentEncoding: uuid
-          examples:
-          - fac8e973-feb9-421a-b381-aabbc4b61f5a
-      description: Initiate a Radiotap Packet Capture
-    response_pcap_start:
-      title: response_pcap_start
-      required:
-      - id
-      - org_id
-      - site_id
-      - timestamp
-      - type
-      type: object
-      properties:
-        ap_count:
-          type: integer
-          description: Number of APs targeted by the packet capture
-          contentEncoding: int32
-        aps:
-          uniqueItems: true
-          type: array
-          items:
-            type: string
-          description: AP MAC addresses targeted by the packet capture
-        client_mac:
-          type:
-          - string
-          - 'null'
-          description: Client MAC address filter applied to the packet capture, or null when no client filter is used
-        duration:
-          type: number
-          description: Packet capture duration in seconds
-        enabled:
-          type: boolean
-          description: Whether the packet capture session is enabled after the start request
-        expiry:
-          type: number
-          description: Epoch timestamp, in seconds, when the capture session expires
-        format:
-          type: string
-          description: Output format for packet capture data
-        id:
-          type: string
-          description: Unique identifier for the packet capture session
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 53f10664-3ce8-4c27-b382-0ef66432349f
-        include_mcast:
-          type: boolean
-          description: Whether multicast traffic is included in the packet capture
-        max_pkt_len:
-          type: integer
-          description: Maximum number of bytes captured from each packet
-          contentEncoding: int32
-        num_packets:
-          type: integer
-          description: Maximum number of packets to capture; use 0 for unlimited
-          contentEncoding: int32
-        org_id:
-          type: string
-          description: Organization associated with the packet capture session
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
-        raw:
-          type: boolean
-          description: Whether raw packet data is included in the capture output
-        site_id:
-          type:
-          - string
-          - 'null'
-          description: Site associated with the packet capture session, when site-scoped
-          contentEncoding: uuid
-        ssid:
-          type:
-          - string
-          - 'null'
-          description: Wireless network SSID filter applied to the packet capture, or null when no SSID filter is used
-        tcpdump_parser_expression:
-          type:
-          - string
-          - 'null'
-          description: Tcpdump parser expression applied to the packet capture, or null when no parser expression is used
-        timestamp:
-          type: number
-          description: Epoch timestamp, in seconds, when the packet capture session was created
-          readOnly: true
-        type:
-          type: string
-          description: Packet capture type requested by the start operation
-      description: Packet capture session created by a start request
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    response_pcap_search:
-      title: response_pcap_search
-      required:
-      - end
-      - limit
-      - results
-      - start
-      type: object
-      properties:
-        end:
-          type: integer
-          description: Epoch timestamp, in seconds, for the end of the packet capture search window
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of packet capture records returned in this page
-          contentEncoding: int32
-        next:
-          type: string
-          description: URL for retrieving the next page of packet capture search results
-        results:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/response_pcap_search_item'
-          description: Packet capture records matching the search filters
-        start:
-          type: integer
-          description: Epoch timestamp, in seconds, for the start of the packet capture search window
-          contentEncoding: int32
-        total:
-          type: integer
-          description: Number of packet capture records matching the search filters across all pages
-          contentEncoding: int32
-      description: Paginated response for packet capture search results
-    capture_radiotapwired:
-      title: capture_radiotapwired
-      required:
-      - type
-      type: object
-      properties:
-        ap_mac:
-          type:
-          - string
-          - 'null'
-          description: AP MAC address used to target the combined radiotap and wired packet capture
-        band:
-          allOf:
-          - $ref: '#/components/schemas/capture_radiotapwired_band2'
-          - description: 'Radio band to capture for the radiotap portion. enum: `24`, `24,5,6`, `5`, `6`.'
-            examples:
-            - '24'
-        client_mac:
-          type:
-          - string
-          - 'null'
-          description: Client MAC address used to filter the combined packet capture
-          examples:
-          - 38f9d3972ff1
-        duration:
-          maximum: 86400
-          minimum: 60
-          type:
-          - integer
-          - 'null'
-          description: Packet capture duration, in seconds
-          contentEncoding: int32
-          default: 600
-          examples:
-          - 300
-        format:
-          allOf:
-          - $ref: '#/components/schemas/capture_radiotapwired_format2'
-          - description: 'Output format for the combined packet capture. enum: `pcap`, `stream`.'
-            examples:
-            - stream
-        max_pkt_len:
-          maximum: 2048
-          minimum: 64
-          type:
-          - integer
-          - 'null'
-          description: Maximum number of bytes captured from each packet
-          contentEncoding: int32
-          default: 512
-          examples:
-          - 128
-        num_packets:
-          maximum: 10000
-          minimum: 0
-          type:
-          - integer
-          - 'null'
-          description: Maximum number of packets to capture; use 0 for unlimited
-          contentEncoding: int32
-          default: 1024
-          examples:
-          - 1000
-        radiotap_tcpdump_expression:
-          type: string
-          description: tcpdump expression for radiotap interface (802.11 + radio headers)
-          examples:
-          - type
-        ssid:
-          type:
-          - string
-          - 'null'
-          description: Wireless network SSID used to filter the radiotap portion
-          examples:
-          - test
-        tcpdump_expression:
-          type:
-          - string
-          - 'null'
-          description: Filter expression applied across the combined packet capture
-          examples:
-          - tcp port 80
-        type:
-          const: radiotap,wired
-          type: string
-          description: 'Packet capture type discriminator for combined radiotap and wired captures. enum: `radiotap,wired`.'
-          examples:
-          - radiotap,wired
-        wired_tcpdump_expression:
-          type:
-          - string
-          - 'null'
-          description: Filter expression applied to the wired portion of the capture
-          examples:
-          - tcp port 80
-        wireless_tcpdump_expression:
-          type: string
-          description: tcpdump expression for radiotap interface (802.11)
-        wlan_id:
-          type:
-          - string
-          - 'null'
-          description: WLAN id associated with the respective ssid.
-          examples:
-          - fac8e973-feb9-421a-b381-aabbc4b61f5a
-      description: Initiate a Radiotap Packet Capture and Wired Packet Capture
-    capture_scan_aps:
-      title: capture_scan_aps
-      type: object
-      properties:
-        band:
-          allOf:
-          - $ref: '#/components/schemas/capture_scan_aps_band2'
-          - description: 'Radio band on which to start the scan capture. enum: `24`, `5`, `6`.'
-        channel:
-          type: string
-          description: Specify the channel value where scan PCAP has to be started
-        tcpdump_expression:
-          type: string
-          description: tcpdump expression, port specific if specified under ports dict, otherwise applicable across ports if specified at top level of payload. Port specific value overrides top level value when both exist.
-        width:
-          type: string
-          description: Specify the bandwidth value with respect to the channel.
-      description: Property key is the AP MAC address (e.g. "5c5b35000001"). All optionals, parent parameters will be used if not defined
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
+          description: Switch ports to include in the capture, keyed by port ID
+      description: Switch-specific packet capture settings keyed under a switch MAC address
     notes_string:
       title: notes_string
       type: object
@@ -3305,113 +2700,6 @@ components:
           examples:
           - wired pcap test
       description: Request body containing notes text
-    capture_client:
-      title: capture_client
-      required:
-      - type
-      type: object
-      properties:
-        ap_mac:
-          type:
-          - string
-          - 'null'
-          description: AP MAC address used to target the client packet capture
-        client_mac:
-          type:
-          - string
-          - 'null'
-          description: Client MAC address, required if `type`==`client`; optional otherwise
-          examples:
-          - 60a10a773412
-        duration:
-          maximum: 86400
-          minimum: 60
-          type:
-          - integer
-          - 'null'
-          description: Packet capture duration, in seconds
-          contentEncoding: int32
-          default: 600
-          examples:
-          - 300
-        includes_mcast:
-          type: boolean
-          description: Whether to include multicast traffic in the packet capture
-          default: false
-        max_pkt_len:
-          maximum: 2048
-          minimum: 64
-          type:
-          - integer
-          - 'null'
-          description: Maximum number of bytes captured from each packet
-          contentEncoding: int32
-          default: 512
-          examples:
-          - 128
-        num_packets:
-          maximum: 10000
-          minimum: 0
-          type:
-          - integer
-          - 'null'
-          description: Maximum number of packets to capture; use 0 for unlimited
-          contentEncoding: int32
-          default: 1024
-          examples:
-          - 1000
-        ssid:
-          type:
-          - string
-          - 'null'
-          description: Optional SSID filter for the packet capture
-        type:
-          const: client
-          type: string
-          description: Packet capture type discriminator for client captures
-          examples:
-          - client
-      description: Initiate a Client Packet Capture
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    response_pcap_search_item_pcap_aps_item:
-      title: response_pcap_search_item_pcap_aps_item
-      type: object
-      properties:
-        band:
-          type: string
-          description: Radio band used for this AP capture
-        bandwidth:
-          type: string
-          description: Channel bandwidth used for this AP capture, in MHz
-        channel:
-          type: integer
-          description: Radio channel used for this AP capture
-          contentEncoding: int32
-        tcpdump_expression:
-          type:
-          - string
-          - 'null'
-          description: Tcpdump filter expression applied to this AP capture, or null when no filter is applied
-      description: AP radio settings captured for a packet capture record
     response_pcap_status:
       title: response_pcap_status
       required:
@@ -3588,108 +2876,6 @@ components:
           type: string
           description: When `type`==`‘wireless’`, wireless_tcpdump_expression provided by the user
       description: Current status of a packet capture session
-    capture_mxedge_mxedges:
-      title: capture_mxedge_mxedges
-      type: object
-      properties:
-        interfaces:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/capture_mxedge_mxedges_interfaces'
-          description: Mx Edge interfaces to include in the capture, keyed by interface name
-      description: Property key is the Mx Edge ID, currently limited to one mxedge per org capture session
-    capture_org:
-      oneOf:
-      - $ref: '#/components/schemas/capture_mxedge'
-      description: Packet capture request payload for organization-level captures
-    capture_wireless:
-      title: capture_wireless
-      required:
-      - type
-      type: object
-      properties:
-        ap_mac:
-          type:
-          - string
-          - 'null'
-          description: AP MAC address used to target the wireless packet capture
-        band:
-          allOf:
-          - $ref: '#/components/schemas/capture_wireless_band2'
-          - description: 'Radio band to capture for wireless packets. enum: `24`, `5`, `6`.'
-        duration:
-          maximum: 86400
-          minimum: 60
-          type:
-          - integer
-          - 'null'
-          description: Packet capture duration, in seconds
-          contentEncoding: int32
-          default: 600
-          examples:
-          - 300
-        format:
-          allOf:
-          - $ref: '#/components/schemas/capture_wireless_format2'
-          - description: 'Output format for the wireless packet capture. enum: `pcap`, `stream`.'
-        max_pkt_len:
-          maximum: 2048
-          minimum: 64
-          type:
-          - integer
-          - 'null'
-          description: Maximum number of bytes captured from each packet
-          contentEncoding: int32
-          default: 512
-          examples:
-          - 128
-        num_packets:
-          maximum: 10000
-          minimum: 0
-          type:
-          - integer
-          - 'null'
-          description: Maximum number of packets to capture; use 0 for unlimited
-          contentEncoding: int32
-          default: 1024
-          examples:
-          - 1000
-        ssid:
-          type: string
-          description: Wireless network SSID used to filter the packet capture
-        type:
-          const: wireless
-          type: string
-          description: Packet capture type discriminator for wireless captures
-          examples:
-          - wireless
-        wlan_id:
-          type: string
-          description: WLAN identifier used to filter the wireless packet capture
-          contentEncoding: uuid
-      description: Initiate a Wireless Packet Capture
-    capture_wireless_format2:
-      title: capture_wireless_format2
-      enum:
-      - pcap
-      - stream
-      type: string
-      description: 'Output format for the wireless packet capture. enum: `pcap`, `stream`.'
-    capture_mxedge_format3:
-      title: capture_mxedge_format3
-      enum:
-      - stream
-      - tzsp
-      type: string
-      description: 'Output format for the Mist Edge packet capture. enum: `stream`, `tzsp`.'
-    capture_mxedge_mxedges_interfaces:
-      title: capture_mxedge_mxedges_interfaces
-      type: object
-      properties:
-        tcpdump_expression:
-          type: string
-          description: tcpdump expression common for wired,radiotap
-      description: Property key is the Port name (e.g. "port1", "kni0", "lacp0", "ipsec", "drop", "oobm"), currently limited to specifying one interface per mxedge
     capture_site:
       oneOf:
       - $ref: '#/components/schemas/capture_client'
@@ -3714,6 +2900,15 @@ components:
           switch: capture_switch
           wired: capture_wired
           wireless: capture_wireless
+    capture_radiotapwired_format2:
+      title: capture_radiotapwired_format2
+      enum:
+      - pcap
+      - stream
+      type: string
+      description: 'Output format for the combined packet capture. enum: `pcap`, `stream`.'
+      examples:
+      - stream
     capture_radiotap_band2:
       title: capture_radiotap_band2
       enum:
@@ -3725,14 +2920,6 @@ components:
       description: 'Radio band to capture for radiotap packets. enum: `24`, `24,5,6`, `5`, `6`.'
       examples:
       - '24'
-    capture_scan_aps_band2:
-      title: capture_scan_aps_band2
-      enum:
-      - '24'
-      - '5'
-      - '6'
-      type: string
-      description: 'Radio band on which to start the scan capture. enum: `24`, `5`, `6`.'
     capture_scan:
       title: capture_scan
       required:
@@ -3831,16 +3018,113 @@ components:
           type: string
           description: Specify the bandwidth value with respect to the channel.
       description: Initiate a Scan Radio Packet Capture
-    capture_scan_band2:
-      title: capture_scan_band2
-      enum:
-      - '24'
-      - '5'
-      - '6'
-      type: string
-      description: 'Radio band to capture for scan radio packets. enum: `24`, `5`, `6`.'
-      examples:
-      - '24'
+    capture_scan_aps:
+      title: capture_scan_aps
+      type: object
+      properties:
+        band:
+          allOf:
+          - $ref: '#/components/schemas/capture_scan_aps_band2'
+          - description: 'Radio band on which to start the scan capture. enum: `24`, `5`, `6`.'
+        channel:
+          type: string
+          description: Specify the channel value where scan PCAP has to be started
+        tcpdump_expression:
+          type: string
+          description: tcpdump expression, port specific if specified under ports dict, otherwise applicable across ports if specified at top level of payload. Port specific value overrides top level value when both exist.
+        width:
+          type: string
+          description: Specify the bandwidth value with respect to the channel.
+      description: Property key is the AP MAC address (e.g. "5c5b35000001"). All optionals, parent parameters will be used if not defined
+    response_pcap_start:
+      title: response_pcap_start
+      required:
+      - id
+      - org_id
+      - site_id
+      - timestamp
+      - type
+      type: object
+      properties:
+        ap_count:
+          type: integer
+          description: Number of APs targeted by the packet capture
+          contentEncoding: int32
+        aps:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: AP MAC addresses targeted by the packet capture
+        client_mac:
+          type:
+          - string
+          - 'null'
+          description: Client MAC address filter applied to the packet capture, or null when no client filter is used
+        duration:
+          type: number
+          description: Packet capture duration in seconds
+        enabled:
+          type: boolean
+          description: Whether the packet capture session is enabled after the start request
+        expiry:
+          type: number
+          description: Epoch timestamp, in seconds, when the capture session expires
+        format:
+          type: string
+          description: Output format for packet capture data
+        id:
+          type: string
+          description: Unique identifier for the packet capture session
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        include_mcast:
+          type: boolean
+          description: Whether multicast traffic is included in the packet capture
+        max_pkt_len:
+          type: integer
+          description: Maximum number of bytes captured from each packet
+          contentEncoding: int32
+        num_packets:
+          type: integer
+          description: Maximum number of packets to capture; use 0 for unlimited
+          contentEncoding: int32
+        org_id:
+          type: string
+          description: Organization associated with the packet capture session
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        raw:
+          type: boolean
+          description: Whether raw packet data is included in the capture output
+        site_id:
+          type:
+          - string
+          - 'null'
+          description: Site associated with the packet capture session, when site-scoped
+          contentEncoding: uuid
+        ssid:
+          type:
+          - string
+          - 'null'
+          description: Wireless network SSID filter applied to the packet capture, or null when no SSID filter is used
+        tcpdump_parser_expression:
+          type:
+          - string
+          - 'null'
+          description: Tcpdump parser expression applied to the packet capture, or null when no parser expression is used
+        timestamp:
+          type: number
+          description: Epoch timestamp, in seconds, when the packet capture session was created
+          readOnly: true
+        type:
+          type: string
+          description: Packet capture type requested by the start operation
+      description: Packet capture session created by a start request
     response_http401:
       title: response_http401
       type: object
@@ -3851,59 +3135,359 @@ components:
           examples:
           - Authentication credentials were not provided.
       description: Standard HTTP 401 authentication error response
-    capture_switch_format2:
-      title: capture_switch_format2
-      const: stream
-      type: string
-      description: 'Output format for the switch packet capture. enum: `stream`.'
-    capture_gateway_gateways_port:
-      title: capture_gateway_gateways_port
+    response_http429:
+      title: response_http429
       type: object
       properties:
-        tcpdump_expression:
+        detail:
           type: string
-          description: tcpdump expression per port
-      description: Per-port tcpdump filter for a gateway packet capture
-    capture_switch_switches:
-      title: capture_switch_switches
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    capture_mxedge_format3:
+      title: capture_mxedge_format3
+      enum:
+      - stream
+      - tzsp
+      type: string
+      description: 'Output format for the Mist Edge packet capture. enum: `stream`, `tzsp`.'
+    capture_radiotapwired:
+      title: capture_radiotapwired
+      required:
+      - type
+      type: object
+      properties:
+        ap_mac:
+          type:
+          - string
+          - 'null'
+          description: AP MAC address used to target the combined radiotap and wired packet capture
+        band:
+          allOf:
+          - $ref: '#/components/schemas/capture_radiotapwired_band2'
+          - description: 'Radio band to capture for the radiotap portion. enum: `24`, `24,5,6`, `5`, `6`.'
+            examples:
+            - '24'
+        client_mac:
+          type:
+          - string
+          - 'null'
+          description: Client MAC address used to filter the combined packet capture
+          examples:
+          - 38f9d3972ff1
+        duration:
+          maximum: 86400
+          minimum: 60
+          type:
+          - integer
+          - 'null'
+          description: Packet capture duration, in seconds
+          contentEncoding: int32
+          default: 600
+          examples:
+          - 300
+        format:
+          allOf:
+          - $ref: '#/components/schemas/capture_radiotapwired_format2'
+          - description: 'Output format for the combined packet capture. enum: `pcap`, `stream`.'
+            examples:
+            - stream
+        max_pkt_len:
+          maximum: 2048
+          minimum: 64
+          type:
+          - integer
+          - 'null'
+          description: Maximum number of bytes captured from each packet
+          contentEncoding: int32
+          default: 512
+          examples:
+          - 128
+        num_packets:
+          maximum: 10000
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: Maximum number of packets to capture; use 0 for unlimited
+          contentEncoding: int32
+          default: 1024
+          examples:
+          - 1000
+        radiotap_tcpdump_expression:
+          type: string
+          description: tcpdump expression for radiotap interface (802.11 + radio headers)
+          examples:
+          - type
+        ssid:
+          type:
+          - string
+          - 'null'
+          description: Wireless network SSID used to filter the radiotap portion
+          examples:
+          - test
+        tcpdump_expression:
+          type:
+          - string
+          - 'null'
+          description: Filter expression applied across the combined packet capture
+          examples:
+          - tcp port 80
+        type:
+          const: radiotap,wired
+          type: string
+          description: 'Packet capture type discriminator for combined radiotap and wired captures. enum: `radiotap,wired`.'
+          examples:
+          - radiotap,wired
+        wired_tcpdump_expression:
+          type:
+          - string
+          - 'null'
+          description: Filter expression applied to the wired portion of the capture
+          examples:
+          - tcp port 80
+        wireless_tcpdump_expression:
+          type: string
+          description: tcpdump expression for radiotap interface (802.11)
+        wlan_id:
+          type:
+          - string
+          - 'null'
+          description: WLAN id associated with the respective ssid.
+          examples:
+          - fac8e973-feb9-421a-b381-aabbc4b61f5a
+      description: Initiate a Radiotap Packet Capture and Wired Packet Capture
+    capture_gateway_gateways:
+      title: capture_gateway_gateways
       type: object
       properties:
         ports:
           type: object
           additionalProperties:
-            $ref: '#/components/schemas/capture_switch_ports_tcpdump_expression'
-          description: Switch ports to include in the capture, keyed by port ID
-      description: Switch-specific packet capture settings keyed under a switch MAC address
-    capture_wireless_band2:
-      title: capture_wireless_band2
-      enum:
-      - '24'
-      - '5'
-      - '6'
-      type: string
-      description: 'Radio band to capture for wireless packets. enum: `24`, `5`, `6`.'
-    response_pcap_ap:
-      title: response_pcap_ap
+            $ref: '#/components/schemas/capture_gateway_gateways_port'
+          description: Gateway ports to include in the capture, keyed by port ID
+      description: Gateway-specific packet capture settings keyed under a gateway MAC address
+    response_pcap_search:
+      title: response_pcap_search
+      required:
+      - end
+      - limit
+      - results
+      - start
       type: object
       properties:
-        band:
+        end:
           type: integer
-          description: Radio band used for the AP packet capture
+          description: Epoch timestamp, in seconds, for the end of the packet capture search window
           contentEncoding: int32
-        bandwidth:
+        limit:
           type: integer
-          description: Channel bandwidth used for the AP packet capture, in MHz
+          description: Maximum number of packet capture records returned in this page
           contentEncoding: int32
-        channel:
+        next:
+          type: string
+          description: URL for retrieving the next page of packet capture search results
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/response_pcap_search_item'
+          description: Packet capture records matching the search filters
+        start:
           type: integer
-          description: Radio channel used for the AP packet capture
+          description: Epoch timestamp, in seconds, for the start of the packet capture search window
           contentEncoding: int32
-        tcpdump_expression:
+        total:
+          type: integer
+          description: Number of packet capture records matching the search filters across all pages
+          contentEncoding: int32
+      description: Paginated response for packet capture search results
+    dot11_bandwidth1:
+      title: dot11_bandwidth1
+      enum:
+      - 0
+      - 20
+      - 40
+      - 80
+      - 160
+      type: integer
+      description: 'Channel bandwidth to use for the scan radio packet capture. enum: `0`, `20`, `40`, `80`, `160`.'
+      examples:
+      - 20
+    capture_wireless:
+      title: capture_wireless
+      required:
+      - type
+      type: object
+      properties:
+        ap_mac:
           type:
           - string
           - 'null'
-          description: Tcpdump filter expression applied to the AP packet capture, or null when no filter is applied
-      description: AP radio settings used for a packet capture
+          description: AP MAC address used to target the wireless packet capture
+        band:
+          allOf:
+          - $ref: '#/components/schemas/capture_wireless_band2'
+          - description: 'Radio band to capture for wireless packets. enum: `24`, `5`, `6`.'
+        duration:
+          maximum: 86400
+          minimum: 60
+          type:
+          - integer
+          - 'null'
+          description: Packet capture duration, in seconds
+          contentEncoding: int32
+          default: 600
+          examples:
+          - 300
+        format:
+          allOf:
+          - $ref: '#/components/schemas/capture_wireless_format2'
+          - description: 'Output format for the wireless packet capture. enum: `pcap`, `stream`.'
+        max_pkt_len:
+          maximum: 2048
+          minimum: 64
+          type:
+          - integer
+          - 'null'
+          description: Maximum number of bytes captured from each packet
+          contentEncoding: int32
+          default: 512
+          examples:
+          - 128
+        num_packets:
+          maximum: 10000
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: Maximum number of packets to capture; use 0 for unlimited
+          contentEncoding: int32
+          default: 1024
+          examples:
+          - 1000
+        ssid:
+          type: string
+          description: Wireless network SSID used to filter the packet capture
+        type:
+          const: wireless
+          type: string
+          description: Packet capture type discriminator for wireless captures
+          examples:
+          - wireless
+        wlan_id:
+          type: string
+          description: WLAN identifier used to filter the wireless packet capture
+          contentEncoding: uuid
+      description: Initiate a Wireless Packet Capture
+    capture_wired_format2:
+      title: capture_wired_format2
+      enum:
+      - pcap
+      - stream
+      type: string
+      description: 'Output format for the wired packet capture. enum: `pcap`, `stream`.'
+    capture_radiotapwired_band2:
+      title: capture_radiotapwired_band2
+      enum:
+      - '24'
+      - 24,5,6
+      - '5'
+      - '6'
+      type: string
+      description: 'Radio band to capture for the radiotap portion. enum: `24`, `24,5,6`, `5`, `6`.'
+      examples:
+      - '24'
+    capture_client:
+      title: capture_client
+      required:
+      - type
+      type: object
+      properties:
+        ap_mac:
+          type:
+          - string
+          - 'null'
+          description: AP MAC address used to target the client packet capture
+        client_mac:
+          type:
+          - string
+          - 'null'
+          description: Client MAC address, required if `type`==`client`; optional otherwise
+          examples:
+          - 60a10a773412
+        duration:
+          maximum: 86400
+          minimum: 60
+          type:
+          - integer
+          - 'null'
+          description: Packet capture duration, in seconds
+          contentEncoding: int32
+          default: 600
+          examples:
+          - 300
+        includes_mcast:
+          type: boolean
+          description: Whether to include multicast traffic in the packet capture
+          default: false
+        max_pkt_len:
+          maximum: 2048
+          minimum: 64
+          type:
+          - integer
+          - 'null'
+          description: Maximum number of bytes captured from each packet
+          contentEncoding: int32
+          default: 512
+          examples:
+          - 128
+        num_packets:
+          maximum: 10000
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: Maximum number of packets to capture; use 0 for unlimited
+          contentEncoding: int32
+          default: 1024
+          examples:
+          - 1000
+        ssid:
+          type:
+          - string
+          - 'null'
+          description: Optional SSID filter for the packet capture
+        type:
+          const: client
+          type: string
+          description: Packet capture type discriminator for client captures
+          examples:
+          - client
+      description: Initiate a Client Packet Capture
+    capture_switch_format2:
+      title: capture_switch_format2
+      const: stream
+      type: string
+      description: 'Output format for the switch packet capture. enum: `stream`.'
+    capture_mxedge_mxedges_interfaces:
+      title: capture_mxedge_mxedges_interfaces
+      type: object
+      properties:
+        tcpdump_expression:
+          type: string
+          description: tcpdump expression common for wired,radiotap
+      description: Property key is the Port name (e.g. "port1", "kni0", "lacp0", "ipsec", "drop", "oobm"), currently limited to specifying one interface per mxedge
+    capture_scan_format2:
+      title: capture_scan_format2
+      enum:
+      - pcap
+      - stream
+      type: string
+      description: 'Output format for the scan radio packet capture. enum: `pcap`, `stream`.'
+      examples:
+      - stream
     capture_mxedge:
       title: capture_mxedge
       required:
@@ -3968,20 +3552,436 @@ components:
           contentEncoding: int32
           default: 37008
       description: Initiate a Mist Edge Packet Capture
-    capture_wired_format2:
-      title: capture_wired_format2
+    capture_switch:
+      title: capture_switch
+      required:
+      - switches
+      - type
+      type: object
+      properties:
+        duration:
+          maximum: 86400
+          minimum: 60
+          type:
+          - integer
+          - 'null'
+          description: Packet capture duration, in seconds
+          contentEncoding: int32
+          default: 600
+          examples:
+          - 300
+        format:
+          allOf:
+          - $ref: '#/components/schemas/capture_switch_format2'
+          - description: 'Output format for the switch packet capture. enum: `stream`.'
+        max_pkt_len:
+          maximum: 2048
+          minimum: 64
+          type:
+          - integer
+          - 'null'
+          description: Maximum number of bytes captured from each packet
+          contentEncoding: int32
+          default: 512
+          examples:
+          - 128
+        num_packets:
+          maximum: 10000
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: Maximum number of packets to capture; use 0 for unlimited
+          contentEncoding: int32
+          default: 1024
+          examples:
+          - 1000
+        ports:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/capture_switch_ports_tcpdump_expression'
+          description: Switch ports to include in the packet capture
+        switches:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/capture_switch_switches'
+          description: Property key is the switch MAC address
+        tcpdump_expression:
+          type: string
+          description: tcpdump expression, port specific if specified under ports dict, otherwise applicable across ports if specified at top level of payload. Port specific value overrides top level value when both exist.
+          examples:
+          - port 443
+        type:
+          const: switch
+          type: string
+          description: Packet capture type discriminator for switch captures
+          examples:
+          - switch
+      description: Initiate a Switch (Junos) Packet Capture
+    capture_mxedge_mxedges:
+      title: capture_mxedge_mxedges
+      type: object
+      properties:
+        interfaces:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/capture_mxedge_mxedges_interfaces'
+          description: Mx Edge interfaces to include in the capture, keyed by interface name
+      description: Property key is the Mx Edge ID, currently limited to one mxedge per org capture session
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    capture_gateway:
+      title: capture_gateway
+      required:
+      - gateways
+      - type
+      type: object
+      properties:
+        duration:
+          maximum: 86400
+          minimum: 60
+          type:
+          - integer
+          - 'null'
+          description: Packet capture duration, in seconds
+          contentEncoding: int32
+          default: 600
+          examples:
+          - 300
+        format:
+          allOf:
+          - $ref: '#/components/schemas/capture_gateway_format2'
+          - description: 'Output format for the gateway packet capture. enum: `stream`.'
+            examples:
+            - stream
+        gateways:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/capture_gateway_gateways'
+          description: List of SSRs. Property key is the SSR MAC
+        max_pkt_len:
+          maximum: 1520
+          minimum: 64
+          type:
+          - integer
+          - 'null'
+          description: minimum is 64 (SSR) / 68 (SRX) maximum is 10240 (SSR) / 1520 (SRX)
+          contentEncoding: int32
+          default: 512
+          examples:
+          - 128
+        num_packets:
+          maximum: 10000
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: Maximum number of packets to capture; use 0 for unlimited
+          contentEncoding: int32
+          default: 1024
+          examples:
+          - 1000
+        ports:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/capture_gateway_gateways_port'
+          description: Gateway ports to include in the packet capture
+        type:
+          const: gateway
+          type: string
+          description: Packet capture type discriminator for gateway captures
+          examples:
+          - gateway
+      description: Initiate a Gateway (SSR/SRX) Packet Capture
+    capture_gateway_gateways_port:
+      title: capture_gateway_gateways_port
+      type: object
+      properties:
+        tcpdump_expression:
+          type: string
+          description: tcpdump expression per port
+      description: Per-port tcpdump filter for a gateway packet capture
+    capture_wireless_format2:
+      title: capture_wireless_format2
       enum:
       - pcap
       - stream
       type: string
-      description: 'Output format for the wired packet capture. enum: `pcap`, `stream`.'
-    capture_mxedge_format2:
-      title: capture_mxedge_format2
-      enum:
-      - stream
-      - tzsp
-      type: string
-      description: 'Output format for packet capture data. enum: `stream`, `tzsp`.'
+      description: 'Output format for the wireless packet capture. enum: `pcap`, `stream`.'
+    capture_radiotap:
+      title: capture_radiotap
+      required:
+      - type
+      type: object
+      properties:
+        ap_mac:
+          type: string
+          description: AP MAC address used to target the radiotap packet capture
+          examples:
+          - a83a79a947ee
+        band:
+          allOf:
+          - $ref: '#/components/schemas/capture_radiotap_band2'
+          - description: 'Radio band to capture for radiotap packets. enum: `24`, `24,5,6`, `5`, `6`.'
+            examples:
+            - '24'
+        client_mac:
+          type: string
+          description: Client MAC address used to filter the radiotap packet capture
+          examples:
+          - 38f9d3972ff1
+        duration:
+          maximum: 86400
+          minimum: 60
+          type:
+          - integer
+          - 'null'
+          description: Packet capture duration, in seconds
+          contentEncoding: int32
+          default: 600
+          examples:
+          - 300
+        format:
+          allOf:
+          - $ref: '#/components/schemas/capture_radiotap_format2'
+          - description: 'Output format for the radiotap packet capture. enum: `pcap`, `stream`.'
+            examples:
+            - stream
+        max_pkt_len:
+          maximum: 2048
+          minimum: 64
+          type:
+          - integer
+          - 'null'
+          description: Maximum number of bytes captured from each packet
+          contentEncoding: int32
+          default: 512
+          examples:
+          - 128
+        num_packets:
+          maximum: 10000
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: Maximum number of packets to capture; use 0 for unlimited
+          contentEncoding: int32
+          default: 1024
+          examples:
+          - 1000
+        ssid:
+          type: string
+          description: Wireless network SSID used to filter the radiotap packet capture
+          examples:
+          - test
+        tcpdump_expression:
+          type:
+          - string
+          - 'null'
+          description: Filter expression applied to the radiotap packet capture
+          examples:
+          - tcp port 80
+        type:
+          const: radiotap
+          type: string
+          description: Packet capture type discriminator for radiotap captures
+          examples:
+          - radiotap
+        wlan_id:
+          type: string
+          description: WLAN id associated with the respective ssid.
+          contentEncoding: uuid
+          examples:
+          - fac8e973-feb9-421a-b381-aabbc4b61f5a
+      description: Initiate a Radiotap Packet Capture
+    capture_switch_ports_tcpdump_expression:
+      title: capture_switch_ports_tcpdump_expression
+      type: object
+      properties:
+        tcpdump_expression:
+          type: string
+          description: tcpdump expression, port specific if specified under ports dict, otherwise applicable across ports if specified at top level of payload. Port specific value overrides top level value when both exist.
+          examples:
+          - port 443
+      description: Per-port tcpdump filter for a switch packet capture
+    capture_org:
+      oneOf:
+      - $ref: '#/components/schemas/capture_mxedge'
+      description: Packet capture request payload for organization-level captures
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    capture_wired:
+      title: capture_wired
+      required:
+      - type
+      type: object
+      properties:
+        ap_mac:
+          type:
+          - string
+          - 'null'
+          description: AP MAC address used to target the wired packet capture
+        duration:
+          maximum: 86400
+          minimum: 60
+          type:
+          - integer
+          - 'null'
+          description: Packet capture duration, in seconds
+          contentEncoding: int32
+          default: 600
+          examples:
+          - 300
+        format:
+          allOf:
+          - $ref: '#/components/schemas/capture_wired_format2'
+          - description: 'Output format for the wired packet capture. enum: `pcap`, `stream`.'
+        max_pkt_len:
+          maximum: 2048
+          minimum: 64
+          type:
+          - integer
+          - 'null'
+          description: Maximum number of bytes captured from each packet
+          contentEncoding: int32
+          default: 512
+          examples:
+          - 128
+        num_packets:
+          maximum: 10000
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: Maximum number of packets to capture; use 0 for unlimited
+          contentEncoding: int32
+          default: 1024
+          examples:
+          - 1000
+        tcpdump_expression:
+          type:
+          - string
+          - 'null'
+          description: Filter expression applied to the wired packet capture
+          examples:
+          - tcp port 80
+        type:
+          const: wired
+          type: string
+          description: Packet capture type discriminator for wired captures
+          examples:
+          - wired
+      description: Initiate a Wired Packet Capture
+    response_pcap_search_item:
+      title: response_pcap_search_item
+      required:
+      - timestamp
+      - type
+      - url
+      type: object
+      properties:
+        ap_macs:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: AP MAC addresses associated with the packet capture
+        aps:
+          type: array
+          items:
+            type: string
+          description: AP MAC addresses included in the packet capture
+        duration:
+          type: number
+          description: Packet capture duration in seconds
+          examples:
+          - 600
+        format:
+          type: string
+          description: Output format requested for the packet capture
+          examples:
+          - stream
+        id:
+          type: string
+          description: Unique identifier for the packet capture
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        last_seen:
+          type: number
+          description: Last seen timestamp of the capture
+          examples:
+          - 1693482149.417
+        max_num_packets:
+          type: number
+          description: Maximum number of packets requested for the capture
+          examples:
+          - 1024
+        mxedges:
+          type: array
+          items:
+            type: string
+          description: List of Mist Edge IDs included in the capture
+        org_id:
+          type: string
+          description: Organization associated with the packet capture
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        pcap_aps:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/response_pcap_search_item_pcap_aps_item'
+          description: Per-AP radio capture settings keyed by AP MAC address
+          examples:
+          - 5c5b35000010:
+              band: '6'
+              bandwidth: '20'
+              channel: 133
+              tcpdump_expression: null
+        pcap_url:
+          type: string
+          description: URL for downloading the generated PCAP file
+        site_id:
+          type:
+          - string
+          - 'null'
+          description: Site associated with the packet capture, when the capture is site-scoped
+          contentEncoding: uuid
+        termination_reason:
+          type: string
+          description: Reason the packet capture session ended
+          examples:
+          - default
+        timestamp:
+          type: number
+          description: Epoch timestamp, in seconds, when the packet capture record was created
+          readOnly: true
+        type:
+          type: string
+          description: Packet capture type represented by this record
+        url:
+          type: string
+          description: Link for accessing the packet capture output or stream
+      description: Packet capture record returned by organization or site packet capture search
   securitySchemes:
     apiToken:
       type: apiKey

@@ -101,26 +101,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/OrgStats'
 components:
+  responses:
+    Unauthorized:
+      description: Unauthorized - invalid or missing authentication
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad request - invalid parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
-    Error:
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Error message
-    OrgStats:
-      type: object
-      properties:
-        num_sites:
-          type: integer
-        num_devices:
-          type: integer
-        num_devices_connected:
-          type: integer
-        num_devices_disconnected:
-          type: integer
-        num_clients:
-          type: integer
     Organization:
       type: object
       properties:
@@ -144,6 +144,25 @@ components:
           type: number
         modified_time:
           type: number
+    OrgStats:
+      type: object
+      properties:
+        num_sites:
+          type: integer
+        num_devices:
+          type: integer
+        num_devices_connected:
+          type: integer
+        num_devices_disconnected:
+          type: integer
+        num_clients:
+          type: integer
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Error message
   parameters:
     OrgId:
       name: org_id
@@ -153,25 +172,6 @@ components:
       schema:
         type: string
         format: uuid
-  responses:
-    Unauthorized:
-      description: Unauthorized - invalid or missing authentication
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad request - invalid parameters
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Resource not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   securitySchemes:
     apiToken:
       type: http

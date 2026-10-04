@@ -5078,200 +5078,6 @@ paths:
       deprecated: false
 components:
   schemas:
-    const_insight_metrics_property_report_duration:
-      title: const_insight_metrics_property_report_duration
-      type: object
-      properties:
-        duration:
-          type: integer
-          description: Report duration length, in seconds
-          contentEncoding: int32
-        interval:
-          type: integer
-          description: Sampling interval used for this report duration, in seconds
-          contentEncoding: int32
-      description: Report duration definition for an insight metric
-    const_license_type_enforcement_level:
-      title: const_license_type_enforcement_level
-      enum:
-      - org
-      - site
-      type: string
-      description: 'Level at which the license is enforced. enum: `org`, `site`.'
-    const_license_type:
-      title: const_license_type
-      type: object
-      properties:
-        description:
-          type: string
-          description: Human-readable description of the license type
-          examples:
-          - Wired Assurance 12
-        enforcement_level:
-          allOf:
-          - $ref: '#/components/schemas/const_license_type_enforcement_level'
-          - description: 'Level at which the license is enforced. enum: `org`, `site`.'
-        entitled_licenses:
-          type: array
-          items:
-            type: string
-          description: License type keys this license type entitles
-          examples:
-          - - sub_ex12
-            - sub_sadv1
-        group:
-          type: string
-          description: License group this license type belongs to
-          examples:
-          - SUB-WIRED
-        includes:
-          type: array
-          items:
-            type: string
-          description: License SKU components included by this license type
-          examples:
-          - - sub_ex12a
-            - sub_ex12p
-        key:
-          type: string
-          description: Machine-readable license type key
-          examples:
-          - sub_ex12
-        name:
-          type: string
-          description: Display name of the license type
-          examples:
-          - SUB-EX12
-        type:
-          type: string
-          description: License type identifier (SKU)
-          examples:
-          - SUB-EX12
-      description: License type definition returned by the constants API
-    const_app_category_definition_filters2:
-      title: const_app_category_definition_filters2
-      type: object
-      properties:
-        srx:
-          uniqueItems: true
-          type: array
-          items:
-            type: string
-          description: Application signature names for SRX platforms included in this category
-        ssr:
-          uniqueItems: true
-          type: array
-          items:
-            type: string
-          description: Application identifiers for SSR platforms included in this category
-      description: Platform-specific application signatures included in this category
-      examples:
-      - srx:
-        - Enhanced_Images_Media
-        - Enhanced_Web_Images
-        - Enhanced_Image_Servers
-    const_ap_esl_version:
-      title: const_ap_esl_version
-      type: object
-      properties:
-        esl_version:
-          type: string
-          description: Electronic Shelf Label (ESL) package version supported by the AP model
-          readOnly: true
-          examples:
-          - 2.5.1
-        model:
-          type: string
-          description: AP model that supports the listed ESL version
-          readOnly: true
-          examples:
-          - AP34
-      description: Supported Electronic Shelf Label (ESL) version for an AP model
-    const_language:
-      title: const_language
-      required:
-      - display
-      - display_native
-      - key
-      type: object
-      properties:
-        display:
-          type: string
-          description: Localized language display name in the API default locale
-          examples:
-          - English (US)
-        display_native:
-          type: string
-          description: Language display name in its native locale
-          examples:
-          - English (US)
-        key:
-          type: string
-          description: Locale key used to select this language
-          examples:
-          - en-US
-      description: Language option returned by the constants API
-    const_insight_metrics_property_scope:
-      title: const_insight_metrics_property_scope
-      enum:
-      - ap
-      - client
-      - device
-      - gateway
-      - map
-      - msp
-      - mxcluster
-      - mxedge
-      - org
-      - otherdevice
-      - rssizone
-      - sdkclient
-      - site
-      - switch
-      - wlan
-      - zone
-      type: string
-      description: 'enum: `ap`, `client`, `device`, `gateway`, `map`, `msp`, `mxcluster`, `mxedge`, `org`, `otherdevice`, `rssizone`, `sdkclient`, `site`, `switch`, `wlan`, `zone`'
-    const_gateway_applications_definition:
-      title: const_gateway_applications_definition
-      type: object
-      properties:
-        app_id:
-          type: boolean
-          description: Whether an AppID is defined for this gateway application
-          examples:
-          - true
-        key:
-          type: string
-          description: Machine-readable key that identifies the gateway application
-          examples:
-          - 4shared
-        name:
-          type: string
-          description: Display name of the gateway application
-          examples:
-          - 4shared
-        ssr_app_id:
-          type: boolean
-          description: Whether an SSR AppID is defined for this gateway application
-          examples:
-          - true
-      description: Gateway application definition returned by the constants API
-    const_state:
-      title: const_state
-      type: object
-      properties:
-        iso_code:
-          type: string
-          description: ISO subdivision code for the state or territory
-          examples:
-          - AK
-        name:
-          type: string
-          description: State or territory display name
-          examples:
-          - Alaska
-      description: State or territory definition returned by the constants API
     const_insight_metrics_property:
       title: const_insight_metrics_property
       type: object
@@ -5344,6 +5150,35 @@ components:
           type: object
           description: Enumerated or structured value metadata for this insight metric
       description: Definition of an insight metric returned by the constants API
+    const_fingerprint_types:
+      title: const_fingerprint_types
+      type: object
+      properties:
+        family:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Device family values available for client fingerprint matching
+        mfg:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Manufacturer values available for client fingerprint matching
+        model:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Device model values available for client fingerprint matching
+        os:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Operating system values available for client fingerprint matching
+      description: Supported client fingerprint values for NAC matching
     response_http404:
       title: response_http404
       type: object
@@ -5352,19 +5187,50 @@ components:
           type: string
           description: Missing resource identifier, when the API includes one
       description: Standard HTTP 404 not found error response
-    const_insight_metrics_property_interval:
-      title: const_insight_metrics_property_interval
+    const_app_category_definition_filters2:
+      title: const_app_category_definition_filters2
       type: object
       properties:
-        interval:
-          type: integer
-          description: Sampling interval length, in seconds
-          contentEncoding: int32
-        max_age:
-          type: integer
-          description: Maximum lookback age for this interval, in seconds
-          contentEncoding: int32
-      description: Interval definition for an insight metric
+        srx:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Application signature names for SRX platforms included in this category
+        ssr:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Application identifiers for SSR platforms included in this category
+      description: Platform-specific application signatures included in this category
+      examples:
+      - srx:
+        - Enhanced_Images_Media
+        - Enhanced_Web_Images
+        - Enhanced_Image_Servers
+    const_marvisclient_event:
+      title: const_marvisclient_event
+      type: object
+      properties:
+        display:
+          type: string
+          description: Human-readable name for this Marvis Client event type
+          examples:
+          - Marvis Client Roamed
+        key:
+          type: string
+          description: Event type key used in Marvis Client event search and count APIs
+          examples:
+          - MARVISCLIENT_ROAMED
+      description: A Marvis Client event type definition
+    const_license_type_enforcement_level:
+      title: const_license_type_enforcement_level
+      enum:
+      - org
+      - site
+      type: string
+      description: 'Level at which the license is enforced. enum: `org`, `site`.'
     const_webhook_topic:
       title: const_webhook_topic
       type: object
@@ -5387,26 +5253,96 @@ components:
           examples:
           - alarms
       description: Webhook topic definition returned by the constants API
-    response_http403:
-      title: response_http403
+    const_insight_metrics_property_report_duration:
+      title: const_insight_metrics_property_report_duration
+      type: object
+      properties:
+        duration:
+          type: integer
+          description: Report duration length, in seconds
+          contentEncoding: int32
+        interval:
+          type: integer
+          description: Sampling interval used for this report duration, in seconds
+          contentEncoding: int32
+      description: Report duration definition for an insight metric
+    const_marvis_client_version:
+      title: const_marvis_client_version
+      type: object
+      properties:
+        label:
+          type: string
+          description: Release label for this Marvis Client version
+          examples:
+          - default
+        notes:
+          type: string
+          description: Release notes or extra text for this Marvis Client version
+        os:
+          type: string
+          description: Operating system supported by this Marvis Client installer
+          examples:
+          - windows
+        url:
+          type: string
+          description: Download URL for this Marvis Client installer
+          examples:
+          - https://mobile.mist.com/installers/marvisclient/...
+        version:
+          type: string
+          description: Marvis Client software version for this installer
+          examples:
+          - 0.100.29
+      description: Marvis Client version download entry
+    const_state:
+      title: const_state
+      type: object
+      properties:
+        iso_code:
+          type: string
+          description: ISO subdivision code for the state or territory
+          examples:
+          - AK
+        name:
+          type: string
+          description: State or territory display name
+          examples:
+          - Alaska
+      description: State or territory definition returned by the constants API
+    const_language:
+      title: const_language
+      required:
+      - display
+      - display_native
+      - key
+      type: object
+      properties:
+        display:
+          type: string
+          description: Localized language display name in the API default locale
+          examples:
+          - English (US)
+        display_native:
+          type: string
+          description: Language display name in its native locale
+          examples:
+          - English (US)
+        key:
+          type: string
+          description: Locale key used to select this language
+          examples:
+          - en-US
+      description: Language option returned by the constants API
+    response_http401:
+      title: response_http401
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the permission error
+          description: Human-readable explanation of the authentication error
           examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
     response_http429:
       title: response_http429
       type: object
@@ -5417,68 +5353,6 @@ components:
           examples:
           - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
       description: Standard HTTP 429 rate limit error response
-    const_app_category_definition:
-      title: const_app_category_definition
-      required:
-      - display
-      - key
-      type: object
-      properties:
-        display:
-          type: string
-          description: Description of the app category
-          examples:
-          - Images
-        filters:
-          allOf:
-          - $ref: '#/components/schemas/const_app_category_definition_filters2'
-          - description: Platform-specific application signatures included in this category
-            examples:
-            - srx:
-              - Enhanced_Images_Media
-              - Enhanced_Web_Images
-              - Enhanced_Image_Servers
-        includes:
-          type: array
-          items:
-            type: string
-          description: Application categories included by this aggregate category
-        key:
-          type: string
-          description: Machine-readable application category key
-          examples:
-          - Images
-      description: Application category definition returned by the constants API
-    const_country:
-      title: const_country
-      required:
-      - alpha2
-      - certified
-      - name
-      - numeric
-      type: object
-      properties:
-        alpha2:
-          type: string
-          description: Country code, in two-character
-          examples:
-          - FR
-        certified:
-          type: boolean
-          description: Whether this country is certified for use in Mist APs
-          examples:
-          - true
-        name:
-          type: string
-          description: Human-readable country name for display
-          examples:
-          - France
-        numeric:
-          type: number
-          description: Country code, ISO 3166-1 numeric
-          examples:
-          - 250
-      description: Country definition returned by the constants API
     const_traffic_type:
       title: const_traffic_type
       type: object
@@ -5528,15 +5402,240 @@ components:
           examples:
           - medium
       description: Traffic type definition returned by the constants API
-    const_insight_metrics_property_example:
-      anyOf:
-      - type: integer
-        contentEncoding: int32
-      - type: number
-      - type: string
-      - type: boolean
-      - type: object
-      description: Example value for an insight metric property
+    const_license_type:
+      title: const_license_type
+      type: object
+      properties:
+        description:
+          type: string
+          description: Human-readable description of the license type
+          examples:
+          - Wired Assurance 12
+        enforcement_level:
+          allOf:
+          - $ref: '#/components/schemas/const_license_type_enforcement_level'
+          - description: 'Level at which the license is enforced. enum: `org`, `site`.'
+        entitled_licenses:
+          type: array
+          items:
+            type: string
+          description: License type keys this license type entitles
+          examples:
+          - - sub_ex12
+            - sub_sadv1
+        group:
+          type: string
+          description: License group this license type belongs to
+          examples:
+          - SUB-WIRED
+        includes:
+          type: array
+          items:
+            type: string
+          description: License SKU components included by this license type
+          examples:
+          - - sub_ex12a
+            - sub_ex12p
+        key:
+          type: string
+          description: Machine-readable license type key
+          examples:
+          - sub_ex12
+        name:
+          type: string
+          description: Display name of the license type
+          examples:
+          - SUB-EX12
+        type:
+          type: string
+          description: License type identifier (SKU)
+          examples:
+          - SUB-EX12
+      description: License type definition returned by the constants API
+    const_insight_metrics_property_interval:
+      title: const_insight_metrics_property_interval
+      type: object
+      properties:
+        interval:
+          type: integer
+          description: Sampling interval length, in seconds
+          contentEncoding: int32
+        max_age:
+          type: integer
+          description: Maximum lookback age for this interval, in seconds
+          contentEncoding: int32
+      description: Interval definition for an insight metric
+    const_gateway_applications_definition:
+      title: const_gateway_applications_definition
+      type: object
+      properties:
+        app_id:
+          type: boolean
+          description: Whether an AppID is defined for this gateway application
+          examples:
+          - true
+        key:
+          type: string
+          description: Machine-readable key that identifies the gateway application
+          examples:
+          - 4shared
+        name:
+          type: string
+          description: Display name of the gateway application
+          examples:
+          - 4shared
+        ssr_app_id:
+          type: boolean
+          description: Whether an SSR AppID is defined for this gateway application
+          examples:
+          - true
+      description: Gateway application definition returned by the constants API
+    const_country:
+      title: const_country
+      required:
+      - alpha2
+      - certified
+      - name
+      - numeric
+      type: object
+      properties:
+        alpha2:
+          type: string
+          description: Country code, in two-character
+          examples:
+          - FR
+        certified:
+          type: boolean
+          description: Whether this country is certified for use in Mist APs
+          examples:
+          - true
+        name:
+          type: string
+          description: Human-readable country name for display
+          examples:
+          - France
+        numeric:
+          type: number
+          description: Country code, ISO 3166-1 numeric
+          examples:
+          - 250
+      description: Country definition returned by the constants API
+    const_insight_metrics_property_param:
+      title: const_insight_metrics_property_param
+      type: object
+      properties:
+        required:
+          type: boolean
+          description: Whether this query parameter is required
+      description: Query parameter definition for an insight metric
+    const_app_category_definition:
+      title: const_app_category_definition
+      required:
+      - display
+      - key
+      type: object
+      properties:
+        display:
+          type: string
+          description: Description of the app category
+          examples:
+          - Images
+        filters:
+          allOf:
+          - $ref: '#/components/schemas/const_app_category_definition_filters2'
+          - description: Platform-specific application signatures included in this category
+            examples:
+            - srx:
+              - Enhanced_Images_Media
+              - Enhanced_Web_Images
+              - Enhanced_Image_Servers
+        includes:
+          type: array
+          items:
+            type: string
+          description: Application categories included by this aggregate category
+        key:
+          type: string
+          description: Machine-readable application category key
+          examples:
+          - Images
+      description: Application category definition returned by the constants API
+    const_app_subcategory_definition:
+      title: const_app_subcategory_definition
+      required:
+      - display
+      - key
+      - traffic_type
+      type: object
+      properties:
+        display:
+          type: string
+          description: Description of the app subcategory
+          examples:
+          - Office Document
+        key:
+          type: string
+          description: Machine-readable application subcategory key
+          examples:
+          - Office_Documents
+        traffic_type:
+          type: string
+          description: Type of traffic (QoS) of the app subcategory
+          examples:
+          - Images
+      description: Application subcategory definition returned by the constants API
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    const_application_definition:
+      title: const_application_definition
+      type: object
+      properties:
+        app_id:
+          type: boolean
+          description: Whether an AppID is defined for this application
+        app_image_url:
+          type: string
+          description: URL of the application icon image, when one is available
+          examples:
+          - '""'
+        app_probe:
+          type: boolean
+          description: Whether an application probe is available for this application
+        category:
+          type: string
+          description: Application category key associated with this application
+          examples:
+          - FileSharing
+        group:
+          type: string
+          description: Application group display name for this application
+          examples:
+          - File Sharing
+        key:
+          type: string
+          description: Machine-readable key that identifies the application
+          examples:
+          - dropbox
+        name:
+          type: string
+          description: Display name of the application
+          examples:
+          - Dropbox
+        signature_based:
+          type: boolean
+          description: Whether this application is detected using signatures
+        ssr_app_id:
+          type: boolean
+          description: Whether an SSR AppID is defined for this application
+      description: Application definition recognized by Juniper Devices
     const_ap_channel:
       title: const_ap_channel
       type: object
@@ -6410,34 +6509,32 @@ components:
           examples:
           - US_FCC
       description: Country and regulatory-domain channel capabilities for AP radios
-    const_marvis_client_version:
-      title: const_marvis_client_version
+    const_ap_esl_version:
+      title: const_ap_esl_version
       type: object
       properties:
-        label:
+        esl_version:
           type: string
-          description: Release label for this Marvis Client version
+          description: Electronic Shelf Label (ESL) package version supported by the AP model
+          readOnly: true
           examples:
-          - default
-        notes:
+          - 2.5.1
+        model:
           type: string
-          description: Release notes or extra text for this Marvis Client version
-        os:
-          type: string
-          description: Operating system supported by this Marvis Client installer
+          description: AP model that supports the listed ESL version
+          readOnly: true
           examples:
-          - windows
-        url:
-          type: string
-          description: Download URL for this Marvis Client installer
-          examples:
-          - https://mobile.mist.com/installers/marvisclient/...
-        version:
-          type: string
-          description: Marvis Client software version for this installer
-          examples:
-          - 0.100.29
-      description: Marvis Client version download entry
+          - AP34
+      description: Supported Electronic Shelf Label (ESL) version for an AP model
+    const_insight_metrics_property_example:
+      anyOf:
+      - type: integer
+        contentEncoding: int32
+      - type: number
+      - type: string
+      - type: boolean
+      - type: object
+      description: Example value for an insight metric property
     const_ap_led:
       title: const_ap_led
       required:
@@ -6468,134 +6565,37 @@ components:
           examples:
           - LED Failure
       description: AP LED status and `last_trouble` code definition returned by the constants API
-    const_application_definition:
-      title: const_application_definition
-      type: object
-      properties:
-        app_id:
-          type: boolean
-          description: Whether an AppID is defined for this application
-        app_image_url:
-          type: string
-          description: URL of the application icon image, when one is available
-          examples:
-          - '""'
-        app_probe:
-          type: boolean
-          description: Whether an application probe is available for this application
-        category:
-          type: string
-          description: Application category key associated with this application
-          examples:
-          - FileSharing
-        group:
-          type: string
-          description: Application group display name for this application
-          examples:
-          - File Sharing
-        key:
-          type: string
-          description: Machine-readable key that identifies the application
-          examples:
-          - dropbox
-        name:
-          type: string
-          description: Display name of the application
-          examples:
-          - Dropbox
-        signature_based:
-          type: boolean
-          description: Whether this application is detected using signatures
-        ssr_app_id:
-          type: boolean
-          description: Whether an SSR AppID is defined for this application
-      description: Application definition recognized by Juniper Devices
-    const_fingerprint_types:
-      title: const_fingerprint_types
-      type: object
-      properties:
-        family:
-          uniqueItems: true
-          type: array
-          items:
-            type: string
-          description: Device family values available for client fingerprint matching
-        mfg:
-          uniqueItems: true
-          type: array
-          items:
-            type: string
-          description: Manufacturer values available for client fingerprint matching
-        model:
-          uniqueItems: true
-          type: array
-          items:
-            type: string
-          description: Device model values available for client fingerprint matching
-        os:
-          uniqueItems: true
-          type: array
-          items:
-            type: string
-          description: Operating system values available for client fingerprint matching
-      description: Supported client fingerprint values for NAC matching
-    response_http401:
-      title: response_http401
+    response_http400:
+      title: response_http400
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the authentication error
+          description: Human-readable explanation of the bad request error
           examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    const_app_subcategory_definition:
-      title: const_app_subcategory_definition
-      required:
-      - display
-      - key
-      - traffic_type
-      type: object
-      properties:
-        display:
-          type: string
-          description: Description of the app subcategory
-          examples:
-          - Office Document
-        key:
-          type: string
-          description: Machine-readable application subcategory key
-          examples:
-          - Office_Documents
-        traffic_type:
-          type: string
-          description: Type of traffic (QoS) of the app subcategory
-          examples:
-          - Images
-      description: Application subcategory definition returned by the constants API
-    const_marvisclient_event:
-      title: const_marvisclient_event
-      type: object
-      properties:
-        display:
-          type: string
-          description: Human-readable name for this Marvis Client event type
-          examples:
-          - Marvis Client Roamed
-        key:
-          type: string
-          description: Event type key used in Marvis Client event search and count APIs
-          examples:
-          - MARVISCLIENT_ROAMED
-      description: A Marvis Client event type definition
-    const_insight_metrics_property_param:
-      title: const_insight_metrics_property_param
-      type: object
-      properties:
-        required:
-          type: boolean
-          description: Whether this query parameter is required
-      description: Query parameter definition for an insight metric
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    const_insight_metrics_property_scope:
+      title: const_insight_metrics_property_scope
+      enum:
+      - ap
+      - client
+      - device
+      - gateway
+      - map
+      - msp
+      - mxcluster
+      - mxedge
+      - org
+      - otherdevice
+      - rssizone
+      - sdkclient
+      - site
+      - switch
+      - wlan
+      - zone
+      type: string
+      description: 'enum: `ap`, `client`, `device`, `gateway`, `map`, `msp`, `mxcluster`, `mxedge`, `org`, `otherdevice`, `rssizone`, `sdkclient`, `site`, `switch`, `wlan`, `zone`'
   securitySchemes:
     apiToken:
       type: apiKey

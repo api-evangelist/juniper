@@ -2288,48 +2288,14 @@ paths:
       deprecated: true
 components:
   schemas:
-    auto_placement:
-      title: auto_placement
+    response_http404:
+      title: response_http404
       type: object
       properties:
-        dryrun:
-          type: boolean
-          description: Set to `true` to perform an invalid AP check and provide an estimated run time without enqueuing the run into the auto placement service.
-          default: false
-        force_collection:
-          type: boolean
-          description: "* If `force_collection`==`false`: the API attempts to start localization with existing data. \n* If `force_collection`==`true`: maintenance the API attempts to start orchestration."
-          default: false
-        macs:
-          type: array
-          items:
-            type: string
-          description: AP MAC addresses to include in the auto-placement run
-        override:
-          type: boolean
-          description: Set to `true` to run auto placement even if there are invalid APs in the selected APs.
-          default: false
-      description: Request options for validating or starting AP auto-placement
-    auto_orient:
-      title: auto_orient
-      type: object
-      properties:
-        dryrun:
-          type: boolean
-          description: Set to `true` to perform an invalid AP check and provide an estimated run time without enqueuing the run into the auto orient service.
-        force_collection:
-          type: boolean
-          description: "If `force_collection`==`false`, the API attempts to start auto orientation with existing BLE data. \nIf `force_collection`==`true`, the API attempts to start BLE orchestration."
-          default: false
-        macs:
-          type: array
-          items:
-            type: string
-          description: AP MAC addresses to include in the auto-orient run
-        override:
-          type: boolean
-          description: Set to `true` to run auto orient even if there are invalid APs in the selected APs.
-      description: Request options for validating or starting AP auto-orientation
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
     autoplacement_localization_selector:
       title: autoplacement_localization_selector
       type: object
@@ -2344,30 +2310,6 @@ components:
             type: string
           description: List of AP MAC addresses to apply the action to. If omitted, the action applies to all APs on the map
       description: Request body to apply or clear cached autoplacement or auto-orientation values for a map or subset of APs
-    mac_addresses:
-      title: mac_addresses
-      required:
-      - macs
-      type: object
-      properties:
-        macs:
-          minItems: 1
-          uniqueItems: true
-          type: array
-          items:
-            type: string
-          description: List of MAC addresses included in the request
-          examples:
-          - - 683b679ac024
-      description: Request containing one or more MAC addresses
-    response_detail_string:
-      title: response_detail_string
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable detail message returned by the API
-      description: Response containing a human-readable detail message
     use_auto_ap_values_for2:
       title: use_auto_ap_values_for2
       enum:
@@ -2375,42 +2317,35 @@ components:
       - placement
       type: string
       description: 'Localization value type to accept or reject. enum: `orientation`, `placement`.'
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    response_auto_orientation_info:
-      title: response_auto_orientation_info
-      type: object
-      properties:
-        est_time_left:
-          type: number
-          description: Only when `status`==`inprogress`, estimate of the time to completion
-        start_time:
-          type: number
-          description: Timestamp when auto orient process was last queued for this map
-        status:
-          allOf:
-          - $ref: '#/components/schemas/response_auto_orientation_info_status2'
-          - description: 'Current auto orientation processing state. enum: `pending`, `inprogress`, `done`, `error`.'
-        stop_time:
-          type: number
-          description: Timestamp when auto orient completed or was manually stopped
-      description: Auto orientation status response
-    response_http403:
-      title: response_http403
+    response_http401:
+      title: response_http401
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the permission error
+          description: Human-readable explanation of the authentication error
           examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_auto_placement_info:
+      title: response_auto_placement_info
+      type: object
+      properties:
+        end_time:
+          type: number
+          description: Timestamp when autoplacement completed or was manually stopped
+        est_time_left:
+          type: number
+          description: (Only when inprogress) estimate of the time to completion
+        start_time:
+          type: integer
+          description: Timestamp when autoplacement process was last queued for this map
+          contentEncoding: int32
+        status:
+          allOf:
+          - $ref: '#/components/schemas/auto_placement_info_status1'
+          - description: 'Current autoplacement processing state. enum: `done`, `error`, `inprogress`, `pending`.'
+      description: Auto-placement status response with progress and validation details
     response_autoplacement:
       title: response_autoplacement
       type: object
@@ -2442,17 +2377,6 @@ components:
           type: boolean
           description: Indicates whether the auto placement process will interrupt WiFi traffic.
       description: Auto-placement start response returned after scheduling the run
-    response_auto_orientation_device:
-      title: response_auto_orientation_device
-      type: object
-      properties:
-        reason:
-          type: string
-          description: Provides the reason for the status if the AP is invalid.
-        valid:
-          type: boolean
-          description: Indicates whether the auto orient request is valid for the device.
-      description: Per-device validation result for auto orientation
     response_http429:
       title: response_http429
       type: object
@@ -2463,23 +2387,14 @@ components:
           examples:
           - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
       description: Standard HTTP 429 rate limit error response
-    response_http400:
-      title: response_http400
+    response_detail_string:
+      title: response_detail_string
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    autoplacement_localization_selector_for:
-      title: autoplacement_localization_selector_for
-      enum:
-      - orientation
-      - placement
-      type: string
-      description: 'The selector to choose auto placement or auto orientation. enum: `orientation`, `placement`'
+          description: Human-readable detail message returned by the API
+      description: Response containing a human-readable detail message
     response_auto_orientation:
       title: response_auto_orientation
       type: object
@@ -2506,28 +2421,22 @@ components:
           type: boolean
           description: Indicates whether the auto orient process will interrupt WiFi traffic.
       description: Auto orientation start response
-    auto_placement_info_status1:
-      title: auto_placement_info_status1
-      enum:
-      - done
-      - error
-      - inprogress
-      - pending
-      type: string
-      description: 'Current autoplacement processing state. enum: `done`, `error`, `inprogress`, `pending`.'
-    response_autoplacement_device:
-      title: response_autoplacement_device
+    mac_addresses:
+      title: mac_addresses
+      required:
+      - macs
       type: object
       properties:
-        reason:
-          type: string
-          description: Provides the reason for the status if the AP is invalid.
-          readOnly: true
-        valid:
-          type: boolean
-          description: Indicates whether the ap is valid.
-          readOnly: true
-      description: Per-AP validation result for autoplacement
+        macs:
+          minItems: 1
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: List of MAC addresses included in the request
+          examples:
+          - - 683b679ac024
+      description: Request containing one or more MAC addresses
     response_auto_orientation_info_status2:
       title: response_auto_orientation_info_status2
       enum:
@@ -2537,16 +2446,6 @@ components:
       - error
       type: string
       description: 'Current auto orientation processing state. enum: `pending`, `inprogress`, `done`, `error`.'
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
     use_auto_ap_values:
       title: use_auto_ap_values
       type: object
@@ -2565,25 +2464,126 @@ components:
             type: string
           description: AP MAC addresses whose cached values are accepted or rejected
       description: Request to accept or reject cached AP placement or orientation values on a map
-    response_auto_placement_info:
-      title: response_auto_placement_info
+    response_auto_orientation_device:
+      title: response_auto_orientation_device
       type: object
       properties:
-        end_time:
-          type: number
-          description: Timestamp when autoplacement completed or was manually stopped
+        reason:
+          type: string
+          description: Provides the reason for the status if the AP is invalid.
+        valid:
+          type: boolean
+          description: Indicates whether the auto orient request is valid for the device.
+      description: Per-device validation result for auto orientation
+    auto_placement:
+      title: auto_placement
+      type: object
+      properties:
+        dryrun:
+          type: boolean
+          description: Set to `true` to perform an invalid AP check and provide an estimated run time without enqueuing the run into the auto placement service.
+          default: false
+        force_collection:
+          type: boolean
+          description: "* If `force_collection`==`false`: the API attempts to start localization with existing data. \n* If `force_collection`==`true`: maintenance the API attempts to start orchestration."
+          default: false
+        macs:
+          type: array
+          items:
+            type: string
+          description: AP MAC addresses to include in the auto-placement run
+        override:
+          type: boolean
+          description: Set to `true` to run auto placement even if there are invalid APs in the selected APs.
+          default: false
+      description: Request options for validating or starting AP auto-placement
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    auto_placement_info_status1:
+      title: auto_placement_info_status1
+      enum:
+      - done
+      - error
+      - inprogress
+      - pending
+      type: string
+      description: 'Current autoplacement processing state. enum: `done`, `error`, `inprogress`, `pending`.'
+    autoplacement_localization_selector_for:
+      title: autoplacement_localization_selector_for
+      enum:
+      - orientation
+      - placement
+      type: string
+      description: 'The selector to choose auto placement or auto orientation. enum: `orientation`, `placement`'
+    response_autoplacement_device:
+      title: response_autoplacement_device
+      type: object
+      properties:
+        reason:
+          type: string
+          description: Provides the reason for the status if the AP is invalid.
+          readOnly: true
+        valid:
+          type: boolean
+          description: Indicates whether the ap is valid.
+          readOnly: true
+      description: Per-AP validation result for autoplacement
+    auto_orient:
+      title: auto_orient
+      type: object
+      properties:
+        dryrun:
+          type: boolean
+          description: Set to `true` to perform an invalid AP check and provide an estimated run time without enqueuing the run into the auto orient service.
+        force_collection:
+          type: boolean
+          description: "If `force_collection`==`false`, the API attempts to start auto orientation with existing BLE data. \nIf `force_collection`==`true`, the API attempts to start BLE orchestration."
+          default: false
+        macs:
+          type: array
+          items:
+            type: string
+          description: AP MAC addresses to include in the auto-orient run
+        override:
+          type: boolean
+          description: Set to `true` to run auto orient even if there are invalid APs in the selected APs.
+      description: Request options for validating or starting AP auto-orientation
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_auto_orientation_info:
+      title: response_auto_orientation_info
+      type: object
+      properties:
         est_time_left:
           type: number
-          description: (Only when inprogress) estimate of the time to completion
+          description: Only when `status`==`inprogress`, estimate of the time to completion
         start_time:
-          type: integer
-          description: Timestamp when autoplacement process was last queued for this map
-          contentEncoding: int32
+          type: number
+          description: Timestamp when auto orient process was last queued for this map
         status:
           allOf:
-          - $ref: '#/components/schemas/auto_placement_info_status1'
-          - description: 'Current autoplacement processing state. enum: `done`, `error`, `inprogress`, `pending`.'
-      description: Auto-placement status response with progress and validation details
+          - $ref: '#/components/schemas/response_auto_orientation_info_status2'
+          - description: 'Current auto orientation processing state. enum: `pending`, `inprogress`, `done`, `error`.'
+        stop_time:
+          type: number
+          description: Timestamp when auto orient completed or was manually stopped
+      description: Auto orientation status response
   securitySchemes:
     apiToken:
       type: apiKey

@@ -1731,19 +1731,98 @@ paths:
       deprecated: false
 components:
   schemas:
-    count_result:
-      title: count_result
-      required:
-      - count
+    response_http403:
+      title: response_http403
       type: object
       properties:
-        count:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    site_guests_count_distinct:
+      title: site_guests_count_distinct
+      enum:
+      - auth_method
+      - company
+      - ssid
+      type: string
+      description: 'enum: `auth_method`, `company`, `ssid`'
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_guest_search:
+      title: response_guest_search
+      required:
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        end:
           type: integer
-          description: Number of matching items for the distinct value or values in this result
+          description: Epoch timestamp for the end of the guest authorization search window
           contentEncoding: int32
-      additionalProperties:
-        type: string
-      description: Count result row with the matching distinct field values
+        limit:
+          type: integer
+          description: Maximum number of guest authorization records returned in this page
+          contentEncoding: int32
+        next:
+          type: string
+          description: Pagination cursor or URL for retrieving the next page of guest authorization records
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/guest'
+          description: Guest authorization records matching the search filters
+        start:
+          type: integer
+          description: Epoch timestamp for the start of the guest authorization search window
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of guest authorization records matching the search filters across all pages
+          contentEncoding: int32
+      description: Paginated response for guest authorization search results
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
     guest:
       title: guest
       type: object
@@ -1834,42 +1913,6 @@ components:
           examples:
           - 6748cfa6-4e12-11e6-9188-0242ac110007
       description: Guest authorization record at site scope
-    response_guest_search:
-      title: response_guest_search
-      required:
-      - end
-      - limit
-      - results
-      - start
-      - total
-      type: object
-      properties:
-        end:
-          type: integer
-          description: Epoch timestamp for the end of the guest authorization search window
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of guest authorization records returned in this page
-          contentEncoding: int32
-        next:
-          type: string
-          description: Pagination cursor or URL for retrieving the next page of guest authorization records
-        results:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/guest'
-          description: Guest authorization records matching the search filters
-        start:
-          type: integer
-          description: Epoch timestamp for the start of the guest authorization search window
-          contentEncoding: int32
-        total:
-          type: integer
-          description: Number of guest authorization records matching the search filters across all pages
-          contentEncoding: int32
-      description: Paginated response for guest authorization search results
     response_count:
       title: response_count
       required:
@@ -1907,62 +1950,19 @@ components:
           description: Number of distinct result buckets returned
           contentEncoding: int32
       description: Distinct count response for time-bounded search results
-    response_http403:
-      title: response_http403
+    count_result:
+      title: count_result
+      required:
+      - count
       type: object
       properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    site_guests_count_distinct:
-      title: site_guests_count_distinct
-      enum:
-      - auth_method
-      - company
-      - ssid
-      type: string
-      description: 'enum: `auth_method`, `company`, `ssid`'
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
+        count:
+          type: integer
+          description: Number of matching items for the distinct value or values in this result
+          contentEncoding: int32
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
   securitySchemes:
     apiToken:
       type: apiKey

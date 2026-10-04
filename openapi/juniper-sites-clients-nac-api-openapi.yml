@@ -2048,6 +2048,64 @@ paths:
       deprecated: false
 components:
   schemas:
+    nac_client_last_status2:
+      title: nac_client_last_status2
+      enum:
+      - permitted
+      - session_started
+      - session_stopped
+      - denied
+      type: string
+      description: 'Most recent NAC authentication status for the client. enum: `permitted`, `session_started`, `session_stopped`, `denied`.'
+      examples:
+      - permitted
+    edr_status:
+      title: edr_status
+      enum:
+      - sentinelone_healthy
+      - sentinelone_infected
+      - crowdstrike_low
+      - crowdstrike_medium
+      - crowdstrike_high
+      - crowdstrike_critical
+      - crowdstrike_informational
+      type: string
+      description: 'EDR Status of the NAC client. enum: `sentinelone_healthy`, `sentinelone_infected`, `crowdstrike_low`, `crowdstrike_medium`, `crowdstrike_high`, `crowdstrike_critical`, `crowdstrike_informational`'
+    nac_access_type2:
+      title: nac_access_type2
+      enum:
+      - wireless
+      - wired
+      - vty
+      type: string
+      description: 'Access type for the NAC client event. enum: `wireless`, `wired`, `vty`.'
+      examples:
+      - wireless
+    device_type3:
+      title: device_type3
+      enum:
+      - ap
+      - gateway
+      - switch
+      type: string
+      description: 'Type of network device that received the CoA command. enum: `ap`, `gateway`, `switch`.'
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    nac_client_coa:
+      title: nac_client_coa
+      type: object
+      properties:
+        coa_type:
+          allOf:
+          - $ref: '#/components/schemas/nac_coa_type3'
+          - description: 'Change of Authorization command to send to the NAC client. enum: `reauth`, `disconnect`.'
+      description: Change of Authorization request for a NAC client
     count_result:
       title: count_result
       required:
@@ -2061,98 +2119,6 @@ components:
       additionalProperties:
         type: string
       description: Count result row with the matching distinct field values
-    nac_access_type2:
-      title: nac_access_type2
-      enum:
-      - wireless
-      - wired
-      - vty
-      type: string
-      description: 'Access type for the NAC client event. enum: `wireless`, `wired`, `vty`.'
-      examples:
-      - wireless
-    edr_status:
-      title: edr_status
-      enum:
-      - sentinelone_healthy
-      - sentinelone_infected
-      - crowdstrike_low
-      - crowdstrike_medium
-      - crowdstrike_high
-      - crowdstrike_critical
-      - crowdstrike_informational
-      type: string
-      description: 'EDR Status of the NAC client. enum: `sentinelone_healthy`, `sentinelone_infected`, `crowdstrike_low`, `crowdstrike_medium`, `crowdstrike_high`, `crowdstrike_critical`, `crowdstrike_informational`'
-    nac_auth_type5:
-      title: nac_auth_type5
-      enum:
-      - cert
-      - device-auth
-      - eap-teap
-      - eap-tls
-      - eap-ttls
-      - idp
-      - mab
-      - eap-peap
-      type: string
-      description: 'Authentication method used by the NAC client. enum: `cert`, `device-auth`, `eap-teap`, `eap-tls`, `eap-ttls`, `idp`, `mab`, `eap-peap`.'
-      examples:
-      - eap-tls
-    nac_coa_type3:
-      title: nac_coa_type3
-      enum:
-      - reauth
-      - disconnect
-      type: string
-      description: 'Change of Authorization command to send to the NAC client. enum: `reauth`, `disconnect`.'
-    nac_client_last_status2:
-      title: nac_client_last_status2
-      enum:
-      - permitted
-      - session_started
-      - session_stopped
-      - denied
-      type: string
-      description: 'Most recent NAC authentication status for the client. enum: `permitted`, `session_started`, `session_stopped`, `denied`.'
-      examples:
-      - permitted
-    response_client_nac_search:
-      title: response_client_nac_search
-      type: object
-      properties:
-        end:
-          type: integer
-          description: Search window end timestamp for NAC clients, in epoch seconds
-          contentEncoding: int32
-          examples:
-          - 1513362753
-        limit:
-          type: integer
-          description: Maximum number of NAC client results requested
-          contentEncoding: int32
-          examples:
-          - 3
-        next:
-          type: string
-          description: URL for the next page of NAC client results
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/client_nac'
-          description: NAC client records returned for this page
-        start:
-          type: integer
-          description: Search window start timestamp for NAC clients, in epoch seconds
-          contentEncoding: int32
-          examples:
-          - 1513276353
-        total:
-          type: integer
-          description: Number of NAC client records matching the search
-          contentEncoding: int32
-          examples:
-          - 2
-      description: Paginated NAC client search response
     site_nac_clients_count_distinct:
       title: site_nac_clients_count_distinct
       enum:
@@ -2185,29 +2151,6 @@ components:
       - vlan
       type: string
       description: 'enum: `ap`, `auth_type`, `device_mac`, `edr_managed`, `edr_provider`, `edr_status`, `family`, `hostname`, `idp_id`, `mfg`, `mdm_compliance`, `mdm_managed`, `mdm_provider`, `model`, `mxedge_id`, `nacrule_matched`, `nacrule_name`, `nacrule_id`, `nas_ip`, `nas_vendor`, `os`, `ssid`, `status`, `type`, `usermac_label`, `username`, `vlan`'
-    nac_client_coa_response:
-      title: nac_client_coa_response
-      type: object
-      properties:
-        device_mac:
-          type: string
-          description: Target AP or switch MAC address for the CoA command
-        device_type:
-          allOf:
-          - $ref: '#/components/schemas/device_type3'
-          - description: 'Type of network device that received the CoA command. enum: `ap`, `gateway`, `switch`.'
-      description: Response returned after sending a NAC client CoA command
-    nac_client_last_status:
-      title: nac_client_last_status
-      enum:
-      - permitted
-      - session_started
-      - session_stopped
-      - denied
-      type: string
-      description: 'Latest Authentication status of the client. enum: `denied`, `permitted`, `session_started`, `session_stopped`'
-      examples:
-      - permitted
     nac_client_event:
       title: nac_client_event
       type: object
@@ -2377,67 +2320,6 @@ components:
           examples:
           - nactag
       description: NAC authentication event for a wired or wireless client
-    response_events_nac_client_search:
-      title: response_events_nac_client_search
-      type: object
-      properties:
-        end:
-          type: integer
-          description: Epoch timestamp for the end of the NAC client event search window
-          contentEncoding: int32
-          examples:
-          - 1513176951
-        limit:
-          type: integer
-          description: Maximum number of NAC client event records returned in this page
-          contentEncoding: int32
-          examples:
-          - 10
-        next:
-          type: string
-          description: Pagination cursor or URL for retrieving the next page of NAC client event records
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/nac_client_event'
-          description: NAC client event records matching the search filters
-        start:
-          type: integer
-          description: Epoch timestamp for the start of the NAC client event search window
-          contentEncoding: int32
-          examples:
-          - 1512572151
-        total:
-          type: integer
-          description: Number of NAC client event records matching the search filters across all pages
-          contentEncoding: int32
-          examples:
-          - 1
-      description: Paginated response for NAC client event search results
-    nac_client_coa:
-      title: nac_client_coa
-      type: object
-      properties:
-        coa_type:
-          allOf:
-          - $ref: '#/components/schemas/nac_coa_type3'
-          - description: 'Change of Authorization command to send to the NAC client. enum: `reauth`, `disconnect`.'
-      description: Change of Authorization request for a NAC client
-    site_nac_client_events_count_distinct:
-      title: site_nac_client_events_count_distinct
-      enum:
-      - ap
-      - auth_type
-      - dryrun_nacrule_id
-      - mac
-      - nacrule_id
-      - nas_vendor
-      - ssid
-      - type
-      - username
-      - vlan
-      type: string
-      description: 'enum: `ap`, `auth_type`, `dryrun_nacrule_id`, `mac`, `nacrule_id`, `nas_vendor`, `ssid`, `type`, `username`, `vlan`'
     client_nac:
       title: client_nac
       type: object
@@ -2714,22 +2596,77 @@ components:
           description: Network VLANs associated with the NAC client during authentication
           readOnly: true
       description: NAC client authentication and access state
-    device_type3:
-      title: device_type3
-      enum:
-      - ap
-      - gateway
-      - switch
-      type: string
-      description: 'Type of network device that received the CoA command. enum: `ap`, `gateway`, `switch`.'
-    response_http404:
-      title: response_http404
+    response_http401:
+      title: response_http401
       type: object
       properties:
-        id:
+        detail:
           type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    edr_provider:
+      title: edr_provider
+      enum:
+      - crowdstrike
+      - sentinelone
+      type: string
+      description: 'EDR provider associated with the NAC client. enum: `crowdstrike`, `sentinelone`'
+    response_client_nac_search:
+      title: response_client_nac_search
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Search window end timestamp for NAC clients, in epoch seconds
+          contentEncoding: int32
+          examples:
+          - 1513362753
+        limit:
+          type: integer
+          description: Maximum number of NAC client results requested
+          contentEncoding: int32
+          examples:
+          - 3
+        next:
+          type: string
+          description: URL for the next page of NAC client results
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/client_nac'
+          description: NAC client records returned for this page
+        start:
+          type: integer
+          description: Search window start timestamp for NAC clients, in epoch seconds
+          contentEncoding: int32
+          examples:
+          - 1513276353
+        total:
+          type: integer
+          description: Number of NAC client records matching the search
+          contentEncoding: int32
+          examples:
+          - 2
+      description: Paginated NAC client search response
+    nac_coa_type3:
+      title: nac_coa_type3
+      enum:
+      - reauth
+      - disconnect
+      type: string
+      description: 'Change of Authorization command to send to the NAC client. enum: `reauth`, `disconnect`.'
     nac_auth_type2:
       title: nac_auth_type2
       enum:
@@ -2745,6 +2682,13 @@ components:
       description: 'Authentication method used for the NAC event. enum: `cert`, `device-auth`, `eap-teap`, `eap-tls`, `eap-ttls`, `idp`, `mab`, `eap-peap`.'
       examples:
       - eap-tls
+    random_mac1:
+      title: random_mac1
+      enum:
+      - 'true'
+      - 'false'
+      type: string
+      description: 'Whether the client used a randomized MAC address. enum: `true`, `false`.'
     response_count:
       title: response_count
       required:
@@ -2782,6 +2726,29 @@ components:
           description: Number of distinct result buckets returned
           contentEncoding: int32
       description: Distinct count response for time-bounded search results
+    nac_client_coa_response:
+      title: nac_client_coa_response
+      type: object
+      properties:
+        device_mac:
+          type: string
+          description: Target AP or switch MAC address for the CoA command
+        device_type:
+          allOf:
+          - $ref: '#/components/schemas/device_type3'
+          - description: 'Type of network device that received the CoA command. enum: `ap`, `gateway`, `switch`.'
+      description: Response returned after sending a NAC client CoA command
+    nac_client_last_status:
+      title: nac_client_last_status
+      enum:
+      - permitted
+      - session_started
+      - session_stopped
+      - denied
+      type: string
+      description: 'Latest Authentication status of the client. enum: `denied`, `permitted`, `session_started`, `session_stopped`'
+      examples:
+      - permitted
     response_http403:
       title: response_http403
       type: object
@@ -2792,33 +2759,21 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    random_mac1:
-      title: random_mac1
+    nac_auth_type5:
+      title: nac_auth_type5
       enum:
-      - 'true'
-      - 'false'
+      - cert
+      - device-auth
+      - eap-teap
+      - eap-tls
+      - eap-ttls
+      - idp
+      - mab
+      - eap-peap
       type: string
-      description: 'Whether the client used a randomized MAC address. enum: `true`, `false`.'
+      description: 'Authentication method used by the NAC client. enum: `cert`, `device-auth`, `eap-teap`, `eap-tls`, `eap-ttls`, `idp`, `mab`, `eap-peap`.'
+      examples:
+      - eap-tls
     nac_access_type4:
       title: nac_access_type4
       enum:
@@ -2829,13 +2784,6 @@ components:
       description: 'Network access type for the NAC client. enum: `wireless`, `wired`, `vty`.'
       examples:
       - wireless
-    edr_provider:
-      title: edr_provider
-      enum:
-      - crowdstrike
-      - sentinelone
-      type: string
-      description: 'EDR provider associated with the NAC client. enum: `crowdstrike`, `sentinelone`'
     random_mac3:
       title: random_mac3
       enum:
@@ -2843,16 +2791,43 @@ components:
       - 'false'
       type: string
       description: 'Whether the NAC client used a randomized MAC address. enum: `true`, `false`.'
-    response_http401:
-      title: response_http401
+    response_events_nac_client_search:
+      title: response_events_nac_client_search
       type: object
       properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
+        end:
+          type: integer
+          description: Epoch timestamp for the end of the NAC client event search window
+          contentEncoding: int32
           examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
+          - 1513176951
+        limit:
+          type: integer
+          description: Maximum number of NAC client event records returned in this page
+          contentEncoding: int32
+          examples:
+          - 10
+        next:
+          type: string
+          description: Pagination cursor or URL for retrieving the next page of NAC client event records
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/nac_client_event'
+          description: NAC client event records matching the search filters
+        start:
+          type: integer
+          description: Epoch timestamp for the start of the NAC client event search window
+          contentEncoding: int32
+          examples:
+          - 1512572151
+        total:
+          type: integer
+          description: Number of NAC client event records matching the search filters across all pages
+          contentEncoding: int32
+          examples:
+          - 1
+      description: Paginated response for NAC client event search results
     nac_access_type3:
       title: nac_access_type3
       enum:
@@ -2863,6 +2838,31 @@ components:
       description: 'Access type of the port where the NAC event occurred. enum: `wireless`, `wired`, `vty`.'
       examples:
       - wireless
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    site_nac_client_events_count_distinct:
+      title: site_nac_client_events_count_distinct
+      enum:
+      - ap
+      - auth_type
+      - dryrun_nacrule_id
+      - mac
+      - nacrule_id
+      - nas_vendor
+      - ssid
+      - type
+      - username
+      - vlan
+      type: string
+      description: 'enum: `ap`, `auth_type`, `dryrun_nacrule_id`, `mac`, `nacrule_id`, `nas_vendor`, `ssid`, `type`, `username`, `vlan`'
   securitySchemes:
     apiToken:
       type: apiKey

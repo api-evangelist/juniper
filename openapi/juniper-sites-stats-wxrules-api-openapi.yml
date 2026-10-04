@@ -315,15 +315,6 @@ paths:
       deprecated: false
 components:
   schemas:
-    stats_wxrule_usage_properties:
-      title: stats_wxrule_usage_properties
-      type: object
-      properties:
-        num_flows:
-          type: integer
-          description: Number of flows counted for this WxLAN rule and destination tag
-          contentEncoding: int32
-      description: Usage counters for one WxLAN rule destination tag
     response_http403:
       title: response_http403
       type: object
@@ -334,26 +325,6 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
     response_http401:
       title: response_http401
       type: object
@@ -364,6 +335,52 @@ components:
           examples:
           - Authentication credentials were not provided.
       description: Standard HTTP 401 authentication error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    stats_wxrule_action2:
+      title: stats_wxrule_action2
+      enum:
+      - allow
+      - block
+      type: string
+      description: Allow or block behavior enforced by this WxLAN rule
+      examples:
+      - allow
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    stats_wxrule_usage_properties:
+      title: stats_wxrule_usage_properties
+      type: object
+      properties:
+        num_flows:
+          type: integer
+          description: Number of flows counted for this WxLAN rule and destination tag
+          contentEncoding: int32
+      description: Usage counters for one WxLAN rule destination tag
     stats_wxrule:
       title: stats_wxrule
       required:
@@ -450,23 +467,6 @@ components:
             d4134466-eec0-3756-6765-381c728a6037:
               num_flows: 60
       description: WxLAN rule usage statistics for a site
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    stats_wxrule_action2:
-      title: stats_wxrule_action2
-      enum:
-      - allow
-      - block
-      type: string
-      description: Allow or block behavior enforced by this WxLAN rule
-      examples:
-      - allow
   securitySchemes:
     apiToken:
       type: apiKey

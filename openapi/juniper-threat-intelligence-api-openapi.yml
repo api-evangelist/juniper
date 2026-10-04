@@ -137,31 +137,6 @@ paths:
                 $ref: '#/components/schemas/FileVerdict'
 components:
   schemas:
-    IpReputation:
-      type: object
-      properties:
-        ip:
-          type: string
-        threat_score:
-          type: integer
-          minimum: 0
-          maximum: 10
-          description: Threat score from 0 (clean) to 10 (malicious)
-        categories:
-          type: array
-          items:
-            type: string
-        country:
-          type: string
-        asn:
-          type: integer
-        last_seen:
-          type: string
-          format: date-time
-        feeds:
-          type: array
-          items:
-            type: string
     UrlReputation:
       type: object
       properties:
@@ -180,6 +155,29 @@ components:
         last_seen:
           type: string
           format: date-time
+    ThreatFeed:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        enabled:
+          type: boolean
+        last_updated:
+          type: string
+          format: date-time
+        entry_count:
+          type: integer
+        feed_type:
+          type: string
+          enum:
+          - ip
+          - domain
+          - url
+          - hash
     DomainReputation:
       type: object
       properties:
@@ -229,29 +227,31 @@ components:
         last_seen:
           type: string
           format: date-time
-    ThreatFeed:
+    IpReputation:
       type: object
       properties:
-        id:
+        ip:
           type: string
-        name:
+        threat_score:
+          type: integer
+          minimum: 0
+          maximum: 10
+          description: Threat score from 0 (clean) to 10 (malicious)
+        categories:
+          type: array
+          items:
+            type: string
+        country:
           type: string
-        description:
-          type: string
-        enabled:
-          type: boolean
-        last_updated:
+        asn:
+          type: integer
+        last_seen:
           type: string
           format: date-time
-        entry_count:
-          type: integer
-        feed_type:
-          type: string
-          enum:
-          - ip
-          - domain
-          - url
-          - hash
+        feeds:
+          type: array
+          items:
+            type: string
   securitySchemes:
     apiKey:
       type: apiKey

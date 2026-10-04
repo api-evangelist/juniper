@@ -767,6 +767,60 @@ paths:
       deprecated: false
 components:
   schemas:
+    fwupdate_stat_status2:
+      title: fwupdate_stat_status2
+      enum:
+      - inprogress
+      - failed
+      - upgraded
+      - success
+      - scheduled
+      - error
+      type: string
+      description: 'Current firmware update status. enum: `inprogress`, `failed`, `upgraded`, `success`, `scheduled`, `error`.'
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    response_tunnel_search:
+      title: response_tunnel_search
+      required:
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Epoch timestamp, in seconds, for the end of the tunnel statistics search window
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of tunnel statistics records returned in this page
+          contentEncoding: int32
+        next:
+          type: string
+          description: URL for retrieving the next page of tunnel statistics results
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/response_tunnel_search_item'
+          description: Tunnel statistics records matching the search filters
+        start:
+          type: integer
+          description: Epoch timestamp, in seconds, for the start of the tunnel statistics search window
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of tunnel statistics records matching the search filters across all pages
+          contentEncoding: int32
+      description: Paginated response for organization tunnel statistics search results
     count_result:
       title: count_result
       required:
@@ -780,113 +834,23 @@ components:
       additionalProperties:
         type: string
       description: Count result row with the matching distinct field values
-    wan_tunnel_protocol1:
-      title: wan_tunnel_protocol1
+    tunnel_priority1:
+      title: tunnel_priority1
       enum:
-      - gre
-      - ipsec
+      - primary
+      - secondary
       type: string
-      description: 'Tunnel protocol used for the connection. enum: `gre`, `ipsec`.'
-    stats_mxtunnel:
-      title: stats_mxtunnel
-      required:
-      - remote_ip
+      description: 'Relative preference assigned to the tunnel. enum: `primary`, `secondary`.'
+    response_http401:
+      title: response_http401
       type: object
       properties:
-        ap:
+        detail:
           type: string
-          description: MAC address of the AP associated with the tunnel statistics
-          readOnly: true
-        for_site:
-          type: boolean
-          description: Whether the tunnel statistics are scoped to a site
-          readOnly: true
-        fwupdate:
-          allOf:
-          - $ref: '#/components/schemas/fwupdate_stat1'
-          - description: Firmware update status included with the tunnel statistics, when available
-        last_seen:
-          type:
-          - number
-          - 'null'
-          description: Time when the tunnel statistics were last observed
-          readOnly: true
+          description: Human-readable explanation of the authentication error
           examples:
-          - 1470417522
-        mtu:
-          type: integer
-          description: Maximum transmission unit reported for the tunnel path
-          contentEncoding: int32
-          readOnly: true
-        mxcluster_id:
-          type: string
-          description: Mist Edge cluster identifier associated with the tunnel statistics
-          contentEncoding: uuid
-          readOnly: true
-        mxedge_id:
-          type: string
-          description: Mist Edge identifier for the tunnel endpoint
-          contentEncoding: uuid
-          readOnly: true
-        mxtunnel_id:
-          type: string
-          description: Mist tunnel identifier associated with the tunnel statistics
-          contentEncoding: uuid
-          readOnly: true
-        org_id:
-          type: string
-          description: Organization identifier associated with the tunnel statistics
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
-        peer_mxedge_id:
-          type: string
-          description: MxEdge ID of the peer(mist edge to mist edge tunnel)
-          contentEncoding: uuid
-          readOnly: true
-        remote_ip:
-          type: string
-          description: Remote endpoint IP address for the tunnel
-          readOnly: true
-        remote_port:
-          type: integer
-          description: Remote endpoint port for the tunnel
-          contentEncoding: int32
-          readOnly: true
-        sessions:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/stats_mxtunnel_session'
-          description: WxLAN tunnel sessions reported for this tunnel
-          readOnly: true
-        site_id:
-          type: string
-          description: Site identifier associated with the tunnel statistics
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
-        start_time:
-          type: integer
-          description: Epoch timestamp when the tunnel was established
-          contentEncoding: int32
-          readOnly: true
-        state:
-          allOf:
-          - $ref: '#/components/schemas/stats_mxtunnel_state2'
-          - description: 'Current state of the WxLAN or Mist tunnel. enum: `established`, `established_with_sessions`, `idle`, `wait-ctrl-conn`, `wait-ctrl-reply`.'
-          readOnly: true
-      description: WxLAN or Mist tunnel statistics record
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
     stats_wan_tunnel:
       title: stats_wan_tunnel
       required:
@@ -994,82 +958,6 @@ components:
           examples:
           - wan
       description: WAN tunnel statistics record returned by tunnel search
-    org_tunnel_type_count:
-      title: org_tunnel_type_count
-      enum:
-      - wan
-      - wxtunnel
-      type: string
-      description: 'Tunnel type used when counting organization tunnels. enum: `wan`, `wxtunnel`'
-    response_tunnel_search_item:
-      oneOf:
-      - $ref: '#/components/schemas/stats_mxtunnel'
-      - $ref: '#/components/schemas/stats_wan_tunnel'
-      description: Tunnel statistics record; shape depends on the requested tunnel type
-    tunnel_type:
-      title: tunnel_type
-      enum:
-      - wan
-      - wxtunnel
-      type: string
-      description: 'Tunnel category, either WAN tunnel or WxLAN tunnel. enum: `wan`, `wxtunnel`'
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_count:
-      title: response_count
-      required:
-      - distinct
-      - end
-      - limit
-      - results
-      - start
-      - total
-      type: object
-      properties:
-        distinct:
-          type: string
-          description: Field used to group the count results
-        end:
-          type: integer
-          description: Search window end timestamp for the count request, in epoch seconds
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of distinct count results requested
-          contentEncoding: int32
-        results:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/count_result'
-          description: Count results grouped by the distinct field
-        start:
-          type: integer
-          description: Search window start timestamp for the count request, in epoch seconds
-          contentEncoding: int32
-        total:
-          type: integer
-          description: Number of distinct result buckets returned
-          contentEncoding: int32
-      description: Distinct count response for time-bounded search results
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
     response_http429:
       title: response_http429
       type: object
@@ -1080,91 +968,6 @@ components:
           examples:
           - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
       description: Standard HTTP 429 rate limit error response
-    response_tunnel_search:
-      title: response_tunnel_search
-      required:
-      - end
-      - limit
-      - results
-      - start
-      - total
-      type: object
-      properties:
-        end:
-          type: integer
-          description: Epoch timestamp, in seconds, for the end of the tunnel statistics search window
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of tunnel statistics records returned in this page
-          contentEncoding: int32
-        next:
-          type: string
-          description: URL for retrieving the next page of tunnel statistics results
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/response_tunnel_search_item'
-          description: Tunnel statistics records matching the search filters
-        start:
-          type: integer
-          description: Epoch timestamp, in seconds, for the start of the tunnel statistics search window
-          contentEncoding: int32
-        total:
-          type: integer
-          description: Number of tunnel statistics records matching the search filters across all pages
-          contentEncoding: int32
-      description: Paginated response for organization tunnel statistics search results
-    org_tunnel_count_distinct:
-      title: org_tunnel_count_distinct
-      enum:
-      - ap
-      - auth_algo
-      - encrypt_algo
-      - ike_version
-      - ip
-      - last_event
-      - mac
-      - mxcluster_id
-      - mxedge_id
-      - node
-      - peer_host
-      - peer_ip
-      - peer_mxedge_id
-      - protocol
-      - remote_ip
-      - remote_port
-      - site_id
-      - state
-      - tunnel_name
-      - up
-      - wxtunnel_id
-      type: string
-      description: 'enum: `ap`, `auth_algo`, `encrypt_algo`, `ike_version`, `ip`, `last_event`, `mac`, `mxcluster_id`, `mxedge_id`, `node`, `peer_host`, `peer_ip`, `peer_mxedge_id`, `protocol`, `remote_ip`, `remote_port`, `site_id`, `state`, `tunnel_name`, `up`, `wxtunnel_id`'
-    stats_mxtunnel_session:
-      title: stats_mxtunnel_session
-      required:
-      - local_sid
-      - remote_id
-      - remote_sid
-      - state
-      type: object
-      properties:
-        local_sid:
-          type: integer
-          description: Local session identifier for the tunnel session
-          contentEncoding: int32
-        remote_id:
-          type: string
-          description: Configured remote identifier for the tunnel session
-        remote_sid:
-          type: integer
-          description: Peer session identifier for the tunnel session
-          contentEncoding: int32
-        state:
-          type: string
-          description: Current state of the tunnel session
-      description: Session information for a WxLAN or Mist tunnel
     fwupdate_stat1:
       title: fwupdate_stat1
       type: object
@@ -1209,17 +1012,195 @@ components:
           examples:
           - false
       description: Firmware update status included with the tunnel statistics, when available
-    fwupdate_stat_status2:
-      title: fwupdate_stat_status2
+    response_tunnel_search_item:
+      oneOf:
+      - $ref: '#/components/schemas/stats_mxtunnel'
+      - $ref: '#/components/schemas/stats_wan_tunnel'
+      description: Tunnel statistics record; shape depends on the requested tunnel type
+    tunnel_type:
+      title: tunnel_type
       enum:
-      - inprogress
-      - failed
-      - upgraded
-      - success
-      - scheduled
-      - error
+      - wan
+      - wxtunnel
       type: string
-      description: 'Current firmware update status. enum: `inprogress`, `failed`, `upgraded`, `success`, `scheduled`, `error`.'
+      description: 'Tunnel category, either WAN tunnel or WxLAN tunnel. enum: `wan`, `wxtunnel`'
+    stats_mxtunnel_session:
+      title: stats_mxtunnel_session
+      required:
+      - local_sid
+      - remote_id
+      - remote_sid
+      - state
+      type: object
+      properties:
+        local_sid:
+          type: integer
+          description: Local session identifier for the tunnel session
+          contentEncoding: int32
+        remote_id:
+          type: string
+          description: Configured remote identifier for the tunnel session
+        remote_sid:
+          type: integer
+          description: Peer session identifier for the tunnel session
+          contentEncoding: int32
+        state:
+          type: string
+          description: Current state of the tunnel session
+      description: Session information for a WxLAN or Mist tunnel
+    wan_tunnel_protocol1:
+      title: wan_tunnel_protocol1
+      enum:
+      - gre
+      - ipsec
+      type: string
+      description: 'Tunnel protocol used for the connection. enum: `gre`, `ipsec`.'
+    response_count:
+      title: response_count
+      required:
+      - distinct
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        distinct:
+          type: string
+          description: Field used to group the count results
+        end:
+          type: integer
+          description: Search window end timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of distinct count results requested
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/count_result'
+          description: Count results grouped by the distinct field
+        start:
+          type: integer
+          description: Search window start timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of distinct result buckets returned
+          contentEncoding: int32
+      description: Distinct count response for time-bounded search results
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    stats_mxtunnel:
+      title: stats_mxtunnel
+      required:
+      - remote_ip
+      type: object
+      properties:
+        ap:
+          type: string
+          description: MAC address of the AP associated with the tunnel statistics
+          readOnly: true
+        for_site:
+          type: boolean
+          description: Whether the tunnel statistics are scoped to a site
+          readOnly: true
+        fwupdate:
+          allOf:
+          - $ref: '#/components/schemas/fwupdate_stat1'
+          - description: Firmware update status included with the tunnel statistics, when available
+        last_seen:
+          type:
+          - number
+          - 'null'
+          description: Time when the tunnel statistics were last observed
+          readOnly: true
+          examples:
+          - 1470417522
+        mtu:
+          type: integer
+          description: Maximum transmission unit reported for the tunnel path
+          contentEncoding: int32
+          readOnly: true
+        mxcluster_id:
+          type: string
+          description: Mist Edge cluster identifier associated with the tunnel statistics
+          contentEncoding: uuid
+          readOnly: true
+        mxedge_id:
+          type: string
+          description: Mist Edge identifier for the tunnel endpoint
+          contentEncoding: uuid
+          readOnly: true
+        mxtunnel_id:
+          type: string
+          description: Mist tunnel identifier associated with the tunnel statistics
+          contentEncoding: uuid
+          readOnly: true
+        org_id:
+          type: string
+          description: Organization identifier associated with the tunnel statistics
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        peer_mxedge_id:
+          type: string
+          description: MxEdge ID of the peer(mist edge to mist edge tunnel)
+          contentEncoding: uuid
+          readOnly: true
+        remote_ip:
+          type: string
+          description: Remote endpoint IP address for the tunnel
+          readOnly: true
+        remote_port:
+          type: integer
+          description: Remote endpoint port for the tunnel
+          contentEncoding: int32
+          readOnly: true
+        sessions:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/stats_mxtunnel_session'
+          description: WxLAN tunnel sessions reported for this tunnel
+          readOnly: true
+        site_id:
+          type: string
+          description: Site identifier associated with the tunnel statistics
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        start_time:
+          type: integer
+          description: Epoch timestamp when the tunnel was established
+          contentEncoding: int32
+          readOnly: true
+        state:
+          allOf:
+          - $ref: '#/components/schemas/stats_mxtunnel_state2'
+          - description: 'Current state of the WxLAN or Mist tunnel. enum: `established`, `established_with_sessions`, `idle`, `wait-ctrl-conn`, `wait-ctrl-reply`.'
+          readOnly: true
+      description: WxLAN or Mist tunnel statistics record
+    org_tunnel_type_count:
+      title: org_tunnel_type_count
+      enum:
+      - wan
+      - wxtunnel
+      type: string
+      description: 'Tunnel type used when counting organization tunnels. enum: `wan`, `wxtunnel`'
     stats_mxtunnel_state2:
       title: stats_mxtunnel_state2
       enum:
@@ -1230,23 +1211,42 @@ components:
       - wait-ctrl-reply
       type: string
       description: 'Current state of the WxLAN or Mist tunnel. enum: `established`, `established_with_sessions`, `idle`, `wait-ctrl-conn`, `wait-ctrl-reply`.'
-    tunnel_priority1:
-      title: tunnel_priority1
-      enum:
-      - primary
-      - secondary
-      type: string
-      description: 'Relative preference assigned to the tunnel. enum: `primary`, `secondary`.'
-    response_http401:
-      title: response_http401
+    response_http400:
+      title: response_http400
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the authentication error
+          description: Human-readable explanation of the bad request error
           examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    org_tunnel_count_distinct:
+      title: org_tunnel_count_distinct
+      enum:
+      - ap
+      - auth_algo
+      - encrypt_algo
+      - ike_version
+      - ip
+      - last_event
+      - mac
+      - mxcluster_id
+      - mxedge_id
+      - node
+      - peer_host
+      - peer_ip
+      - peer_mxedge_id
+      - protocol
+      - remote_ip
+      - remote_port
+      - site_id
+      - state
+      - tunnel_name
+      - up
+      - wxtunnel_id
+      type: string
+      description: 'enum: `ap`, `auth_algo`, `encrypt_algo`, `ike_version`, `ip`, `last_event`, `mac`, `mxcluster_id`, `mxedge_id`, `node`, `peer_host`, `peer_ip`, `peer_mxedge_id`, `protocol`, `remote_ip`, `remote_port`, `site_id`, `state`, `tunnel_name`, `up`, `wxtunnel_id`'
   securitySchemes:
     apiToken:
       type: apiKey

@@ -1061,6 +1061,116 @@ paths:
       deprecated: false
 components:
   schemas:
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    stats_asset_service_packet:
+      title: stats_asset_service_packet
+      type: object
+      properties:
+        data:
+          type: string
+          description: Service data payload (hex encoded)
+          examples:
+          - '640'
+        last_rx_time:
+          type: integer
+          description: Unix timestamp when this service data was last received
+          contentEncoding: int32
+          examples:
+          - 1645855923
+        rx_cnt:
+          type: integer
+          description: Total number of times this service data was received
+          contentEncoding: int32
+          examples:
+          - 213065
+        uuid:
+          type: string
+          description: BLE service UUID advertised by the asset service packet
+          examples:
+          - 00003e10-0000-1000-8000-00805f9b34fb
+      description: Service data advertisement from a BLE asset
+    response_stats_assets:
+      title: response_stats_assets
+      required:
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Epoch timestamp, in seconds, for the end of the asset statistics search window
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of asset statistics records returned in this page
+          contentEncoding: int32
+        next:
+          type: string
+          description: URL for retrieving the next page of asset statistics results
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/stats_asset'
+          description: Asset statistics records matching the search filters
+        start:
+          type: integer
+          description: Epoch timestamp, in seconds, for the start of the asset statistics search window
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of asset statistics records matching the search filters across all pages
+          contentEncoding: int32
+      description: Paginated response for asset statistics search results
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
     stats_asset:
       title: stats_asset
       required:
@@ -1237,46 +1347,32 @@ components:
             $ref: '#/components/schemas/asset_zone'
           description: Map zones currently containing this asset
       description: BLE asset location and advertisement statistics
-    stats_asset_service_packet:
-      title: stats_asset_service_packet
+    org_asset_count_distinct:
+      title: org_asset_count_distinct
+      enum:
+      - ibeacon_major
+      - ibeacon_minor
+      - ibeacon_uuid
+      - mac
+      - map_id
+      - site_id
+      type: string
+      description: 'enum: `ibeacon_major`, `ibeacon_minor`, `ibeacon_uuid`, `mac`, `map_id`, `site_id`'
+    asset_rssi_zone:
+      title: asset_rssi_zone
       type: object
       properties:
-        data:
+        id:
           type: string
-          description: Service data payload (hex encoded)
+          description: Unique identifier of the RSSI zone
+          contentEncoding: uuid
+          readOnly: true
           examples:
-          - '640'
-        last_rx_time:
-          type: integer
-          description: Unix timestamp when this service data was last received
-          contentEncoding: int32
-          examples:
-          - 1645855923
-        rx_cnt:
-          type: integer
-          description: Total number of times this service data was received
-          contentEncoding: int32
-          examples:
-          - 213065
-        uuid:
-          type: string
-          description: BLE service UUID advertised by the asset service packet
-          examples:
-          - 00003e10-0000-1000-8000-00805f9b34fb
-      description: Service data advertisement from a BLE asset
-    count_result:
-      title: count_result
-      required:
-      - count
-      type: object
-      properties:
-        count:
-          type: integer
-          description: Number of matching items for the distinct value or values in this result
-          contentEncoding: int32
-      additionalProperties:
-        type: string
-      description: Count result row with the matching distinct field values
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        since:
+          type: number
+          description: Timestamp when the asset entered this RSSI zone
+      description: RSSI zone membership for an individual asset statistic
     response_count:
       title: response_count
       required:
@@ -1314,16 +1410,6 @@ components:
           description: Number of distinct result buckets returned
           contentEncoding: int32
       description: Distinct count response for time-bounded search results
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
     asset_zone:
       title: asset_zone
       type: object
@@ -1339,105 +1425,19 @@ components:
           type: number
           description: Timestamp when the asset entered this zone
       description: Map zone membership for an individual asset statistic
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    asset_rssi_zone:
-      title: asset_rssi_zone
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier of the RSSI zone
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 53f10664-3ce8-4c27-b382-0ef66432349f
-        since:
-          type: number
-          description: Timestamp when the asset entered this RSSI zone
-      description: RSSI zone membership for an individual asset statistic
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    org_asset_count_distinct:
-      title: org_asset_count_distinct
-      enum:
-      - ibeacon_major
-      - ibeacon_minor
-      - ibeacon_uuid
-      - mac
-      - map_id
-      - site_id
-      type: string
-      description: 'enum: `ibeacon_major`, `ibeacon_minor`, `ibeacon_uuid`, `mac`, `map_id`, `site_id`'
-    response_stats_assets:
-      title: response_stats_assets
+    count_result:
+      title: count_result
       required:
-      - end
-      - limit
-      - results
-      - start
-      - total
+      - count
       type: object
       properties:
-        end:
+        count:
           type: integer
-          description: Epoch timestamp, in seconds, for the end of the asset statistics search window
+          description: Number of matching items for the distinct value or values in this result
           contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of asset statistics records returned in this page
-          contentEncoding: int32
-        next:
-          type: string
-          description: URL for retrieving the next page of asset statistics results
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/stats_asset'
-          description: Asset statistics records matching the search filters
-        start:
-          type: integer
-          description: Epoch timestamp, in seconds, for the start of the asset statistics search window
-          contentEncoding: int32
-        total:
-          type: integer
-          description: Number of asset statistics records matching the search filters across all pages
-          contentEncoding: int32
-      description: Paginated response for asset statistics search results
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
   securitySchemes:
     apiToken:
       type: apiKey

@@ -365,142 +365,35 @@ paths:
       deprecated: false
 components:
   schemas:
-    radsec_server:
-      title: radsec_server
+    ap_port_config_dynamic_vlan2:
+      title: ap_port_config_dynamic_vlan2
       type: object
       properties:
-        host:
-          type: string
-          description: Address or hostname of the RadSec server
-          examples:
-          - 1.1.1.1
-        port:
-          maximum: 65535
+        default_vlan_id:
+          maximum: 4094
           minimum: 1
           type: integer
-          description: TCP port used by the RadSec server
+          description: Fallback VLAN ID used when RADIUS does not return a dynamic VLAN match
           contentEncoding: int32
           examples:
-          - 1812
-      description: External RadSec server settings
-    ap_port_config_mac_auth_protocol2:
-      title: ap_port_config_mac_auth_protocol2
-      enum:
-      - eap-md5
-      - eap-peap
-      - pap
-      type: string
-      description: 'Protocol used for MAC authentication when `enable_mac_auth` is `true`. enum: `eap-md5`, `eap-peap`, `pap`.'
-    ap_template:
-      title: ap_template
-      required:
-      - ap_matching
-      type: object
-      properties:
-        ap_matching:
-          allOf:
-          - $ref: '#/components/schemas/ap_template_matching2'
-          - description: Rules used to select access points for this AP template
-        created_time:
-          type: number
-          description: Timestamp when the AP template was created
-          readOnly: true
-        for_site:
+          - 999
+        enabled:
           type: boolean
-          description: Whether the AP template is scoped to a site rather than the organization
-          readOnly: true
-        id:
-          type: string
-          description: Unique identifier of the AP template
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 53f10664-3ce8-4c27-b382-0ef66432349f
-        modified_time:
-          type: number
-          description: Timestamp when the AP template was last modified
-          readOnly: true
-        org_id:
-          type: string
-          description: Organization that owns this AP template
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
-        site_id:
-          type: string
-          description: Site that owns this site-level AP template
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
-        wifi:
+          description: Whether dynamic VLAN assignment is enabled for this AP port
+        type:
           allOf:
-          - $ref: '#/components/schemas/ap_template_wifi2'
-          - description: Wi-Fi and mesh settings applied by this AP template
-      description: Access point template configuration
-    ap_template_matching_rule:
-      title: ap_template_matching_rule
-      type: object
-      properties:
-        match_model:
-          minLength: 1
-          type: string
-          description: Access point model matched by this AP template rule
-        name:
-          minLength: 1
-          type: string
-          description: Display label for this AP template matching rule
-        port_config:
+          - $ref: '#/components/schemas/ap_port_config_dynamic_vlan_type2'
+          - description: 'Mapping mode for interpreting dynamic VLAN attributes returned by RADIUS. enum: `airespace-interface-name`, `standard`.'
+        vlans:
           type: object
           additionalProperties:
-            $ref: '#/components/schemas/ap_port_config'
-          description: Property key is the interface(s) name (e.g. "eth1,eth2")
-      description: Model and name match criteria for an AP template port configuration
-    radius_acct_server:
-      title: radius_acct_server
-      required:
-      - host
-      - secret
-      type: object
-      properties:
-        host:
-          type: string
-          description: Address or hostname of the RADIUS accounting server
+            type: string
+            nullable: true
+          description: Mapping entries for RADIUS-assigned VLAN values on this AP port. For `type`==`airespace-interface-name`, the property key is the Airespace interface name returned by RADIUS (e.g. "guest"), and the value is the corresponding VLAN ID (e.g. 100). For `type`==`standard`, the property key is the VLAN ID number returned by RADIUS, and the value is ignored.
           examples:
-          - 1.2.3.4
-        keywrap_enabled:
-          type: boolean
-          description: Whether RADIUS keywrap is enabled for messages sent to this accounting server
-        keywrap_format:
-          allOf:
-          - $ref: '#/components/schemas/radius_keywrap_format1'
-          - description: 'Encoding format for RADIUS keywrap KEK and MACK values. enum: `ascii`, `hex`.'
-        keywrap_kek:
-          type: string
-          description: RADIUS keywrap key encryption key (KEK)
-          examples:
-          - '1122334455'
-        keywrap_mack:
-          type: string
-          description: RADIUS keywrap message authentication code key (MACK)
-          examples:
-          - '1122334455'
-        port:
-          anyOf:
-          - maximum: 65545
-            minimum: 1
-            type: integer
-            contentEncoding: int32
-          - type: string
-          description: UDP port used by the RADIUS accounting server
-        secret:
-          type: string
-          description: Shared secret used with this RADIUS accounting server
-          contentEncoding: password
-          examples:
-          - testing123
-      description: RADIUS accounting server settings
+          - 1-10: null
+            user: 10
+      description: RADIUS-assigned VLAN settings for AP port authentication
     radsec3:
       title: radsec3
       type: object
@@ -549,6 +442,83 @@ components:
           description: Whether to use site Mist Edge instances when this WLAN does not use mxtunnel
           default: false
       description: TLS-secured RADIUS settings for this AP port
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    radius_config2:
+      title: radius_config2
+      type: object
+      properties:
+        acct_interim_interval:
+          maximum: 65535
+          minimum: 0
+          type: integer
+          description: How frequently should interim accounting be reported, 60-65535. default is 0 (use one specified in Access-Accept request from RADIUS Server). Very frequent messages can affect the performance of the RADIUS server, 600 and up is recommended when enabled
+          contentEncoding: int32
+          default: 0
+        acct_servers:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/radius_acct_server'
+          description: RADIUS accounting servers used by this Junos configuration
+        auth_servers:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/radius_auth_server'
+          description: RADIUS authentication servers used by this Junos configuration
+        auth_servers_retries:
+          type: integer
+          description: Number of RADIUS authentication request retries before failover
+          contentEncoding: int32
+          default: 3
+        auth_servers_timeout:
+          type: integer
+          description: RADIUS authentication server timeout, in seconds
+          contentEncoding: int32
+          default: 5
+        coa_enabled:
+          type: boolean
+          description: Whether RADIUS Change of Authorization (CoA) is enabled
+          default: false
+        coa_port:
+          maximum: 65535
+          minimum: 1
+          type: integer
+          description: UDP port used for RADIUS Change of Authorization (CoA)
+          contentEncoding: int32
+          default: 3799
+        network:
+          type: string
+          description: Use `network` or `source_ip`. Network where the RADIUS server resides; if the network has a static IP, Mist uses it as the source IP
+        source_ip:
+          type: string
+          description: Use `network` or `source_ip`. Explicit source IP address for RADIUS traffic
+      description: RADIUS authentication and accounting settings for this AP port
+    ap_template_matching_rule:
+      title: ap_template_matching_rule
+      type: object
+      properties:
+        match_model:
+          minLength: 1
+          type: string
+          description: Access point model matched by this AP template rule
+        name:
+          minLength: 1
+          type: string
+          description: Display label for this AP template matching rule
+        port_config:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ap_port_config'
+          description: Property key is the interface(s) name (e.g. "eth1,eth2")
+      description: Model and name match criteria for an AP template port configuration
     ap_template_matching2:
       title: ap_template_matching2
       type: object
@@ -563,35 +533,209 @@ components:
             $ref: '#/components/schemas/ap_template_matching_rule'
           description: AP matching entries that select access points and apply AP port configuration
       description: Rules used to select access points for this AP template
-    ap_port_config_dynamic_vlan2:
-      title: ap_port_config_dynamic_vlan2
+    wlan_mist_nac3:
+      title: wlan_mist_nac3
       type: object
       properties:
-        default_vlan_id:
-          maximum: 4094
+        acct_interim_interval:
+          maximum: 65535
+          minimum: 0
+          type: integer
+          description: How frequently should interim accounting be reported, 60-65535. default is 0 (use one specified in Access-Accept request from Server). Very frequent messages can affect the performance of the RADIUS server, 600 and up is recommended when enabled.
+          contentEncoding: int32
+          default: 0
+          examples:
+          - 60
+        auth_servers_retries:
+          maximum: 10
           minimum: 1
           type: integer
-          description: Fallback VLAN ID used when RADIUS does not return a dynamic VLAN match
+          description: RADIUS auth session retries. Following fast timers are set if `fast_dot1x_timers` knob is enabled. "retries" are set to value of `auth_servers_timeout`. "max-requests" is also set when setting `auth_servers_retries` is set to default value to 3.
+          contentEncoding: int32
+          default: 2
+          examples:
+          - 3
+        auth_servers_timeout:
+          maximum: 30
+          minimum: 1
+          type: integer
+          description: RADIUS auth session timeout. Following fast timers are set if `fast_dot1x_timers` knob is enabled. "quite-period" and "transmit-period" are set to half the value of `auth_servers_timeout`. "supplicant-timeout" is also set when setting `auth_servers_timeout` is set to default value of 10.
+          contentEncoding: int32
+          default: 5
+          examples:
+          - 5
+        coa_enabled:
+          type: boolean
+          description: Allows a RADIUS server to dynamically modify the authorization status of a user session.
+          default: false
+        coa_port:
+          maximum: 65535
+          minimum: 1
+          type: integer
+          description: the communication port used for “Change of Authorization” (CoA) messages
           contentEncoding: int32
           examples:
-          - 999
+          - 3799
         enabled:
           type: boolean
-          description: Whether dynamic VLAN assignment is enabled for this AP port
-        type:
-          allOf:
-          - $ref: '#/components/schemas/ap_port_config_dynamic_vlan_type2'
-          - description: 'Mapping mode for interpreting dynamic VLAN attributes returned by RADIUS. enum: `airespace-interface-name`, `standard`.'
-        vlans:
-          type: object
-          additionalProperties:
-            type: string
-            nullable: true
-          description: Mapping entries for RADIUS-assigned VLAN values on this AP port. For `type`==`airespace-interface-name`, the property key is the Airespace interface name returned by RADIUS (e.g. "guest"), and the value is the corresponding VLAN ID (e.g. 100). For `type`==`standard`, the property key is the VLAN ID number returned by RADIUS, and the value is ignored.
+          description: "When enabled:\n  * `auth_servers` is ignored\n  * `acct_servers` is ignored\n  * `auth_servers_*` are ignored\n  * `coa_servers` is ignored\n  * `radsec` is ignored\n  * `coa_enabled` is assumed"
+          default: false
+        fast_dot1x_timers:
+          type: boolean
+          description: If set to true, sets default fast-timers with values calculated from `auth_servers_timeout` and `auth_server_retries`.
+          default: false
+        network:
+          type:
+          - string
+          - 'null'
+          description: Which network the mist nac server resides in
           examples:
-          - 1-10: null
-            user: 10
-      description: RADIUS-assigned VLAN settings for AP port authentication
+          - default
+        source_ip:
+          type:
+          - string
+          - 'null'
+          description: In case there is a static IP for this network, we can specify it using source ip
+          examples:
+          - 1.2.3.4
+      description: Juniper Mist NAC settings used by AP port authentication
+    ap_template_wifi2:
+      title: ap_template_wifi2
+      type: object
+      properties:
+        cisco_enabled:
+          type: boolean
+          description: Whether Cisco-specific Wi-Fi compatibility behavior is enabled
+        disable_11k:
+          type: boolean
+          description: Whether 802.11k neighbor reports are disabled
+          default: false
+        disable_radios_when_power_constrained:
+          type: boolean
+          description: Whether AP radios are disabled when power is constrained
+        enable_arp_spoof:
+          type: boolean
+          description: Whether ARP spoofing checks are enabled when proxy ARP is used
+        enable_shared_radio_scanning:
+          type: boolean
+          description: Whether shared radio scanning is enabled for AP radio scanning
+          default: false
+        enabled:
+          type: boolean
+          description: Whether Wi-Fi settings in this AP template are enabled
+          default: true
+        locate_connected:
+          type: boolean
+          description: Whether location tracking is enabled for connected clients
+          default: false
+        locate_unconnected:
+          type: boolean
+          description: Whether location tracking is enabled for unconnected clients
+          default: false
+        mesh_allow_dfs:
+          type: boolean
+          description: Whether mesh links may use DFS channels, which can add CAC delays during scanning
+          default: false
+        mesh_enable_crm:
+          type: boolean
+          description: Whether CRM is enabled for mesh networking in this AP template
+        mesh_enabled:
+          type: boolean
+          description: Whether mesh networking is enabled by this AP template
+        proxy_arp:
+          type: boolean
+          description: Whether proxy ARP is enabled for Wi-Fi clients
+          default: false
+      description: Wi-Fi and mesh settings applied by this AP template
+    radius_acct_server:
+      title: radius_acct_server
+      required:
+      - host
+      - secret
+      type: object
+      properties:
+        host:
+          type: string
+          description: Address or hostname of the RADIUS accounting server
+          examples:
+          - 1.2.3.4
+        keywrap_enabled:
+          type: boolean
+          description: Whether RADIUS keywrap is enabled for messages sent to this accounting server
+        keywrap_format:
+          allOf:
+          - $ref: '#/components/schemas/radius_keywrap_format1'
+          - description: 'Encoding format for RADIUS keywrap KEK and MACK values. enum: `ascii`, `hex`.'
+        keywrap_kek:
+          type: string
+          description: RADIUS keywrap key encryption key (KEK)
+          examples:
+          - '1122334455'
+        keywrap_mack:
+          type: string
+          description: RADIUS keywrap message authentication code key (MACK)
+          examples:
+          - '1122334455'
+        port:
+          anyOf:
+          - maximum: 65545
+            minimum: 1
+            type: integer
+            contentEncoding: int32
+          - type: string
+          description: UDP port used by the RADIUS accounting server
+        secret:
+          type: string
+          description: Shared secret used with this RADIUS accounting server
+          contentEncoding: password
+          examples:
+          - testing123
+      description: RADIUS accounting server settings
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    radius_keywrap_format1:
+      title: radius_keywrap_format1
+      enum:
+      - ascii
+      - hex
+      type: string
+      description: 'Encoding format for RADIUS keywrap KEK and MACK values. enum: `ascii`, `hex`.'
+    radsec_server:
+      title: radsec_server
+      type: object
+      properties:
+        host:
+          type: string
+          description: Address or hostname of the RadSec server
+          examples:
+          - 1.1.1.1
+        port:
+          maximum: 65535
+          minimum: 1
+          type: integer
+          description: TCP port used by the RadSec server
+          contentEncoding: int32
+          examples:
+          - 1812
+      description: External RadSec server settings
     ap_port_config:
       title: ap_port_config
       type: object
@@ -682,177 +826,6 @@ components:
           examples:
           - wifiguest
       description: Ethernet port behavior settings for an access point
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    ap_port_config_port_auth2:
-      title: ap_port_config_port_auth2
-      enum:
-      - dot1x
-      - none
-      type: string
-      description: 'Authentication mode for this AP Ethernet port. enum: `dot1x`, `none`.'
-      examples:
-      - none
-    ap_port_config_dynamic_vlan_type2:
-      title: ap_port_config_dynamic_vlan_type2
-      enum:
-      - airespace-interface-name
-      - standard
-      type: string
-      description: 'Mapping mode for interpreting dynamic VLAN attributes returned by RADIUS. enum: `airespace-interface-name`, `standard`.'
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    wlan_mist_nac3:
-      title: wlan_mist_nac3
-      type: object
-      properties:
-        acct_interim_interval:
-          maximum: 65535
-          minimum: 0
-          type: integer
-          description: How frequently should interim accounting be reported, 60-65535. default is 0 (use one specified in Access-Accept request from Server). Very frequent messages can affect the performance of the RADIUS server, 600 and up is recommended when enabled.
-          contentEncoding: int32
-          default: 0
-          examples:
-          - 60
-        auth_servers_retries:
-          maximum: 10
-          minimum: 1
-          type: integer
-          description: RADIUS auth session retries. Following fast timers are set if `fast_dot1x_timers` knob is enabled. "retries" are set to value of `auth_servers_timeout`. "max-requests" is also set when setting `auth_servers_retries` is set to default value to 3.
-          contentEncoding: int32
-          default: 2
-          examples:
-          - 3
-        auth_servers_timeout:
-          maximum: 30
-          minimum: 1
-          type: integer
-          description: RADIUS auth session timeout. Following fast timers are set if `fast_dot1x_timers` knob is enabled. "quite-period" and "transmit-period" are set to half the value of `auth_servers_timeout`. "supplicant-timeout" is also set when setting `auth_servers_timeout` is set to default value of 10.
-          contentEncoding: int32
-          default: 5
-          examples:
-          - 5
-        coa_enabled:
-          type: boolean
-          description: Allows a RADIUS server to dynamically modify the authorization status of a user session.
-          default: false
-        coa_port:
-          maximum: 65535
-          minimum: 1
-          type: integer
-          description: the communication port used for “Change of Authorization” (CoA) messages
-          contentEncoding: int32
-          examples:
-          - 3799
-        enabled:
-          type: boolean
-          description: "When enabled:\n  * `auth_servers` is ignored\n  * `acct_servers` is ignored\n  * `auth_servers_*` are ignored\n  * `coa_servers` is ignored\n  * `radsec` is ignored\n  * `coa_enabled` is assumed"
-          default: false
-        fast_dot1x_timers:
-          type: boolean
-          description: If set to true, sets default fast-timers with values calculated from `auth_servers_timeout` and `auth_server_retries`.
-          default: false
-        network:
-          type:
-          - string
-          - 'null'
-          description: Which network the mist nac server resides in
-          examples:
-          - default
-        source_ip:
-          type:
-          - string
-          - 'null'
-          description: In case there is a static IP for this network, we can specify it using source ip
-          examples:
-          - 1.2.3.4
-      description: Juniper Mist NAC settings used by AP port authentication
-    radius_config2:
-      title: radius_config2
-      type: object
-      properties:
-        acct_interim_interval:
-          maximum: 65535
-          minimum: 0
-          type: integer
-          description: How frequently should interim accounting be reported, 60-65535. default is 0 (use one specified in Access-Accept request from RADIUS Server). Very frequent messages can affect the performance of the RADIUS server, 600 and up is recommended when enabled
-          contentEncoding: int32
-          default: 0
-        acct_servers:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/radius_acct_server'
-          description: RADIUS accounting servers used by this Junos configuration
-        auth_servers:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/radius_auth_server'
-          description: RADIUS authentication servers used by this Junos configuration
-        auth_servers_retries:
-          type: integer
-          description: Number of RADIUS authentication request retries before failover
-          contentEncoding: int32
-          default: 3
-        auth_servers_timeout:
-          type: integer
-          description: RADIUS authentication server timeout, in seconds
-          contentEncoding: int32
-          default: 5
-        coa_enabled:
-          type: boolean
-          description: Whether RADIUS Change of Authorization (CoA) is enabled
-          default: false
-        coa_port:
-          maximum: 65535
-          minimum: 1
-          type: integer
-          description: UDP port used for RADIUS Change of Authorization (CoA)
-          contentEncoding: int32
-          default: 3799
-        network:
-          type: string
-          description: Use `network` or `source_ip`. Network where the RADIUS server resides; if the network has a static IP, Mist uses it as the source IP
-        source_ip:
-          type: string
-          description: Use `network` or `source_ip`. Explicit source IP address for RADIUS traffic
-      description: RADIUS authentication and accounting settings for this AP port
     ap_port_config_forwarding2:
       title: ap_port_config_forwarding2
       enum:
@@ -865,54 +838,64 @@ components:
       description: 'Traffic forwarding mode for this AP Ethernet port. enum: `all`, `limited`, `mxtunnel`, `site_mxedge`, `wxtunnel`.'
       examples:
       - all
-    ap_template_wifi2:
-      title: ap_template_wifi2
+    ap_template:
+      title: ap_template
+      required:
+      - ap_matching
       type: object
       properties:
-        cisco_enabled:
+        ap_matching:
+          allOf:
+          - $ref: '#/components/schemas/ap_template_matching2'
+          - description: Rules used to select access points for this AP template
+        created_time:
+          type: number
+          description: Timestamp when the AP template was created
+          readOnly: true
+        for_site:
           type: boolean
-          description: Whether Cisco-specific Wi-Fi compatibility behavior is enabled
-        disable_11k:
-          type: boolean
-          description: Whether 802.11k neighbor reports are disabled
-          default: false
-        disable_radios_when_power_constrained:
-          type: boolean
-          description: Whether AP radios are disabled when power is constrained
-        enable_arp_spoof:
-          type: boolean
-          description: Whether ARP spoofing checks are enabled when proxy ARP is used
-        enable_shared_radio_scanning:
-          type: boolean
-          description: Whether shared radio scanning is enabled for AP radio scanning
-          default: false
-        enabled:
-          type: boolean
-          description: Whether Wi-Fi settings in this AP template are enabled
-          default: true
-        locate_connected:
-          type: boolean
-          description: Whether location tracking is enabled for connected clients
-          default: false
-        locate_unconnected:
-          type: boolean
-          description: Whether location tracking is enabled for unconnected clients
-          default: false
-        mesh_allow_dfs:
-          type: boolean
-          description: Whether mesh links may use DFS channels, which can add CAC delays during scanning
-          default: false
-        mesh_enable_crm:
-          type: boolean
-          description: Whether CRM is enabled for mesh networking in this AP template
-        mesh_enabled:
-          type: boolean
-          description: Whether mesh networking is enabled by this AP template
-        proxy_arp:
-          type: boolean
-          description: Whether proxy ARP is enabled for Wi-Fi clients
-          default: false
-      description: Wi-Fi and mesh settings applied by this AP template
+          description: Whether the AP template is scoped to a site rather than the organization
+          readOnly: true
+        id:
+          type: string
+          description: Unique identifier of the AP template
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        modified_time:
+          type: number
+          description: Timestamp when the AP template was last modified
+          readOnly: true
+        org_id:
+          type: string
+          description: Organization that owns this AP template
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        site_id:
+          type: string
+          description: Site that owns this site-level AP template
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        wifi:
+          allOf:
+          - $ref: '#/components/schemas/ap_template_wifi2'
+          - description: Wi-Fi and mesh settings applied by this AP template
+      description: Access point template configuration
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
     radius_auth_server:
       title: radius_auth_server
       required:
@@ -961,23 +944,40 @@ components:
           examples:
           - testing123
       description: RADIUS authentication server settings
-    response_http401:
-      title: response_http401
+    ap_port_config_port_auth2:
+      title: ap_port_config_port_auth2
+      enum:
+      - dot1x
+      - none
+      type: string
+      description: 'Authentication mode for this AP Ethernet port. enum: `dot1x`, `none`.'
+      examples:
+      - none
+    response_http400:
+      title: response_http400
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the authentication error
+          description: Human-readable explanation of the bad request error
           examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    radius_keywrap_format1:
-      title: radius_keywrap_format1
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    ap_port_config_dynamic_vlan_type2:
+      title: ap_port_config_dynamic_vlan_type2
       enum:
-      - ascii
-      - hex
+      - airespace-interface-name
+      - standard
       type: string
-      description: 'Encoding format for RADIUS keywrap KEK and MACK values. enum: `ascii`, `hex`.'
+      description: 'Mapping mode for interpreting dynamic VLAN attributes returned by RADIUS. enum: `airespace-interface-name`, `standard`.'
+    ap_port_config_mac_auth_protocol2:
+      title: ap_port_config_mac_auth_protocol2
+      enum:
+      - eap-md5
+      - eap-peap
+      - pap
+      type: string
+      description: 'Protocol used for MAC authentication when `enable_mac_auth` is `true`. enum: `eap-md5`, `eap-peap`, `pap`.'
   securitySchemes:
     apiToken:
       type: apiKey

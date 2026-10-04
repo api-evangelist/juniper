@@ -2085,6 +2085,47 @@ paths:
       deprecated: false
 components:
   schemas:
+    usermacs_id:
+      title: usermacs_id
+      type: object
+      properties:
+        usermac_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: User MAC entry IDs to delete
+      description: Request body for deleting multiple user MAC entries
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
     user_macs_count:
       title: user_macs_count
       type: object
@@ -2111,27 +2152,45 @@ components:
           description: Overall number of user MAC count results
           contentEncoding: int32
       description: User MACs count response
-    usermacs_id:
-      title: usermacs_id
+    response_http404:
+      title: response_http404
       type: object
       properties:
-        usermac_ids:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    user_mac_import:
+      title: user_mac_import
+      type: object
+      properties:
+        added:
           type: array
           items:
             type: string
-            contentEncoding: uuid
-          description: User MAC entry IDs to delete
-      description: Request body for deleting multiple user MAC entries
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
+          description: MAC addresses added by the import
+          examples:
+          - - 921b638445cd
         detail:
           type: string
-          description: Human-readable explanation of the permission error
+          description: Status message returned for asynchronous imports
+        errors:
+          type: array
+          items:
+            type: string
+          description: Import error messages for user MAC entries
           examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
+          - - 921b638445ce - mac invalid
+            - 921b638445cf - mac already provided
+        updated:
+          type: array
+          items:
+            type: string
+          description: MAC addresses updated by the import
+          examples:
+          - - 721b638445ef
+            - 721b638445ee
+      description: Result of importing user MAC entries
     user_mac:
       title: user_mac
       required:
@@ -2195,57 +2254,6 @@ components:
           examples:
           - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
       description: Standard HTTP 400 bad request error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    user_mac_import:
-      title: user_mac_import
-      type: object
-      properties:
-        added:
-          type: array
-          items:
-            type: string
-          description: MAC addresses added by the import
-          examples:
-          - - 921b638445cd
-        detail:
-          type: string
-          description: Status message returned for asynchronous imports
-        errors:
-          type: array
-          items:
-            type: string
-          description: Import error messages for user MAC entries
-          examples:
-          - - 921b638445ce - mac invalid
-            - 921b638445cf - mac already provided
-        updated:
-          type: array
-          items:
-            type: string
-          description: MAC addresses updated by the import
-          examples:
-          - - 721b638445ef
-            - 721b638445ee
-      description: Result of importing user MAC entries
     count_usermac_distinct:
       title: count_usermac_distinct
       enum:
@@ -2257,14 +2265,6 @@ components:
       description: 'Fields that can be used to group user MAC count results. enum: `mac`, `name`, `labels`, `org_id`'
       examples:
       - org_id
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
     user_macs_update:
       title: user_macs_update
       type: object

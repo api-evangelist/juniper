@@ -1083,87 +1083,6 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    privilege_org:
-      title: privilege_org
-      required:
-      - role
-      - scope
-      type: object
-      properties:
-        org_id:
-          type: string
-          description: If `scope`==`org`, organization ID this privilege applies to
-          contentEncoding: uuid
-          readOnly: true
-        role:
-          allOf:
-          - $ref: '#/components/schemas/privilege_org_role2'
-          - description: 'Access role granted by this organization privilege. enum: `admin`, `helpdesk`, `installer`, `read`, `write`.'
-        scope:
-          allOf:
-          - $ref: '#/components/schemas/privilege_org_scope2'
-          - description: 'Organization hierarchy level where this privilege applies. enum: `org`, `site`, `sitegroup`, `orgsites`.'
-        site_id:
-          type: string
-          description: If `scope`==`site`, site ID this privilege applies to
-          contentEncoding: uuid
-        sitegroup_id:
-          type: string
-          description: If `scope`==`sitegroup`, site group ID this privilege applies to
-          contentEncoding: uuid
-        view:
-          type: string
-          description: Used for backward compatibility. Use `views` instead.
-          deprecated: true
-        views:
-          type: array
-          items:
-            $ref: '#/components/schemas/admin_privilege_view'
-          description: UI views allowed by custom role restrictions
-      description: Organization privilege scope and role settings
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    admin_privilege_view:
-      title: admin_privilege_view
-      enum:
-      - lobby_admin
-      - location
-      - marketing
-      - mxedge_admin
-      - reporting
-      - security
-      - super_observer
-      - switch_admin
-      type: string
-      description: 'UI view name allowed by a custom admin role. enum: `lobby_admin`, `location`, `marketing`, `mxedge_admin`, `reporting`, `security`, `super_observer`, `switch_admin`'
     org_apitoken:
       title: org_apitoken
       required:
@@ -1240,6 +1159,48 @@ components:
         **Note:**
 
         `privileges` is required to create the object, but may not be returned in the POST API response. Retrieve the token afterward to inspect it.'
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    admin_privilege_view:
+      title: admin_privilege_view
+      enum:
+      - lobby_admin
+      - location
+      - marketing
+      - mxedge_admin
+      - reporting
+      - security
+      - super_observer
+      - switch_admin
+      type: string
+      description: 'UI view name allowed by a custom admin role. enum: `lobby_admin`, `location`, `marketing`, `mxedge_admin`, `reporting`, `security`, `super_observer`, `switch_admin`'
+    privilege_org_scope2:
+      title: privilege_org_scope2
+      enum:
+      - org
+      - site
+      - sitegroup
+      - orgsites
+      type: string
+      description: 'Organization hierarchy level where this privilege applies. enum: `org`, `site`, `sitegroup`, `orgsites`.'
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
     response_http404:
       title: response_http404
       type: object
@@ -1248,6 +1209,44 @@ components:
           type: string
           description: Missing resource identifier, when the API includes one
       description: Standard HTTP 404 not found error response
+    privilege_org:
+      title: privilege_org
+      required:
+      - role
+      - scope
+      type: object
+      properties:
+        org_id:
+          type: string
+          description: If `scope`==`org`, organization ID this privilege applies to
+          contentEncoding: uuid
+          readOnly: true
+        role:
+          allOf:
+          - $ref: '#/components/schemas/privilege_org_role2'
+          - description: 'Access role granted by this organization privilege. enum: `admin`, `helpdesk`, `installer`, `read`, `write`.'
+        scope:
+          allOf:
+          - $ref: '#/components/schemas/privilege_org_scope2'
+          - description: 'Organization hierarchy level where this privilege applies. enum: `org`, `site`, `sitegroup`, `orgsites`.'
+        site_id:
+          type: string
+          description: If `scope`==`site`, site ID this privilege applies to
+          contentEncoding: uuid
+        sitegroup_id:
+          type: string
+          description: If `scope`==`sitegroup`, site group ID this privilege applies to
+          contentEncoding: uuid
+        view:
+          type: string
+          description: Used for backward compatibility. Use `views` instead.
+          deprecated: true
+        views:
+          type: array
+          items:
+            $ref: '#/components/schemas/admin_privilege_view'
+          description: UI views allowed by custom role restrictions
+      description: Organization privilege scope and role settings
     privilege_org_role2:
       title: privilege_org_role2
       enum:
@@ -1258,15 +1257,16 @@ components:
       - write
       type: string
       description: 'Access role granted by this organization privilege. enum: `admin`, `helpdesk`, `installer`, `read`, `write`.'
-    privilege_org_scope2:
-      title: privilege_org_scope2
-      enum:
-      - org
-      - site
-      - sitegroup
-      - orgsites
-      type: string
-      description: 'Organization hierarchy level where this privilege applies. enum: `org`, `site`, `sitegroup`, `orgsites`.'
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
   securitySchemes:
     apiToken:
       type: apiKey

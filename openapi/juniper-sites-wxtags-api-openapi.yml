@@ -1726,6 +1726,37 @@ paths:
       deprecated: false
 components:
   schemas:
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    wxlan_tag_type2:
+      title: wxlan_tag_type2
+      enum:
+      - client
+      - match
+      - resource
+      - spec
+      - subnet
+      - vlan
+      type: string
+      description: 'Kind of WxLAN tag and how it is populated. enum: `client`, `match`, `resource`, `spec`, `subnet`, `vlan`.'
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
     wxlan_tag_match2:
       title: wxlan_tag_match2
       enum:
@@ -1770,26 +1801,6 @@ components:
           examples:
           - Gmail - web/app
       description: Application metadata available for WxTag matching
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
     response_http429:
       title: response_http429
       type: object
@@ -1800,16 +1811,14 @@ components:
           examples:
           - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
       description: Standard HTTP 429 rate limit error response
-    response_http401:
-      title: response_http401
+    response_http404:
+      title: response_http404
       type: object
       properties:
-        detail:
+        id:
           type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
     wxlan_tag:
       title: wxlan_tag
       required:
@@ -1911,6 +1920,23 @@ components:
           examples:
           - '1055'
       description: "WxLAN Tag\n  * type:\n    * client: created manually (e.g. on wireless client table, when they spot a device of interest, they can create a wxlan tag for it\n    * resource: created automatically when we discover a network resource\n    * subnet: create automatically when a subnet is discovered\n  * match:\n    * wlan_id, ap_id: values are a list of Wlan / Device ids\n    * client_mac: values are a list of MAC addresses\n  * radius_group: this is a smart tag that matches RADIUS-Filter-ID, Airespace-ACL-Name (VendorID=14179, VendorType=6) / Aruba-User-Role (VendorID=14823, VendorType=1)\n  * radius_username: this matches the ATTR-User-Name(1)\n  * radius_class: the matches the ATTR-Class(25)\n  * radius_attr: the values are [ \"6=1\" , \"26=10.2.3.4\" ], this support other RADIUS attributes where we know the type\n  * radius_vendor: the values are [ \"14179.10=1\" , \"14178.16=1.2.3.4\" ], this matches vendor attributes and will be dynamically evaluated"
+    wxlan_tag_operation2:
+      title: wxlan_tag_operation2
+      enum:
+      - in
+      - not_in
+      type: string
+      description: 'Required if `type`==`match`; whether `values` are inclusive or exclusive matches. enum: `in`, `not_in`.'
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
     wxlan_tag_spec:
       title: wxlan_tag_spec
       type: object
@@ -1932,32 +1958,6 @@ components:
           examples:
           - - 0.0.0.0/0
       description: Traffic match specification used by a WxLAN tag
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    wxlan_tag_operation2:
-      title: wxlan_tag_operation2
-      enum:
-      - in
-      - not_in
-      type: string
-      description: 'Required if `type`==`match`; whether `values` are inclusive or exclusive matches. enum: `in`, `not_in`.'
-    wxlan_tag_type2:
-      title: wxlan_tag_type2
-      enum:
-      - client
-      - match
-      - resource
-      - spec
-      - subnet
-      - vlan
-      type: string
-      description: 'Kind of WxLAN tag and how it is populated. enum: `client`, `match`, `resource`, `spec`, `subnet`, `vlan`.'
   securitySchemes:
     apiToken:
       type: apiKey

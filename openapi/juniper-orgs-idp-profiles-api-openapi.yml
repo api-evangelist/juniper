@@ -1226,85 +1226,6 @@ paths:
       deprecated: false
 components:
   schemas:
-    idp_profile_matching_severity_value:
-      title: idp_profile_matching_severity_value
-      enum:
-      - critical
-      - info
-      - major
-      - minor
-      type: string
-      description: 'enum: `critical`, `info`, `major`, `minor`'
-      examples:
-      - major
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    idp_profile_overwrite:
-      title: idp_profile_overwrite
-      type: object
-      properties:
-        action:
-          allOf:
-          - $ref: '#/components/schemas/idp_profile_action2'
-          - description: 'Enforcement action applied when this overwrite rule matches. enum: `alert`, `close`, `drop`.'
-            examples:
-            - alert
-        matching:
-          allOf:
-          - $ref: '#/components/schemas/idp_profile_matching2'
-          - description: Criteria that select signatures for this overwrite rule
-        name:
-          type: string
-          description: Display name for this IDP profile overwrite rule
-      description: Override rule that changes the IDP action for matching signatures
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    idp_profile_base_profile2:
-      title: idp_profile_base_profile2
-      enum:
-      - critical
-      - standard
-      - strict
-      type: string
-      description: 'Built-in IDP baseline profile inherited before applying overwrites. enum: `critical`, `standard`, `strict`.'
-      examples:
-      - strict
-    idp_profile_matching2:
-      title: idp_profile_matching2
-      type: object
-      properties:
-        attack_name:
-          type: array
-          items:
-            type: string
-          description: Signature names matched by the IDP profile overwrite
-        dst_subnet:
-          type: array
-          items:
-            type: string
-          description: Destination subnets matched by the IDP profile overwrite
-        severity:
-          type: array
-          items:
-            $ref: '#/components/schemas/idp_profile_matching_severity_value'
-          description: Threat levels matched by the IDP profile overwrite
-      description: Criteria that select signatures for this overwrite rule
     idp_profile:
       title: idp_profile
       type: object
@@ -1348,16 +1269,44 @@ components:
             $ref: '#/components/schemas/idp_profile_overwrite'
           description: IDP signature override rules applied on top of the base profile
       description: Organization IDP profile with a base profile and targeted overwrite rules
-    response_http429:
-      title: response_http429
+    idp_profile_overwrite:
+      title: idp_profile_overwrite
+      type: object
+      properties:
+        action:
+          allOf:
+          - $ref: '#/components/schemas/idp_profile_action2'
+          - description: 'Enforcement action applied when this overwrite rule matches. enum: `alert`, `close`, `drop`.'
+            examples:
+            - alert
+        matching:
+          allOf:
+          - $ref: '#/components/schemas/idp_profile_matching2'
+          - description: Criteria that select signatures for this overwrite rule
+        name:
+          type: string
+          description: Display name for this IDP profile overwrite rule
+      description: Override rule that changes the IDP action for matching signatures
+    response_http403:
+      title: response_http403
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the rate limit error
+          description: Human-readable explanation of the permission error
           examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    idp_profile_base_profile2:
+      title: idp_profile_base_profile2
+      enum:
+      - critical
+      - standard
+      - strict
+      type: string
+      description: 'Built-in IDP baseline profile inherited before applying overwrites. enum: `critical`, `standard`, `strict`.'
+      examples:
+      - strict
     response_http401:
       title: response_http401
       type: object
@@ -1378,6 +1327,16 @@ components:
       description: 'Enforcement action applied when this overwrite rule matches. enum: `alert`, `close`, `drop`.'
       examples:
       - alert
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
     response_http404:
       title: response_http404
       type: object
@@ -1386,6 +1345,47 @@ components:
           type: string
           description: Missing resource identifier, when the API includes one
       description: Standard HTTP 404 not found error response
+    idp_profile_matching_severity_value:
+      title: idp_profile_matching_severity_value
+      enum:
+      - critical
+      - info
+      - major
+      - minor
+      type: string
+      description: 'enum: `critical`, `info`, `major`, `minor`'
+      examples:
+      - major
+    idp_profile_matching2:
+      title: idp_profile_matching2
+      type: object
+      properties:
+        attack_name:
+          type: array
+          items:
+            type: string
+          description: Signature names matched by the IDP profile overwrite
+        dst_subnet:
+          type: array
+          items:
+            type: string
+          description: Destination subnets matched by the IDP profile overwrite
+        severity:
+          type: array
+          items:
+            $ref: '#/components/schemas/idp_profile_matching_severity_value'
+          description: Threat levels matched by the IDP profile overwrite
+      description: Criteria that select signatures for this overwrite rule
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
   securitySchemes:
     apiToken:
       type: apiKey

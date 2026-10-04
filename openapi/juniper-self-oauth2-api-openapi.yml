@@ -438,6 +438,26 @@ paths:
       deprecated: false
 components:
   schemas:
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
     response_self_oauth_link_success:
       title: response_self_oauth_link_success
       required:
@@ -456,40 +476,6 @@ components:
           examples:
           - 53f10664-3ce8-4c27-b382-0ef66432349f
       description: OAuth2 account-linking success response
-    response_self_oauth_url:
-      title: response_self_oauth_url
-      required:
-      - authorization_url
-      - linked
-      type: object
-      properties:
-        authorization_url:
-          type: string
-          description: OAuth2 provider authorization URL used to link the Mist account
-        linked:
-          type: boolean
-          description: Whether the Mist account is already linked with this OAuth2 provider
-      description: OAuth2 authorization URL response for linking the current Mist account
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
     response_http429:
       title: response_http429
       type: object
@@ -500,16 +486,6 @@ components:
           examples:
           - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
       description: Standard HTTP 429 rate limit error response
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
     code_string:
       title: code_string
       required:
@@ -520,6 +496,24 @@ components:
           type: string
           description: Request-supplied authorization or claim code value
       description: Request body containing a single authorization or claim code
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
     response_self_oauth_link_failure:
       title: response_self_oauth_link_failure
       required:
@@ -534,14 +528,20 @@ components:
           type: string
           description: Human-readable description of the OAuth2 account-linking failure
       description: OAuth2 account-linking failure response
-    response_http404:
-      title: response_http404
+    response_self_oauth_url:
+      title: response_self_oauth_url
+      required:
+      - authorization_url
+      - linked
       type: object
       properties:
-        id:
+        authorization_url:
           type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
+          description: OAuth2 provider authorization URL used to link the Mist account
+        linked:
+          type: boolean
+          description: Whether the Mist account is already linked with this OAuth2 provider
+      description: OAuth2 authorization URL response for linking the current Mist account
   securitySchemes:
     apiToken:
       type: apiKey

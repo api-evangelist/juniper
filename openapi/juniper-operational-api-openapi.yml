@@ -274,44 +274,6 @@ paths:
                           $ref: '#/components/schemas/LldpNeighbor'
 components:
   schemas:
-    RouteTable:
-      type: object
-      properties:
-        table-name:
-          type: string
-        destination-count:
-          type: integer
-        total-route-count:
-          type: integer
-        active-route-count:
-          type: integer
-        rt:
-          type: array
-          items:
-            type: object
-            properties:
-              rt-destination:
-                type: string
-              rt-entry:
-                type: object
-                properties:
-                  active-tag:
-                    type: string
-                  protocol-name:
-                    type: string
-                  preference:
-                    type: integer
-                  nh:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        to:
-                          type: string
-                        via:
-                          type: string
-                        nh-type:
-                          type: string
     ChassisModule:
       type: object
       properties:
@@ -338,38 +300,33 @@ components:
                 type: string
               serial-number:
                 type: string
-    BgpPeer:
+    Alarm:
       type: object
       properties:
-        peer-address:
+        alarm-time:
           type: string
-        peer-as:
-          type: integer
-        local-address:
-          type: string
-        local-as:
-          type: integer
-        peer-state:
+          format: date-time
+        alarm-class:
           type: string
           enum:
-          - Established
-          - Active
-          - Connect
-          - OpenSent
-          - OpenConfirm
-          - Idle
-        peer-type:
+          - Major
+          - Minor
+        alarm-description:
           type: string
-          enum:
-          - Internal
-          - External
-        route-received:
-          type: integer
-        route-accepted:
-          type: integer
-        route-advertised:
-          type: integer
-        elapsed-time:
+        alarm-type:
+          type: string
+    LldpNeighbor:
+      type: object
+      properties:
+        lldp-local-interface:
+          type: string
+        lldp-local-parent-interface-name:
+          type: string
+        lldp-remote-chassis-id:
+          type: string
+        lldp-remote-port-id:
+          type: string
+        lldp-remote-system-name:
           type: string
     PhysicalInterface:
       type: object
@@ -430,34 +387,77 @@ components:
                           ifa-local:
                             type: string
                             description: IP address
-    LldpNeighbor:
+    BgpPeer:
       type: object
       properties:
-        lldp-local-interface:
+        peer-address:
           type: string
-        lldp-local-parent-interface-name:
+        peer-as:
+          type: integer
+        local-address:
           type: string
-        lldp-remote-chassis-id:
-          type: string
-        lldp-remote-port-id:
-          type: string
-        lldp-remote-system-name:
-          type: string
-    Alarm:
-      type: object
-      properties:
-        alarm-time:
-          type: string
-          format: date-time
-        alarm-class:
+        local-as:
+          type: integer
+        peer-state:
           type: string
           enum:
-          - Major
-          - Minor
-        alarm-description:
+          - Established
+          - Active
+          - Connect
+          - OpenSent
+          - OpenConfirm
+          - Idle
+        peer-type:
           type: string
-        alarm-type:
+          enum:
+          - Internal
+          - External
+        route-received:
+          type: integer
+        route-accepted:
+          type: integer
+        route-advertised:
+          type: integer
+        elapsed-time:
           type: string
+    RouteTable:
+      type: object
+      properties:
+        table-name:
+          type: string
+        destination-count:
+          type: integer
+        total-route-count:
+          type: integer
+        active-route-count:
+          type: integer
+        rt:
+          type: array
+          items:
+            type: object
+            properties:
+              rt-destination:
+                type: string
+              rt-entry:
+                type: object
+                properties:
+                  active-tag:
+                    type: string
+                  protocol-name:
+                    type: string
+                  preference:
+                    type: integer
+                  nh:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        to:
+                          type: string
+                        via:
+                          type: string
+                        nh-type:
+                          type: string
   securitySchemes:
     basicAuth:
       type: http

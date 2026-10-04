@@ -2141,13 +2141,39 @@ paths:
       deprecated: false
 components:
   schemas:
-    suppressed_alarm_scope:
-      title: suppressed_alarm_scope
-      enum:
-      - org
-      - site
-      type: string
-      description: 'level of scope. enum: `org`, `site`'
+    suppressed_alarm_applies2:
+      title: suppressed_alarm_applies2
+      type: object
+      properties:
+        org_id:
+          type: string
+          description: UUID of the current org (if provided, the alarms will be suppressed at org level)
+          contentEncoding: uuid
+        site_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: Site identifiers included in the suppression scope. If provided, alarms are suppressed for the listed sites.
+        sitegroup_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: Site group identifiers included in the suppression scope. If provided, alarms are suppressed for all sites in the listed site groups.
+      description: If `scope`==`site`. Site and site-group targets where alarms are suppressed
+    alarm_template_rule:
+      title: alarm_template_rule
+      type: object
+      properties:
+        delivery:
+          allOf:
+          - $ref: '#/components/schemas/delivery1'
+          - description: Overrides for the alarm template delivery defaults for this alarm rule
+        enabled:
+          type: boolean
+          description: Whether this alarm rule is enabled in the template
+      description: Per-alarm enablement and delivery override in an alarm template
     response_http403:
       title: response_http403
       type: object
@@ -2158,26 +2184,6 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
     suppressed_alarm_scope3:
       title: suppressed_alarm_scope3
       enum:
@@ -2205,40 +2211,44 @@ components:
           examples:
           - Authentication credentials were not provided.
       description: Standard HTTP 401 authentication error response
-    delivery3:
-      title: delivery3
-      required:
-      - enabled
+    response_http429:
+      title: response_http429
       type: object
       properties:
-        additional_emails:
-          type: array
-          items:
-            type: string
-          description: Additional email recipients for alarm delivery
-        enabled:
-          type: boolean
-          description: Whether to enable the alarm delivery via emails or not
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
           examples:
-          - true
-        to_org_admins:
-          type: boolean
-          description: Whether to deliver the alarms via emails to Org admins or not
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_org_suppress_alarm_item:
+      title: response_org_suppress_alarm_item
+      type: object
+      properties:
+        duration:
+          type: integer
+          description: Number of seconds that alarms remain suppressed. Maximum duration is 86400 * 14 (14 days). Use 0 to remove suppression.
+          contentEncoding: int32
+        expire_time:
+          type: integer
+          description: Epoch timestamp, in seconds, when the alarm suppression expires
+          contentEncoding: int32
+        scheduled_time:
+          type: integer
+          description: Epoch timestamp, in seconds, when the alarm suppression starts
+          contentEncoding: int32
+        scope:
+          allOf:
+          - $ref: '#/components/schemas/suppressed_alarm_scope3'
+          - description: 'Alarm suppression scope, either organization-wide or site-specific. enum: `org`, `site`.'
+        site_id:
+          type: string
+          description: Site identifier for a site-scoped alarm suppression entry
+          contentEncoding: uuid
+          readOnly: true
           examples:
-          - true
-        to_site_admins:
-          type: boolean
-          description: Whether to deliver the alarms via emails to Site admins or not
-          examples:
-          - false
-      description: Default alarm delivery settings for rules in this template
-    suppressed_alarm_scope1:
-      title: suppressed_alarm_scope1
-      enum:
-      - org
-      - site
-      type: string
-      description: 'Alarm suppression target level. enum: `org`, `site`.'
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+      description: Suppressed alarm entry for an organization or site alarm scope
     alarm_template:
       title: alarm_template
       required:
@@ -2300,14 +2310,6 @@ components:
                 to_site_admins: true
               enabled: true
       description: Alarm template defining default delivery and per-alarm rules
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
     suppressed_alarm:
       title: suppressed_alarm
       type: object
@@ -2331,6 +2333,33 @@ components:
           - $ref: '#/components/schemas/suppressed_alarm_scope1'
           - description: 'Alarm suppression target level. enum: `org`, `site`.'
       description: Request body for suppressing organization alarms
+    delivery3:
+      title: delivery3
+      required:
+      - enabled
+      type: object
+      properties:
+        additional_emails:
+          type: array
+          items:
+            type: string
+          description: Additional email recipients for alarm delivery
+        enabled:
+          type: boolean
+          description: Whether to enable the alarm delivery via emails or not
+          examples:
+          - true
+        to_org_admins:
+          type: boolean
+          description: Whether to deliver the alarms via emails to Org admins or not
+          examples:
+          - true
+        to_site_admins:
+          type: boolean
+          description: Whether to deliver the alarms via emails to Site admins or not
+          examples:
+          - false
+      description: Default alarm delivery settings for rules in this template
     delivery1:
       title: delivery1
       required:
@@ -2358,67 +2387,38 @@ components:
           examples:
           - false
       description: Overrides for the alarm template delivery defaults for this alarm rule
-    alarm_template_rule:
-      title: alarm_template_rule
+    response_http404:
+      title: response_http404
       type: object
       properties:
-        delivery:
-          allOf:
-          - $ref: '#/components/schemas/delivery1'
-          - description: Overrides for the alarm template delivery defaults for this alarm rule
-        enabled:
-          type: boolean
-          description: Whether this alarm rule is enabled in the template
-      description: Per-alarm enablement and delivery override in an alarm template
-    response_org_suppress_alarm_item:
-      title: response_org_suppress_alarm_item
-      type: object
-      properties:
-        duration:
-          type: integer
-          description: Number of seconds that alarms remain suppressed. Maximum duration is 86400 * 14 (14 days). Use 0 to remove suppression.
-          contentEncoding: int32
-        expire_time:
-          type: integer
-          description: Epoch timestamp, in seconds, when the alarm suppression expires
-          contentEncoding: int32
-        scheduled_time:
-          type: integer
-          description: Epoch timestamp, in seconds, when the alarm suppression starts
-          contentEncoding: int32
-        scope:
-          allOf:
-          - $ref: '#/components/schemas/suppressed_alarm_scope3'
-          - description: 'Alarm suppression scope, either organization-wide or site-specific. enum: `org`, `site`.'
-        site_id:
+        id:
           type: string
-          description: Site identifier for a site-scoped alarm suppression entry
-          contentEncoding: uuid
-          readOnly: true
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    suppressed_alarm_scope1:
+      title: suppressed_alarm_scope1
+      enum:
+      - org
+      - site
+      type: string
+      description: 'Alarm suppression target level. enum: `org`, `site`.'
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
           examples:
-          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
-      description: Suppressed alarm entry for an organization or site alarm scope
-    suppressed_alarm_applies2:
-      title: suppressed_alarm_applies2
-      type: object
-      properties:
-        org_id:
-          type: string
-          description: UUID of the current org (if provided, the alarms will be suppressed at org level)
-          contentEncoding: uuid
-        site_ids:
-          type: array
-          items:
-            type: string
-            contentEncoding: uuid
-          description: Site identifiers included in the suppression scope. If provided, alarms are suppressed for the listed sites.
-        sitegroup_ids:
-          type: array
-          items:
-            type: string
-            contentEncoding: uuid
-          description: Site group identifiers included in the suppression scope. If provided, alarms are suppressed for all sites in the listed site groups.
-      description: If `scope`==`site`. Site and site-group targets where alarms are suppressed
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    suppressed_alarm_scope:
+      title: suppressed_alarm_scope
+      enum:
+      - org
+      - site
+      type: string
+      description: 'level of scope. enum: `org`, `site`'
   securitySchemes:
     apiToken:
       type: apiKey

@@ -1704,6 +1704,46 @@ paths:
       deprecated: false
 components:
   schemas:
+    rf_template_model_specific_property:
+      title: rf_template_model_specific_property
+      type: object
+      properties:
+        ant_gain_24:
+          type: integer
+          description: Model-specific external antenna gain for the 2.4 GHz radio
+          contentEncoding: int32
+          default: 0
+        ant_gain_5:
+          type: integer
+          description: Model-specific external antenna gain for the 5 GHz radio
+          contentEncoding: int32
+          default: 0
+        ant_gain_6:
+          type: integer
+          description: Model-specific external antenna gain for the 6 GHz radio
+          contentEncoding: int32
+          default: 0
+        band_24:
+          allOf:
+          - $ref: '#/components/schemas/rftemplate_radio_band241'
+          - description: Model-specific 2.4 GHz radio settings that override RF template defaults
+        band_24_usage:
+          allOf:
+          - $ref: '#/components/schemas/radio_band_24_usage3'
+          - description: 'Model-specific radio usage mode for the 2.4 GHz-capable radio. enum: `24`, `5`, `6`, `auto`.'
+        band_5:
+          allOf:
+          - $ref: '#/components/schemas/rftemplate_radio_band52'
+          - description: Model-specific 5 GHz radio settings that override RF template defaults
+        band_5_on_24_radio:
+          allOf:
+          - $ref: '#/components/schemas/rftemplate_radio_band53'
+          - description: Model-specific 5 GHz settings used when the 2.4 GHz radio operates in 5 GHz mode
+        band_6:
+          allOf:
+          - $ref: '#/components/schemas/rftemplate_radio_band61'
+          - description: Model-specific 6 GHz radio settings that override RF template defaults
+      description: AP model-specific RF overrides for an RF template
     radio_band_24_usage2:
       title: radio_band_24_usage2
       enum:
@@ -1713,16 +1753,266 @@ components:
       - auto
       type: string
       description: 'Radio usage mode for the 2.4 GHz-capable radio in this RF template. enum: `24`, `5`, `6`, `auto`.'
-    dot11_bandwidth242:
-      title: dot11_bandwidth242
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    rftemplate_radio_band52:
+      title: rftemplate_radio_band52
+      type: object
+      properties:
+        allow_rrm_disable:
+          type: boolean
+          description: Whether RRM may disable the 5 GHz radio when optimizing RF settings
+          default: false
+        ant_gain:
+          maximum: 10
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: External antenna gain for the 5 GHz radio
+          contentEncoding: int32
+          default: 0
+        antenna_mode:
+          allOf:
+          - $ref: '#/components/schemas/radio_band_antenna_mode1'
+          - description: 'Radio chain mode for the 5 GHz radio. enum: `1x1`, `2x2`, `3x3`, `4x4`, `default`.'
+            examples:
+            - default
+        bandwidth:
+          allOf:
+          - $ref: '#/components/schemas/dot11_bandwidth52'
+          - description: 'Channel width configured for the 5 GHz radio. enum: `0`, `20`, `40`, `80`.'
+            examples:
+            - 40
+        channels:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            contentEncoding: int32
+          description: Allowed channel list for the 5 GHz radio; null or an empty array uses automatic selection
+          default: []
+        disabled:
+          type: boolean
+          description: Whether to disable the radio
+          default: false
+        power:
+          maximum: 25
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: Radio Tx power, in dBm. Can be an integer 0-25 for static power configuration, or `null` or unset for auto power mode
+          contentEncoding: int32
+          examples:
+          - 6
+        power_max:
+          maximum: 17
+          minimum: 5
+          type:
+          - integer
+          - 'null'
+          description: When power=null/unset, max tx power to use, HW-specific values will be used if not set
+          contentEncoding: int32
+        power_min:
+          maximum: 17
+          minimum: 5
+          type:
+          - integer
+          - 'null'
+          description: When power=null/unset, min tx power to use, HW-specific values will be used if not set
+          contentEncoding: int32
+        preamble:
+          allOf:
+          - $ref: '#/components/schemas/radio_band_preamble1'
+          - description: '802.11 preamble mode used by the 5 GHz radio. enum: `auto`, `long`, `short`.'
+      description: Model-specific 5 GHz radio settings that override RF template defaults
+    radio_band_24_usage3:
+      title: radio_band_24_usage3
       enum:
-      - 0
-      - 20
-      - 40
-      type: integer
-      description: 'Channel width configured for the 2.4 GHz radio. enum: `0`, `20`, `40`.'
-      examples:
-      - 20
+      - '24'
+      - '5'
+      - '6'
+      - auto
+      type: string
+      description: 'Model-specific radio usage mode for the 2.4 GHz-capable radio. enum: `24`, `5`, `6`, `auto`.'
+    rftemplate_radio_band55:
+      title: rftemplate_radio_band55
+      type: object
+      properties:
+        allow_rrm_disable:
+          type: boolean
+          description: Whether RRM may disable the 5 GHz radio when optimizing RF settings
+          default: false
+        ant_gain:
+          maximum: 10
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: External antenna gain for the 5 GHz radio
+          contentEncoding: int32
+          default: 0
+        antenna_mode:
+          allOf:
+          - $ref: '#/components/schemas/radio_band_antenna_mode1'
+          - description: 'Radio chain mode for the 5 GHz radio. enum: `1x1`, `2x2`, `3x3`, `4x4`, `default`.'
+            examples:
+            - default
+        bandwidth:
+          allOf:
+          - $ref: '#/components/schemas/dot11_bandwidth52'
+          - description: 'Channel width configured for the 5 GHz radio. enum: `0`, `20`, `40`, `80`.'
+            examples:
+            - 40
+        channels:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            contentEncoding: int32
+          description: Allowed channel list for the 5 GHz radio; null or an empty array uses automatic selection
+          default: []
+        disabled:
+          type: boolean
+          description: Whether to disable the radio
+          default: false
+        power:
+          maximum: 25
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: Radio Tx power, in dBm. Can be an integer 0-25 for static power configuration, or `null` or unset for auto power mode
+          contentEncoding: int32
+          examples:
+          - 6
+        power_max:
+          maximum: 17
+          minimum: 5
+          type:
+          - integer
+          - 'null'
+          description: When power=null/unset, max tx power to use, HW-specific values will be used if not set
+          contentEncoding: int32
+        power_min:
+          maximum: 17
+          minimum: 5
+          type:
+          - integer
+          - 'null'
+          description: When power=null/unset, min tx power to use, HW-specific values will be used if not set
+          contentEncoding: int32
+        preamble:
+          allOf:
+          - $ref: '#/components/schemas/radio_band_preamble1'
+          - description: '802.11 preamble mode used by the 5 GHz radio. enum: `auto`, `long`, `short`.'
+      description: 5 GHz radio settings in this RF template
+    rftemplate_radio_band61:
+      title: rftemplate_radio_band61
+      type: object
+      properties:
+        allow_rrm_disable:
+          type: boolean
+          description: Whether RRM may disable the 6 GHz radio when optimizing RF settings
+          default: false
+        ant_gain:
+          maximum: 10
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: External antenna gain for the 6 GHz radio
+          contentEncoding: int32
+          default: 0
+        antenna_mode:
+          allOf:
+          - $ref: '#/components/schemas/radio_band_antenna_mode2'
+          - description: 'Radio chain mode for the 6 GHz radio. enum: `1x1`, `2x2`, `3x3`, `4x4`, `default`.'
+            examples:
+            - default
+        bandwidth:
+          allOf:
+          - $ref: '#/components/schemas/dot11_bandwidth62'
+          - description: 'Channel width configured for the 6 GHz radio. enum: `0`, `20`, `40`, `80`, `160`.'
+            examples:
+            - 80
+        channels:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            contentEncoding: int32
+          description: Allowed channel list for the 6 GHz radio; null or an empty array uses automatic selection
+          default: []
+        disabled:
+          type: boolean
+          description: Whether to disable the radio
+          default: false
+        power:
+          maximum: 25
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: Radio Tx power, in dBm. Can be an integer 0-25 for static power configuration, or `null` or unset for auto power mode
+          contentEncoding: int32
+          examples:
+          - 7
+        power_max:
+          maximum: 17
+          minimum: 5
+          type:
+          - integer
+          - 'null'
+          description: When power=null/unset, max tx power to use, HW-specific values will be used if not set
+          contentEncoding: int32
+        power_min:
+          maximum: 18
+          minimum: 5
+          type:
+          - integer
+          - 'null'
+          description: When power=null/unset, min tx power to use, HW-specific values will be used if not set
+          contentEncoding: int32
+        preamble:
+          allOf:
+          - $ref: '#/components/schemas/radio_band_preamble2'
+          - description: '802.11 preamble mode used by the 6 GHz radio. enum: `auto`, `long`, `short`.'
+        standard_power:
+          type: boolean
+          description: For 6GHz Only, standard-power operation, AFC (Automatic Frequency Coordination) will be performed, and we'll fall back to Low Power Indoor if AFC failed
+          default: false
+      description: Model-specific 6 GHz radio settings that override RF template defaults
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
     rf_template:
       title: rf_template
       required:
@@ -1806,176 +2096,6 @@ components:
           type: boolean
           description: Whether scanning radio is enabled
       description: RF template used by the current RRM calculation
-    rftemplate_radio_band243:
-      title: rftemplate_radio_band243
-      type: object
-      properties:
-        allow_rrm_disable:
-          type: boolean
-          description: Whether RRM may disable the 2.4 GHz radio when optimizing RF settings
-          default: false
-        ant_gain:
-          maximum: 10
-          minimum: 0
-          type:
-          - integer
-          - 'null'
-          description: External antenna gain for the 2.4 GHz radio
-          contentEncoding: int32
-          default: 0
-        antenna_mode:
-          allOf:
-          - $ref: '#/components/schemas/radio_band_antenna_mode4'
-          - description: 'Radio chain mode for the 2.4 GHz radio. enum: `1x1`, `2x2`, `3x3`, `4x4`, `default`.'
-            examples:
-            - default
-        bandwidth:
-          allOf:
-          - $ref: '#/components/schemas/dot11_bandwidth242'
-          - description: 'Channel width configured for the 2.4 GHz radio. enum: `0`, `20`, `40`.'
-            examples:
-            - 20
-        channels:
-          type:
-          - array
-          - 'null'
-          items:
-            type: integer
-            contentEncoding: int32
-          description: Allowed channel list for the 2.4 GHz radio; null or an empty array uses automatic selection
-          default: []
-        disabled:
-          type: boolean
-          description: Whether to disable the radio
-          default: false
-        power:
-          maximum: 25
-          minimum: 0
-          type:
-          - integer
-          - 'null'
-          description: Radio Tx power, in dBm. Can be an integer 0-25 for static power configuration, or `null` or unset for auto power mode
-          contentEncoding: int32
-          examples:
-          - 3
-        power_max:
-          maximum: 18
-          minimum: 3
-          type:
-          - integer
-          - 'null'
-          description: When power=null/unset, max tx power to use, HW-specific values will be used if not set
-          contentEncoding: int32
-        power_min:
-          maximum: 18
-          minimum: 3
-          type:
-          - integer
-          - 'null'
-          description: When power=null/unset, min tx power to use, HW-specific values will be used if not set
-          contentEncoding: int32
-        preamble:
-          allOf:
-          - $ref: '#/components/schemas/radio_band_preamble4'
-          - description: '802.11 preamble mode used by the 2.4 GHz radio. enum: `auto`, `long`, `short`.'
-      description: 2.4 GHz radio settings in this RF template
-    rftemplate_radio_band61:
-      title: rftemplate_radio_band61
-      type: object
-      properties:
-        allow_rrm_disable:
-          type: boolean
-          description: Whether RRM may disable the 6 GHz radio when optimizing RF settings
-          default: false
-        ant_gain:
-          maximum: 10
-          minimum: 0
-          type:
-          - integer
-          - 'null'
-          description: External antenna gain for the 6 GHz radio
-          contentEncoding: int32
-          default: 0
-        antenna_mode:
-          allOf:
-          - $ref: '#/components/schemas/radio_band_antenna_mode2'
-          - description: 'Radio chain mode for the 6 GHz radio. enum: `1x1`, `2x2`, `3x3`, `4x4`, `default`.'
-            examples:
-            - default
-        bandwidth:
-          allOf:
-          - $ref: '#/components/schemas/dot11_bandwidth62'
-          - description: 'Channel width configured for the 6 GHz radio. enum: `0`, `20`, `40`, `80`, `160`.'
-            examples:
-            - 80
-        channels:
-          type:
-          - array
-          - 'null'
-          items:
-            type: integer
-            contentEncoding: int32
-          description: Allowed channel list for the 6 GHz radio; null or an empty array uses automatic selection
-          default: []
-        disabled:
-          type: boolean
-          description: Whether to disable the radio
-          default: false
-        power:
-          maximum: 25
-          minimum: 0
-          type:
-          - integer
-          - 'null'
-          description: Radio Tx power, in dBm. Can be an integer 0-25 for static power configuration, or `null` or unset for auto power mode
-          contentEncoding: int32
-          examples:
-          - 7
-        power_max:
-          maximum: 17
-          minimum: 5
-          type:
-          - integer
-          - 'null'
-          description: When power=null/unset, max tx power to use, HW-specific values will be used if not set
-          contentEncoding: int32
-        power_min:
-          maximum: 18
-          minimum: 5
-          type:
-          - integer
-          - 'null'
-          description: When power=null/unset, min tx power to use, HW-specific values will be used if not set
-          contentEncoding: int32
-        preamble:
-          allOf:
-          - $ref: '#/components/schemas/radio_band_preamble2'
-          - description: '802.11 preamble mode used by the 6 GHz radio. enum: `auto`, `long`, `short`.'
-        standard_power:
-          type: boolean
-          description: For 6GHz Only, standard-power operation, AFC (Automatic Frequency Coordination) will be performed, and we'll fall back to Low Power Indoor if AFC failed
-          default: false
-      description: Model-specific 6 GHz radio settings that override RF template defaults
-    radio_band_antenna_mode4:
-      title: radio_band_antenna_mode4
-      enum:
-      - 1x1
-      - 2x2
-      - 3x3
-      - 4x4
-      - default
-      type: string
-      description: 'Radio chain mode for the 2.4 GHz radio. enum: `1x1`, `2x2`, `3x3`, `4x4`, `default`.'
-      examples:
-      - default
-    radio_band_preamble2:
-      title: radio_band_preamble2
-      enum:
-      - auto
-      - long
-      - short
-      type: string
-      description: '802.11 preamble mode used by the 6 GHz radio. enum: `auto`, `long`, `short`.'
     dot11_bandwidth62:
       title: dot11_bandwidth62
       enum:
@@ -1988,79 +2108,6 @@ components:
       description: 'Channel width configured for the 6 GHz radio. enum: `0`, `20`, `40`, `80`, `160`.'
       examples:
       - 80
-    rftemplate_radio_band52:
-      title: rftemplate_radio_band52
-      type: object
-      properties:
-        allow_rrm_disable:
-          type: boolean
-          description: Whether RRM may disable the 5 GHz radio when optimizing RF settings
-          default: false
-        ant_gain:
-          maximum: 10
-          minimum: 0
-          type:
-          - integer
-          - 'null'
-          description: External antenna gain for the 5 GHz radio
-          contentEncoding: int32
-          default: 0
-        antenna_mode:
-          allOf:
-          - $ref: '#/components/schemas/radio_band_antenna_mode1'
-          - description: 'Radio chain mode for the 5 GHz radio. enum: `1x1`, `2x2`, `3x3`, `4x4`, `default`.'
-            examples:
-            - default
-        bandwidth:
-          allOf:
-          - $ref: '#/components/schemas/dot11_bandwidth52'
-          - description: 'Channel width configured for the 5 GHz radio. enum: `0`, `20`, `40`, `80`.'
-            examples:
-            - 40
-        channels:
-          type:
-          - array
-          - 'null'
-          items:
-            type: integer
-            contentEncoding: int32
-          description: Allowed channel list for the 5 GHz radio; null or an empty array uses automatic selection
-          default: []
-        disabled:
-          type: boolean
-          description: Whether to disable the radio
-          default: false
-        power:
-          maximum: 25
-          minimum: 0
-          type:
-          - integer
-          - 'null'
-          description: Radio Tx power, in dBm. Can be an integer 0-25 for static power configuration, or `null` or unset for auto power mode
-          contentEncoding: int32
-          examples:
-          - 6
-        power_max:
-          maximum: 17
-          minimum: 5
-          type:
-          - integer
-          - 'null'
-          description: When power=null/unset, max tx power to use, HW-specific values will be used if not set
-          contentEncoding: int32
-        power_min:
-          maximum: 17
-          minimum: 5
-          type:
-          - integer
-          - 'null'
-          description: When power=null/unset, min tx power to use, HW-specific values will be used if not set
-          contentEncoding: int32
-        preamble:
-          allOf:
-          - $ref: '#/components/schemas/radio_band_preamble1'
-          - description: '802.11 preamble mode used by the 5 GHz radio. enum: `auto`, `long`, `short`.'
-      description: Model-specific 5 GHz radio settings that override RF template defaults
     radio_band_antenna_mode1:
       title: radio_band_antenna_mode1
       enum:
@@ -2073,22 +2120,6 @@ components:
       description: 'Radio chain mode for the 5 GHz radio. enum: `1x1`, `2x2`, `3x3`, `4x4`, `default`.'
       examples:
       - default
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    radio_band_preamble4:
-      title: radio_band_preamble4
-      enum:
-      - auto
-      - long
-      - short
-      type: string
-      description: '802.11 preamble mode used by the 2.4 GHz radio. enum: `auto`, `long`, `short`.'
     rftemplate_radio_band241:
       title: rftemplate_radio_band241
       type: object
@@ -2162,13 +2193,13 @@ components:
           - $ref: '#/components/schemas/radio_band_preamble4'
           - description: '802.11 preamble mode used by the 2.4 GHz radio. enum: `auto`, `long`, `short`.'
       description: Model-specific 2.4 GHz radio settings that override RF template defaults
-    rftemplate_radio_band51:
-      title: rftemplate_radio_band51
+    rftemplate_radio_band243:
+      title: rftemplate_radio_band243
       type: object
       properties:
         allow_rrm_disable:
           type: boolean
-          description: Whether RRM may disable the 5 GHz radio when optimizing RF settings
+          description: Whether RRM may disable the 2.4 GHz radio when optimizing RF settings
           default: false
         ant_gain:
           maximum: 10
@@ -2176,21 +2207,21 @@ components:
           type:
           - integer
           - 'null'
-          description: External antenna gain for the 5 GHz radio
+          description: External antenna gain for the 2.4 GHz radio
           contentEncoding: int32
           default: 0
         antenna_mode:
           allOf:
-          - $ref: '#/components/schemas/radio_band_antenna_mode1'
-          - description: 'Radio chain mode for the 5 GHz radio. enum: `1x1`, `2x2`, `3x3`, `4x4`, `default`.'
+          - $ref: '#/components/schemas/radio_band_antenna_mode4'
+          - description: 'Radio chain mode for the 2.4 GHz radio. enum: `1x1`, `2x2`, `3x3`, `4x4`, `default`.'
             examples:
             - default
         bandwidth:
           allOf:
-          - $ref: '#/components/schemas/dot11_bandwidth52'
-          - description: 'Channel width configured for the 5 GHz radio. enum: `0`, `20`, `40`, `80`.'
+          - $ref: '#/components/schemas/dot11_bandwidth242'
+          - description: 'Channel width configured for the 2.4 GHz radio. enum: `0`, `20`, `40`.'
             examples:
-            - 40
+            - 20
         channels:
           type:
           - array
@@ -2198,7 +2229,7 @@ components:
           items:
             type: integer
             contentEncoding: int32
-          description: Allowed channel list for the 5 GHz radio; null or an empty array uses automatic selection
+          description: Allowed channel list for the 2.4 GHz radio; null or an empty array uses automatic selection
           default: []
         disabled:
           type: boolean
@@ -2213,18 +2244,18 @@ components:
           description: Radio Tx power, in dBm. Can be an integer 0-25 for static power configuration, or `null` or unset for auto power mode
           contentEncoding: int32
           examples:
-          - 6
+          - 3
         power_max:
-          maximum: 17
-          minimum: 5
+          maximum: 18
+          minimum: 3
           type:
           - integer
           - 'null'
           description: When power=null/unset, max tx power to use, HW-specific values will be used if not set
           contentEncoding: int32
         power_min:
-          maximum: 17
-          minimum: 5
+          maximum: 18
+          minimum: 3
           type:
           - integer
           - 'null'
@@ -2232,120 +2263,28 @@ components:
           contentEncoding: int32
         preamble:
           allOf:
-          - $ref: '#/components/schemas/radio_band_preamble1'
-          - description: '802.11 preamble mode used by the 5 GHz radio. enum: `auto`, `long`, `short`.'
-      description: 5 GHz settings used when the 2.4 GHz radio operates in 5 GHz mode
-    radio_band_preamble1:
-      title: radio_band_preamble1
+          - $ref: '#/components/schemas/radio_band_preamble4'
+          - description: '802.11 preamble mode used by the 2.4 GHz radio. enum: `auto`, `long`, `short`.'
+      description: 2.4 GHz radio settings in this RF template
+    radio_band_preamble4:
+      title: radio_band_preamble4
       enum:
       - auto
       - long
       - short
       type: string
-      description: '802.11 preamble mode used by the 5 GHz radio. enum: `auto`, `long`, `short`.'
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    rftemplate_radio_band53:
-      title: rftemplate_radio_band53
-      type: object
-      properties:
-        allow_rrm_disable:
-          type: boolean
-          description: Whether RRM may disable the 5 GHz radio when optimizing RF settings
-          default: false
-        ant_gain:
-          maximum: 10
-          minimum: 0
-          type:
-          - integer
-          - 'null'
-          description: External antenna gain for the 5 GHz radio
-          contentEncoding: int32
-          default: 0
-        antenna_mode:
-          allOf:
-          - $ref: '#/components/schemas/radio_band_antenna_mode1'
-          - description: 'Radio chain mode for the 5 GHz radio. enum: `1x1`, `2x2`, `3x3`, `4x4`, `default`.'
-            examples:
-            - default
-        bandwidth:
-          allOf:
-          - $ref: '#/components/schemas/dot11_bandwidth52'
-          - description: 'Channel width configured for the 5 GHz radio. enum: `0`, `20`, `40`, `80`.'
-            examples:
-            - 40
-        channels:
-          type:
-          - array
-          - 'null'
-          items:
-            type: integer
-            contentEncoding: int32
-          description: Allowed channel list for the 5 GHz radio; null or an empty array uses automatic selection
-          default: []
-        disabled:
-          type: boolean
-          description: Whether to disable the radio
-          default: false
-        power:
-          maximum: 25
-          minimum: 0
-          type:
-          - integer
-          - 'null'
-          description: Radio Tx power, in dBm. Can be an integer 0-25 for static power configuration, or `null` or unset for auto power mode
-          contentEncoding: int32
-          examples:
-          - 6
-        power_max:
-          maximum: 17
-          minimum: 5
-          type:
-          - integer
-          - 'null'
-          description: When power=null/unset, max tx power to use, HW-specific values will be used if not set
-          contentEncoding: int32
-        power_min:
-          maximum: 17
-          minimum: 5
-          type:
-          - integer
-          - 'null'
-          description: When power=null/unset, min tx power to use, HW-specific values will be used if not set
-          contentEncoding: int32
-        preamble:
-          allOf:
-          - $ref: '#/components/schemas/radio_band_preamble1'
-          - description: '802.11 preamble mode used by the 5 GHz radio. enum: `auto`, `long`, `short`.'
-      description: Model-specific 5 GHz settings used when the 2.4 GHz radio operates in 5 GHz mode
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
+      description: '802.11 preamble mode used by the 2.4 GHz radio. enum: `auto`, `long`, `short`.'
+    dot11_bandwidth52:
+      title: dot11_bandwidth52
+      enum:
+      - 0
+      - 20
+      - 40
+      - 80
+      type: integer
+      description: 'Channel width configured for the 5 GHz radio. enum: `0`, `20`, `40`, `80`.'
+      examples:
+      - 40
     rftemplate_radio_band63:
       title: rftemplate_radio_band63
       type: object
@@ -2423,19 +2362,8 @@ components:
           description: For 6GHz Only, standard-power operation, AFC (Automatic Frequency Coordination) will be performed, and we'll fall back to Low Power Indoor if AFC failed
           default: false
       description: 6 GHz radio settings in this RF template
-    dot11_bandwidth52:
-      title: dot11_bandwidth52
-      enum:
-      - 0
-      - 20
-      - 40
-      - 80
-      type: integer
-      description: 'Channel width configured for the 5 GHz radio. enum: `0`, `20`, `40`, `80`.'
-      examples:
-      - 40
-    rftemplate_radio_band55:
-      title: rftemplate_radio_band55
+    rftemplate_radio_band53:
+      title: rftemplate_radio_band53
       type: object
       properties:
         allow_rrm_disable:
@@ -2506,16 +2434,80 @@ components:
           allOf:
           - $ref: '#/components/schemas/radio_band_preamble1'
           - description: '802.11 preamble mode used by the 5 GHz radio. enum: `auto`, `long`, `short`.'
-      description: 5 GHz radio settings in this RF template
-    radio_band_24_usage3:
-      title: radio_band_24_usage3
-      enum:
-      - '24'
-      - '5'
-      - '6'
-      - auto
-      type: string
-      description: 'Model-specific radio usage mode for the 2.4 GHz-capable radio. enum: `24`, `5`, `6`, `auto`.'
+      description: Model-specific 5 GHz settings used when the 2.4 GHz radio operates in 5 GHz mode
+    rftemplate_radio_band51:
+      title: rftemplate_radio_band51
+      type: object
+      properties:
+        allow_rrm_disable:
+          type: boolean
+          description: Whether RRM may disable the 5 GHz radio when optimizing RF settings
+          default: false
+        ant_gain:
+          maximum: 10
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: External antenna gain for the 5 GHz radio
+          contentEncoding: int32
+          default: 0
+        antenna_mode:
+          allOf:
+          - $ref: '#/components/schemas/radio_band_antenna_mode1'
+          - description: 'Radio chain mode for the 5 GHz radio. enum: `1x1`, `2x2`, `3x3`, `4x4`, `default`.'
+            examples:
+            - default
+        bandwidth:
+          allOf:
+          - $ref: '#/components/schemas/dot11_bandwidth52'
+          - description: 'Channel width configured for the 5 GHz radio. enum: `0`, `20`, `40`, `80`.'
+            examples:
+            - 40
+        channels:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            contentEncoding: int32
+          description: Allowed channel list for the 5 GHz radio; null or an empty array uses automatic selection
+          default: []
+        disabled:
+          type: boolean
+          description: Whether to disable the radio
+          default: false
+        power:
+          maximum: 25
+          minimum: 0
+          type:
+          - integer
+          - 'null'
+          description: Radio Tx power, in dBm. Can be an integer 0-25 for static power configuration, or `null` or unset for auto power mode
+          contentEncoding: int32
+          examples:
+          - 6
+        power_max:
+          maximum: 17
+          minimum: 5
+          type:
+          - integer
+          - 'null'
+          description: When power=null/unset, max tx power to use, HW-specific values will be used if not set
+          contentEncoding: int32
+        power_min:
+          maximum: 17
+          minimum: 5
+          type:
+          - integer
+          - 'null'
+          description: When power=null/unset, min tx power to use, HW-specific values will be used if not set
+          contentEncoding: int32
+        preamble:
+          allOf:
+          - $ref: '#/components/schemas/radio_band_preamble1'
+          - description: '802.11 preamble mode used by the 5 GHz radio. enum: `auto`, `long`, `short`.'
+      description: 5 GHz settings used when the 2.4 GHz radio operates in 5 GHz mode
     radio_band_antenna_mode2:
       title: radio_band_antenna_mode2
       enum:
@@ -2528,56 +2520,64 @@ components:
       description: 'Radio chain mode for the 6 GHz radio. enum: `1x1`, `2x2`, `3x3`, `4x4`, `default`.'
       examples:
       - default
-    response_http401:
-      title: response_http401
+    dot11_bandwidth242:
+      title: dot11_bandwidth242
+      enum:
+      - 0
+      - 20
+      - 40
+      type: integer
+      description: 'Channel width configured for the 2.4 GHz radio. enum: `0`, `20`, `40`.'
+      examples:
+      - 20
+    response_http403:
+      title: response_http403
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the authentication error
+          description: Human-readable explanation of the permission error
           examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    rf_template_model_specific_property:
-      title: rf_template_model_specific_property
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    radio_band_preamble1:
+      title: radio_band_preamble1
+      enum:
+      - auto
+      - long
+      - short
+      type: string
+      description: '802.11 preamble mode used by the 5 GHz radio. enum: `auto`, `long`, `short`.'
+    response_http400:
+      title: response_http400
       type: object
       properties:
-        ant_gain_24:
-          type: integer
-          description: Model-specific external antenna gain for the 2.4 GHz radio
-          contentEncoding: int32
-          default: 0
-        ant_gain_5:
-          type: integer
-          description: Model-specific external antenna gain for the 5 GHz radio
-          contentEncoding: int32
-          default: 0
-        ant_gain_6:
-          type: integer
-          description: Model-specific external antenna gain for the 6 GHz radio
-          contentEncoding: int32
-          default: 0
-        band_24:
-          allOf:
-          - $ref: '#/components/schemas/rftemplate_radio_band241'
-          - description: Model-specific 2.4 GHz radio settings that override RF template defaults
-        band_24_usage:
-          allOf:
-          - $ref: '#/components/schemas/radio_band_24_usage3'
-          - description: 'Model-specific radio usage mode for the 2.4 GHz-capable radio. enum: `24`, `5`, `6`, `auto`.'
-        band_5:
-          allOf:
-          - $ref: '#/components/schemas/rftemplate_radio_band52'
-          - description: Model-specific 5 GHz radio settings that override RF template defaults
-        band_5_on_24_radio:
-          allOf:
-          - $ref: '#/components/schemas/rftemplate_radio_band53'
-          - description: Model-specific 5 GHz settings used when the 2.4 GHz radio operates in 5 GHz mode
-        band_6:
-          allOf:
-          - $ref: '#/components/schemas/rftemplate_radio_band61'
-          - description: Model-specific 6 GHz radio settings that override RF template defaults
-      description: AP model-specific RF overrides for an RF template
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    radio_band_preamble2:
+      title: radio_band_preamble2
+      enum:
+      - auto
+      - long
+      - short
+      type: string
+      description: '802.11 preamble mode used by the 6 GHz radio. enum: `auto`, `long`, `short`.'
+    radio_band_antenna_mode4:
+      title: radio_band_antenna_mode4
+      enum:
+      - 1x1
+      - 2x2
+      - 3x3
+      - 4x4
+      - default
+      type: string
+      description: 'Radio chain mode for the 2.4 GHz radio. enum: `1x1`, `2x2`, `3x3`, `4x4`, `default`.'
+      examples:
+      - default
   securitySchemes:
     apiToken:
       type: apiKey

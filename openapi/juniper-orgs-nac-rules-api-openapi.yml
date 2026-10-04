@@ -1107,26 +1107,89 @@ components:
       description: 'NAC authentication method that must match the request. enum: `cert`, `device-auth`, `eap-teap`, `eap-tls`, `eap-ttls`, `idp`, `mab`, `eap-peap`.'
       examples:
       - eap-tls
-    response_http400:
-      title: response_http400
+    nac_rule_guest_auth_state2:
+      title: nac_rule_guest_auth_state2
+      enum:
+      - authorized
+      - unknown
+      type: string
+      description: 'Guest portal authorization state condition for the rule. enum: `authorized`, `unknown`.'
+      examples:
+      - authorized
+    nac_rule:
+      title: nac_rule
+      required:
+      - action
+      - name
       type: object
       properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
+        action:
+          allOf:
+          - $ref: '#/components/schemas/nac_rule_action2'
+          - description: Allow or block decision applied when the NAC rule matches
+            examples:
+            - allow
+        apply_tags:
+          type: array
+          items:
+            type: string
+          description: NAC tag IDs to include in the Access-Accept when the rule allows access
           examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
+          - - c049dfcd-0c73-5014-1c64-062e9903f1e5
+        created_time:
+          type: number
+          description: Epoch timestamp when the NAC rule was created
+          readOnly: true
+        dry_run:
+          type: boolean
+          description: Whether the NAC rule is in dry-run mode, where matches are logged but the action is not enforced
+        enabled:
+          type: boolean
+          description: Whether the NAC rule is evaluated during policy matching
+          default: true
+        guest_auth_state:
+          allOf:
+          - $ref: '#/components/schemas/nac_rule_guest_auth_state2'
+          - description: 'Guest portal authorization state condition for the rule. enum: `authorized`, `unknown`.'
+            examples:
+            - authorized
+        id:
           type: string
-          description: Human-readable explanation of the rate limit error
+          description: Unique identifier of the NAC rule
+          contentEncoding: uuid
+          readOnly: true
           examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        matching:
+          allOf:
+          - $ref: '#/components/schemas/nac_rule_matching3'
+          - description: Criteria that must match for the NAC rule to apply
+        modified_time:
+          type: number
+          description: Epoch timestamp when the NAC rule was last modified
+          readOnly: true
+        name:
+          type: string
+          description: Human-readable name of the NAC rule
+        not_matching:
+          allOf:
+          - $ref: '#/components/schemas/nac_rule_matching1'
+          - description: Criteria that must not match for the NAC rule to apply
+        order:
+          minimum: 0
+          type: integer
+          description: Rule priority; lower values are evaluated with higher priority
+          contentEncoding: int32
+          examples:
+          - 1
+        org_id:
+          type: string
+          description: Org identifier that owns the NAC rule
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+      description: NAC authentication policy rule that matches request criteria and applies an allow or block action
     response_http401:
       title: response_http401
       type: object
@@ -1137,15 +1200,92 @@ components:
           examples:
           - Authentication credentials were not provided.
       description: Standard HTTP 401 authentication error response
-    nac_rule_action2:
-      title: nac_rule_action2
+    nac_rule_matching1:
+      title: nac_rule_matching1
+      type: object
+      properties:
+        auth_type:
+          allOf:
+          - $ref: '#/components/schemas/nac_auth_type3'
+          - description: 'NAC authentication method that must match the request. enum: `cert`, `device-auth`, `eap-teap`, `eap-tls`, `eap-ttls`, `idp`, `mab`, `eap-peap`.'
+            examples:
+            - eap-tls
+        family:
+          type: array
+          items:
+            type: string
+          description: Client device family values that must match the request
+        mfg:
+          type: array
+          items:
+            type: string
+          description: Client device manufacturer values that must match the request
+        model:
+          type: array
+          items:
+            type: string
+          description: Client device model values that must match the request
+        nactags:
+          type: array
+          items:
+            type: string
+          description: NAC tag IDs whose match criteria must be satisfied by the request
+          examples:
+          - - 041d5d36-716c-4cfb-4988-3857c6aa14a2
+            - a809a97f-d599-f812-eb8c-c3f84aabf6ba
+        os_type:
+          type: array
+          items:
+            type: string
+          description: Client OS type values that must match the request
+        port_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/nac_rule_matching_port_type'
+          description: Wired or wireless access types that must match the request
+          examples:
+          - - wired
+        site_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: Site IDs where the rule criteria apply
+          examples:
+          - - bb19fc3e-4124-4b57-80d9-c3f6edce47c4
+            - bb19fc3e-6564-4b57-80d9-c3f6edce47c1
+        sitegroup_ids:
+          type: array
+          items:
+            type: string
+            contentEncoding: uuid
+          description: Site group IDs where the rule criteria apply
+          examples:
+          - - bb19fc3e-4124-4b57-80d9-c3f6edce47c4
+            - bb19fc3e-6564-4b57-80d9-c3f6edce47c1
+        vendor:
+          type: array
+          items:
+            type: string
+          description: Client device vendor values that must match the request
+      description: Criteria that must not match for the NAC rule to apply
+    nac_rule_matching_port_type:
+      title: nac_rule_matching_port_type
       enum:
-      - allow
-      - block
+      - wired
+      - wireless
       type: string
-      description: Allow or block decision applied when the NAC rule matches
-      examples:
-      - allow
+      description: 'Port attachment type matched by a NAC rule. enum: `wired`, `wireless`'
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
     response_http404:
       title: response_http404
       type: object
@@ -1223,165 +1363,25 @@ components:
             type: string
           description: Client device vendor values that must match the request
       description: Criteria that must match for the NAC rule to apply
-    nac_rule:
-      title: nac_rule
-      required:
-      - action
-      - name
+    response_http400:
+      title: response_http400
       type: object
       properties:
-        action:
-          allOf:
-          - $ref: '#/components/schemas/nac_rule_action2'
-          - description: Allow or block decision applied when the NAC rule matches
-            examples:
-            - allow
-        apply_tags:
-          type: array
-          items:
-            type: string
-          description: NAC tag IDs to include in the Access-Accept when the rule allows access
-          examples:
-          - - c049dfcd-0c73-5014-1c64-062e9903f1e5
-        created_time:
-          type: number
-          description: Epoch timestamp when the NAC rule was created
-          readOnly: true
-        dry_run:
-          type: boolean
-          description: Whether the NAC rule is in dry-run mode, where matches are logged but the action is not enforced
-        enabled:
-          type: boolean
-          description: Whether the NAC rule is evaluated during policy matching
-          default: true
-        guest_auth_state:
-          allOf:
-          - $ref: '#/components/schemas/nac_rule_guest_auth_state2'
-          - description: 'Guest portal authorization state condition for the rule. enum: `authorized`, `unknown`.'
-            examples:
-            - authorized
-        id:
+        detail:
           type: string
-          description: Unique identifier of the NAC rule
-          contentEncoding: uuid
-          readOnly: true
+          description: Human-readable explanation of the bad request error
           examples:
-          - 53f10664-3ce8-4c27-b382-0ef66432349f
-        matching:
-          allOf:
-          - $ref: '#/components/schemas/nac_rule_matching3'
-          - description: Criteria that must match for the NAC rule to apply
-        modified_time:
-          type: number
-          description: Epoch timestamp when the NAC rule was last modified
-          readOnly: true
-        name:
-          type: string
-          description: Human-readable name of the NAC rule
-        not_matching:
-          allOf:
-          - $ref: '#/components/schemas/nac_rule_matching1'
-          - description: Criteria that must not match for the NAC rule to apply
-        order:
-          minimum: 0
-          type: integer
-          description: Rule priority; lower values are evaluated with higher priority
-          contentEncoding: int32
-          examples:
-          - 1
-        org_id:
-          type: string
-          description: Org identifier that owns the NAC rule
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
-      description: NAC authentication policy rule that matches request criteria and applies an allow or block action
-    nac_rule_matching1:
-      title: nac_rule_matching1
-      type: object
-      properties:
-        auth_type:
-          allOf:
-          - $ref: '#/components/schemas/nac_auth_type3'
-          - description: 'NAC authentication method that must match the request. enum: `cert`, `device-auth`, `eap-teap`, `eap-tls`, `eap-ttls`, `idp`, `mab`, `eap-peap`.'
-            examples:
-            - eap-tls
-        family:
-          type: array
-          items:
-            type: string
-          description: Client device family values that must match the request
-        mfg:
-          type: array
-          items:
-            type: string
-          description: Client device manufacturer values that must match the request
-        model:
-          type: array
-          items:
-            type: string
-          description: Client device model values that must match the request
-        nactags:
-          type: array
-          items:
-            type: string
-          description: NAC tag IDs whose match criteria must be satisfied by the request
-          examples:
-          - - 041d5d36-716c-4cfb-4988-3857c6aa14a2
-            - a809a97f-d599-f812-eb8c-c3f84aabf6ba
-        os_type:
-          type: array
-          items:
-            type: string
-          description: Client OS type values that must match the request
-        port_types:
-          type: array
-          items:
-            $ref: '#/components/schemas/nac_rule_matching_port_type'
-          description: Wired or wireless access types that must match the request
-          examples:
-          - - wired
-        site_ids:
-          type: array
-          items:
-            type: string
-            contentEncoding: uuid
-          description: Site IDs where the rule criteria apply
-          examples:
-          - - bb19fc3e-4124-4b57-80d9-c3f6edce47c4
-            - bb19fc3e-6564-4b57-80d9-c3f6edce47c1
-        sitegroup_ids:
-          type: array
-          items:
-            type: string
-            contentEncoding: uuid
-          description: Site group IDs where the rule criteria apply
-          examples:
-          - - bb19fc3e-4124-4b57-80d9-c3f6edce47c4
-            - bb19fc3e-6564-4b57-80d9-c3f6edce47c1
-        vendor:
-          type: array
-          items:
-            type: string
-          description: Client device vendor values that must match the request
-      description: Criteria that must not match for the NAC rule to apply
-    nac_rule_guest_auth_state2:
-      title: nac_rule_guest_auth_state2
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    nac_rule_action2:
+      title: nac_rule_action2
       enum:
-      - authorized
-      - unknown
+      - allow
+      - block
       type: string
-      description: 'Guest portal authorization state condition for the rule. enum: `authorized`, `unknown`.'
+      description: Allow or block decision applied when the NAC rule matches
       examples:
-      - authorized
-    nac_rule_matching_port_type:
-      title: nac_rule_matching_port_type
-      enum:
-      - wired
-      - wireless
-      type: string
-      description: 'Port attachment type matched by a NAC rule. enum: `wired`, `wireless`'
+      - allow
   securitySchemes:
     apiToken:
       type: apiKey

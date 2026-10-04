@@ -711,6 +711,71 @@ components:
           description: Number of map floorplans assigned during the map import
           contentEncoding: int32
       description: Counts summarizing assignments made during the map import
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_map_import_ap:
+      title: response_map_import_ap
+      required:
+      - action
+      - floorplan_id
+      - mac
+      - map_id
+      - orientation
+      type: object
+      properties:
+        action:
+          allOf:
+          - $ref: '#/components/schemas/response_map_import_ap_action2'
+          - description: 'Import action applied to this AP. enum: `assigned-named-placed`, `assigned-placed`, `ignored`, `named-placed`, `placed`.'
+        floorplan_id:
+          type: string
+          description: Floorplan identifier where the AP placement was imported
+          contentEncoding: uuid
+        height:
+          type: number
+          description: Mounting height for the AP on the imported floorplan
+        mac:
+          type: string
+          description: AP MAC address matched from the import file
+        map_id:
+          type: string
+          description: Map identifier associated with the imported AP placement
+          contentEncoding: uuid
+        orientation:
+          type: integer
+          description: AP orientation in degrees on the imported floorplan
+          contentEncoding: int32
+        reason:
+          type: string
+          description: Explanation of why the AP import action was not completed, when provided
+      description: AP placement result from a map import
+    map_import_json_vendor_name2:
+      title: map_import_json_vendor_name2
+      enum:
+      - ekahau
+      - ibwave
+      type: string
+      description: 'Map import vendor for the uploaded JSON. enum: `ekahau`, `ibwave`.'
+      examples:
+      - ekahau
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
     response_map_import:
       title: response_map_import
       required:
@@ -748,26 +813,15 @@ components:
           - $ref: '#/components/schemas/response_map_import_summary'
           - description: Counts summarizing assignments made during the map import
       description: Result of importing map files and matching AP placements
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
+    map_org_import_file_json_vendor_name2:
+      title: map_org_import_file_json_vendor_name2
+      enum:
+      - ekahau
+      - ibwave
+      type: string
+      description: 'Map import vendor for the uploaded file. enum: `ekahau`, `ibwave`.'
+      examples:
+      - ekahau
     response_http429:
       title: response_http429
       type: object
@@ -778,15 +832,14 @@ components:
           examples:
           - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
       description: Standard HTTP 429 rate limit error response
-    map_import_json_vendor_name2:
-      title: map_import_json_vendor_name2
-      enum:
-      - ekahau
-      - ibwave
-      type: string
-      description: 'Map import vendor for the uploaded JSON. enum: `ekahau`, `ibwave`.'
-      examples:
-      - ekahau
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
     response_map_import_ap_action2:
       title: response_map_import_ap_action2
       enum:
@@ -797,6 +850,31 @@ components:
       - placed
       type: string
       description: 'Import action applied to this AP. enum: `assigned-named-placed`, `assigned-placed`, `ignored`, `named-placed`, `placed`.'
+    map_import_json1:
+      title: map_import_json1
+      required:
+      - vendor_name
+      type: object
+      properties:
+        import_all_floorplans:
+          type: boolean
+          description: Whether to import all floorplans from the uploaded map JSON
+          default: false
+        import_height:
+          type: boolean
+          description: Whether to import height metadata from the uploaded map JSON
+          default: true
+        import_orientation:
+          type: boolean
+          description: Whether to import orientation metadata from the uploaded map JSON
+          default: true
+        vendor_name:
+          allOf:
+          - $ref: '#/components/schemas/map_import_json_vendor_name2'
+          - description: 'Map import vendor for the uploaded JSON. enum: `ekahau`, `ibwave`.'
+            examples:
+            - ekahau
+      description: Import options for the site map file
     response_map_import_floorplan:
       title: response_map_import_floorplan
       required:
@@ -827,33 +905,16 @@ components:
           type: string
           description: Explanation of why the floorplan import action was not completed, when provided
       description: Floorplan result from a map import
-    response_http401:
-      title: response_http401
+    response_http400:
+      title: response_http400
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the authentication error
+          description: Human-readable explanation of the bad request error
           examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    map_org_import_file_json_vendor_name2:
-      title: map_org_import_file_json_vendor_name2
-      enum:
-      - ekahau
-      - ibwave
-      type: string
-      description: 'Map import vendor for the uploaded file. enum: `ekahau`, `ibwave`.'
-      examples:
-      - ekahau
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
     map_org_import_file_json2:
       title: map_org_import_file_json2
       required:
@@ -886,67 +947,6 @@ components:
             examples:
             - ekahau
       description: Import options for the organization map file
-    map_import_json1:
-      title: map_import_json1
-      required:
-      - vendor_name
-      type: object
-      properties:
-        import_all_floorplans:
-          type: boolean
-          description: Whether to import all floorplans from the uploaded map JSON
-          default: false
-        import_height:
-          type: boolean
-          description: Whether to import height metadata from the uploaded map JSON
-          default: true
-        import_orientation:
-          type: boolean
-          description: Whether to import orientation metadata from the uploaded map JSON
-          default: true
-        vendor_name:
-          allOf:
-          - $ref: '#/components/schemas/map_import_json_vendor_name2'
-          - description: 'Map import vendor for the uploaded JSON. enum: `ekahau`, `ibwave`.'
-            examples:
-            - ekahau
-      description: Import options for the site map file
-    response_map_import_ap:
-      title: response_map_import_ap
-      required:
-      - action
-      - floorplan_id
-      - mac
-      - map_id
-      - orientation
-      type: object
-      properties:
-        action:
-          allOf:
-          - $ref: '#/components/schemas/response_map_import_ap_action2'
-          - description: 'Import action applied to this AP. enum: `assigned-named-placed`, `assigned-placed`, `ignored`, `named-placed`, `placed`.'
-        floorplan_id:
-          type: string
-          description: Floorplan identifier where the AP placement was imported
-          contentEncoding: uuid
-        height:
-          type: number
-          description: Mounting height for the AP on the imported floorplan
-        mac:
-          type: string
-          description: AP MAC address matched from the import file
-        map_id:
-          type: string
-          description: Map identifier associated with the imported AP placement
-          contentEncoding: uuid
-        orientation:
-          type: integer
-          description: AP orientation in degrees on the imported floorplan
-          contentEncoding: int32
-        reason:
-          type: string
-          description: Explanation of why the AP import action was not completed, when provided
-      description: AP placement result from a map import
   securitySchemes:
     apiToken:
       type: apiKey

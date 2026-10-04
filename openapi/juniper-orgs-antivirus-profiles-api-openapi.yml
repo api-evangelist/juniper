@@ -1108,24 +1108,34 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
-    avprofile_fallback_action2:
-      title: avprofile_fallback_action2
-      enum:
-      - block
-      - log-and-permit
-      - permit
-      type: string
-      description: 'Action to take when antivirus scanning cannot complete. enum: `block`, `log-and-permit`, `permit`.'
-    response_http400:
-      title: response_http400
+    response_http401:
+      title: response_http401
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the bad request error
+          description: Human-readable explanation of the authentication error
           examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
     avprofile:
       title: avprofile
       required:
@@ -1194,34 +1204,6 @@ components:
             type: string
           description: Allowed URL entries exempted from antivirus scanning
       description: Antivirus scanning profile with protocols, limits, and whitelist settings
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
     avprofile_protocol:
       title: avprofile_protocol
       enum:
@@ -1232,6 +1214,24 @@ components:
       - smtp
       type: string
       description: 'Protocol that can be inspected by an antivirus profile. enum: `ftp`, `http`, `imap`, `pop3`, `smtp`'
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    avprofile_fallback_action2:
+      title: avprofile_fallback_action2
+      enum:
+      - block
+      - log-and-permit
+      - permit
+      type: string
+      description: 'Action to take when antivirus scanning cannot complete. enum: `block`, `log-and-permit`, `permit`.'
   securitySchemes:
     apiToken:
       type: apiKey

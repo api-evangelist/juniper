@@ -271,6 +271,33 @@ paths:
       deprecated: false
 components:
   schemas:
+    service_policy_appqoe1:
+      title: service_policy_appqoe1
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether application QoE is enabled for the service policy
+          default: false
+      description: Application QoE settings applied by this service policy
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    service_policy_ewf_rule_profile2:
+      title: service_policy_ewf_rule_profile2
+      enum:
+      - critical
+      - standard
+      - strict
+      type: string
+      description: 'Enhanced web filtering profile applied by this rule. enum: `critical`, `standard`, `strict`.'
     org_service_policy:
       title: org_service_policy
       type: object
@@ -352,6 +379,114 @@ components:
             type: string
           description: Tenant names matched by this service policy
       description: Organization-level service policy that allows or denies traffic for tenants and services
+    service_policy_ssl_proxy1:
+      title: service_policy_ssl_proxy1
+      type: object
+      properties:
+        ciphers_category:
+          allOf:
+          - $ref: '#/components/schemas/ssl_proxy_ciphers_category2'
+          - description: 'Allowed cipher strength category for SSL proxy inspection. enum: `medium`, `strong`, `weak`.'
+        enabled:
+          type: boolean
+          description: Whether SSL proxy inspection is enabled for the service policy
+          default: false
+      description: SSL proxy inspection settings applied by this service policy
+    service_policy_ewf_rule:
+      title: service_policy_ewf_rule
+      type: object
+      properties:
+        alert_only:
+          type: boolean
+          description: Whether matching enhanced web filtering traffic is logged without being blocked
+        block_message:
+          type: string
+          description: Message returned when enhanced web filtering blocks a request
+          examples:
+          - Access to this URL Category has been blocked
+        enabled:
+          type: boolean
+          description: Whether this enhanced web filtering rule is enabled
+          default: false
+        profile:
+          allOf:
+          - $ref: '#/components/schemas/service_policy_ewf_rule_profile2'
+          - description: 'Enhanced web filtering profile applied by this rule. enum: `critical`, `standard`, `strict`.'
+      description: Enhanced web filtering rule applied by a service policy
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    service_policy_secintel1:
+      title: service_policy_secintel1
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether SecIntel inspection is enabled for the service policy
+          default: false
+        profile:
+          allOf:
+          - $ref: '#/components/schemas/service_policy_secintel_profile2'
+          - description: 'Protection level applied by SecIntel inspection. enum: `default`, `standard`, `strict`.'
+        secintelprofile_id:
+          type: string
+          description: Organization-level SecIntel profile ID; takes precedence over inline `profile` settings
+      description: Juniper SecIntel threat intelligence settings applied by this service policy
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    idp_config2:
+      title: idp_config2
+      type: object
+      properties:
+        alert_only:
+          type: boolean
+          description: Whether to alert without enforcing IDP prevention actions
+        enabled:
+          type: boolean
+          description: Whether IDP inspection is enabled for the policy
+          default: false
+        idpprofile_id:
+          type: string
+          description: org_level IDP Profile can be used, this takes precedence over `profile`
+          contentEncoding: uuid
+          examples:
+          - 89b9d208-84a4-fa8f-af57-78f92c639cf2
+        profile:
+          type: string
+          description: 'enum: `Custom`, `strict` (default), `standard` or keys from idp_profiles'
+          default: strict
+      description: Intrusion detection and prevention settings applied by this service policy
+    ssl_proxy_ciphers_category2:
+      title: ssl_proxy_ciphers_category2
+      enum:
+      - medium
+      - strong
+      - weak
+      type: string
+      description: 'Allowed cipher strength category for SSL proxy inspection. enum: `medium`, `strong`, `weak`.'
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
     allow_deny2:
       title: allow_deny2
       enum:
@@ -359,16 +494,6 @@ components:
       - deny
       type: string
       description: Allow or deny action for traffic matched by this service policy
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
     service_policy_antivirus1:
       title: service_policy_antivirus1
       type: object
@@ -412,80 +537,6 @@ components:
           examples:
           - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
       description: Standard HTTP 400 bad request error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    service_policy_secintel1:
-      title: service_policy_secintel1
-      type: object
-      properties:
-        enabled:
-          type: boolean
-          description: Whether SecIntel inspection is enabled for the service policy
-          default: false
-        profile:
-          allOf:
-          - $ref: '#/components/schemas/service_policy_secintel_profile2'
-          - description: 'Protection level applied by SecIntel inspection. enum: `default`, `standard`, `strict`.'
-        secintelprofile_id:
-          type: string
-          description: Organization-level SecIntel profile ID; takes precedence over inline `profile` settings
-      description: Juniper SecIntel threat intelligence settings applied by this service policy
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    ssl_proxy_ciphers_category2:
-      title: ssl_proxy_ciphers_category2
-      enum:
-      - medium
-      - strong
-      - weak
-      type: string
-      description: 'Allowed cipher strength category for SSL proxy inspection. enum: `medium`, `strong`, `weak`.'
-    service_policy_ewf_rule_profile2:
-      title: service_policy_ewf_rule_profile2
-      enum:
-      - critical
-      - standard
-      - strict
-      type: string
-      description: 'Enhanced web filtering profile applied by this rule. enum: `critical`, `standard`, `strict`.'
-    service_policy_appqoe1:
-      title: service_policy_appqoe1
-      type: object
-      properties:
-        enabled:
-          type: boolean
-          description: Whether application QoE is enabled for the service policy
-          default: false
-      description: Application QoE settings applied by this service policy
-    service_policy_ssl_proxy1:
-      title: service_policy_ssl_proxy1
-      type: object
-      properties:
-        ciphers_category:
-          allOf:
-          - $ref: '#/components/schemas/ssl_proxy_ciphers_category2'
-          - description: 'Allowed cipher strength category for SSL proxy inspection. enum: `medium`, `strong`, `weak`.'
-        enabled:
-          type: boolean
-          description: Whether SSL proxy inspection is enabled for the service policy
-          default: false
-      description: SSL proxy inspection settings applied by this service policy
     service_policy_aamw_profile2:
       title: service_policy_aamw_profile2
       enum:
@@ -494,57 +545,6 @@ components:
       - standard
       type: string
       description: 'Built-in advanced anti-malware inspection profile to apply. enum: `docsonly`, `executables`, `standard`.'
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    service_policy_ewf_rule:
-      title: service_policy_ewf_rule
-      type: object
-      properties:
-        alert_only:
-          type: boolean
-          description: Whether matching enhanced web filtering traffic is logged without being blocked
-        block_message:
-          type: string
-          description: Message returned when enhanced web filtering blocks a request
-          examples:
-          - Access to this URL Category has been blocked
-        enabled:
-          type: boolean
-          description: Whether this enhanced web filtering rule is enabled
-          default: false
-        profile:
-          allOf:
-          - $ref: '#/components/schemas/service_policy_ewf_rule_profile2'
-          - description: 'Enhanced web filtering profile applied by this rule. enum: `critical`, `standard`, `strict`.'
-      description: Enhanced web filtering rule applied by a service policy
-    idp_config2:
-      title: idp_config2
-      type: object
-      properties:
-        alert_only:
-          type: boolean
-          description: Whether to alert without enforcing IDP prevention actions
-        enabled:
-          type: boolean
-          description: Whether IDP inspection is enabled for the policy
-          default: false
-        idpprofile_id:
-          type: string
-          description: org_level IDP Profile can be used, this takes precedence over `profile`
-          contentEncoding: uuid
-          examples:
-          - 89b9d208-84a4-fa8f-af57-78f92c639cf2
-        profile:
-          type: string
-          description: 'enum: `Custom`, `strict` (default), `standard` or keys from idp_profiles'
-          default: strict
-      description: Intrusion detection and prevention settings applied by this service policy
     service_policy_secintel_profile2:
       title: service_policy_secintel_profile2
       enum:

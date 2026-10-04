@@ -2924,47 +2924,6 @@ paths:
       deprecated: false
 components:
   schemas:
-    insight_metrics:
-      title: insight_metrics
-      required:
-      - end
-      - interval
-      - start
-      type: object
-      properties:
-        end:
-          type: integer
-          description: Window end timestamp for the returned insight metrics
-          contentEncoding: int32
-        interval:
-          type: integer
-          description: Aggregation interval used for the metric results
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of insight metric result items returned
-          contentEncoding: int32
-        results:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/insight_metrics_results_item'
-          description: Metric result values for the requested insight metric
-        start:
-          type: integer
-          description: Window start timestamp for the returned insight metrics
-          contentEncoding: int32
-      description: Insight metric response for a requested time range and aggregation interval
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
     response_device_metrics:
       title: response_device_metrics
       required:
@@ -3006,26 +2965,16 @@ components:
           description: Epoch timestamp for the start of the metric query window
           contentEncoding: int32
       description: Time-series insight metric response for a device
-    response_http400:
-      title: response_http400
+    response_http403:
+      title: response_http403
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the bad request error
+          description: Human-readable explanation of the permission error
           examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
     response_http401:
       title: response_http401
       type: object
@@ -3042,6 +2991,47 @@ components:
       - type: integer
         contentEncoding: int32
       description: Device metric result value, returned as a string or integer
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    insight_metrics:
+      title: insight_metrics
+      required:
+      - end
+      - interval
+      - start
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Window end timestamp for the returned insight metrics
+          contentEncoding: int32
+        interval:
+          type: integer
+          description: Aggregation interval used for the metric results
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of insight metric result items returned
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/insight_metrics_results_item'
+          description: Metric result values for the requested insight metric
+        start:
+          type: integer
+          description: Window start timestamp for the returned insight metrics
+          contentEncoding: int32
+      description: Insight metric response for a requested time range and aggregation interval
     response_http404:
       title: response_http404
       type: object
@@ -3050,6 +3040,16 @@ components:
           type: string
           description: Missing resource identifier, when the API includes one
       description: Standard HTTP 404 not found error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
     insight_metrics_results_item:
       anyOf:
       - type: number

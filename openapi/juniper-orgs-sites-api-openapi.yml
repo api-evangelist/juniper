@@ -1296,185 +1296,16 @@ paths:
       deprecated: false
 components:
   schemas:
-    count_result:
-      title: count_result
-      required:
-      - count
+    response_http403:
+      title: response_http403
       type: object
       properties:
-        count:
-          type: integer
-          description: Number of matching items for the distinct value or values in this result
-          contentEncoding: int32
-      additionalProperties:
-        type: string
-      description: Count result row with the matching distinct field values
-    response_site_search_item:
-      title: response_site_search_item
-      required:
-      - auto_upgrade_enabled
-      - auto_upgrade_version
-      - honeypot_enabled
-      - id
-      - name
-      - org_id
-      - site_id
-      - timestamp
-      - timezone
-      - vna_enabled
-      - wifi_enabled
-      type: object
-      properties:
-        auto_upgrade_enabled:
-          type: boolean
-          description: Whether automatic firmware upgrade is enabled for the site
-        auto_upgrade_version:
+        detail:
           type: string
-          description: Desired automatic firmware upgrade version track for the site
-          readOnly: true
-        country_code:
-          type:
-          - string
-          - 'null'
-          description: Country code configured for the site, or null if unset
-          readOnly: true
-        honeypot_enabled:
-          type: boolean
-          description: Whether honeypot detection is enabled for the site
-        id:
-          type: string
-          description: Unique identifier for the site search result
-          contentEncoding: uuid
-          readOnly: true
+          description: Human-readable explanation of the permission error
           examples:
-          - 53f10664-3ce8-4c27-b382-0ef66432349f
-        name:
-          type: string
-          description: Display name of the site
-          readOnly: true
-        org_id:
-          type: string
-          description: Organization that owns the site
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
-        site_id:
-          type: string
-          description: Site identifier for this search result
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
-        timestamp:
-          type: number
-          description: Epoch timestamp, in seconds, for this site search result
-          readOnly: true
-        timezone:
-          type: string
-          description: Time zone configured for the site
-          readOnly: true
-        vna_enabled:
-          type: boolean
-          description: Whether Virtual Network Assistant is enabled for the site
-        wifi_enabled:
-          type: boolean
-          description: Whether Wi-Fi service is enabled for the site
-      description: Site record returned by organization site search
-    response_count:
-      title: response_count
-      required:
-      - distinct
-      - end
-      - limit
-      - results
-      - start
-      - total
-      type: object
-      properties:
-        distinct:
-          type: string
-          description: Field used to group the count results
-        end:
-          type: integer
-          description: Search window end timestamp for the count request, in epoch seconds
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of distinct count results requested
-          contentEncoding: int32
-        results:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/count_result'
-          description: Count results grouped by the distinct field
-        start:
-          type: integer
-          description: Search window start timestamp for the count request, in epoch seconds
-          contentEncoding: int32
-        total:
-          type: integer
-          description: Number of distinct result buckets returned
-          contentEncoding: int32
-      description: Distinct count response for time-bounded search results
-    org_sites_count_distinct:
-      title: org_sites_count_distinct
-      enum:
-      - analytic_enabled
-      - app_waking
-      - asset_enabled
-      - auto_upgrade_enabled
-      - auto_upgrade_version
-      - country_code
-      - honeypot_enabled
-      - id
-      - locate_unconnected
-      - mesh_enabled
-      - name
-      - remote_syslog_enabled
-      - rogue_enabled
-      - rtsa_enabled
-      - vna_enabled
-      - wifi_enabled
-      type: string
-      description: 'enum: `analytic_enabled`, `app_waking`, `asset_enabled`, `auto_upgrade_enabled`, `auto_upgrade_version`, `country_code`, `honeypot_enabled`, `id`, `locate_unconnected`, `mesh_enabled`, `name`, `remote_syslog_enabled`, `rogue_enabled`, `rtsa_enabled`, `vna_enabled`, `wifi_enabled`'
-    response_site_search:
-      title: response_site_search
-      required:
-      - end
-      - limit
-      - results
-      - start
-      - total
-      type: object
-      properties:
-        end:
-          type: integer
-          description: Epoch timestamp, in seconds, for the end of the site search window
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of site records returned in this page
-          contentEncoding: int32
-        next:
-          type: string
-          description: URL for retrieving the next page of site search results
-        results:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/response_site_search_item'
-          description: Site records matching the organization search filters
-        start:
-          type: integer
-          description: Epoch timestamp, in seconds, for the start of the site search window
-          contentEncoding: int32
-        total:
-          type: integer
-          description: Number of site records matching the search filters across all pages
-          contentEncoding: int32
-      description: Paginated response for organization site search results
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
     site:
       title: site
       required:
@@ -1609,36 +1440,6 @@ components:
           contentEncoding: int32
           default: 0
       description: Site configuration and metadata within an organization
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
     response_http401:
       title: response_http401
       type: object
@@ -1649,6 +1450,98 @@ components:
           examples:
           - Authentication credentials were not provided.
       description: Standard HTTP 401 authentication error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_site_search_item:
+      title: response_site_search_item
+      required:
+      - auto_upgrade_enabled
+      - auto_upgrade_version
+      - honeypot_enabled
+      - id
+      - name
+      - org_id
+      - site_id
+      - timestamp
+      - timezone
+      - vna_enabled
+      - wifi_enabled
+      type: object
+      properties:
+        auto_upgrade_enabled:
+          type: boolean
+          description: Whether automatic firmware upgrade is enabled for the site
+        auto_upgrade_version:
+          type: string
+          description: Desired automatic firmware upgrade version track for the site
+          readOnly: true
+        country_code:
+          type:
+          - string
+          - 'null'
+          description: Country code configured for the site, or null if unset
+          readOnly: true
+        honeypot_enabled:
+          type: boolean
+          description: Whether honeypot detection is enabled for the site
+        id:
+          type: string
+          description: Unique identifier for the site search result
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        name:
+          type: string
+          description: Display name of the site
+          readOnly: true
+        org_id:
+          type: string
+          description: Organization that owns the site
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        site_id:
+          type: string
+          description: Site identifier for this search result
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        timestamp:
+          type: number
+          description: Epoch timestamp, in seconds, for this site search result
+          readOnly: true
+        timezone:
+          type: string
+          description: Time zone configured for the site
+          readOnly: true
+        vna_enabled:
+          type: boolean
+          description: Whether Virtual Network Assistant is enabled for the site
+        wifi_enabled:
+          type: boolean
+          description: Whether Wi-Fi service is enabled for the site
+      description: Site record returned by organization site search
     response_http404:
       title: response_http404
       type: object
@@ -1657,6 +1550,63 @@ components:
           type: string
           description: Missing resource identifier, when the API includes one
       description: Standard HTTP 404 not found error response
+    org_sites_count_distinct:
+      title: org_sites_count_distinct
+      enum:
+      - analytic_enabled
+      - app_waking
+      - asset_enabled
+      - auto_upgrade_enabled
+      - auto_upgrade_version
+      - country_code
+      - honeypot_enabled
+      - id
+      - locate_unconnected
+      - mesh_enabled
+      - name
+      - remote_syslog_enabled
+      - rogue_enabled
+      - rtsa_enabled
+      - vna_enabled
+      - wifi_enabled
+      type: string
+      description: 'enum: `analytic_enabled`, `app_waking`, `asset_enabled`, `auto_upgrade_enabled`, `auto_upgrade_version`, `country_code`, `honeypot_enabled`, `id`, `locate_unconnected`, `mesh_enabled`, `name`, `remote_syslog_enabled`, `rogue_enabled`, `rtsa_enabled`, `vna_enabled`, `wifi_enabled`'
+    response_site_search:
+      title: response_site_search
+      required:
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Epoch timestamp, in seconds, for the end of the site search window
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of site records returned in this page
+          contentEncoding: int32
+        next:
+          type: string
+          description: URL for retrieving the next page of site search results
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/response_site_search_item'
+          description: Site records matching the organization search filters
+        start:
+          type: integer
+          description: Epoch timestamp, in seconds, for the start of the site search window
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of site records matching the search filters across all pages
+          contentEncoding: int32
+      description: Paginated response for organization site search results
     lat_lng2:
       title: lat_lng2
       required:
@@ -1675,6 +1625,56 @@ components:
           examples:
           - -122.032946
       description: Latitude and longitude for the site location
+    response_count:
+      title: response_count
+      required:
+      - distinct
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        distinct:
+          type: string
+          description: Field used to group the count results
+        end:
+          type: integer
+          description: Search window end timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of distinct count results requested
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/count_result'
+          description: Count results grouped by the distinct field
+        start:
+          type: integer
+          description: Search window start timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of distinct result buckets returned
+          contentEncoding: int32
+      description: Distinct count response for time-bounded search results
+    count_result:
+      title: count_result
+      required:
+      - count
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of matching items for the distinct value or values in this result
+          contentEncoding: int32
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
   securitySchemes:
     apiToken:
       type: apiKey

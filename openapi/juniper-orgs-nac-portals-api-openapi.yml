@@ -2456,29 +2456,6 @@ paths:
       deprecated: false
 components:
   schemas:
-    nac_portal_type2:
-      title: nac_portal_type2
-      enum:
-      - guest_admin
-      - guest_portal
-      - marvis_client
-      type: string
-      description: 'NAC portal mode, such as guest admin, guest portal, or Marvis client onboarding. enum: `guest_admin`, `guest_portal`, `marvis_client`.'
-    nac_portal_eap_type2:
-      title: nac_portal_eap_type2
-      enum:
-      - wpa2
-      - wpa3
-      type: string
-      description: 'EAP mode used when onboarding wireless clients through the NAC portal. enum: `wpa2`, `wpa3`.'
-    portal_template_alignment4:
-      title: portal_template_alignment4
-      enum:
-      - center
-      - left
-      - right
-      type: string
-      description: 'Text and content alignment for the NAC portal page. enum: `center`, `left`, `right`.'
     nac_portal_guest_portal_auth2:
       title: nac_portal_guest_portal_auth2
       enum:
@@ -2487,6 +2464,19 @@ components:
       - none
       type: string
       description: 'Mode presented by the NAC guest portal for user authentication. enum: `external`, `multi`, `none`.'
+    response_sso_failure_search:
+      title: response_sso_failure_search
+      required:
+      - results
+      type: object
+      properties:
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/response_sso_failure_search_item'
+          description: SSO authentication failure records returned by the request
+      description: Response containing recent SSO authentication failure records
     nac_portal_sso2:
       title: nac_portal_sso2
       type: object
@@ -2524,19 +2514,107 @@ components:
           type: boolean
           description: Whether to include the matched SSO role in the issued certificate subject for later policy matching
       description: SAML SSO settings for NAC portal authentication and role mapping
-    response_sso_failure_search:
-      title: response_sso_failure_search
-      required:
-      - results
+    response_http404:
+      title: response_http404
       type: object
       properties:
-        results:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/response_sso_failure_search_item'
-          description: SSO authentication failure records returned by the request
-      description: Response containing recent SSO authentication failure records
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    saml_metadata:
+      title: saml_metadata
+      type: object
+      properties:
+        acs_url:
+          type: string
+          description: If `idp_type`==`saml`, Assertion Consumer Service URL that receives SAML responses for this Mist SSO configuration
+          readOnly: true
+          examples:
+          - https://api.mist.com/api/v1/saml/llDfa13f/login
+        entity_id:
+          type: string
+          description: If `idp_type`==`saml`, service provider entity ID for this Mist SSO configuration
+          readOnly: true
+          examples:
+          - https://api.mist.com/api/v1/saml/llDfa13f/login
+        logout_url:
+          type: string
+          description: If `idp_type`==`saml`, Single Logout URL used by the identity provider to end the Mist SSO session
+          readOnly: true
+          examples:
+          - https://api.mist.com/api/v1/saml/llDfa13f/logout
+        metadata:
+          type: string
+          description: If `idp_type`==`saml`, service provider metadata XML for configuring the identity provider
+          readOnly: true
+          examples:
+          - <?xml version="1.0" encoding="UTF-8"?><md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" entityID="https://api.mist.com/api/v1/saml/llDfa13f/login" validUntil="2027-10-12T21:59:01Z" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"><md:SPSSODescriptor AuthnRequestsSigned="false" WantAssertionsSigned="true" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol"><md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</md:NameIDFormat><md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://api.mist.com/api/v1/saml/llDfa13f/login" index="0" isDefault="true"/></md:SPSSODescriptor></md:EntityDescriptor>
+        scim_base_url:
+          type: string
+          description: If `idp_type`==`oauth` and `scim_enabled`==`true`, SCIM base URL that the identity provider uses to send provisioning requests to Mist
+          examples:
+          - https://scim.nac-staging.mistsys.com/S_41b2525a-e8b8-4809-8168-f1d8dcbe9735/azure/4d72b1dc-7503-4717-81ea-80d0125b886e
+      description: Read-only SAML and SCIM metadata generated for an SSO configuration
+    nac_portal_sso_idp_sign_algo2:
+      title: nac_portal_sso_idp_sign_algo2
+      enum:
+      - sha1
+      - sha256
+      - sha384
+      - sha512
+      type: string
+      description: 'Signing algorithm expected for SAML assertions from the identity provider. enum: `sha1`, `sha256`, `sha384`, `sha512`.'
+    nac_portal_eap_type2:
+      title: nac_portal_eap_type2
+      enum:
+      - wpa2
+      - wpa3
+      type: string
+      description: 'EAP mode used when onboarding wireless clients through the NAC portal. enum: `wpa2`, `wpa3`.'
+    nac_portal_type2:
+      title: nac_portal_type2
+      enum:
+      - guest_admin
+      - guest_portal
+      - marvis_client
+      type: string
+      description: 'NAC portal mode, such as guest admin, guest portal, or Marvis client onboarding. enum: `guest_admin`, `guest_portal`, `marvis_client`.'
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    nac_portal_access_type2:
+      title: nac_portal_access_type2
+      enum:
+      - wireless
+      - wireless+wired
+      type: string
+      description: 'If `type`==`marvis_client`, whether onboarding applies to wireless clients or both wireless and wired clients. enum: `wireless`, `wireless+wired`.'
+    portal_template_alignment4:
+      title: portal_template_alignment4
+      enum:
+      - center
+      - left
+      - right
+      type: string
+      description: 'Text and content alignment for the NAC portal page. enum: `center`, `left`, `right`.'
     response_sso_failure_search_item:
       title: response_sso_failure_search_item
       required:
@@ -2556,29 +2634,73 @@ components:
           description: Epoch timestamp, in seconds, when the SSO authentication failure occurred
           readOnly: true
       description: SSO authentication failure record
-    nac_portal_sso_role_matching:
-      title: nac_portal_sso_role_matching
+    nac_portal_guest_portal2:
+      title: nac_portal_guest_portal2
       type: object
       properties:
-        assigned:
-          type: string
-          description: NAC portal role assigned when the SSO role value matches
+        auth:
+          allOf:
+          - $ref: '#/components/schemas/nac_portal_guest_portal_auth2'
+          - description: 'Mode presented by the NAC guest portal for user authentication. enum: `external`, `multi`, `none`.'
+        expire:
+          type: integer
+          description: If `auth`==`none` or `auth`==`multi`, whether to expire the guest after a certain time
+          contentEncoding: int32
           examples:
-          - user
-        match:
+          - 1440
+        external_portal_url:
           type: string
-          description: SSO role value to match from the SAML assertion
+          description: If `auth`==`external`, the URL to redirect the user to for authentication
           examples:
-          - Student
-      description: Mapping rule from an SSO role claim value to a NAC portal role
-    response_http404:
-      title: response_http404
+          - https://yourorg.com/external-guest-portal
+        force_reconnect:
+          type: boolean
+          description: Disconnect client (workaround for reauth issues)
+        forward:
+          type: boolean
+          description: If `auth`==`none` or `auth`==`multi`, whether to forward the user to the guest portal after authentication
+          examples:
+          - true
+        forward_url:
+          type: string
+          description: If `auth`==`none` or `auth`==`multi`, URL to forward the user to after authentication
+          examples:
+          - https://yourorg.com/guest-portal-redirect
+        max_num_devices:
+          maximum: 100
+          minimum: 0
+          type: integer
+          description: Maximum number of clients allowed per guest. 0 (default, unlimited), 1-100 range
+          contentEncoding: int32
+          default: 0
+          examples:
+          - 10
+        privacy:
+          type: boolean
+          description: If `auth`==`none` or `auth`==`multi`, whether to show the privacy policy
+          examples:
+          - true
+      description: Guest portal settings used when `type`==`guest_portal`
+    nac_portal_template:
+      title: nac_portal_template
       type: object
       properties:
-        id:
+        alignment:
+          allOf:
+          - $ref: '#/components/schemas/portal_template_alignment4'
+          - description: 'Text and content alignment for the NAC portal page. enum: `center`, `left`, `right`.'
+        color:
           type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
+          description: Primary color used by the NAC portal template
+          default: '#1074bc'
+        logo:
+          type: string
+          description: Custom logo custom logo with "data:image/png;base64," format. default null, uses Juniper Mist Logo.
+        poweredBy:
+          type: boolean
+          description: Whether to hide "Powered by Juniper Mist" and email footers
+          default: false
+      description: Visual template settings for a NAC portal
     response_http403:
       title: response_http403
       type: object
@@ -2589,33 +2711,6 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
-    nac_portal_access_type2:
-      title: nac_portal_access_type2
-      enum:
-      - wireless
-      - wireless+wired
-      type: string
-      description: 'If `type`==`marvis_client`, whether onboarding applies to wireless clients or both wireless and wired clients. enum: `wireless`, `wireless+wired`.'
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
     nac_portal:
       title: nac_portal
       type: object
@@ -2737,126 +2832,31 @@ components:
           examples:
           - https://guest-mistnac.mist.com/admin/51908ea7-dea7-4581-a578-f7320c4d5216/login
       description: NAC portal configuration for 802.1X onboarding, guest access, or Marvis client certificate provisioning
-    nac_portal_template:
-      title: nac_portal_template
+    nac_portal_sso_role_matching:
+      title: nac_portal_sso_role_matching
       type: object
       properties:
-        alignment:
-          allOf:
-          - $ref: '#/components/schemas/portal_template_alignment4'
-          - description: 'Text and content alignment for the NAC portal page. enum: `center`, `left`, `right`.'
-        color:
+        assigned:
           type: string
-          description: Primary color used by the NAC portal template
-          default: '#1074bc'
-        logo:
+          description: NAC portal role assigned when the SSO role value matches
+          examples:
+          - user
+        match:
           type: string
-          description: Custom logo custom logo with "data:image/png;base64," format. default null, uses Juniper Mist Logo.
-        poweredBy:
-          type: boolean
-          description: Whether to hide "Powered by Juniper Mist" and email footers
-          default: false
-      description: Visual template settings for a NAC portal
-    nac_portal_sso_idp_sign_algo2:
-      title: nac_portal_sso_idp_sign_algo2
-      enum:
-      - sha1
-      - sha256
-      - sha384
-      - sha512
-      type: string
-      description: 'Signing algorithm expected for SAML assertions from the identity provider. enum: `sha1`, `sha256`, `sha384`, `sha512`.'
-    nac_portal_guest_portal2:
-      title: nac_portal_guest_portal2
-      type: object
-      properties:
-        auth:
-          allOf:
-          - $ref: '#/components/schemas/nac_portal_guest_portal_auth2'
-          - description: 'Mode presented by the NAC guest portal for user authentication. enum: `external`, `multi`, `none`.'
-        expire:
-          type: integer
-          description: If `auth`==`none` or `auth`==`multi`, whether to expire the guest after a certain time
-          contentEncoding: int32
+          description: SSO role value to match from the SAML assertion
           examples:
-          - 1440
-        external_portal_url:
-          type: string
-          description: If `auth`==`external`, the URL to redirect the user to for authentication
-          examples:
-          - https://yourorg.com/external-guest-portal
-        force_reconnect:
-          type: boolean
-          description: Disconnect client (workaround for reauth issues)
-        forward:
-          type: boolean
-          description: If `auth`==`none` or `auth`==`multi`, whether to forward the user to the guest portal after authentication
-          examples:
-          - true
-        forward_url:
-          type: string
-          description: If `auth`==`none` or `auth`==`multi`, URL to forward the user to after authentication
-          examples:
-          - https://yourorg.com/guest-portal-redirect
-        max_num_devices:
-          maximum: 100
-          minimum: 0
-          type: integer
-          description: Maximum number of clients allowed per guest. 0 (default, unlimited), 1-100 range
-          contentEncoding: int32
-          default: 0
-          examples:
-          - 10
-        privacy:
-          type: boolean
-          description: If `auth`==`none` or `auth`==`multi`, whether to show the privacy policy
-          examples:
-          - true
-      description: Guest portal settings used when `type`==`guest_portal`
-    response_http401:
-      title: response_http401
+          - Student
+      description: Mapping rule from an SSO role claim value to a NAC portal role
+    response_http400:
+      title: response_http400
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the authentication error
+          description: Human-readable explanation of the bad request error
           examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    saml_metadata:
-      title: saml_metadata
-      type: object
-      properties:
-        acs_url:
-          type: string
-          description: If `idp_type`==`saml`, Assertion Consumer Service URL that receives SAML responses for this Mist SSO configuration
-          readOnly: true
-          examples:
-          - https://api.mist.com/api/v1/saml/llDfa13f/login
-        entity_id:
-          type: string
-          description: If `idp_type`==`saml`, service provider entity ID for this Mist SSO configuration
-          readOnly: true
-          examples:
-          - https://api.mist.com/api/v1/saml/llDfa13f/login
-        logout_url:
-          type: string
-          description: If `idp_type`==`saml`, Single Logout URL used by the identity provider to end the Mist SSO session
-          readOnly: true
-          examples:
-          - https://api.mist.com/api/v1/saml/llDfa13f/logout
-        metadata:
-          type: string
-          description: If `idp_type`==`saml`, service provider metadata XML for configuring the identity provider
-          readOnly: true
-          examples:
-          - <?xml version="1.0" encoding="UTF-8"?><md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" entityID="https://api.mist.com/api/v1/saml/llDfa13f/login" validUntil="2027-10-12T21:59:01Z" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"><md:SPSSODescriptor AuthnRequestsSigned="false" WantAssertionsSigned="true" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol"><md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</md:NameIDFormat><md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://api.mist.com/api/v1/saml/llDfa13f/login" index="0" isDefault="true"/></md:SPSSODescriptor></md:EntityDescriptor>
-        scim_base_url:
-          type: string
-          description: If `idp_type`==`oauth` and `scim_enabled`==`true`, SCIM base URL that the identity provider uses to send provisioning requests to Mist
-          examples:
-          - https://scim.nac-staging.mistsys.com/S_41b2525a-e8b8-4809-8168-f1d8dcbe9735/azure/4d72b1dc-7503-4717-81ea-80d0125b886e
-      description: Read-only SAML and SCIM metadata generated for an SSO configuration
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
   securitySchemes:
     apiToken:
       type: apiKey

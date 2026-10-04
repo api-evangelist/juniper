@@ -2526,6 +2526,38 @@ paths:
       deprecated: false
 components:
   schemas:
+    org_client_sessions_count_distinct:
+      title: org_client_sessions_count_distinct
+      enum:
+      - ap
+      - device
+      - hostname
+      - ip
+      - model
+      - os
+      - ssid
+      - vlan
+      type: string
+      description: 'enum: `ap`, `device`, `hostname`, `ip`, `model`, `os`, `ssid`, `vlan`'
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    site_client_events_count_distinct:
+      title: site_client_events_count_distinct
+      enum:
+      - band
+      - channel
+      - proto
+      - ssid
+      - type
+      - wlan_id
+      type: string
+      description: 'enum: `band`, `channel`, `proto`, `ssid`, `type`, `wlan_id`'
     count_result:
       title: count_result
       required:
@@ -2539,20 +2571,84 @@ components:
       additionalProperties:
         type: string
       description: Count result row with the matching distinct field values
-    org_clients_count_distinct:
-      title: org_clients_count_distinct
+    search_wireless_client_session:
+      title: search_wireless_client_session
+      required:
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        end:
+          type: number
+          description: Upper bound timestamp of the wireless client session search window, in epoch seconds
+        limit:
+          type: integer
+          description: Maximum number of wireless client session records returned by this page
+          contentEncoding: int32
+        next:
+          type: string
+          description: URL for the next page of wireless client session records, when more results are available
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/wireless_client_session'
+          description: Wireless client session records returned by the search response
+        start:
+          type: number
+          description: Lower bound timestamp of the wireless client session search window, in epoch seconds
+        total:
+          type: integer
+          description: Count of wireless client session records matching the search
+          contentEncoding: int32
+      description: Paginated response for wireless client session searches
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    dot11_band1:
+      title: dot11_band1
       enum:
-      - ap
-      - device
-      - hostname
-      - ip
-      - mac
-      - model
-      - os
-      - ssid
-      - vlan
+      - '24'
+      - '5'
+      - 5-dedicated
+      - 5-selectable
+      - '6'
+      - 6-dedicated
+      - 6-selectable
       type: string
-      description: 'enum: `ap`, `device`, `hostname`, `ip`, `mac`, `model`, `os`, `ssid`, `vlan`'
+      description: 'Radio band used for the wireless client event. enum: `24`, `5`, `5-dedicated`, `5-selectable`, `6`, `6-dedicated`, `6-selectable`.'
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    dot11_proto1:
+      title: dot11_proto1
+      enum:
+      - a
+      - ac
+      - ax
+      - b
+      - be
+      - g
+      - n
+      type: string
+      description: '802.11 protocol used by the client session. enum: `a`, `ac`, `ax`, `b`, `be`, `g`, `n`.'
     response_client_search:
       title: response_client_search
       required:
@@ -2587,6 +2683,230 @@ components:
           description: Number of wireless client records matching the search
           contentEncoding: int32
       description: Paginated wireless client search response
+    dot11_proto:
+      title: dot11_proto
+      enum:
+      - a
+      - ac
+      - ax
+      - b
+      - be
+      - g
+      - n
+      type: string
+      description: 'enum: `a`, `ac`, `ax`, `b`, `be`, `g`, `n`'
+    wireless_client_session:
+      title: wireless_client_session
+      required:
+      - ap
+      - band
+      - connect
+      - disconnect
+      - duration
+      - mac
+      - org_id
+      - site_id
+      - ssid
+      - timestamp
+      - wlan_id
+      type: object
+      properties:
+        ap:
+          type: string
+          description: MAC address of the access point associated with the client session
+          readOnly: true
+        band:
+          type: string
+          description: Radio band used by the client session
+          readOnly: true
+        client_manufacture:
+          type:
+          - string
+          - 'null'
+          description: Manufacturer reported for the client device, when available
+          readOnly: true
+        connect:
+          type: integer
+          description: Time when the client session connected, in epoch seconds
+          contentEncoding: int32
+          readOnly: true
+        disconnect:
+          type: integer
+          description: Time when the client session disconnected, in epoch seconds
+          contentEncoding: int32
+          readOnly: true
+        duration:
+          type: number
+          description: Length of the client session, in seconds
+          readOnly: true
+        for_site:
+          type: boolean
+          description: Whether this client session record is scoped to a site
+          readOnly: true
+        mac:
+          type: string
+          description: Client MAC address for the session
+          readOnly: true
+        org_id:
+          type: string
+          description: Organization associated with the client session
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        site_id:
+          type: string
+          description: Site associated with the client session
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        ssid:
+          type: string
+          description: WLAN SSID used by the client session
+          readOnly: true
+        tags:
+          type: array
+          items:
+            type: string
+          description: Event or classification tags attached to the client session
+          readOnly: true
+        timestamp:
+          type: number
+          description: Time when the client session record was observed, in epoch seconds
+          readOnly: true
+        wlan_id:
+          type: string
+          description: Identifier of the WLAN associated with the client session
+          contentEncoding: uuid
+          readOnly: true
+      description: Wireless client session record returned by a session search
+    response_events_search:
+      title: response_events_search
+      required:
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Epoch timestamp for the end of the wireless client event search window
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of wireless client event records returned in this page
+          contentEncoding: int32
+        next:
+          type: string
+          description: Pagination cursor or URL for retrieving the next page of wireless client event records
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/events_client'
+          description: Wireless client event records matching the search filters
+        start:
+          type: integer
+          description: Epoch timestamp for the start of the wireless client event search window
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of wireless client event records matching the search filters across all pages
+          contentEncoding: int32
+      description: Paginated response for wireless client event search results
+    events_client:
+      title: events_client
+      required:
+      - band
+      - timestamp
+      type: object
+      properties:
+        ap:
+          type: string
+          description: Access point MAC address associated with the wireless client event
+        band:
+          allOf:
+          - $ref: '#/components/schemas/dot11_band1'
+          - description: 'Radio band used for the wireless client event. enum: `24`, `5`, `5-dedicated`, `5-selectable`, `6`, `6-dedicated`, `6-selectable`.'
+        bssid:
+          type: string
+          description: Wireless BSSID involved in the client event
+        channel:
+          type: integer
+          description: Radio channel used for the wireless client event
+          contentEncoding: int32
+        key_mgmt:
+          allOf:
+          - $ref: '#/components/schemas/client_key_mgmt1'
+          - description: 'Key management protocol used by the client session. enum: `WPA2-PSK`, `WPA2-PSK/CCMP`, `WPA2-PSK-FT`, `WPA2-PSK-SHA256`, `WPA3-EAP-SHA256`, `WPA3-EAP-SHA256/CCMP`, `WPA3-EAP-FT/GCMP256`, `WPA3-SAE-FT`, `WPA3-SAE-PSK`.'
+            examples:
+            - WPA2-PSK
+        proto:
+          allOf:
+          - $ref: '#/components/schemas/dot11_proto1'
+          - description: '802.11 protocol used by the client session. enum: `a`, `ac`, `ax`, `b`, `be`, `g`, `n`.'
+        ssid:
+          type: string
+          description: Wireless network SSID involved in the client event
+        text:
+          type: string
+          description: Human-readable message for the client event
+        timestamp:
+          type: number
+          description: Time when the client event occurred
+          readOnly: true
+        type:
+          type: string
+          description: Event type, e.g. MARVIS_EVENT_CLIENT_FBT_FAILURE
+        type_code:
+          type: integer
+          description: Reason code for association or disassociation client events
+          contentEncoding: int32
+        wlan_id:
+          type: string
+          description: Wireless LAN identifier associated with the client event
+          contentEncoding: uuid
+      description: Wireless client event returned by client event search APIs
+    response_count:
+      title: response_count
+      required:
+      - distinct
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        distinct:
+          type: string
+          description: Field used to group the count results
+        end:
+          type: integer
+          description: Search window end timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of distinct count results requested
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/count_result'
+          description: Count results grouped by the distinct field
+        start:
+          type: integer
+          description: Search window start timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of distinct result buckets returned
+          contentEncoding: int32
+      description: Distinct count response for time-bounded search results
     client_wireless:
       title: client_wireless
       type: object
@@ -2828,105 +3148,30 @@ components:
           examples:
           - - e5d67b07-aae8-494b-8584-cbc20c8110aa
       description: Wireless client record observed during a client search or stats query
-    events_client:
-      title: events_client
-      required:
-      - band
-      - timestamp
+    response_http403:
+      title: response_http403
       type: object
       properties:
-        ap:
+        detail:
           type: string
-          description: Access point MAC address associated with the wireless client event
-        band:
-          allOf:
-          - $ref: '#/components/schemas/dot11_band1'
-          - description: 'Radio band used for the wireless client event. enum: `24`, `5`, `5-dedicated`, `5-selectable`, `6`, `6-dedicated`, `6-selectable`.'
-        bssid:
-          type: string
-          description: Wireless BSSID involved in the client event
-        channel:
-          type: integer
-          description: Radio channel used for the wireless client event
-          contentEncoding: int32
-        key_mgmt:
-          allOf:
-          - $ref: '#/components/schemas/client_key_mgmt1'
-          - description: 'Key management protocol used by the client session. enum: `WPA2-PSK`, `WPA2-PSK/CCMP`, `WPA2-PSK-FT`, `WPA2-PSK-SHA256`, `WPA3-EAP-SHA256`, `WPA3-EAP-SHA256/CCMP`, `WPA3-EAP-FT/GCMP256`, `WPA3-SAE-FT`, `WPA3-SAE-PSK`.'
-            examples:
-            - WPA2-PSK
-        proto:
-          allOf:
-          - $ref: '#/components/schemas/dot11_proto1'
-          - description: '802.11 protocol used by the client session. enum: `a`, `ac`, `ax`, `b`, `be`, `g`, `n`.'
-        ssid:
-          type: string
-          description: Wireless network SSID involved in the client event
-        text:
-          type: string
-          description: Human-readable message for the client event
-        timestamp:
-          type: number
-          description: Time when the client event occurred
-          readOnly: true
-        type:
-          type: string
-          description: Event type, e.g. MARVIS_EVENT_CLIENT_FBT_FAILURE
-        type_code:
-          type: integer
-          description: Reason code for association or disassociation client events
-          contentEncoding: int32
-        wlan_id:
-          type: string
-          description: Wireless LAN identifier associated with the client event
-          contentEncoding: uuid
-      description: Wireless client event returned by client event search APIs
-    dot11_proto1:
-      title: dot11_proto1
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    org_clients_count_distinct:
+      title: org_clients_count_distinct
       enum:
-      - a
-      - ac
-      - ax
-      - b
-      - be
-      - g
-      - n
+      - ap
+      - device
+      - hostname
+      - ip
+      - mac
+      - model
+      - os
+      - ssid
+      - vlan
       type: string
-      description: '802.11 protocol used by the client session. enum: `a`, `ac`, `ax`, `b`, `be`, `g`, `n`.'
-    search_wireless_client_session:
-      title: search_wireless_client_session
-      required:
-      - end
-      - limit
-      - results
-      - start
-      - total
-      type: object
-      properties:
-        end:
-          type: number
-          description: Upper bound timestamp of the wireless client session search window, in epoch seconds
-        limit:
-          type: integer
-          description: Maximum number of wireless client session records returned by this page
-          contentEncoding: int32
-        next:
-          type: string
-          description: URL for the next page of wireless client session records, when more results are available
-        results:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/wireless_client_session'
-          description: Wireless client session records returned by the search response
-        start:
-          type: number
-          description: Lower bound timestamp of the wireless client session search window, in epoch seconds
-        total:
-          type: integer
-          description: Count of wireless client session records matching the search
-          contentEncoding: int32
-      description: Paginated response for wireless client session searches
+      description: 'enum: `ap`, `device`, `hostname`, `ip`, `mac`, `model`, `os`, `ssid`, `vlan`'
     dot11_band:
       title: dot11_band
       enum:
@@ -2939,110 +3184,16 @@ components:
       - 6-selectable
       type: string
       description: 'enum: `24`, `5`, `5-dedicated`, `5-selectable`, `6`, `6-dedicated`, `6-selectable`'
-    dot11_band1:
-      title: dot11_band1
-      enum:
-      - '24'
-      - '5'
-      - 5-dedicated
-      - 5-selectable
-      - '6'
-      - 6-dedicated
-      - 6-selectable
-      type: string
-      description: 'Radio band used for the wireless client event. enum: `24`, `5`, `5-dedicated`, `5-selectable`, `6`, `6-dedicated`, `6-selectable`.'
-    response_events_search:
-      title: response_events_search
-      required:
-      - end
-      - limit
-      - results
-      - start
-      - total
+    response_http400:
+      title: response_http400
       type: object
       properties:
-        end:
-          type: integer
-          description: Epoch timestamp for the end of the wireless client event search window
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of wireless client event records returned in this page
-          contentEncoding: int32
-        next:
+        detail:
           type: string
-          description: Pagination cursor or URL for retrieving the next page of wireless client event records
-        results:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/events_client'
-          description: Wireless client event records matching the search filters
-        start:
-          type: integer
-          description: Epoch timestamp for the start of the wireless client event search window
-          contentEncoding: int32
-        total:
-          type: integer
-          description: Number of wireless client event records matching the search filters across all pages
-          contentEncoding: int32
-      description: Paginated response for wireless client event search results
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    site_client_events_count_distinct:
-      title: site_client_events_count_distinct
-      enum:
-      - band
-      - channel
-      - proto
-      - ssid
-      - type
-      - wlan_id
-      type: string
-      description: 'enum: `band`, `channel`, `proto`, `ssid`, `type`, `wlan_id`'
-    response_count:
-      title: response_count
-      required:
-      - distinct
-      - end
-      - limit
-      - results
-      - start
-      - total
-      type: object
-      properties:
-        distinct:
-          type: string
-          description: Field used to group the count results
-        end:
-          type: integer
-          description: Search window end timestamp for the count request, in epoch seconds
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of distinct count results requested
-          contentEncoding: int32
-        results:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/count_result'
-          description: Count results grouped by the distinct field
-        start:
-          type: integer
-          description: Search window start timestamp for the count request, in epoch seconds
-          contentEncoding: int32
-        total:
-          type: integer
-          description: Number of distinct result buckets returned
-          contentEncoding: int32
-      description: Distinct count response for time-bounded search results
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
     client_key_mgmt1:
       title: client_key_mgmt1
       enum:
@@ -3059,157 +3210,6 @@ components:
       description: 'Key management protocol used by the client session. enum: `WPA2-PSK`, `WPA2-PSK/CCMP`, `WPA2-PSK-FT`, `WPA2-PSK-SHA256`, `WPA3-EAP-SHA256`, `WPA3-EAP-SHA256/CCMP`, `WPA3-EAP-FT/GCMP256`, `WPA3-SAE-FT`, `WPA3-SAE-PSK`.'
       examples:
       - WPA2-PSK
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    dot11_proto:
-      title: dot11_proto
-      enum:
-      - a
-      - ac
-      - ax
-      - b
-      - be
-      - g
-      - n
-      type: string
-      description: 'enum: `a`, `ac`, `ax`, `b`, `be`, `g`, `n`'
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    wireless_client_session:
-      title: wireless_client_session
-      required:
-      - ap
-      - band
-      - connect
-      - disconnect
-      - duration
-      - mac
-      - org_id
-      - site_id
-      - ssid
-      - timestamp
-      - wlan_id
-      type: object
-      properties:
-        ap:
-          type: string
-          description: MAC address of the access point associated with the client session
-          readOnly: true
-        band:
-          type: string
-          description: Radio band used by the client session
-          readOnly: true
-        client_manufacture:
-          type:
-          - string
-          - 'null'
-          description: Manufacturer reported for the client device, when available
-          readOnly: true
-        connect:
-          type: integer
-          description: Time when the client session connected, in epoch seconds
-          contentEncoding: int32
-          readOnly: true
-        disconnect:
-          type: integer
-          description: Time when the client session disconnected, in epoch seconds
-          contentEncoding: int32
-          readOnly: true
-        duration:
-          type: number
-          description: Length of the client session, in seconds
-          readOnly: true
-        for_site:
-          type: boolean
-          description: Whether this client session record is scoped to a site
-          readOnly: true
-        mac:
-          type: string
-          description: Client MAC address for the session
-          readOnly: true
-        org_id:
-          type: string
-          description: Organization associated with the client session
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
-        site_id:
-          type: string
-          description: Site associated with the client session
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
-        ssid:
-          type: string
-          description: WLAN SSID used by the client session
-          readOnly: true
-        tags:
-          type: array
-          items:
-            type: string
-          description: Event or classification tags attached to the client session
-          readOnly: true
-        timestamp:
-          type: number
-          description: Time when the client session record was observed, in epoch seconds
-          readOnly: true
-        wlan_id:
-          type: string
-          description: Identifier of the WLAN associated with the client session
-          contentEncoding: uuid
-          readOnly: true
-      description: Wireless client session record returned by a session search
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    org_client_sessions_count_distinct:
-      title: org_client_sessions_count_distinct
-      enum:
-      - ap
-      - device
-      - hostname
-      - ip
-      - model
-      - os
-      - ssid
-      - vlan
-      type: string
-      description: 'enum: `ap`, `device`, `hostname`, `ip`, `model`, `os`, `ssid`, `vlan`'
   securitySchemes:
     apiToken:
       type: apiKey

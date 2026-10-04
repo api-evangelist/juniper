@@ -522,6 +522,112 @@ paths:
       deprecated: false
 components:
   schemas:
+    stats_device_other_vendor_specific2:
+      title: stats_device_other_vendor_specific2
+      type: object
+      properties:
+        interfaces:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/stats_device_other_vendor_specific_port'
+          description: Cradlepoint interface statistics keyed by vendor interface identifier
+          examples:
+          - mdm-4d0e073b:
+              bytes_in: 5623096929
+              bytes_out: 12372750366
+              carrier: Orange
+              imei: '866401234567893'
+              imsi: '2080101234567893'
+              ip: 10.134.237.57
+              link: true
+              mode: wan
+              rsrp: -108
+              rsrq: -14
+              rssi: -74
+              service_mode: 5G NSA
+              sinr: -1.2
+              state: READY
+              type: mdm
+              uptime: 2095779
+        target_version:
+          type: string
+          description: Cradlepoint software version targeted for the device
+          examples:
+          - 7.23.40
+      description: Additional statistics returned by the device vendor
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    stats_device_other_connected_device:
+      title: stats_device_other_connected_device
+      type: object
+      properties:
+        mac:
+          type: string
+          description: Connected device MAC address learned from LLDP
+          examples:
+          - 020001abcdef
+        name:
+          type: string
+          description: LLDP system name reported for the connected device
+          examples:
+          - DNT-NTR-GWE
+        port_id:
+          type: string
+          description: LLDP port identifier reported for the connected device
+          examples:
+          - ge-0/0/1
+        type:
+          type: string
+          description: Detected Mist device type for the connected neighbor
+          examples:
+          - gateway
+      description: LLDP neighbor device discovered from an other-device statistics record
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
     stats_device_other:
       title: stats_device_other
       type: object
@@ -592,46 +698,6 @@ components:
           examples:
           - 7.22.70
       description: Statistics for a third-party or other device tracked by Mist
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
     stats_device_other_vendor_specific_port:
       title: stats_device_other_vendor_specific_port
       type: object
@@ -737,14 +803,6 @@ components:
           examples:
           - 2095779
       description: Cradlepoint interface statistics for a device tracked by Mist
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
     stats_device_other_interface:
       title: stats_device_other_interface
       type: object
@@ -840,64 +898,6 @@ components:
           examples:
           - 2095779
       description: Network interface statistics for a third-party device tracked by Mist
-    stats_device_other_connected_device:
-      title: stats_device_other_connected_device
-      type: object
-      properties:
-        mac:
-          type: string
-          description: Connected device MAC address learned from LLDP
-          examples:
-          - 020001abcdef
-        name:
-          type: string
-          description: LLDP system name reported for the connected device
-          examples:
-          - DNT-NTR-GWE
-        port_id:
-          type: string
-          description: LLDP port identifier reported for the connected device
-          examples:
-          - ge-0/0/1
-        type:
-          type: string
-          description: Detected Mist device type for the connected neighbor
-          examples:
-          - gateway
-      description: LLDP neighbor device discovered from an other-device statistics record
-    stats_device_other_vendor_specific2:
-      title: stats_device_other_vendor_specific2
-      type: object
-      properties:
-        interfaces:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/stats_device_other_vendor_specific_port'
-          description: Cradlepoint interface statistics keyed by vendor interface identifier
-          examples:
-          - mdm-4d0e073b:
-              bytes_in: 5623096929
-              bytes_out: 12372750366
-              carrier: Orange
-              imei: '866401234567893'
-              imsi: '2080101234567893'
-              ip: 10.134.237.57
-              link: true
-              mode: wan
-              rsrp: -108
-              rsrq: -14
-              rssi: -74
-              service_mode: 5G NSA
-              sinr: -1.2
-              state: READY
-              type: mdm
-              uptime: 2095779
-        target_version:
-          type: string
-          description: Cradlepoint software version targeted for the device
-          examples:
-          - 7.23.40
-      description: Additional statistics returned by the device vendor
   securitySchemes:
     apiToken:
       type: apiKey
