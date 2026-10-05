@@ -3,6 +3,7 @@ provider: Juniper Networks
 generated_by: planning/capability-mapping/scripts/classify_capabilities.py
 model: claude-opus-5
 frame:
+- Software & Technology
 - Telecommunications
 min_confidence: 0.7
 capability_model:
@@ -11,8 +12,28 @@ capability_model:
   attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
     CC BY 4.0
   notice: NOTICE
-edge_count: 25
+edge_count: 110
 edges:
+- tag: Orgs SSO
+  spec_file: juniper-orgs-sso-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.9
+  evidence: createOrgSso, getOrgSamlMetadata, deleteOrgSsoAdmins; schemas sso_idp_type2, sso_nameid_format2,
+    sso_oauth_type2, sso_ldap_type2
+  reason: Operations configure single-sign-on identity providers (SAML metadata, OAuth, LDAP) and manage
+    admin accounts tied to them — plainly identity and access management / federation.
+- tag: Orgs SSO Roles
+  spec_file: juniper-orgs-sso-roles-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.88
+  evidence: createOrgSsoRole, updateOrgSsoRole; schemas privilege_org, admin_privilege_view, privilege_org_role2,
+    privilege_org_scope2
+  reason: CRUD over SSO roles carrying org privileges and scopes is authorisation/role management for
+    federated administrators — Identity & Access Management.
 - tag: WLANs
   spec_file: juniper-wlans-api-openapi.yml
   capability_id: BC-600.50
@@ -59,6 +80,193 @@ edges:
   evidence: POST /network-ipams  createNetworkIpam  Juniper Networks Create network IPAM
   reason: IP address management is core network infrastructure management under IT Infrastructure Management.
   recovered_from: capability-edges-sweep.json
+- tag: Orgs EVPN Topologies
+  spec_file: juniper-orgs-evpn-topologies-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.8
+  evidence: POST /api/v1/orgs/{org_id}/evpn_topologies createOrgEvpnTopology; schemas evpn_topology_switch_config,
+    bgp-style evpn_options_underlay2, junos_port_config
+  reason: Operations create and maintain EVPN fabric topologies and switch/port configuration for data-centre
+    networks — this is design and stewardship of network infrastructure, i.e. Cross-Industry IT Infrastructure
+    Management, not an industry-specific capability.
+- tag: Orgs MxEdges
+  spec_file: juniper-orgs-mxedges-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.8
+  evidence: 'POST /api/v1/orgs/{org_id}/mxedges/claim claimOrgMxEdge; POST .../mxedges/assign assignOrgMxEdgeToSite;
+    GET .../mxedges/versions getOrgMxEdgeUpgradeInfo; schemas: mxedge, mxedge_vm_params'
+  reason: Lifecycle of Mist Edge network appliances — claim, create, assign/unassign to sites, upgrade
+    version info, event search. This is management of network infrastructure estate, squarely IT Infrastructure
+    Management.
+- tag: Orgs NAC Portals
+  spec_file: juniper-orgs-nac-portals-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.8
+  evidence: 'POST /api/v1/orgs/{org_id}/nacportals createOrgNacPortal; GET .../saml_metadata getOrgNacPortalSamlMetadata;
+    schemas: nac_portal_sso2, nac_portal_guest_portal_auth2, nac_portal_sso_role_matching, nac_portal_eap_type2'
+  reason: Manages network access control portals with SSO/SAML federation, EAP authentication types, guest
+    portal auth and SSO role matching, plus SSO failure diagnostics. These operations perform authentication
+    and access control for users/devices on the network — Identity & Access Management.
+- tag: Orgs Network Templates
+  spec_file: juniper-orgs-network-templates-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.8
+  evidence: createOrgNetworkTemplate; schemas switch_bgp_config_neighbor, ospf_area, switch_port_usage,
+    snmp_usm, remote_syslog2
+  reason: Templates carrying switch routing (BGP/OSPF), port, SNMP and syslog configuration are network
+    infrastructure configuration management — IT Infrastructure Management (network).
+- tag: Orgs Networks
+  spec_file: juniper-orgs-networks-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.8
+  evidence: createOrgNetwork; schemas network_vpn_access_config, network_source_nat2, network_internet_access2,
+    network_multicast2
+  reason: Defines org-level networks with VPN access, NAT and multicast settings — provisioning and stewardship
+    of network infrastructure.
+- tag: Orgs Stats - BGP Peers
+  spec_file: juniper-orgs-stats-bgp-peers-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.8
+  evidence: GET /api/v1/orgs/{org_id}/stats/bgp_peers/search  searchOrgBgpStats; schema bgp_stats, bgp_stats_state1
+  reason: Operations expose BGP routing peer state statistics for network devices — day-to-day network/IT
+    operations monitoring. Could also be read as infrastructure management, hence 0.8.
+- tag: Orgs Stats - Devices
+  spec_file: juniper-orgs-stats-devices-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.8
+  evidence: GET /api/v1/orgs/{org_id}/stats/devices  listOrgDevicesStats; schemas memory_stat2, ap_radio_stat2,
+    fwupdate_stat2
+  reason: Lists runtime statistics (CPU/memory/radio/firmware state) for network devices — operational
+    monitoring of IT infrastructure.
+- tag: Orgs Stats - MxEdges
+  spec_file: juniper-orgs-stats-mxedges-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.8
+  evidence: GET /api/v1/orgs/{org_id}/stats/mxedges/{mxedge_id}  getOrgMxEdgeStats; schemas stats_mxedge_cpu_stat2,
+    stats_mxedge_memory_stat2
+  reason: Retrieves CPU, memory, port and service statistics for Mist Edge appliances — operational monitoring
+    of network infrastructure.
+- tag: Orgs Stats - Ospf
+  spec_file: juniper-orgs-stats-ospf-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.8
+  evidence: GET /api/v1/orgs/{org_id}/stats/ospf_peers/search  searchOrgOspfStats; schema ospf_peer_stats_search_result
+  reason: OSPF routing peer statistics counting and search — network operations monitoring telemetry.
+- tag: Orgs Stats - Other Devices
+  spec_file: juniper-orgs-stats-other-devices-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.8
+  evidence: GET /api/v1/orgs/{org_id}/stats/otherdevices/{device_mac}  getOrgOtherDeviceStats; schemas
+    stats_device_other_interface, stats_device_other_connected_device
+  reason: Per-MAC statistics for third-party connected devices including interfaces and neighbours — IT
+    operations monitoring of networked equipment.
+- tag: Orgs Stats - Ports
+  spec_file: juniper-orgs-stats-ports-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.8
+  evidence: searchOrgSwOrGwPorts; schemas stats_switch_port, port_stp_state, poe_priority
+  reason: Switch/gateway port statistics with STP state, PoE and auth state — network port operational
+    monitoring.
+- tag: Orgs Stats - Tunnels
+  spec_file: juniper-orgs-stats-tunnels-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.8
+  evidence: searchOrgTunnelsStats; schemas stats_wan_tunnel, stats_mxtunnel_session, wan_tunnel_protocol1
+  reason: WAN/Mist tunnel statistics and counts — monitoring of network overlay connectivity, squarely
+    IT operations monitoring.
+- tag: Orgs Stats - VPN Peers
+  spec_file: juniper-orgs-stats-vpn-peers-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.8
+  evidence: searchOrgPeerPathStats; schema vpn_peer_stat, vpn_peer_stat_search
+  reason: VPN peer-path statistics search and count — operational monitoring of network connectivity,
+    not security policy management.
+- tag: Orgs VPNs
+  spec_file: juniper-orgs-vpns-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.8
+  evidence: 'POST /api/v1/orgs/{org_id}/vpns createOrgVpn; schemas: vpn_path_ipsec-like vpn_mode2, vpn_path_bfd_profile2,
+    vpn_path_traffic_shaping2'
+  reason: CRUD over organisation VPN overlay definitions including path selection, BFD profiles and traffic
+    shaping — configuration of network infrastructure, i.e. IT infrastructure (network) management.
+- tag: Orgs Wlans
+  spec_file: juniper-orgs-wlans-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.8
+  evidence: 'POST /api/v1/orgs/{org_id}/wlans createOrgWlan; schemas: wlan_auth2, wlan_qos2, wlan_dynamic_vlan2,
+    wlan_portal2'
+  reason: CRUD over wireless LAN (SSID) definitions with auth, QoS, dynamic VLAN and captive-portal settings
+    — direct configuration of enterprise network infrastructure.
+- tag: Sites Devices - Wireless
+  spec_file: juniper-sites-devices-wireless-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.8
+  evidence: GET /api/v1/sites/{site_id}/devices/ap_channels listSiteDeviceRadioChannels; PUT .../devices/{device_id}/iot
+    setSiteDeviceIotPort
+  reason: Operations read and configure wireless access-point radio channels, IoT ports and Zigbee behaviour
+    on network devices — management of network infrastructure equipment, i.e. IT Infrastructure Management.
+    No business-domain reading fits.
+- tag: Sites EVPN Topologies
+  spec_file: juniper-sites-evpn-topologies-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.8
+  evidence: POST /api/v1/sites/{site_id}/evpn_topologies createSiteEvpnTopology; schemas evpn_topology_switch_config,
+    bgp_config, switch_port_usage
+  reason: CRUD over EVPN switch-fabric topologies with switch port and BGP configuration schemas — design
+    and configuration of network infrastructure, not a business capability.
+- tag: Sites MxEdges
+  spec_file: juniper-sites-mxedges-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.8
+  evidence: listSiteMxEdges, updateSiteMxEdge, uploadSiteMxEdgeSupportFiles, schemas 'mxedge_tunterm_dhcpd_config_type2'
+  reason: CRUD and event search over Mist Edge appliances with tunnel-termination/DHCP/VLAN configuration
+    — management of network appliances, i.e. IT infrastructure management.
+- tag: Sites Stats - Devices
+  spec_file: juniper-sites-stats-devices-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.8
+  evidence: getSiteGatewayMetrics, getSiteSwitchesMetrics, listSiteDevicesStats; schemas memory_stat5,
+    ap_radio_stat2, fwupdate_stat2
+  reason: Telemetry for APs, switches and gateways (CPU, memory, radio, firmware update state) — day-to-day
+    monitoring of network infrastructure.
 - tag: Threat Intelligence
   spec_file: juniper-threat-intelligence-api-openapi.yml
   capability_id: BC-620.30
@@ -79,6 +287,102 @@ edges:
   evidence: GET /orgs/{org_id}/wanedges  listOrgWanEdges  List WAN edge devices
   reason: Inventory of WAN edge network devices is IT infrastructure (network) management.
   recovered_from: capability-edges-sweep.json
+- tag: Orgs AP Templates
+  spec_file: juniper-orgs-ap-templates-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.78
+  evidence: createOrgAptemplate / updateOrgAptemplate with schemas ap_template_wifi2, ap_port_config,
+    radius_auth_server, radsec_server
+  reason: Operations manage access-point configuration templates (WiFi, port config, RADIUS servers) applied
+    across the network estate — configuration of network infrastructure, i.e. IT Infrastructure Management.
+    Not a security-governance capability since the artefacts are device configuration templates.
+- tag: Orgs IDP Profiles
+  spec_file: juniper-orgs-idp-profiles-api-openapi.yml
+  capability_id: BC-620.30
+  capability_id_l1: BC-620
+  capability_name: Threat Detection & Response Management
+  confidence: 0.78
+  evidence: createOrgIdpProfile; schemas idp_profile_matching_severity_value, idp_profile_action2
+  reason: IDP = intrusion detection and prevention profiles with severity matching and actions; configuring
+    attack-detection and response policy maps to Threat Detection & Response Management. Note 'IDP' here
+    is not an identity provider.
+- tag: Orgs RF Templates
+  spec_file: juniper-orgs-rf-templates-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.78
+  evidence: createOrgRfTemplate; schemas rftemplate_radio_band241, radio_band_antenna_mode4, dot11_bandwidth62
+  reason: Radio-frequency configuration templates (bands, bandwidth, antenna mode, preamble) for wireless
+    access points — configuration of network infrastructure.
+- tag: Orgs SCEP
+  spec_file: juniper-orgs-scep-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.78
+  evidence: listOrgIssuedClientCertificates, revokeOrgIssuedClientCertificates; schemas issued_client_certificate,
+    org_setting_scep_cert_provider
+  reason: 'SCEP certificate enrolment: issuing and revoking client certificates used to authenticate devices/users
+    — PKI credential lifecycle, part of Identity & Access Management.'
+- tag: Sites AP Templates
+  spec_file: juniper-sites-ap-templates-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.78
+  evidence: GET /api/v1/sites/{site_id}/aptemplates/derived  listSiteApTemplatesDerived; schemas ap_template_wifi2,
+    radius_auth_server, ap_port_config
+  reason: Templates governing wireless access point and port/RADIUS configuration at a site. This is configuration
+    of network infrastructure estate, mapping to IT Infrastructure Management (network).
+- tag: Sites Network Templates
+  spec_file: juniper-sites-network-templates-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.78
+  evidence: listSiteNetworkTemplatesDerived; schemas 'switch_bgp_config_neighbor', 'ospf_area', 'switch_port_usage'
+  reason: Derived switch/network configuration templates (BGP, OSPF, SNMP, port usage) are network device
+    configuration artefacts — IT infrastructure (network) management.
+- tag: Sites Networks
+  spec_file: juniper-sites-networks-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.78
+  evidence: listSiteNetworksDerived; schemas 'network_source_nat2', 'network_vpn_access_config', 'network_multicast2'
+  reason: Network definitions with NAT, VPN access and multicast settings for a site are network infrastructure
+    configuration objects, mapping to IT infrastructure management.
+- tag: Sites Skyatp
+  spec_file: juniper-sites-skyatp-api-openapi.yml
+  capability_id: BC-620.30
+  capability_id_l1: BC-620
+  capability_name: Threat Detection & Response Management
+  confidence: 0.78
+  evidence: searchSiteSkyatpEvents; schemas events_skyatp, response_events_sky_atp_search
+  reason: Sky ATP is Juniper's advanced threat prevention service; counting and searching its events is
+    security threat detection and response telemetry.
+- tag: Sites Stats - Clients Wireless
+  spec_file: juniper-sites-stats-clients-wireless-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.78
+  evidence: listSiteWirelessClientsStats, listSiteUnconnectedClientStats; schemas stats_wireless_client,
+    stats_wired_client
+  reason: Wireless client (device) connection statistics per site and floor map — network monitoring/operations.
+    'Clients' is a homograph for connected devices, not customers.
+- tag: Sites Stats - Ports
+  spec_file: juniper-sites-stats-ports-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.76
+  evidence: searchSiteSwOrGwPorts; schemas stats_switch_port, port_stp_state1, poe_priority
+  reason: Switch/gateway physical port statistics (STP state, PoE, auth state) — network infrastructure
+    monitoring and operations.
 - tag: Blueprints
   spec_file: juniper-blueprints-api-openapi.yml
   capability_id: BC-600.50
@@ -100,6 +404,25 @@ edges:
   reason: Device inventory for network equipment is IT infrastructure asset management, not supply-chain
     stock inventory (homograph).
   recovered_from: capability-edges-sweep.json
+- tag: MSPs Admins
+  spec_file: juniper-msps-admins-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.75
+  evidence: listMspAdmins, revokeMspAdmin, inviteMspAdmin; schemas admin_privilege_role2, admin_privilege_scope2
+  reason: Operations create, invite, update and revoke administrator accounts and their privilege roles/scopes
+    on the Mist cloud platform — administrative identity and access management, not an HR or customer
+    capability.
+- tag: MSPs SSO Roles
+  spec_file: juniper-msps-sso-roles-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.75
+  evidence: createMspSsoRole, updateMspSsoRole; schemas sso_role_msp, privilege_msp_role2, privilege_msp_scope2
+  reason: Defines SSO roles and the privileges/scopes they grant to federated administrators — role-based
+    access control, squarely identity and access management.
 - tag: Operational
   spec_file: juniper-operational-api-openapi.yml
   capability_id: BC-2600
@@ -111,6 +434,90 @@ edges:
   reason: Read-only retrieval of live device operational state — alarms, interfaces, routing tables, chassis
     inventory — is network operations monitoring. It spans fault, performance and inventory sub-capabilities,
     so only the L1 is asserted.
+- tag: Orgs Admins
+  spec_file: juniper-orgs-admins-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.75
+  evidence: revokeOrgAdmin; inviteOrgAdmin; updateOrgAdmin with schemas admin_privilege_role2, admin_privilege_scope2
+  reason: Invite, update, and revoke administrator accounts with role and scope privileges is administrative
+    identity and access management for the platform, not HR employee administration.
+- tag: Orgs Gateway Templates
+  spec_file: juniper-orgs-gateway-templates-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.75
+  evidence: POST /api/v1/orgs/{org_id}/gatewaytemplates createOrgGatewayTemplate; schemas bgp_config,
+    tunnel_config_enc_algo3, wan_extra_routes6
+  reason: CRUD over WAN gateway configuration templates (routing policy, tunnels, BGP, multicast) — standardised
+    configuration of network infrastructure devices. Security sub-schemas (idp_profile_matching2) are
+    incidental to the template object.
+- tag: Orgs Inventory
+  spec_file: juniper-orgs-inventory-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.75
+  evidence: POST /api/v1/orgs/{org_id}/inventory addOrgInventory; POST .../inventory/replace replaceOrgDevices;
+    POST .../inventory/create_ha_cluster createOrgGatewayHaCluster
+  reason: Registers, assigns, replaces and clusters network devices (APs, switches, gateways) across the
+    estate — IT infrastructure asset estate management. Deliberately not BC-530, which concerns tradeable
+    stock rather than deployed network hardware.
+- tag: Orgs MxClusters
+  spec_file: juniper-orgs-mxclusters-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.75
+  evidence: 'POST /api/v1/orgs/{org_id}/mxclusters createOrgMxEdgeCluster; schemas: mxcluster, mxcluster_radsec_auth_server,
+    tunterm_dhcpd_config2, mxcluster_tunterm_hosts_selection2'
+  reason: CRUD over Mist Edge clusters with tunnel-termination, DHCP and RadSec server configuration —
+    configuration of network edge infrastructure components. Maps to IT Infrastructure Management (compute/network
+    infrastructure).
+- tag: Orgs MxTunnels
+  spec_file: juniper-orgs-mxtunnels-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.75
+  evidence: 'POST /api/v1/orgs/{org_id}/mxtunnels createOrgMxTunnel; schemas: mxtunnel, mxtunnel_ipsec2,
+    mxtunnel_ipsec_extra_route, mxtunnel_protocol3'
+  reason: CRUD over network tunnels including IPsec settings, protocols and routes — configuration of
+    network connectivity infrastructure, i.e. IT Infrastructure Management.
+- tag: Orgs Tickets
+  spec_file: juniper-orgs-tickets-api-openapi.yml
+  capability_id: BC-600.30
+  capability_id_l1: BC-600
+  capability_name: IT Service Management
+  confidence: 0.75
+  evidence: POST /api/v1/orgs/{org_id}/tickets  createOrgTicket; addOrgTicketComment; UploadOrgTicketAttachment;
+    schema ticket_status2
+  reason: Full ticket lifecycle — create, update, comment, attach — within the network management org,
+    i.e. IT service/incident ticketing. Some ambiguity whether these are vendor support cases (customer
+    service) versus internal ITSM tickets, hence 0.75.
+- tag: Orgs WLAN Templates
+  spec_file: juniper-orgs-wlan-templates-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.75
+  evidence: 'POST /api/v1/orgs/{org_id}/templates createOrgTemplate; POST .../templates/{template_id}/clone
+    cloneOrgTemplate; schemas: template_applies2, template_exceptions2'
+  reason: Manages reusable wireless LAN configuration templates applied across sites — standardised configuration
+    of network infrastructure. Maps to IT infrastructure (network) management; template-abstraction nature
+    keeps confidence short of 0.9.
+- tag: Orgs WxTunnels
+  spec_file: juniper-orgs-wxtunnels-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.75
+  evidence: 'POST /api/v1/orgs/{org_id}/wxtunnels createOrgWxTunnel; schemas: wxlan_tunnel_ipsec2, wxlan_tunnel_dmvpn2,
+    wxlan_tunnel_session'
+  reason: CRUD over WxLAN tunnel definitions including IPsec and DMVPN parameters and tunnel sessions
+    — configuration of network transport infrastructure.
 - tag: Resources
   spec_file: juniper-resources-api-openapi.yml
   capability_id: BC-600.50
@@ -121,6 +528,125 @@ edges:
   reason: Managing pools of network resources (ASN, IP, VNI) for data-center fabric automation is network
     infrastructure management.
   recovered_from: capability-edges-sweep.json
+- tag: Sites Advanced Anti Malware Profiles
+  spec_file: juniper-sites-advanced-anti-malware-profiles-api-openapi.yml
+  capability_id: BC-620
+  capability_id_l1: BC-620
+  capability_name: Cybersecurity Management
+  confidence: 0.75
+  evidence: GET /api/v1/sites/{site_id}/aamwprofiles/derived  listSiteAAMWProfilesDerived; schemas avprofile,
+    avprofile_fallback_action2
+  reason: Lists advanced anti-malware (antivirus) inspection profiles applied at a site — security control
+    configuration on the network security stack, so Cybersecurity Management at L1. Insufficient evidence
+    to choose between threat detection and security architecture sub-capabilities.
+- tag: Sites Antivirus Profiles
+  spec_file: juniper-sites-antivirus-profiles-api-openapi.yml
+  capability_id: BC-620
+  capability_id_l1: BC-620
+  capability_name: Cybersecurity Management
+  confidence: 0.75
+  evidence: GET /api/v1/sites/{site_id}/avprofiles/derived  listSiteAntivirusProfilesDerived; schemas
+    avprofile, avprofile_protocol
+  reason: Lists antivirus scanning profiles applied at a site — configuration of malware-protection security
+    controls, mapping to Cybersecurity Management at L1; sub-capability not determinable from one read
+    operation.
+- tag: Sites Clients - NAC
+  spec_file: juniper-sites-clients-nac-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.75
+  evidence: POST /api/v1/sites/{site_id}/nac_clients/{client_mac}/coa  sendSiteNacClientCoA, schemas nac_auth_type5,
+    nac_access_type2
+  reason: 'Network Access Control clients: authentication types, access types, and change-of-authorization
+    enforcement for devices on the network — network identity and access control. Maps to Identity & Access
+    Management, with some overlap to network operations.'
+- tag: Sites Insights
+  spec_file: juniper-sites-insights-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.75
+  evidence: GET /api/v1/sites/{site_id}/insights/switch/{device_mac}/{metric} getSiteInsightMetricsForSwitch;
+    schema insight_metrics
+  reason: Retrieves performance/health metrics for APs, switches, gateways and clients — monitoring of
+    IT infrastructure operations. 'Insights' is network telemetry, not business analytics/BI.
+- tag: Sites RF Templates
+  spec_file: juniper-sites-rf-templates-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.75
+  evidence: listSiteRfTemplatesDerived; schemas 'rf_template', 'rftemplate_radio_band52', 'dot11_bandwidth62'
+  reason: Radio-frequency templates defining 802.11 band/bandwidth/antenna settings are wireless network
+    device configuration — IT infrastructure management.
+- tag: Sites Stats - BGP Peers
+  spec_file: juniper-sites-stats-bgp-peers-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.75
+  evidence: 'GET /api/v1/sites/{site_id}/stats/bgp_peers/search  searchSiteBgpStats; schemas: bgp_stats,
+    bgp_stats_state1'
+  reason: Read-only statistics on BGP routing peer state for network sites — day-to-day network operations
+    monitoring, not a business-domain capability. Mapped to IT Operations Management (monitoring).
+- tag: Sites Stats - Discovered Switches
+  spec_file: juniper-sites-stats-discovered-switches-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.75
+  evidence: listSiteDiscoveredSwitchesMetrics; schemas discovered_switch, dswitches_metrics_poe_compliance1
+  reason: Discovery and metrics/compliance checks of switches present at a site — network infrastructure
+    monitoring and operations.
+- tag: Sites Stats - MxEdges
+  spec_file: juniper-sites-stats-mxedges-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.75
+  evidence: listSiteMxEdgesStats; schemas stats_mxedge_cpu_stat2, stats_mxedge_port_stat, fwupdate_stat5
+  reason: Health/telemetry of Mist Edge appliances (CPU, memory, ports, service state) — network infrastructure
+    operations monitoring.
+- tag: Sites Stats - Ospf
+  spec_file: juniper-sites-stats-ospf-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.75
+  evidence: searchSiteOspfStats; schemas ospf_peer_stats_search_result
+  reason: OSPF routing-peer statistics search and counting — purely network routing monitoring, an IT
+    operations function.
+- tag: Sites Wlans
+  spec_file: juniper-sites-wlans-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.75
+  evidence: POST /api/v1/sites/{site_id}/wlans createSiteWlan; PUT /wlans/{wlan_id}/portal_template; schemas
+    wlan_auth2, wlan_dynamic_vlan2, wlan_qos2
+  reason: Create/update/delete of wireless LAN service definitions (auth, VLAN, QoS, captive portal) at
+    a site — configuration of network infrastructure under IT Infrastructure Management.
+- tag: Utilities Common
+  spec_file: juniper-utilities-common-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.75
+  evidence: POST /api/v1/sites/{site_id}/devices/restart restartSiteMultipleDevices; POST .../ping pingFromDevice;
+    clearSiteDeviceMacTable
+  reason: Operations are hands-on network device operational commands (restart, ping, ARP, clear MAC table,
+    locate, monitor traffic) against managed infrastructure — day-to-day IT operations and troubleshooting
+    automation, not any business-domain capability.
+- tag: Utilities WAN
+  spec_file: juniper-utilities-wan-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.75
+  evidence: clearSiteSsrBgpRoutes; showSiteGatewayOspfNeighbors; testSiteSsrDnsResolution; showSiteSsrAndSrxRoutes
+  reason: WAN gateway/router diagnostic and remediation commands (BGP/OSPF inspection, ARP and DHCP clearing,
+    route display) are day-to-day network operations.
 - tag: Reports
   spec_file: juniper-reports-api-openapi.yml
   capability_id: BC-620.30
@@ -150,6 +676,123 @@ edges:
     configuration"; POST /rpc/rollback-configuration "Rollback configuration"
   reason: Get/edit/commit/rollback of device configuration and config-file management is plainly network
     element configuration management; only the enterprise-vs-carrier network scope leaves any doubt.
+- tag: Installer
+  spec_file: juniper-installer-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.72
+  evidence: POST /api/v1/installer/orgs/{org_id}/devices "claimInstallerDevices"; PUT .../devices/{device_mac}
+    "provisionInstallerDevices"; POST .../locate "startInstallerLocateDevice"
+  reason: Installer-scoped surface for claiming, provisioning, locating and virtual-chassis configuration
+    of network devices at customer sites — deployment and management of network infrastructure assets.
+- tag: Orgs Advanced Anti Malware Profiles
+  spec_file: juniper-orgs-advanced-anti-malware-profiles-api-openapi.yml
+  capability_id: BC-620
+  capability_id_l1: BC-620
+  capability_name: Cybersecurity Management
+  confidence: 0.72
+  evidence: createOrgAAMWProfile; schemas aamw_profile, aamw_profile_category, aamw_profile_action1
+  reason: Advanced anti-malware inspection profiles are security control configuration on the Juniper
+    security stack, so Cybersecurity Management at L1. No L2 asserted because profile definition sits
+    between threat detection/response and security architecture.
+- tag: Orgs Antivirus Profiles
+  spec_file: juniper-orgs-antivirus-profiles-api-openapi.yml
+  capability_id: BC-620
+  capability_id_l1: BC-620
+  capability_name: Cybersecurity Management
+  confidence: 0.72
+  evidence: createOrgAntivirusProfile; schemas avprofile, avprofile_protocol, avprofile_fallback_action2
+  reason: Antivirus scanning profiles configured per protocol are malware-protection security controls,
+    so Cybersecurity Management at L1; the evidence does not pin a single L2.
+- tag: Orgs Device Profiles
+  spec_file: juniper-orgs-device-profiles-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.72
+  evidence: createOrgDeviceProfile; assignOrgDeviceProfile; schemas switch_port_usage_storm_control2,
+    ap_radio2, gateway_wan_type62, snmp_usm_user
+  reason: CRUD plus assign/unassign of configuration profiles for switches, APs and gateways — management
+    of network infrastructure configuration standards, i.e. IT infrastructure (network) management.
+- tag: Orgs NAC Rules
+  spec_file: juniper-orgs-nac-rules-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.72
+  evidence: createOrgNacRule; schemas nac_rule, nac_auth_type3, nac_rule_action2, nac_rule_guest_auth_state2
+  reason: NAC (network access control) rules define authentication/authorisation matching and actions
+    for devices and users joining the network — access control policy, i.e. Identity & Access Management
+    within Cybersecurity. Not a networking-infrastructure config per se, though it is adjacent to BC-600.50.
+- tag: Orgs Psks
+  spec_file: juniper-orgs-psks-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.72
+  evidence: createOrgPsk, importOrgPsks, deleteOrgPskOldPassphrase; schemas psk, psk_usage2
+  reason: Lifecycle management of pre-shared keys/passphrases used to grant network access — credential
+    administration, i.e. Identity & Access Management.
+- tag: Sites Alarms
+  spec_file: juniper-sites-alarms-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.72
+  evidence: POST /api/v1/sites/{site_id}/alarms/{alarm_id}/ack  ackSiteAlarm; GET /api/v1/sites/{site_id}/alarms/search  searchSiteAlarms;
+    schemas alarm_severity, alarm_group
+  reason: Acknowledge, unacknowledge, search, count and subscribe to network alarms for a site — operational
+    monitoring and alert handling of the network estate, i.e. IT operations monitoring. This is infrastructure
+    alarming, not any business-domain alerting.
+- tag: Sites Maps - Auto-placement
+  spec_file: juniper-sites-maps-auto-placement-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.72
+  evidence: runSiteApAutoplacement, startSiteApAutoOrientation, schema 'auto_placement'
+  reason: Automated placement/orientation of access points on a site map is wireless network infrastructure
+    configuration, i.e. IT infrastructure management; not a facilities or real-estate space-planning capability
+    despite the 'maps' wording.
+- tag: Sites Rogues
+  spec_file: juniper-sites-rogues-api-openapi.yml
+  capability_id: BC-620.30
+  capability_id_l1: BC-620
+  capability_name: Threat Detection & Response Management
+  confidence: 0.72
+  evidence: GET /api/v1/sites/{site_id}/insights/rogues listSiteRogueAPs; searchSiteRogueEvents; schema
+    rogue_type, insight_rogue_client
+  reason: Operations enumerate rogue access points, rogue clients and rogue security events at a site
+    — wireless intrusion detection of unauthorised devices, i.e. threat detection on the network, not
+    a business-domain capability.
+- tag: Sites Stats - Calls
+  spec_file: juniper-sites-stats-calls-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.72
+  evidence: troubleshootSiteCall, getSiteCallsSummary, schemas call_troubleshoot, stats_call
+  reason: '''Calls'' here is VoIP/wireless call-quality telemetry and troubleshooting on the network (per
+    client MAC), i.e. network operations monitoring — not contact-centre or customer-service telephony.'
+- tag: Utilities LAN
+  spec_file: juniper-utilities-lan-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.72
+  evidence: cableTestFromSwitch; clearBpduErrorsFromPortsOnSwitch; upgradeSiteDevicesBios; pollSiteSwitchStats
+  reason: Switch-level operational utilities — cable diagnostics, clearing BPDU/dot1x state, BIOS/FPGA
+    upgrades, stats polling — are day-to-day IT network operations.
+- tag: Utilities PCAPs
+  spec_file: juniper-utilities-pcaps-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.72
+  evidence: startOrgPacketCapture; stopSitePacketCapture; getSiteCapturingStatus
+  reason: Packet capture start/stop/status across orgs and sites is network monitoring and troubleshooting
+    tooling — IT operations, not a business capability.
 - tag: Configlets
   spec_file: juniper-configlets-api-openapi.yml
   capability_id: BC-600.50
@@ -189,6 +832,25 @@ edges:
   reason: Network intent anomaly detection and analytics dashboards on a data-center automation platform
     — day-to-day IT operations monitoring, not a business-domain capability.
   recovered_from: capability-edges-sweep.json
+- tag: MSPs Orgs
+  spec_file: juniper-msps-orgs-api-openapi.yml
+  capability_id: BC-4230.10
+  capability_id_l1: BC-4230
+  capability_name: Tenant Provisioning & Lifecycle
+  confidence: 0.7
+  evidence: createMspOrg, deleteMspOrg, manageMspOrgs, searchMspOrgs; schemas org, msp_org_change_operation2
+  reason: Create, update, delete and reassign customer organisations (tenants) within an MSP account —
+    tenant provisioning and lifecycle in a multi-tenant SaaS platform.
+- tag: MSPs SSO
+  spec_file: juniper-msps-sso-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.7
+  evidence: createMspSso, getMspSamlMetadata, downloadMspSamlMetadata, deleteMspSsoAdmins; schemas sso_idp_type2,
+    sso_nameid_format2, sso_oauth_type2
+  reason: Configuration of SAML/OAuth/LDAP identity-provider federation and single sign-on for platform
+    administrators — identity and access management / federation.
 - tag: Network Policies
   spec_file: juniper-network-policies-api-openapi.yml
   capability_id: BC-600.50
@@ -199,6 +861,66 @@ edges:
   reason: Network connectivity policy objects configure infrastructure; not corporate policy management
     (BC-130.20 would be a homograph error).
   recovered_from: capability-edges-sweep.json
+- tag: Orgs Alarms
+  spec_file: juniper-orgs-alarms-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.7
+  evidence: ackOrgMultipleAlarms; searchOrgAlarms; subscribeOrgAlarmsReports; schemas alarm, alarm_status2
+  reason: 'Acknowledging, counting, searching and subscribing to network alarms is operational monitoring
+    of IT infrastructure. Homograph check: ''Alarms'' here are device/network events, not compliance or
+    risk alerts.'
+- tag: Orgs Clients - Wireless
+  spec_file: juniper-orgs-clients-wireless-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.7
+  evidence: searchOrgWirelessClientSessions; countOrgWirelessClients; schemas client_wireless, dot11_band,
+    wireless_client_session
+  reason: Wi-Fi client, event and session search/count operations with 802.11 schemas — monitoring of
+    wireless network endpoints, squarely IT operations monitoring.
+- tag: Orgs Devices
+  spec_file: juniper-orgs-devices-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.7
+  evidence: listOrgDevices; searchOrgDeviceLastConfigs; listOrgApsMacs; schemas response_org_devices,
+    response_config_history_search_item
+  reason: Inventory, search, event and configuration-history operations over the organisation's network
+    devices (APs, switches, gateways) — stewardship of network infrastructure estate.
+- tag: Orgs NAC CRL
+  spec_file: juniper-orgs-nac-crl-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.7
+  evidence: 'POST /api/v1/orgs/{org_id}/setting/mist_nac_crls importOrgNacCrl; schemas: nac_crl_file,
+    response_nac_crl_files'
+  reason: Import and management of certificate revocation lists used by Mist network access control to
+    validate client certificates — certificate/credential trust administration underpinning network authentication,
+    which falls under Identity & Access Management.
+- tag: Orgs NAC IDP
+  spec_file: juniper-orgs-nac-idp-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.7
+  evidence: 'POST /api/v1/orgs/{org_id}/mist_nac/test_idp validateOrgIdpCredential; schemas: username_password'
+  reason: Validates identity-provider credentials configured for network access control authentication.
+    This is identity federation/authentication configuration for access control, mapping to Identity &
+    Access Management; only a single test operation, so 0.7.
+- tag: Orgs Stats - Marvis Clients
+  spec_file: juniper-orgs-stats-marvis-clients-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.7
+  evidence: searchOrgMarvisClientsStats; schemas stats_marvis_client, stats_marvis_client_location1
+  reason: Statistics and search over Marvis client agents on the network — network client monitoring,
+    not customer relationship data. 'Clients' here are endpoint devices.
 - tag: Routing Instances
   spec_file: juniper-routing-instances-api-openapi.yml
   capability_id: BC-600.50
@@ -218,6 +940,112 @@ edges:
   evidence: POST /script-management/scripts/{script_id}/execute 'Execute script on devices'
   reason: Automation scripts executed against network devices is day-to-day IT operations automation.
   recovered_from: capability-edges-sweep.json
+- tag: Sites Devices
+  spec_file: juniper-sites-devices-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.7
+  evidence: GET /api/v1/sites/{site_id}/devices/config_history/search  searchSiteDeviceConfigHistory
+  reason: Inventory, configuration history and events for network devices (APs, switches, gateways) at
+    a site — management of network infrastructure estate.
+- tag: Sites Devices - WAN Cluster
+  spec_file: juniper-sites-devices-wan-cluster-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.7
+  evidence: POST /api/v1/sites/{site_id}/devices/{device_id}/ha  createSiteDeviceHaCluster, schema gateway_cluster_node
+  reason: Creation and deletion of high-availability gateway clusters — configuration of network infrastructure
+    topology.
+- tag: Sites Devices - Wired
+  spec_file: juniper-sites-devices-wired-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.7
+  evidence: PUT /api/v1/sites/{site_id}/devices/{device_id}/local_port_config  updateSiteLocalSwitchPortConfig
+  reason: Switch local port configuration (speed, duplex, dot1x, storm control) — direct network infrastructure
+    configuration.
+- tag: Sites Devices - Wired - Virtual Chassis
+  spec_file: juniper-sites-devices-wired-virtual-chassis-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.7
+  evidence: POST /api/v1/sites/{site_id}/devices/{device_id}/vc  createSiteVirtualChassis
+  reason: Creation and member management of switch virtual chassis stacks — network infrastructure (switching)
+    configuration management.
+- tag: Sites Events
+  spec_file: juniper-sites-events-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.7
+  evidence: GET /api/v1/sites/{site_id}/events/system/search searchSiteSystemEvents; schema device_event
+  reason: Search and count of device/system and wireless roaming events for a network site — operational
+    monitoring of IT infrastructure. Mapped to IT Operations Management; 'Events' here is telemetry, not
+    a business event.
+- tag: Sites Gateway Templates
+  spec_file: juniper-sites-gateway-templates-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.7
+  evidence: GET /api/v1/sites/{site_id}/gatewaytemplates/derived listSiteGatewayTemplatesDerived; schemas
+    tunnel_config_enc_algo3, bgp_config, wan_extra_routes6
+  reason: Lists derived WAN gateway configuration templates (tunnels, VPN, routing policy) — network infrastructure
+    configuration. Only one read operation, hence moderate confidence.
+- tag: Sites Maps
+  spec_file: juniper-sites-maps-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.7
+  evidence: POST /api/v1/sites/{site_id}/maps/{map_id}/set_map bulkAssignSiteApsToMap; POST /api/v1/sites/{site_id}/maps/import
+    importSiteMaps
+  reason: Floorplan maps with AP placement assignment and geofence generation — these maps exist to site
+    and manage wireless network equipment, so IT Infrastructure Management rather than facilities space
+    planning.
+- tag: Sites RRM
+  spec_file: juniper-sites-rrm-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.7
+  evidence: getSiteCurrentChannelPlanning, listSiteCurrentRrmNeighbors, schema 'rrm_band_metric_interference'
+  reason: Radio resource management — channel planning, channel scores, neighbour and interference metrics
+    — is operation and tuning of wireless network infrastructure; falls under IT infrastructure/network
+    management.
+- tag: Sites SLEs
+  spec_file: juniper-sites-sles-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.7
+  evidence: getSiteSleImpactSummary; listSiteSleImpactedAps; schemas sle_threshold, sle_histogram, sle_impacted_switches
+  reason: Service-level-experience metrics and impacted-device analytics for a network site are day-to-day
+    IT operations monitoring of infrastructure health, not customer-facing SLA commerce.
+- tag: Sites Webhooks
+  spec_file: juniper-sites-webhooks-api-openapi.yml
+  capability_id: BC-4270.80
+  capability_id_l1: BC-4270
+  capability_name: Webhook & Event Subscription Management
+  confidence: 0.7
+  evidence: POST /api/v1/sites/{site_id}/webhooks createSiteWebhook; GET /webhooks/{webhook_id}/events/search
+    searchSiteWebhooksDeliveries; schemas webhook_delivery, webhook_delivery_topic
+  reason: Lifecycle of outbound webhook subscriptions plus delivery search/ping diagnostics — matches
+    Webhook & Event Subscription Management exactly (subscription lifecycle, event topics, delivery reliability).
+- tag: Sites WxTunnels
+  spec_file: juniper-sites-wxtunnels-api-openapi.yml
+  capability_id: BC-600.50
+  capability_id_l1: BC-600
+  capability_name: IT Infrastructure Management
+  confidence: 0.7
+  evidence: POST /api/v1/sites/{site_id}/wxtunnels createSiteWxTunnel; schemas wxlan_tunnel_ipsec2, wxlan_tunnel_dmvpn2,
+    wxlan_tunnel_session
+  reason: Configuration of IPsec/DMVPN tunnels terminating wireless traffic at a site — network connectivity
+    infrastructure configuration.
 - tag: Software Management
   spec_file: juniper-software-management-api-openapi.yml
   capability_id: BC-600.50
@@ -247,6 +1075,16 @@ edges:
   reason: User and role administration for a network automation platform maps to Identity & Access Management
     rather than any HR capability; evidence is thin (read-only listing) so confidence moderate.
   recovered_from: capability-edges-sweep.json
+- tag: Utilities Wi-Fi
+  spec_file: juniper-utilities-wi-fi-api-openapi.yml
+  capability_id: BC-600.40
+  capability_id_l1: BC-600
+  capability_name: IT Operations Management
+  confidence: 0.7
+  evidence: disconnectSiteMultipleClients; optimizeSiteRrm; deauthSiteWirelessClientsConnectedToARogue;
+    resetSiteAllApsToUseRrm
+  reason: Wireless operational utilities — client disconnect/reauth, radio resource management optimisation,
+    AP reprovisioning — are network IT operations tasks.
 - tag: Virtual Networks
   spec_file: juniper-virtual-networks-api-openapi.yml
   capability_id: BC-2600.20
