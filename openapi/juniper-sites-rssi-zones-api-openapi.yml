@@ -1039,6 +1039,45 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    rssi_zone_device:
+      title: rssi_zone_device
+      required:
+      - device_id
+      - rssi
+      type: object
+      properties:
+        device_id:
+          type: string
+          description: Identifier of the AP device used by this RSSI zone
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 00000000-0000-0000-1000-d8695a0f9e61
+        rssi:
+          type: integer
+          description: Minimum RSSI threshold for considering the device inside the zone
+          contentEncoding: int32
+          examples:
+          - 0
+      description: AP device and RSSI threshold used by an RSSI zone
     response_http401:
       title: response_http401
       type: object
@@ -1059,24 +1098,6 @@ components:
           examples:
           - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
       description: Standard HTTP 429 rate limit error response
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
     rssi_zone:
       title: rssi_zone
       required:
@@ -1128,27 +1149,6 @@ components:
           examples:
           - 441a1214-6928-442a-8e92-e1d34b8ec6a6
       description: RSSI-based zone configuration for a site
-    rssi_zone_device:
-      title: rssi_zone_device
-      required:
-      - device_id
-      - rssi
-      type: object
-      properties:
-        device_id:
-          type: string
-          description: Identifier of the AP device used by this RSSI zone
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 00000000-0000-0000-1000-d8695a0f9e61
-        rssi:
-          type: integer
-          description: Minimum RSSI threshold for considering the device inside the zone
-          contentEncoding: int32
-          examples:
-          - 0
-      description: AP device and RSSI threshold used by an RSSI zone
   securitySchemes:
     apiToken:
       type: apiKey

@@ -810,18 +810,14 @@ paths:
       deprecated: false
 components:
   schemas:
-    websocket_session:
-      title: websocket_session
-      required:
-      - session
-      type: object
-      properties:
-        session:
-          type: string
-          description: Identifier used to correlate output on the WebSocket stream
-          examples:
-          - 19e73828-937f-05e6-f709-e29efdb0a82b
-      description: Response containing the WebSocket session handle for asynchronous command output
+    spectrum_analysis_band2:
+      title: spectrum_analysis_band2
+      enum:
+      - '24'
+      - '5'
+      - '6'
+      type: string
+      description: 'Radio band to scan during spectrum analysis. enum: `24`, `5`, `6`.'
     response_http403:
       title: response_http403
       type: object
@@ -832,16 +828,6 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
     response_past_spectrum_analysis:
       title: response_past_spectrum_analysis
       type: object
@@ -872,16 +858,49 @@ components:
           description: Number of spectrum analysis records available for the given time range
           contentEncoding: int32
       description: Paginated response for past site spectrum analysis records
-    response_http429:
-      title: response_http429
+    response_http400:
+      title: response_http400
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the rate limit error
+          description: Human-readable explanation of the bad request error
           examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_running_spectrum_analysis:
+      title: response_running_spectrum_analysis
+      type: object
+      properties:
+        band:
+          type: string
+          description: Radio band currently being scanned by spectrum analysis, such as 24, 5, or 6
+        channels:
+          type: array
+          items:
+            type: integer
+            contentEncoding: int32
+          description: List of channels being scanned in the spectrum analysis
+        device_id:
+          type: string
+          description: Device ID of the AP that is running spectrum analysis
+          contentEncoding: uuid
+        duration:
+          type: integer
+          description: Length of the running spectrum analysis session, in seconds
+          contentEncoding: int32
+        format:
+          type: string
+          description: Output format for the running spectrum analysis data, such as json or stream
+        started_time:
+          type: integer
+          description: Timestamp when the spectrum analysis was started
+          contentEncoding: int32
+        width:
+          type: integer
+          description: Channel width used during the spectrum analysis scan, in MHz
+          contentEncoding: int32
+      description: Running spectrum analysis session for a site
     response_past_spectrum_analysis_channel_usage:
       title: response_past_spectrum_analysis_channel_usage
       type: object
@@ -908,6 +927,26 @@ components:
           examples:
           - 0.13
       description: Channel usage data for a specific channel
+    response_past_spectrum_analysis_fft_sample:
+      title: response_past_spectrum_analysis_fft_sample
+      type: object
+      properties:
+        frequency:
+          type: number
+          description: Sample frequency, in MHz, for this FFT point
+          examples:
+          - 2437
+        rssi:
+          type: number
+          description: Received signal strength, in dBm, for this FFT sample
+          examples:
+          - -70
+        signal7:
+          type: number
+          description: Additional signal level, in dBm, reported for this FFT sample
+          examples:
+          - -70
+      description: FFT sample data for a specific frequency
     response_http404:
       title: response_http404
       type: object
@@ -951,6 +990,33 @@ components:
           description: Epoch timestamp, in seconds, when the spectrum analysis was run
           contentEncoding: int32
       description: Result of a past spectrum analysis
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    spectrum_analysis_format2:
+      title: spectrum_analysis_format2
+      enum:
+      - json
+      - stream
+      type: string
+      description: 'Output format for the spectrum analysis results. enum: `json`, `stream`.'
     spectrum_analysis:
       title: spectrum_analysis
       required:
@@ -988,84 +1054,18 @@ components:
           - $ref: '#/components/schemas/spectrum_analysis_format2'
           - description: 'Output format for the spectrum analysis results. enum: `json`, `stream`.'
       description: Request parameters for starting AP spectrum analysis at a site
-    spectrum_analysis_band2:
-      title: spectrum_analysis_band2
-      enum:
-      - '24'
-      - '5'
-      - '6'
-      type: string
-      description: 'Radio band to scan during spectrum analysis. enum: `24`, `5`, `6`.'
-    response_running_spectrum_analysis:
-      title: response_running_spectrum_analysis
+    websocket_session:
+      title: websocket_session
+      required:
+      - session
       type: object
       properties:
-        band:
+        session:
           type: string
-          description: Radio band currently being scanned by spectrum analysis, such as 24, 5, or 6
-        channels:
-          type: array
-          items:
-            type: integer
-            contentEncoding: int32
-          description: List of channels being scanned in the spectrum analysis
-        device_id:
-          type: string
-          description: Device ID of the AP that is running spectrum analysis
-          contentEncoding: uuid
-        duration:
-          type: integer
-          description: Length of the running spectrum analysis session, in seconds
-          contentEncoding: int32
-        format:
-          type: string
-          description: Output format for the running spectrum analysis data, such as json or stream
-        started_time:
-          type: integer
-          description: Timestamp when the spectrum analysis was started
-          contentEncoding: int32
-        width:
-          type: integer
-          description: Channel width used during the spectrum analysis scan, in MHz
-          contentEncoding: int32
-      description: Running spectrum analysis session for a site
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
+          description: Identifier used to correlate output on the WebSocket stream
           examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_past_spectrum_analysis_fft_sample:
-      title: response_past_spectrum_analysis_fft_sample
-      type: object
-      properties:
-        frequency:
-          type: number
-          description: Sample frequency, in MHz, for this FFT point
-          examples:
-          - 2437
-        rssi:
-          type: number
-          description: Received signal strength, in dBm, for this FFT sample
-          examples:
-          - -70
-        signal7:
-          type: number
-          description: Additional signal level, in dBm, reported for this FFT sample
-          examples:
-          - -70
-      description: FFT sample data for a specific frequency
-    spectrum_analysis_format2:
-      title: spectrum_analysis_format2
-      enum:
-      - json
-      - stream
-      type: string
-      description: 'Output format for the spectrum analysis results. enum: `json`, `stream`.'
+          - 19e73828-937f-05e6-f709-e29efdb0a82b
+      description: Response containing the WebSocket session handle for asynchronous command output
   securitySchemes:
     apiToken:
       type: apiKey

@@ -1050,6 +1050,11 @@ paths:
       deprecated: false
 components:
   schemas:
+    msp_search_type:
+      title: msp_search_type
+      const: orgs
+      type: string
+      description: 'Search result type returned by MSP organization search. enum: `orgs`'
     response_http403:
       title: response_http403
       type: object
@@ -1060,70 +1065,42 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
-    response_search:
-      title: response_search
-      required:
-      - limit
-      - page
-      - results
-      - total
+    msp:
+      title: msp
       type: object
       properties:
-        limit:
-          type: integer
-          description: Maximum number of MSP search results returned in this page
-          contentEncoding: int32
-        next:
-          type: string
-          description: URL for retrieving the next page of MSP search results
-        page:
-          type: integer
-          description: Current page number returned for the MSP search results
-          contentEncoding: int32
-        results:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/response_search_item'
-          description: MSP search result entries matching the query
-        total:
-          type: integer
-          description: Number of MSP search results matching the query across all pages
-          contentEncoding: int32
-      description: Paginated response for MSP organization search results
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    msp_search_type:
-      title: msp_search_type
-      const: orgs
-      type: string
-      description: 'Search result type returned by MSP organization search. enum: `orgs`'
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
+        allow_mist:
+          type: boolean
+          description: Whether Mist support access is allowed for this MSP account
+        created_time:
+          type: number
+          description: Timestamp when the MSP account was created
+          readOnly: true
         id:
           type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
+          description: Unique identifier of the MSP account
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        logo_url:
+          type: string
+          description: For advanced tier (uMSPs) only
+        modified_time:
+          type: number
+          description: Timestamp when the MSP account was last modified
+          readOnly: true
+        name:
+          type: string
+          description: Display name of the MSP account
+        tier:
+          allOf:
+          - $ref: '#/components/schemas/msp_tier2'
+          - description: 'Service tier for the MSP account. enum: `advanced`, `base`.'
+        url:
+          type: string
+          description: For advanced tier (uMSPs) only
+      description: Managed service provider account
     msp_tier2:
       title: msp_tier2
       enum:
@@ -1163,42 +1140,65 @@ components:
           examples:
           - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
       description: Standard HTTP 400 bad request error response
-    msp:
-      title: msp
+    response_http404:
+      title: response_http404
       type: object
       properties:
-        allow_mist:
-          type: boolean
-          description: Whether Mist support access is allowed for this MSP account
-        created_time:
-          type: number
-          description: Timestamp when the MSP account was created
-          readOnly: true
         id:
           type: string
-          description: Unique identifier of the MSP account
-          contentEncoding: uuid
-          readOnly: true
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
           examples:
-          - 53f10664-3ce8-4c27-b382-0ef66432349f
-        logo_url:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
           type: string
-          description: For advanced tier (uMSPs) only
-        modified_time:
-          type: number
-          description: Timestamp when the MSP account was last modified
-          readOnly: true
-        name:
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_search:
+      title: response_search
+      required:
+      - limit
+      - page
+      - results
+      - total
+      type: object
+      properties:
+        limit:
+          type: integer
+          description: Maximum number of MSP search results returned in this page
+          contentEncoding: int32
+        next:
           type: string
-          description: Display name of the MSP account
-        tier:
-          allOf:
-          - $ref: '#/components/schemas/msp_tier2'
-          - description: 'Service tier for the MSP account. enum: `advanced`, `base`.'
-        url:
-          type: string
-          description: For advanced tier (uMSPs) only
-      description: Managed service provider account
+          description: URL for retrieving the next page of MSP search results
+        page:
+          type: integer
+          description: Current page number returned for the MSP search results
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/response_search_item'
+          description: MSP search result entries matching the query
+        total:
+          type: integer
+          description: Number of MSP search results matching the query across all pages
+          contentEncoding: int32
+      description: Paginated response for MSP organization search results
   securitySchemes:
     apiToken:
       type: apiKey

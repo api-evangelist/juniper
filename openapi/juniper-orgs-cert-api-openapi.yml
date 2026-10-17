@@ -883,6 +883,16 @@ paths:
       deprecated: false
 components:
   schemas:
+    days_number:
+      title: days_number
+      type: object
+      properties:
+        days:
+          type: integer
+          description: Number of most recent days of CRL entries to retain after truncation
+          contentEncoding: int32
+          default: 30
+      description: Request body specifying CRL truncation retention in days
     response_http403:
       title: response_http403
       type: object
@@ -893,6 +903,41 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
+    response_certificate:
+      title: response_certificate
+      required:
+      - cert
+      type: object
+      properties:
+        cert:
+          type: string
+          description: Current organization CA certificate in PEM format
+        pending_cert:
+          type: string
+          description: Pending auto-renewed organization CA certificate returned when the current certificate nears expiry
+        pending_cert_expiry:
+          type: integer
+          description: Epoch timestamp when the pending certificate is expected to replace the current certificate
+          contentEncoding: int32
+      description: If the current Org CA certificate is set to expire within 30 days, a pending certificate will be returned along with the expected auto-renewal timestamp.
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
     response_http401:
       title: response_http401
       type: object
@@ -923,51 +968,6 @@ components:
           examples:
           - '-----BEGIN CERTIFICATE-----\nMIIowDQYJKoZIhvcNAQELBQE\n-----END CERTIFICATE-----'
       description: SSL proxy certificate returned for the organization
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    days_number:
-      title: days_number
-      type: object
-      properties:
-        days:
-          type: integer
-          description: Number of most recent days of CRL entries to retain after truncation
-          contentEncoding: int32
-          default: 30
-      description: Request body specifying CRL truncation retention in days
-    response_certificate:
-      title: response_certificate
-      required:
-      - cert
-      type: object
-      properties:
-        cert:
-          type: string
-          description: Current organization CA certificate in PEM format
-        pending_cert:
-          type: string
-          description: Pending auto-renewed organization CA certificate returned when the current certificate nears expiry
-        pending_cert_expiry:
-          type: integer
-          description: Epoch timestamp when the pending certificate is expected to replace the current certificate
-          contentEncoding: int32
-      description: If the current Org CA certificate is set to expire within 30 days, a pending certificate will be returned along with the expected auto-renewal timestamp.
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
   securitySchemes:
     apiToken:
       type: apiKey

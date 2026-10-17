@@ -1201,55 +1201,21 @@ paths:
       deprecated: false
 components:
   schemas:
-    account_skyatp_data:
-      title: account_skyatp_data
+    skyatp_list:
+      title: skyatp_list
       type: object
       properties:
-        secintel:
-          allOf:
-          - $ref: '#/components/schemas/account_skyatp_data_secintel2'
-          - description: Juniper SecIntel threat feed configuration provided by Sky ATP
-        secintel_allowlist_url:
-          type: string
-          description: URL for the Sky ATP SecIntel allowlist
-          readOnly: true
-          examples:
-          - https://papi.s3.amazonaws.com/secintel_allowlist/xxx...
-        secintel_blocklist_url:
-          type: string
-          description: URL for the Sky ATP SecIntel blocklist
-          readOnly: true
-          examples:
-          - https://papi.s3.amazonaws.com/secintel_blocklist/xxx...
-      description: Sky ATP SecIntel feed data and generated list URLs
-    account_skyatp_cloud_name2:
-      title: account_skyatp_cloud_name2
-      enum:
-      - www.amerskyatp.com
-      - www.apacskyatp.com
-      - www.euroskyatp.com
-      - www.canadaskyatp.com
-      type: string
-      description: 'Sky ATP cloud endpoint configured for the integration. enum: `www.amerskyatp.com`, `www.apacskyatp.com`, `www.euroskyatp.com`, `www.canadaskyatp.com`.'
-      examples:
-      - www.amerskyatp.com
-    skyatp_list_domain:
-      title: skyatp_list_domain
-      required:
-      - value
-      type: object
-      properties:
-        comment:
-          type: string
-          description: Optional note describing the domain list entry
-          examples:
-          - restricted
-        value:
-          type: string
-          description: Domain name included in the Sky ATP SecIntel list
-          examples:
-          - unsafe.com
-      description: Domain entry in a Sky ATP SecIntel list
+        domains:
+          type: array
+          items:
+            $ref: '#/components/schemas/skyatp_list_domain'
+          description: SecIntel domain entries in this Sky ATP list
+        ip:
+          type: array
+          items:
+            $ref: '#/components/schemas/skyatp_list_ip'
+          description: SecIntel IP address entries in this Sky ATP list
+      description: Sky ATP SecIntel allowlist or blocklist entries
     response_http403:
       title: response_http403
       type: object
@@ -1260,55 +1226,23 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
-    response_http401:
-      title: response_http401
+    skyatp_list_ip:
+      title: skyatp_list_ip
+      required:
+      - value
       type: object
       properties:
-        detail:
+        comment:
           type: string
-          description: Human-readable explanation of the authentication error
+          description: Optional note describing the IP address list entry
           examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
+          - nas
+        value:
           type: string
-          description: Human-readable explanation of the rate limit error
+          description: IP address included in the Sky ATP SecIntel list
           examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    account_skyatp_info:
-      title: account_skyatp_info
-      type: object
-      properties:
-        cloud_name:
-          allOf:
-          - $ref: '#/components/schemas/account_skyatp_cloud_name2'
-          - description: 'Sky ATP cloud endpoint configured for the integration. enum: `www.amerskyatp.com`, `www.apacskyatp.com`, `www.euroskyatp.com`, `www.canadaskyatp.com`.'
-            examples:
-            - www.amerskyatp.com
-        realm:
-          type: string
-          description: Sky ATP realm linked with this Mist organization
-          examples:
-          - mist-team
-        username:
-          type: string
-          description: Sky ATP username configured for the linked realm
-          examples:
-          - john@abc.com
-      description: Linked Sky ATP account and realm information
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
+          - 10.1.3.5
+      description: IP address entry in a Sky ATP SecIntel list
     account_skyatp_config:
       title: account_skyatp_config
       required:
@@ -1340,32 +1274,6 @@ components:
           examples:
           - john@abc.com
       description: Sky ATP account credentials and realm settings used for integration
-    skyatp_list:
-      title: skyatp_list
-      type: object
-      properties:
-        domains:
-          type: array
-          items:
-            $ref: '#/components/schemas/skyatp_list_domain'
-          description: SecIntel domain entries in this Sky ATP list
-        ip:
-          type: array
-          items:
-            $ref: '#/components/schemas/skyatp_list_ip'
-          description: SecIntel IP address entries in this Sky ATP list
-      description: Sky ATP SecIntel allowlist or blocklist entries
-    account_skyatp_data_secintel2:
-      title: account_skyatp_data_secintel2
-      type: object
-      properties:
-        third_party_threat_feeds:
-          uniqueItems: true
-          type: array
-          items:
-            type: string
-          description: Third-party threat feed names enabled for SecIntel
-      description: Juniper SecIntel threat feed configuration provided by Sky ATP
     response_http400:
       title: response_http400
       type: object
@@ -1376,23 +1284,83 @@ components:
           examples:
           - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
       description: Standard HTTP 400 bad request error response
-    skyatp_list_ip:
-      title: skyatp_list_ip
+    skyatp_list_domain:
+      title: skyatp_list_domain
       required:
       - value
       type: object
       properties:
         comment:
           type: string
-          description: Optional note describing the IP address list entry
+          description: Optional note describing the domain list entry
           examples:
-          - nas
+          - restricted
         value:
           type: string
-          description: IP address included in the Sky ATP SecIntel list
+          description: Domain name included in the Sky ATP SecIntel list
           examples:
-          - 10.1.3.5
-      description: IP address entry in a Sky ATP SecIntel list
+          - unsafe.com
+      description: Domain entry in a Sky ATP SecIntel list
+    account_skyatp_data:
+      title: account_skyatp_data
+      type: object
+      properties:
+        secintel:
+          allOf:
+          - $ref: '#/components/schemas/account_skyatp_data_secintel2'
+          - description: Juniper SecIntel threat feed configuration provided by Sky ATP
+        secintel_allowlist_url:
+          type: string
+          description: URL for the Sky ATP SecIntel allowlist
+          readOnly: true
+          examples:
+          - https://papi.s3.amazonaws.com/secintel_allowlist/xxx...
+        secintel_blocklist_url:
+          type: string
+          description: URL for the Sky ATP SecIntel blocklist
+          readOnly: true
+          examples:
+          - https://papi.s3.amazonaws.com/secintel_blocklist/xxx...
+      description: Sky ATP SecIntel feed data and generated list URLs
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    account_skyatp_cloud_name2:
+      title: account_skyatp_cloud_name2
+      enum:
+      - www.amerskyatp.com
+      - www.apacskyatp.com
+      - www.euroskyatp.com
+      - www.canadaskyatp.com
+      type: string
+      description: 'Sky ATP cloud endpoint configured for the integration. enum: `www.amerskyatp.com`, `www.apacskyatp.com`, `www.euroskyatp.com`, `www.canadaskyatp.com`.'
+      examples:
+      - www.amerskyatp.com
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
     account_skyatp_cloud_name1:
       title: account_skyatp_cloud_name1
       enum:
@@ -1404,6 +1372,38 @@ components:
       description: 'Sky ATP cloud endpoint used for the integration. enum: `www.amerskyatp.com`, `www.apacskyatp.com`, `www.euroskyatp.com`, `www.canadaskyatp.com`.'
       examples:
       - www.amerskyatp.com
+    account_skyatp_data_secintel2:
+      title: account_skyatp_data_secintel2
+      type: object
+      properties:
+        third_party_threat_feeds:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+          description: Third-party threat feed names enabled for SecIntel
+      description: Juniper SecIntel threat feed configuration provided by Sky ATP
+    account_skyatp_info:
+      title: account_skyatp_info
+      type: object
+      properties:
+        cloud_name:
+          allOf:
+          - $ref: '#/components/schemas/account_skyatp_cloud_name2'
+          - description: 'Sky ATP cloud endpoint configured for the integration. enum: `www.amerskyatp.com`, `www.apacskyatp.com`, `www.euroskyatp.com`, `www.canadaskyatp.com`.'
+            examples:
+            - www.amerskyatp.com
+        realm:
+          type: string
+          description: Sky ATP realm linked with this Mist organization
+          examples:
+          - mist-team
+        username:
+          type: string
+          description: Sky ATP username configured for the linked realm
+          examples:
+          - john@abc.com
+      description: Linked Sky ATP account and realm information
   securitySchemes:
     apiToken:
       type: apiKey

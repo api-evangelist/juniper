@@ -537,6 +537,14 @@ paths:
       deprecated: false
 components:
   schemas:
+    org_e911_report_status2:
+      title: org_e911_report_status2
+      enum:
+      - disabled
+      - scheduled
+      - available
+      type: string
+      description: 'Current generation state of the E911 AP BSSID report. enum: `disabled`, `scheduled`, `available`.'
     response_http403:
       title: response_http403
       type: object
@@ -547,14 +555,43 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
-    org_e911_report_status2:
-      title: org_e911_report_status2
-      enum:
-      - disabled
-      - scheduled
-      - available
-      type: string
-      description: 'Current generation state of the E911 AP BSSID report. enum: `disabled`, `scheduled`, `available`.'
+    org_e911_report:
+      title: org_e911_report
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable description of the action taken
+        last_generated:
+          type: integer
+          description: Unix timestamp of when the report file was last generated. Only present when `status` is `available`.
+          contentEncoding: int32
+        status:
+          allOf:
+          - $ref: '#/components/schemas/org_e911_report_status2'
+          - description: 'Current generation state of the E911 AP BSSID report. enum: `disabled`, `scheduled`, `available`.'
+        url:
+          type: string
+          description: Presigned URL to download the CSV file. Only present when `status` is `available`.
+      description: E911 AP BSSID report status for the organization
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
     response_http401:
       title: response_http401
       type: object
@@ -575,43 +612,6 @@ components:
           examples:
           - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
       description: Standard HTTP 429 rate limit error response
-    org_e911_report:
-      title: org_e911_report
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable description of the action taken
-        last_generated:
-          type: integer
-          description: Unix timestamp of when the report file was last generated. Only present when `status` is `available`.
-          contentEncoding: int32
-        status:
-          allOf:
-          - $ref: '#/components/schemas/org_e911_report_status2'
-          - description: 'Current generation state of the E911 AP BSSID report. enum: `disabled`, `scheduled`, `available`.'
-        url:
-          type: string
-          description: Presigned URL to download the CSV file. Only present when `status` is `available`.
-      description: E911 AP BSSID report status for the organization
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
   securitySchemes:
     apiToken:
       type: apiKey

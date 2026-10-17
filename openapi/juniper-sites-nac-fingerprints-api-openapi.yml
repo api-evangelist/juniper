@@ -703,35 +703,29 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
-    fingerprints_count_distinct:
-      title: fingerprints_count_distinct
+    count_result:
+      title: count_result
+      required:
+      - count
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of matching items for the distinct value or values in this result
+          contentEncoding: int32
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
+    nac_access_type:
+      title: nac_access_type
       enum:
-      - family
-      - model
-      - os
-      - os_type
+      - wireless
+      - wired
+      - vty
       type: string
-      description: 'enum: `family`, `model`, `os`, `os_type`'
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
+      description: 'Type of network access. enum: `wireless`, `wired`, `vty`'
+      examples:
+      - wireless
     response_http400:
       title: response_http400
       type: object
@@ -742,6 +736,15 @@ components:
           examples:
           - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
       description: Standard HTTP 400 bad request error response
+    fingerprints_count_distinct:
+      title: fingerprints_count_distinct
+      enum:
+      - family
+      - model
+      - os
+      - os_type
+      type: string
+      description: 'enum: `family`, `model`, `os`, `os_type`'
     response_http404:
       title: response_http404
       type: object
@@ -750,49 +753,6 @@ components:
           type: string
           description: Missing resource identifier, when the API includes one
       description: Standard HTTP 404 not found error response
-    fingerprint_search_result:
-      title: fingerprint_search_result
-      required:
-      - end
-      - limit
-      - results
-      - start
-      - total
-      type: object
-      properties:
-        end:
-          type: integer
-          description: Upper bound of the time range for the fingerprint search
-          contentEncoding: int32
-          examples:
-          - 1711035686
-        limit:
-          type: integer
-          description: Maximum number of fingerprint records returned in the response
-          contentEncoding: int32
-          examples:
-          - 10
-        next:
-          type: string
-          description: Pagination URL for the next page of fingerprint search results
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/fingerprint'
-          description: Fingerprint records returned for the search
-        start:
-          type: integer
-          description: Lower bound of the time range for the fingerprint search
-          contentEncoding: int32
-          examples:
-          - 1710949286
-        total:
-          type: integer
-          description: Number of fingerprint records matching the search
-          contentEncoding: int32
-          examples:
-          - 232
-      description: Search response for client device fingerprint records
     response_count:
       title: response_count
       required:
@@ -881,29 +841,69 @@ components:
           description: Time when the fingerprint record was observed
           readOnly: true
       description: Client device fingerprint record returned by NAC fingerprint insights
-    count_result:
-      title: count_result
-      required:
-      - count
+    response_http429:
+      title: response_http429
       type: object
       properties:
-        count:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    fingerprint_search_result:
+      title: fingerprint_search_result
+      required:
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        end:
           type: integer
-          description: Number of matching items for the distinct value or values in this result
+          description: Upper bound of the time range for the fingerprint search
           contentEncoding: int32
-      additionalProperties:
-        type: string
-      description: Count result row with the matching distinct field values
-    nac_access_type:
-      title: nac_access_type
-      enum:
-      - wireless
-      - wired
-      - vty
-      type: string
-      description: 'Type of network access. enum: `wireless`, `wired`, `vty`'
-      examples:
-      - wireless
+          examples:
+          - 1711035686
+        limit:
+          type: integer
+          description: Maximum number of fingerprint records returned in the response
+          contentEncoding: int32
+          examples:
+          - 10
+        next:
+          type: string
+          description: Pagination URL for the next page of fingerprint search results
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/fingerprint'
+          description: Fingerprint records returned for the search
+        start:
+          type: integer
+          description: Lower bound of the time range for the fingerprint search
+          contentEncoding: int32
+          examples:
+          - 1710949286
+        total:
+          type: integer
+          description: Number of fingerprint records matching the search
+          contentEncoding: int32
+          examples:
+          - 232
+      description: Search response for client device fingerprint records
   securitySchemes:
     apiToken:
       type: apiKey

@@ -839,6 +839,14 @@ paths:
       deprecated: false
 components:
   schemas:
+    privilege_msp_scope2:
+      title: privilege_msp_scope2
+      enum:
+      - msp
+      - org
+      - orggroup
+      type: string
+      description: 'MSP hierarchy level where this privilege applies. enum: `msp`, `org`, `orggroup`.'
     response_http403:
       title: response_http403
       type: object
@@ -895,6 +903,24 @@ components:
             $ref: '#/components/schemas/admin_privilege_view'
           description: UI views allowed by custom role restrictions
       description: MSP privilege scope and role settings
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
     sso_role_msp:
       title: sso_role_msp
       required:
@@ -946,24 +972,6 @@ components:
             $ref: '#/components/schemas/privilege_msp'
           description: Access privileges granted by this MSP SSO role
       description: MSP SSO role definition
-    privilege_msp_scope2:
-      title: privilege_msp_scope2
-      enum:
-      - msp
-      - org
-      - orggroup
-      type: string
-      description: 'MSP hierarchy level where this privilege applies. enum: `msp`, `org`, `orggroup`.'
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
     response_http401:
       title: response_http401
       type: object
@@ -974,24 +982,16 @@ components:
           examples:
           - Authentication credentials were not provided.
       description: Standard HTTP 401 authentication error response
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    response_http400:
-      title: response_http400
+    response_http429:
+      title: response_http429
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the bad request error
+          description: Human-readable explanation of the rate limit error
           examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
     privilege_msp_role2:
       title: privilege_msp_role2
       enum:

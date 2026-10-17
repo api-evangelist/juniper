@@ -101,7 +101,22 @@ paths:
               schema:
                 $ref: '#/components/schemas/OrgStats'
 components:
+  parameters:
+    OrgId:
+      name: org_id
+      in: path
+      required: true
+      description: Organization unique identifier
+      schema:
+        type: string
+        format: uuid
   responses:
+    BadRequest:
+      description: Bad request - invalid parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
     Unauthorized:
       description: Unauthorized - invalid or missing authentication
       content:
@@ -114,13 +129,13 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad request - invalid parameters
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Error message
     Organization:
       type: object
       properties:
@@ -157,21 +172,6 @@ components:
           type: integer
         num_clients:
           type: integer
-    Error:
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Error message
-  parameters:
-    OrgId:
-      name: org_id
-      in: path
-      required: true
-      description: Organization unique identifier
-      schema:
-        type: string
-        format: uuid
   securitySchemes:
     apiToken:
       type: http

@@ -1071,33 +1071,19 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
-    stats_asset_service_packet:
-      title: stats_asset_service_packet
+    count_result:
+      title: count_result
+      required:
+      - count
       type: object
       properties:
-        data:
-          type: string
-          description: Service data payload (hex encoded)
-          examples:
-          - '640'
-        last_rx_time:
+        count:
           type: integer
-          description: Unix timestamp when this service data was last received
+          description: Number of matching items for the distinct value or values in this result
           contentEncoding: int32
-          examples:
-          - 1645855923
-        rx_cnt:
-          type: integer
-          description: Total number of times this service data was received
-          contentEncoding: int32
-          examples:
-          - 213065
-        uuid:
-          type: string
-          description: BLE service UUID advertised by the asset service packet
-          examples:
-          - 00003e10-0000-1000-8000-00805f9b34fb
-      description: Service data advertisement from a BLE asset
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
     response_stats_assets:
       title: response_stats_assets
       required:
@@ -1133,26 +1119,17 @@ components:
           description: Number of asset statistics records matching the search filters across all pages
           contentEncoding: int32
       description: Paginated response for asset statistics search results
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
+    org_asset_count_distinct:
+      title: org_asset_count_distinct
+      enum:
+      - ibeacon_major
+      - ibeacon_minor
+      - ibeacon_uuid
+      - mac
+      - map_id
+      - site_id
+      type: string
+      description: 'enum: `ibeacon_major`, `ibeacon_minor`, `ibeacon_uuid`, `mac`, `map_id`, `site_id`'
     response_http400:
       title: response_http400
       type: object
@@ -1171,6 +1148,63 @@ components:
           type: string
           description: Missing resource identifier, when the API includes one
       description: Standard HTTP 404 not found error response
+    response_count:
+      title: response_count
+      required:
+      - distinct
+      - end
+      - limit
+      - results
+      - start
+      - total
+      type: object
+      properties:
+        distinct:
+          type: string
+          description: Field used to group the count results
+        end:
+          type: integer
+          description: Search window end timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        limit:
+          type: integer
+          description: Maximum number of distinct count results requested
+          contentEncoding: int32
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/count_result'
+          description: Count results grouped by the distinct field
+        start:
+          type: integer
+          description: Search window start timestamp for the count request, in epoch seconds
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of distinct result buckets returned
+          contentEncoding: int32
+      description: Distinct count response for time-bounded search results
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
     stats_asset:
       title: stats_asset
       required:
@@ -1347,69 +1381,6 @@ components:
             $ref: '#/components/schemas/asset_zone'
           description: Map zones currently containing this asset
       description: BLE asset location and advertisement statistics
-    org_asset_count_distinct:
-      title: org_asset_count_distinct
-      enum:
-      - ibeacon_major
-      - ibeacon_minor
-      - ibeacon_uuid
-      - mac
-      - map_id
-      - site_id
-      type: string
-      description: 'enum: `ibeacon_major`, `ibeacon_minor`, `ibeacon_uuid`, `mac`, `map_id`, `site_id`'
-    asset_rssi_zone:
-      title: asset_rssi_zone
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier of the RSSI zone
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 53f10664-3ce8-4c27-b382-0ef66432349f
-        since:
-          type: number
-          description: Timestamp when the asset entered this RSSI zone
-      description: RSSI zone membership for an individual asset statistic
-    response_count:
-      title: response_count
-      required:
-      - distinct
-      - end
-      - limit
-      - results
-      - start
-      - total
-      type: object
-      properties:
-        distinct:
-          type: string
-          description: Field used to group the count results
-        end:
-          type: integer
-          description: Search window end timestamp for the count request, in epoch seconds
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of distinct count results requested
-          contentEncoding: int32
-        results:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/count_result'
-          description: Count results grouped by the distinct field
-        start:
-          type: integer
-          description: Search window start timestamp for the count request, in epoch seconds
-          contentEncoding: int32
-        total:
-          type: integer
-          description: Number of distinct result buckets returned
-          contentEncoding: int32
-      description: Distinct count response for time-bounded search results
     asset_zone:
       title: asset_zone
       type: object
@@ -1425,19 +1396,48 @@ components:
           type: number
           description: Timestamp when the asset entered this zone
       description: Map zone membership for an individual asset statistic
-    count_result:
-      title: count_result
-      required:
-      - count
+    stats_asset_service_packet:
+      title: stats_asset_service_packet
       type: object
       properties:
-        count:
+        data:
+          type: string
+          description: Service data payload (hex encoded)
+          examples:
+          - '640'
+        last_rx_time:
           type: integer
-          description: Number of matching items for the distinct value or values in this result
+          description: Unix timestamp when this service data was last received
           contentEncoding: int32
-      additionalProperties:
-        type: string
-      description: Count result row with the matching distinct field values
+          examples:
+          - 1645855923
+        rx_cnt:
+          type: integer
+          description: Total number of times this service data was received
+          contentEncoding: int32
+          examples:
+          - 213065
+        uuid:
+          type: string
+          description: BLE service UUID advertised by the asset service packet
+          examples:
+          - 00003e10-0000-1000-8000-00805f9b34fb
+      description: Service data advertisement from a BLE asset
+    asset_rssi_zone:
+      title: asset_rssi_zone
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the RSSI zone
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        since:
+          type: number
+          description: Timestamp when the asset entered this RSSI zone
+      description: RSSI zone membership for an individual asset statistic
   securitySchemes:
     apiToken:
       type: apiKey

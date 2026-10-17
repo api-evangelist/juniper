@@ -946,6 +946,15 @@ paths:
       deprecated: false
 components:
   schemas:
+    list_org_logs_sort:
+      title: list_org_logs_sort
+      enum:
+      - -timestamp
+      - admin_id
+      - site_id
+      - timestamp
+      type: string
+      description: 'enum: `-timestamp`, `admin_id`, `site_id`, `timestamp`'
     response_http403:
       title: response_http403
       type: object
@@ -956,16 +965,6 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
     org_logs_count_distinct:
       title: org_logs_count_distinct
       enum:
@@ -975,16 +974,19 @@ components:
       - site_id
       type: string
       description: 'enum: `admin_id`, `admin_name`, `message`, `site_id`'
-    response_http429:
-      title: response_http429
+    count_result:
+      title: count_result
+      required:
+      - count
       type: object
       properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
+        count:
+          type: integer
+          description: Number of matching items for the distinct value or values in this result
+          contentEncoding: int32
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
     response_http400:
       title: response_http400
       type: object
@@ -1076,19 +1078,42 @@ components:
           type: string
           description: Missing resource identifier, when the API includes one
       description: Standard HTTP 404 not found error response
-    count_result:
-      title: count_result
+    response_log_search:
+      title: response_log_search
       required:
-      - count
+      - end
+      - limit
+      - results
+      - start
+      - total
       type: object
       properties:
-        count:
+        end:
           type: integer
-          description: Number of matching items for the distinct value or values in this result
+          description: Epoch timestamp for the end of the audit log search window
           contentEncoding: int32
-      additionalProperties:
-        type: string
-      description: Count result row with the matching distinct field values
+        limit:
+          type: integer
+          description: Maximum number of audit log events returned in this page
+          contentEncoding: int32
+        next:
+          type: string
+          description: Pagination cursor or URL for retrieving the next page of audit log events
+        results:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/log_event'
+          description: Audit log events matching the search filters
+        start:
+          type: integer
+          description: Epoch timestamp for the start of the audit log search window
+          contentEncoding: int32
+        total:
+          type: integer
+          description: Number of audit log events matching the search filters across all pages
+          contentEncoding: int32
+      description: Paginated response for audit log search results
     response_count:
       title: response_count
       required:
@@ -1126,51 +1151,26 @@ components:
           description: Number of distinct result buckets returned
           contentEncoding: int32
       description: Distinct count response for time-bounded search results
-    response_log_search:
-      title: response_log_search
-      required:
-      - end
-      - limit
-      - results
-      - start
-      - total
+    response_http429:
+      title: response_http429
       type: object
       properties:
-        end:
-          type: integer
-          description: Epoch timestamp for the end of the audit log search window
-          contentEncoding: int32
-        limit:
-          type: integer
-          description: Maximum number of audit log events returned in this page
-          contentEncoding: int32
-        next:
+        detail:
           type: string
-          description: Pagination cursor or URL for retrieving the next page of audit log events
-        results:
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/log_event'
-          description: Audit log events matching the search filters
-        start:
-          type: integer
-          description: Epoch timestamp for the start of the audit log search window
-          contentEncoding: int32
-        total:
-          type: integer
-          description: Number of audit log events matching the search filters across all pages
-          contentEncoding: int32
-      description: Paginated response for audit log search results
-    list_org_logs_sort:
-      title: list_org_logs_sort
-      enum:
-      - -timestamp
-      - admin_id
-      - site_id
-      - timestamp
-      type: string
-      description: 'enum: `-timestamp`, `admin_id`, `site_id`, `timestamp`'
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
   securitySchemes:
     apiToken:
       type: apiKey

@@ -194,28 +194,6 @@ paths:
                     additionalProperties:
                       $ref: '#/components/schemas/BlueprintNode'
 components:
-  responses:
-    NotFound:
-      description: Resource not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-  parameters:
-    BlueprintId:
-      name: blueprint_id
-      in: path
-      required: true
-      description: Blueprint unique identifier
-      schema:
-        type: string
-        format: uuid
   schemas:
     Blueprint:
       type: object
@@ -247,6 +225,12 @@ components:
         last_modified_at:
           type: string
           format: date-time
+    Error:
+      type: object
+      properties:
+        errors:
+          type: object
+          description: Error details
     BlueprintNode:
       type: object
       properties:
@@ -264,12 +248,28 @@ components:
           type: string
         deploy_mode:
           type: string
-    Error:
-      type: object
-      properties:
-        errors:
-          type: object
-          description: Error details
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    BlueprintId:
+      name: blueprint_id
+      in: path
+      required: true
+      description: Blueprint unique identifier
+      schema:
+        type: string
+        format: uuid
   securitySchemes:
     authToken:
       type: apiKey

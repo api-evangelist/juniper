@@ -862,61 +862,19 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
-    response_http401:
-      title: response_http401
+    count_result:
+      title: count_result
+      required:
+      - count
       type: object
       properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    response_events_orgs_search:
-      title: response_events_orgs_search
-      type: object
-      properties:
-        end:
+        count:
           type: integer
-          description: Epoch timestamp for the end of the organization event search window
+          description: Number of matching items for the distinct value or values in this result
           contentEncoding: int32
-          examples:
-          - 1688035193
-        limit:
-          type: integer
-          description: Maximum number of organization event records returned in this page
-          contentEncoding: int32
-          examples:
-          - 10
-        next:
-          type: string
-          description: Pagination cursor or URL for retrieving the next page of organization event records
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/org_event'
-          description: Organization event records matching the search filters
-        start:
-          type: integer
-          description: Epoch timestamp for the start of the organization event search window
-          contentEncoding: int32
-          examples:
-          - 1687948793
-        total:
-          type: integer
-          description: Number of organization event records matching the search filters across all pages
-          contentEncoding: int32
-      description: Paginated response for organization event search results
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
     response_org_system_events_search:
       title: response_org_system_events_search
       required:
@@ -963,14 +921,6 @@ components:
           examples:
           - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
       description: Standard HTTP 400 bad request error response
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
     org_system_event:
       title: org_system_event
       type: object
@@ -1012,6 +962,49 @@ components:
           examples:
           - delete-wlan
       description: Organization system event record
+    response_events_orgs_search:
+      title: response_events_orgs_search
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Epoch timestamp for the end of the organization event search window
+          contentEncoding: int32
+          examples:
+          - 1688035193
+        limit:
+          type: integer
+          description: Maximum number of organization event records returned in this page
+          contentEncoding: int32
+          examples:
+          - 10
+        next:
+          type: string
+          description: Pagination cursor or URL for retrieving the next page of organization event records
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/org_event'
+          description: Organization event records matching the search filters
+        start:
+          type: integer
+          description: Epoch timestamp for the start of the organization event search window
+          contentEncoding: int32
+          examples:
+          - 1687948793
+        total:
+          type: integer
+          description: Number of organization event records matching the search filters across all pages
+          contentEncoding: int32
+      description: Paginated response for organization event search results
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
     org_event:
       title: org_event
       type: object
@@ -1075,19 +1068,26 @@ components:
           description: Number of distinct result buckets returned
           contentEncoding: int32
       description: Distinct count response for time-bounded search results
-    count_result:
-      title: count_result
-      required:
-      - count
+    response_http429:
+      title: response_http429
       type: object
       properties:
-        count:
-          type: integer
-          description: Number of matching items for the distinct value or values in this result
-          contentEncoding: int32
-      additionalProperties:
-        type: string
-      description: Count result row with the matching distinct field values
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
   securitySchemes:
     apiToken:
       type: apiKey

@@ -711,6 +711,15 @@ components:
           description: Number of map floorplans assigned during the map import
           contentEncoding: int32
       description: Counts summarizing assignments made during the map import
+    map_import_json_vendor_name2:
+      title: map_import_json_vendor_name2
+      enum:
+      - ekahau
+      - ibwave
+      type: string
+      description: 'Map import vendor for the uploaded JSON. enum: `ekahau`, `ibwave`.'
+      examples:
+      - ekahau
     response_http403:
       title: response_http403
       type: object
@@ -757,25 +766,16 @@ components:
           type: string
           description: Explanation of why the AP import action was not completed, when provided
       description: AP placement result from a map import
-    map_import_json_vendor_name2:
-      title: map_import_json_vendor_name2
-      enum:
-      - ekahau
-      - ibwave
-      type: string
-      description: 'Map import vendor for the uploaded JSON. enum: `ekahau`, `ibwave`.'
-      examples:
-      - ekahau
-    response_http401:
-      title: response_http401
+    response_http400:
+      title: response_http400
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the authentication error
+          description: Human-readable explanation of the bad request error
           examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
     response_map_import:
       title: response_map_import
       required:
@@ -822,6 +822,24 @@ components:
       description: 'Map import vendor for the uploaded file. enum: `ekahau`, `ibwave`.'
       examples:
       - ekahau
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
     response_http429:
       title: response_http429
       type: object
@@ -832,14 +850,38 @@ components:
           examples:
           - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
       description: Standard HTTP 429 rate limit error response
-    response_http404:
-      title: response_http404
+    map_org_import_file_json2:
+      title: map_org_import_file_json2
+      required:
+      - vendor_name
       type: object
       properties:
-        id:
+        import_all_floorplans:
+          type: boolean
+          description: Whether to import all floorplans from the uploaded map file
+          default: false
+        import_height:
+          type: boolean
+          description: Whether to import height metadata from the uploaded map file
+          default: true
+        import_orientation:
+          type: boolean
+          description: Whether to import orientation metadata from the uploaded map file
+          default: true
+        site_id:
           type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
+          description: Target site for imported floorplans, when specified
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        vendor_name:
+          allOf:
+          - $ref: '#/components/schemas/map_org_import_file_json_vendor_name2'
+          - description: 'Map import vendor for the uploaded file. enum: `ekahau`, `ibwave`.'
+            examples:
+            - ekahau
+      description: Import options for the organization map file
     response_map_import_ap_action2:
       title: response_map_import_ap_action2
       enum:
@@ -905,48 +947,6 @@ components:
           type: string
           description: Explanation of why the floorplan import action was not completed, when provided
       description: Floorplan result from a map import
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    map_org_import_file_json2:
-      title: map_org_import_file_json2
-      required:
-      - vendor_name
-      type: object
-      properties:
-        import_all_floorplans:
-          type: boolean
-          description: Whether to import all floorplans from the uploaded map file
-          default: false
-        import_height:
-          type: boolean
-          description: Whether to import height metadata from the uploaded map file
-          default: true
-        import_orientation:
-          type: boolean
-          description: Whether to import orientation metadata from the uploaded map file
-          default: true
-        site_id:
-          type: string
-          description: Target site for imported floorplans, when specified
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
-        vendor_name:
-          allOf:
-          - $ref: '#/components/schemas/map_org_import_file_json_vendor_name2'
-          - description: 'Map import vendor for the uploaded file. enum: `ekahau`, `ibwave`.'
-            examples:
-            - ekahau
-      description: Import options for the organization map file
   securitySchemes:
     apiToken:
       type: apiKey

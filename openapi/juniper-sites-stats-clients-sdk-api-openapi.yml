@@ -425,6 +425,16 @@ paths:
       deprecated: false
 components:
   schemas:
+    response_http403:
+      title: response_http403
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the permission error
+          examples:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
     sdkstats_wireless_client:
       title: sdkstats_wireless_client
       required:
@@ -483,16 +493,16 @@ components:
             $ref: '#/components/schemas/sdkstats_wireless_client_zone'
           description: Current zone memberships for the SDK client and when the client entered each zone
       description: Detailed statistics for an individual SDK client
-    response_http403:
-      title: response_http403
+    response_http400:
+      title: response_http400
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the permission error
+          description: Human-readable explanation of the bad request error
           examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
     stats_sdkclient:
       title: stats_sdkclient
       required:
@@ -550,26 +560,32 @@ components:
           examples:
           - 80
       description: Detailed statistics for an individual SDK client
-    response_http401:
-      title: response_http401
+    response_http404:
+      title: response_http404
       type: object
       properties:
-        detail:
+        id:
           type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    response_http429:
-      title: response_http429
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    sdkstats_wireless_client_zone:
+      title: sdkstats_wireless_client_zone
+      required:
+      - id
+      - since
       type: object
       properties:
-        detail:
+        id:
           type: string
-          description: Human-readable explanation of the rate limit error
+          description: Zone identifier that currently contains the SDK client
+          contentEncoding: uuid
+          readOnly: true
           examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        since:
+          type: number
+          description: Time when the SDK client entered the zone, in epoch seconds
+      description: Zone currently containing an SDK client
     stats_sdkclient_network_connection1:
       title: stats_sdkclient_network_connection1
       required:
@@ -592,6 +608,26 @@ components:
           type: string
           description: Network connection type reported for the SDK client, such as WiFi
       description: Current network connection details for the SDK client
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
     sdkstats_wireless_client_vbeacon:
       title: sdkstats_wireless_client_vbeacon
       required:
@@ -610,42 +646,6 @@ components:
           type: number
           description: Time when the SDK client began matching the virtual beacon, in epoch seconds
       description: Virtual beacon currently associated with an SDK client
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    sdkstats_wireless_client_zone:
-      title: sdkstats_wireless_client_zone
-      required:
-      - id
-      - since
-      type: object
-      properties:
-        id:
-          type: string
-          description: Zone identifier that currently contains the SDK client
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 53f10664-3ce8-4c27-b382-0ef66432349f
-        since:
-          type: number
-          description: Time when the SDK client entered the zone, in epoch seconds
-      description: Zone currently containing an SDK client
   securitySchemes:
     apiToken:
       type: apiKey

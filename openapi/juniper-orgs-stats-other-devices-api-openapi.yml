@@ -522,39 +522,6 @@ paths:
       deprecated: false
 components:
   schemas:
-    stats_device_other_vendor_specific2:
-      title: stats_device_other_vendor_specific2
-      type: object
-      properties:
-        interfaces:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/stats_device_other_vendor_specific_port'
-          description: Cradlepoint interface statistics keyed by vendor interface identifier
-          examples:
-          - mdm-4d0e073b:
-              bytes_in: 5623096929
-              bytes_out: 12372750366
-              carrier: Orange
-              imei: '866401234567893'
-              imsi: '2080101234567893'
-              ip: 10.134.237.57
-              link: true
-              mode: wan
-              rsrp: -108
-              rsrq: -14
-              rssi: -74
-              service_mode: 5G NSA
-              sinr: -1.2
-              state: READY
-              type: mdm
-              uptime: 2095779
-        target_version:
-          type: string
-          description: Cradlepoint software version targeted for the device
-          examples:
-          - 7.23.40
-      description: Additional statistics returned by the device vendor
     response_http403:
       title: response_http403
       type: object
@@ -565,139 +532,6 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
-    stats_device_other_connected_device:
-      title: stats_device_other_connected_device
-      type: object
-      properties:
-        mac:
-          type: string
-          description: Connected device MAC address learned from LLDP
-          examples:
-          - 020001abcdef
-        name:
-          type: string
-          description: LLDP system name reported for the connected device
-          examples:
-          - DNT-NTR-GWE
-        port_id:
-          type: string
-          description: LLDP port identifier reported for the connected device
-          examples:
-          - ge-0/0/1
-        type:
-          type: string
-          description: Detected Mist device type for the connected neighbor
-          examples:
-          - gateway
-      description: LLDP neighbor device discovered from an other-device statistics record
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    stats_device_other:
-      title: stats_device_other
-      type: object
-      properties:
-        cached_stats:
-          type: boolean
-          description: Whether the response was served from cached vendor statistics
-        config_status:
-          type: string
-          description: Synchronization status of the other device configuration in Mist
-          examples:
-          - synced
-        connected_devices:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/stats_device_other_connected_device'
-          description: LLDP neighbor devices discovered from the other device
-        interfaces:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/stats_device_other_interface'
-          description: Network interface statistics reported for the other device
-        last_config:
-          type: integer
-          description: Timestamp of the last configuration update reported for the other device, in epoch seconds
-          contentEncoding: int32
-          examples:
-          - 1675392788
-        last_seen:
-          type:
-          - number
-          - 'null'
-          description: Time when Mist last observed the other device, in epoch seconds
-          readOnly: true
-          examples:
-          - 1470417522
-        lldp_enabled:
-          type: boolean
-          description: Whether LLDP is enabled on the other device
-        mac:
-          type: string
-          description: Other device MAC address reported in the statistics response
-          examples:
-          - 5c5b35000018
-        status:
-          type: string
-          description: Connectivity status reported for the other device, such as online
-          examples:
-          - online
-        uptime:
-          type: integer
-          description: Elapsed time since the other device last booted, in seconds
-          contentEncoding: int32
-          examples:
-          - 20296
-        vendor:
-          type: string
-          description: Device vendor name, such as Cradlepoint
-          examples:
-          - cradlepoint
-        vendor_specific:
-          allOf:
-          - $ref: '#/components/schemas/stats_device_other_vendor_specific2'
-          - description: Additional statistics returned by the device vendor
-        version:
-          type: string
-          description: Vendor software version reported for the other device
-          examples:
-          - 7.22.70
-      description: Statistics for a third-party or other device tracked by Mist
     stats_device_other_vendor_specific_port:
       title: stats_device_other_vendor_specific_port
       type: object
@@ -803,6 +637,44 @@ components:
           examples:
           - 2095779
       description: Cradlepoint interface statistics for a device tracked by Mist
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
     stats_device_other_interface:
       title: stats_device_other_interface
       type: object
@@ -898,6 +770,134 @@ components:
           examples:
           - 2095779
       description: Network interface statistics for a third-party device tracked by Mist
+    stats_device_other_vendor_specific2:
+      title: stats_device_other_vendor_specific2
+      type: object
+      properties:
+        interfaces:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/stats_device_other_vendor_specific_port'
+          description: Cradlepoint interface statistics keyed by vendor interface identifier
+          examples:
+          - mdm-4d0e073b:
+              bytes_in: 5623096929
+              bytes_out: 12372750366
+              carrier: Orange
+              imei: '866401234567893'
+              imsi: '2080101234567893'
+              ip: 10.134.237.57
+              link: true
+              mode: wan
+              rsrp: -108
+              rsrq: -14
+              rssi: -74
+              service_mode: 5G NSA
+              sinr: -1.2
+              state: READY
+              type: mdm
+              uptime: 2095779
+        target_version:
+          type: string
+          description: Cradlepoint software version targeted for the device
+          examples:
+          - 7.23.40
+      description: Additional statistics returned by the device vendor
+    stats_device_other:
+      title: stats_device_other
+      type: object
+      properties:
+        cached_stats:
+          type: boolean
+          description: Whether the response was served from cached vendor statistics
+        config_status:
+          type: string
+          description: Synchronization status of the other device configuration in Mist
+          examples:
+          - synced
+        connected_devices:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/stats_device_other_connected_device'
+          description: LLDP neighbor devices discovered from the other device
+        interfaces:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/stats_device_other_interface'
+          description: Network interface statistics reported for the other device
+        last_config:
+          type: integer
+          description: Timestamp of the last configuration update reported for the other device, in epoch seconds
+          contentEncoding: int32
+          examples:
+          - 1675392788
+        last_seen:
+          type:
+          - number
+          - 'null'
+          description: Time when Mist last observed the other device, in epoch seconds
+          readOnly: true
+          examples:
+          - 1470417522
+        lldp_enabled:
+          type: boolean
+          description: Whether LLDP is enabled on the other device
+        mac:
+          type: string
+          description: Other device MAC address reported in the statistics response
+          examples:
+          - 5c5b35000018
+        status:
+          type: string
+          description: Connectivity status reported for the other device, such as online
+          examples:
+          - online
+        uptime:
+          type: integer
+          description: Elapsed time since the other device last booted, in seconds
+          contentEncoding: int32
+          examples:
+          - 20296
+        vendor:
+          type: string
+          description: Device vendor name, such as Cradlepoint
+          examples:
+          - cradlepoint
+        vendor_specific:
+          allOf:
+          - $ref: '#/components/schemas/stats_device_other_vendor_specific2'
+          - description: Additional statistics returned by the device vendor
+        version:
+          type: string
+          description: Vendor software version reported for the other device
+          examples:
+          - 7.22.70
+      description: Statistics for a third-party or other device tracked by Mist
+    stats_device_other_connected_device:
+      title: stats_device_other_connected_device
+      type: object
+      properties:
+        mac:
+          type: string
+          description: Connected device MAC address learned from LLDP
+          examples:
+          - 020001abcdef
+        name:
+          type: string
+          description: LLDP system name reported for the connected device
+          examples:
+          - DNT-NTR-GWE
+        port_id:
+          type: string
+          description: LLDP port identifier reported for the connected device
+          examples:
+          - ge-0/0/1
+        type:
+          type: string
+          description: Detected Mist device type for the connected neighbor
+          examples:
+          - gateway
+      description: LLDP neighbor device discovered from an other-device statistics record
   securitySchemes:
     apiToken:
       type: apiKey

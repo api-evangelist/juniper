@@ -623,21 +623,6 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
-    gateway_cluster:
-      title: gateway_cluster
-      required:
-      - nodes
-      type: object
-      properties:
-        nodes:
-          maxItems: 2
-          minItems: 1
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/gateway_cluster_node'
-          description: Gateway nodes that form the HA cluster
-      description: Gateway HA cluster request or response body
     gateway_cluster_node:
       title: gateway_cluster_node
       required:
@@ -648,6 +633,24 @@ components:
           type: string
           description: Gateway device MAC address. Format is `[0-9a-f]{12}` (e.g. "5684dae9ac8b")
       description: Gateway cluster node identified by MAC address
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
     response_http401:
       title: response_http401
       type: object
@@ -668,24 +671,21 @@ components:
           examples:
           - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
       description: Standard HTTP 429 rate limit error response
-    response_http404:
-      title: response_http404
+    gateway_cluster:
+      title: gateway_cluster
+      required:
+      - nodes
       type: object
       properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
+        nodes:
+          maxItems: 2
+          minItems: 1
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/gateway_cluster_node'
+          description: Gateway nodes that form the HA cluster
+      description: Gateway HA cluster request or response body
   securitySchemes:
     apiToken:
       type: apiKey

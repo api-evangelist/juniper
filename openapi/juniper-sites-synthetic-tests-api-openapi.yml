@@ -1210,54 +1210,25 @@ paths:
       deprecated: false
 components:
   schemas:
-    websocket_session:
-      title: websocket_session
+    synthetictest_radius_server:
+      title: synthetictest_radius_server
       required:
-      - session
+      - password
+      - user
       type: object
       properties:
-        session:
+        password:
           type: string
-          description: Identifier used to correlate output on the WebSocket stream
-          examples:
-          - 19e73828-937f-05e6-f709-e29efdb0a82b
-      description: Response containing the WebSocket session handle for asynchronous command output
-    response_http403:
-      title: response_http403
-      type: object
-      properties:
-        detail:
+          description: Specify the password associated with the username
+          contentEncoding: password
+        profile:
           type: string
-          description: Human-readable explanation of the permission error
-          examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    synthetictest_type:
-      title: synthetictest_type
-      enum:
-      - arp
-      - curl
-      - dhcp
-      - dhcp6
-      - dns
-      - lan_connectivity
-      - radius
-      - speedtest
-      type: string
-      description: 'enum: `arp`, `curl`, `dhcp`, `dhcp6`, `dns`, `lan_connectivity`, `radius`, `speedtest`'
-    synthetictest_type1:
-      title: synthetictest_type1
-      enum:
-      - arp
-      - curl
-      - dhcp
-      - dhcp6
-      - dns
-      - lan_connectivity
-      - radius
-      - speedtest
-      type: string
-      description: 'Synthetic test type to run against the target. enum: `arp`, `curl`, `dhcp`, `dhcp6`, `dns`, `lan_connectivity`, `radius`, `speedtest`.'
+          description: Specify the access profile associated with the subscriber
+          default: dot1x
+        user:
+          type: string
+          description: Specify the subscriber username to test
+      description: Request body for testing RADIUS server availability from a switch
     synthetictest_info:
       title: synthetictest_info
       type: object
@@ -1331,48 +1302,55 @@ components:
           examples:
           - 20
       description: Synthetic test status or result record
-    response_synthetictest:
-      title: response_synthetictest
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique value for the queued synthetic test request
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 53f10664-3ce8-4c27-b382-0ef66432349f
-        message:
-          type: string
-          description: Human-readable queuing result returned by the API
-          examples:
-          - Successfully queued synthetic test for the site.
-        status:
-          type: string
-          description: Queue status for the synthetic test request
-          examples:
-          - success
-      description: Result returned after a site synthetic test is queued
-    response_http429:
-      title: response_http429
+    synthetictest_type3:
+      title: synthetictest_type3
+      enum:
+      - arp
+      - curl
+      - dhcp
+      - dhcp6
+      - dns
+      - lan_connectivity
+      - radius
+      - speedtest
+      type: string
+      description: 'Synthetic test type for this result. enum: `arp`, `curl`, `dhcp`, `dhcp6`, `dns`, `lan_connectivity`, `radius`, `speedtest`.'
+    response_http403:
+      title: response_http403
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the rate limit error
+          description: Human-readable explanation of the permission error
           examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    response_http401:
-      title: response_http401
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    device_type4:
+      title: device_type4
+      enum:
+      - ap
+      - gateway
+      - switch
+      type: string
+      description: 'Device category that ran the synthetic test. enum: `ap`, `gateway`, `switch`.'
+    synthetictest_device_protocol2:
+      title: synthetictest_device_protocol2
+      enum:
+      - ping
+      - ping+traceroute
+      - traceroute
+      type: string
+      description: 'If `type`==`lan_connectivity`. Protocol or protocol combination used for the connectivity test. enum: `ping`, `ping+traceroute`, `traceroute`.'
+    response_http400:
+      title: response_http400
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the authentication error
+          description: Human-readable explanation of the bad request error
           examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
     response_synthetictest_search:
       title: response_synthetictest_search
       required:
@@ -1416,6 +1394,43 @@ components:
           type: string
           description: Missing resource identifier, when the API includes one
       description: Standard HTTP 404 not found error response
+    synthetictest:
+      title: synthetictest
+      type: object
+      properties:
+        email:
+          type: string
+          description: Contact email address supplied when triggering the site synthetic test
+          contentEncoding: email
+          examples:
+          - test@mist.com
+      description: Request body for triggering a site synthetic test
+    synthetictest_type:
+      title: synthetictest_type
+      enum:
+      - arp
+      - curl
+      - dhcp
+      - dhcp6
+      - dns
+      - lan_connectivity
+      - radius
+      - speedtest
+      type: string
+      description: 'enum: `arp`, `curl`, `dhcp`, `dhcp6`, `dns`, `lan_connectivity`, `radius`, `speedtest`'
+    synthetictest_type1:
+      title: synthetictest_type1
+      enum:
+      - arp
+      - curl
+      - dhcp
+      - dhcp6
+      - dns
+      - lan_connectivity
+      - radius
+      - speedtest
+      type: string
+      description: 'Synthetic test type to run against the target. enum: `arp`, `curl`, `dhcp`, `dhcp6`, `dns`, `lan_connectivity`, `radius`, `speedtest`.'
     synthetictest_protocol:
       title: synthetictest_protocol
       enum:
@@ -1423,14 +1438,38 @@ components:
       - traceroute
       type: string
       description: 'Protocol used by a synthetic test probe. enum: `ping`, `traceroute`'
-    synthetictest_device_protocol2:
-      title: synthetictest_device_protocol2
-      enum:
-      - ping
-      - ping+traceroute
-      - traceroute
-      type: string
-      description: 'If `type`==`lan_connectivity`. Protocol or protocol combination used for the connectivity test. enum: `ping`, `ping+traceroute`, `traceroute`.'
+    response_http429:
+      title: response_http429
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the rate limit error
+          examples:
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the authentication error
+          examples:
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    websocket_session:
+      title: websocket_session
+      required:
+      - session
+      type: object
+      properties:
+        session:
+          type: string
+          description: Identifier used to correlate output on the WebSocket stream
+          examples:
+          - 19e73828-937f-05e6-f709-e29efdb0a82b
+      description: Response containing the WebSocket session handle for asynchronous command output
     synthetictest_device:
       title: synthetictest_device
       required:
@@ -1529,67 +1568,28 @@ components:
             contentEncoding: int32
           description: Required for AP. VLAN ID used by the synthetic test when the target device is an AP
       description: Request body for triggering a synthetic test on a device
-    synthetictest_radius_server:
-      title: synthetictest_radius_server
-      required:
-      - password
-      - user
+    response_synthetictest:
+      title: response_synthetictest
       type: object
       properties:
-        password:
+        id:
           type: string
-          description: Specify the password associated with the username
-          contentEncoding: password
-        profile:
-          type: string
-          description: Specify the access profile associated with the subscriber
-          default: dot1x
-        user:
-          type: string
-          description: Specify the subscriber username to test
-      description: Request body for testing RADIUS server availability from a switch
-    synthetictest:
-      title: synthetictest
-      type: object
-      properties:
-        email:
-          type: string
-          description: Contact email address supplied when triggering the site synthetic test
-          contentEncoding: email
+          description: Unique value for the queued synthetic test request
+          contentEncoding: uuid
+          readOnly: true
           examples:
-          - test@mist.com
-      description: Request body for triggering a site synthetic test
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        message:
           type: string
-          description: Human-readable explanation of the bad request error
+          description: Human-readable queuing result returned by the API
           examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
-    synthetictest_type3:
-      title: synthetictest_type3
-      enum:
-      - arp
-      - curl
-      - dhcp
-      - dhcp6
-      - dns
-      - lan_connectivity
-      - radius
-      - speedtest
-      type: string
-      description: 'Synthetic test type for this result. enum: `arp`, `curl`, `dhcp`, `dhcp6`, `dns`, `lan_connectivity`, `radius`, `speedtest`.'
-    device_type4:
-      title: device_type4
-      enum:
-      - ap
-      - gateway
-      - switch
-      type: string
-      description: 'Device category that ran the synthetic test. enum: `ap`, `gateway`, `switch`.'
+          - Successfully queued synthetic test for the site.
+        status:
+          type: string
+          description: Queue status for the synthetic test request
+          examples:
+          - success
+      description: Result returned after a site synthetic test is queued
   securitySchemes:
     apiToken:
       type: apiKey

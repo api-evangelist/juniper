@@ -905,28 +905,7 @@ paths:
                     detail: Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
       deprecated: false
 components:
-  responses:
-    NotFound:
-      description: Resource not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad request - invalid parameters
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   parameters:
-    LimitParam:
-      name: limit
-      in: query
-      description: Number of results per page
-      schema:
-        type: integer
-        default: 100
-        maximum: 1000
     SiteId:
       name: site_id
       in: path
@@ -942,6 +921,14 @@ components:
       schema:
         type: integer
         default: 1
+    LimitParam:
+      name: limit
+      in: query
+      description: Number of results per page
+      schema:
+        type: integer
+        default: 100
+        maximum: 1000
     OrgId:
       name: org_id
       in: path
@@ -951,19 +938,6 @@ components:
         type: string
         format: uuid
   schemas:
-    SiteStats:
-      type: object
-      properties:
-        num_ap:
-          type: integer
-        num_ap_connected:
-          type: integer
-        num_switch:
-          type: integer
-        num_gateway:
-          type: integer
-        num_clients:
-          type: integer
     Site:
       type: object
       properties:
@@ -1007,6 +981,37 @@ components:
         detail:
           type: string
           description: Error message
+    SiteStats:
+      type: object
+      properties:
+        num_ap:
+          type: integer
+        num_ap_connected:
+          type: integer
+        num_switch:
+          type: integer
+        num_gateway:
+          type: integer
+        num_clients:
+          type: integer
+    lat_lng2:
+      title: lat_lng2
+      required:
+      - lat
+      - lng
+      type: object
+      properties:
+        lat:
+          type: number
+          description: Geographic latitude in decimal degrees
+          examples:
+          - 37.295833
+        lng:
+          type: number
+          description: Geographic longitude in decimal degrees
+          examples:
+          - -122.032946
+      description: Latitude and longitude for the site location
     response_http403:
       title: response_http403
       type: object
@@ -1017,6 +1022,16 @@ components:
           examples:
           - You do not have permission to perform this action.
       description: Standard HTTP 403 permission error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Human-readable explanation of the bad request error
+          examples:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
     site:
       title: site
       required:
@@ -1151,6 +1166,14 @@ components:
           contentEncoding: int32
           default: 0
       description: Site configuration and metadata within an organization
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
     response_http401:
       title: response_http401
       type: object
@@ -1171,42 +1194,19 @@ components:
           examples:
           - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
       description: Standard HTTP 429 rate limit error response
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
-    lat_lng2:
-      title: lat_lng2
-      required:
-      - lat
-      - lng
-      type: object
-      properties:
-        lat:
-          type: number
-          description: Geographic latitude in decimal degrees
-          examples:
-          - 37.295833
-        lng:
-          type: number
-          description: Geographic longitude in decimal degrees
-          examples:
-          - -122.032946
-      description: Latitude and longitude for the site location
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
+  responses:
+    BadRequest:
+      description: Bad request - invalid parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     apiToken:
       type: http

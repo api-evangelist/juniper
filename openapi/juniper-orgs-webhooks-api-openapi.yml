@@ -2084,179 +2084,45 @@ paths:
       deprecated: false
 components:
   schemas:
-    webhook_type2:
-      title: webhook_type2
-      enum:
-      - aws-sns
-      - google-pubsub
-      - http-post
-      - oauth2
-      - splunk
-      type: string
-      description: 'Delivery mechanism used by this webhook. enum: `aws-sns`, `google-pubsub`, `http-post`, `oauth2`, `splunk`.'
-    webhook_delivery:
-      title: webhook_delivery
+    response_http403:
+      title: response_http403
       type: object
       properties:
-        error:
+        detail:
           type: string
-          description: Message returned for a failed delivery attempt, when available
-        id:
-          type: string
-          description: Unique identifier of the webhook delivery attempt
-          contentEncoding: uuid
-          readOnly: true
+          description: Human-readable explanation of the permission error
           examples:
-          - 53f10664-3ce8-4c27-b382-0ef66432349f
-        org_id:
+          - You do not have permission to perform this action.
+      description: Standard HTTP 403 permission error response
+    response_http400:
+      title: response_http400
+      type: object
+      properties:
+        detail:
           type: string
-          description: Organization associated with the webhook delivery attempt
-          contentEncoding: uuid
-          readOnly: true
+          description: Human-readable explanation of the bad request error
           examples:
-          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
-        req_headers:
+          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
+      description: Standard HTTP 400 bad request error response
+    response_http401:
+      title: response_http401
+      type: object
+      properties:
+        detail:
           type: string
-          description: HTTP headers sent with the webhook delivery request
+          description: Human-readable explanation of the authentication error
           examples:
-          - '{\"Content-Type\":[\"application/json\"],\"User-Agent\":[\"Mist-webhook\"]}'
-        req_payload:
-          type: string
-          description: JSON payload sent in the webhook delivery request
-          examples:
-          - '{\"topic\":\"audits\",\"events\":[{\"admin_name\":\"John Doe john.doe@juniper.net\",\"after\":\"{\\"radio_config\\": {\\"band_24\\": {\\"disabled\\": false, \\"allow_rrm_disable\\": false, \\"power_min\\": null, \\"power_max\\": null, \\"power\\": 10, \\"preamble\\": \\"short\\", \\"channels\\": [1, 10], \\"bandwidth\\": 20}}}\",\"before\":\"{\\"radio_config\\": {\\"band_24\\": {\\"disabled\\": false, \\"allow_rrm_disable\\": false, \\"power_min\\": 8, \\"power_max\\": 18, \\"power\\": null, \\"preamble\\": \\"long\\", \\"channels\\": [1, 10], \\"bandwidth\\": 20}}}\",\"id\":\"737909a2-04ff-4aeb-b9da-cc924e74a4dd\",\"message\":\"Update Site Settings\",\"org_id\":\"fc7e2967-e7ef-41e6-b007-1217713de05a\",\"site_id\":\"256c3a35-9cb7-436e-bc6d-314972645d95\",\"site_name\":\"Test Site\",\"src_ip\":\"1.2.3.4\",\"timestamp\":1685956576.923601,\"user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36\"}]}'
-        req_url:
-          type: string
-          description: Destination URL used for the webhook delivery request
-          examples:
-          - https://example.com
-        resp_body:
-          type: string
-          description: Response body returned by the webhook destination
-          examples:
-          - Ok
-        resp_headers:
-          type: string
-          description: Response headers returned by the webhook destination
-        site_id:
-          type: string
-          description: Site associated with the webhook delivery attempt, when applicable
-          contentEncoding: uuid
-          readOnly: true
-          examples:
-          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
-        status:
-          allOf:
-          - $ref: '#/components/schemas/webhook_delivery_status2'
-          - description: 'Delivery result for the webhook request. enum: `failure`, `success`.'
-            examples:
-            - failure
-        status_code:
-          type: integer
-          description: HTTP status code returned by the webhook destination
-          contentEncoding: int32
-          examples:
-          - 200
-        timestamp:
-          type: number
-          description: Time when the webhook delivery attempt occurred, in epoch seconds
-          readOnly: true
-        topic:
-          allOf:
-          - $ref: '#/components/schemas/webhook_delivery_topic2'
-          - description: 'Webhook topic delivered in this request. enum: `alarms`, `audits`, `device-updowns`, `occupancy-alerts`, `ping`.'
-            examples:
-            - audits
-        webhook_id:
-          type: string
-          description: Unique identifier of the configured webhook used for this delivery attempt
-          contentEncoding: uuid
-          examples:
-          - 7a11b901-f719-4c91-8aef-deb8699a6364
-      description: Record of a webhook delivery attempt and the destination response
-    webhook_delivery_topic2:
-      title: webhook_delivery_topic2
+          - Authentication credentials were not provided.
+      description: Standard HTTP 401 authentication error response
+    webhook_delivery_status:
+      title: webhook_delivery_status
       enum:
-      - alarms
-      - audits
-      - device-updowns
-      - occupancy-alerts
-      - ping
+      - failure
+      - success
       type: string
-      description: 'Webhook topic delivered in this request. enum: `alarms`, `audits`, `device-updowns`, `occupancy-alerts`, `ping`.'
+      description: 'webhook delivery status. enum: `failure`, `success`'
       examples:
-      - audits
-    webhook_rule:
-      title: webhook_rule
-      required:
-      - topic
-      type: object
-      properties:
-        action:
-          allOf:
-          - $ref: '#/components/schemas/webhook_action1'
-          - description: 'Action applied when the rule matches the incoming event. enum: `permit`, `block`.'
-        matching:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              type: string
-            description: Optional event payload matching criteria. Property key is the event field name and the value is the list of accepted values
-            example:
-              type:
-              - AP_DISCONNECTED
-          description: Optional event payload matching criteria. Property key is the event field name and the value is the list of accepted values
-          examples:
-          - type:
-            - AP_DISCONNECTED
-        topic:
-          type: string
-          description: Webhook topic this rule applies to
-      description: Filtering rule that permits or blocks webhook events for a topic
-    search_webhook_delivery:
-      title: search_webhook_delivery
-      type: object
-      properties:
-        end:
-          type: integer
-          description: Upper bound timestamp of the webhook delivery search window, in epoch seconds
-          contentEncoding: int32
-          examples:
-          - 1688035193
-        limit:
-          type: integer
-          description: Maximum number of webhook delivery records returned by this page
-          contentEncoding: int32
-          examples:
-          - 10
-        next:
-          type: string
-          description: URL for the next page of webhook delivery records, when more results are available
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/webhook_delivery'
-          description: Webhook delivery records returned by the search response
-        start:
-          type: integer
-          description: Lower bound timestamp of the webhook delivery search window, in epoch seconds
-          contentEncoding: int32
-          examples:
-          - 1687948793
-        total:
-          type: integer
-          description: Count of webhook delivery records matching the search
-          contentEncoding: int32
-      description: Paginated response for webhook delivery searches
-    response_http404:
-      title: response_http404
-      type: object
-      properties:
-        id:
-          type: string
-          description: Missing resource identifier, when the API includes one
-      description: Standard HTTP 404 not found error response
+      - failure
     webhook:
       title: webhook
       type: object
@@ -2385,6 +2251,238 @@ components:
           description: When url uses HTTPS, whether to verify the certificate
           default: true
       description: Webhook configuration for delivering selected Mist events to an external destination
+    webhook_delivery_distinct:
+      title: webhook_delivery_distinct
+      enum:
+      - status
+      - status_code
+      - topic
+      - webhook_id
+      type: string
+      description: 'webhook topic. enum: `status`, `status_code`, `topic`, `webhook_id`'
+      examples:
+      - webhook_id
+    webhook_action1:
+      title: webhook_action1
+      enum:
+      - permit
+      - block
+      type: string
+      description: 'Action applied when the rule matches the incoming event. enum: `permit`, `block`.'
+    webhook_delivery_status2:
+      title: webhook_delivery_status2
+      enum:
+      - failure
+      - success
+      type: string
+      description: 'Delivery result for the webhook request. enum: `failure`, `success`.'
+      examples:
+      - failure
+    webhook_type2:
+      title: webhook_type2
+      enum:
+      - aws-sns
+      - google-pubsub
+      - http-post
+      - oauth2
+      - splunk
+      type: string
+      description: 'Delivery mechanism used by this webhook. enum: `aws-sns`, `google-pubsub`, `http-post`, `oauth2`, `splunk`.'
+    search_webhook_delivery:
+      title: search_webhook_delivery
+      type: object
+      properties:
+        end:
+          type: integer
+          description: Upper bound timestamp of the webhook delivery search window, in epoch seconds
+          contentEncoding: int32
+          examples:
+          - 1688035193
+        limit:
+          type: integer
+          description: Maximum number of webhook delivery records returned by this page
+          contentEncoding: int32
+          examples:
+          - 10
+        next:
+          type: string
+          description: URL for the next page of webhook delivery records, when more results are available
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/webhook_delivery'
+          description: Webhook delivery records returned by the search response
+        start:
+          type: integer
+          description: Lower bound timestamp of the webhook delivery search window, in epoch seconds
+          contentEncoding: int32
+          examples:
+          - 1687948793
+        total:
+          type: integer
+          description: Count of webhook delivery records matching the search
+          contentEncoding: int32
+      description: Paginated response for webhook delivery searches
+    webhook_delivery:
+      title: webhook_delivery
+      type: object
+      properties:
+        error:
+          type: string
+          description: Message returned for a failed delivery attempt, when available
+        id:
+          type: string
+          description: Unique identifier of the webhook delivery attempt
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 53f10664-3ce8-4c27-b382-0ef66432349f
+        org_id:
+          type: string
+          description: Organization associated with the webhook delivery attempt
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - a97c1b22-a4e9-411e-9bfd-d8695a0f9e61
+        req_headers:
+          type: string
+          description: HTTP headers sent with the webhook delivery request
+          examples:
+          - '{\"Content-Type\":[\"application/json\"],\"User-Agent\":[\"Mist-webhook\"]}'
+        req_payload:
+          type: string
+          description: JSON payload sent in the webhook delivery request
+          examples:
+          - '{\"topic\":\"audits\",\"events\":[{\"admin_name\":\"John Doe john.doe@juniper.net\",\"after\":\"{\\"radio_config\\": {\\"band_24\\": {\\"disabled\\": false, \\"allow_rrm_disable\\": false, \\"power_min\\": null, \\"power_max\\": null, \\"power\\": 10, \\"preamble\\": \\"short\\", \\"channels\\": [1, 10], \\"bandwidth\\": 20}}}\",\"before\":\"{\\"radio_config\\": {\\"band_24\\": {\\"disabled\\": false, \\"allow_rrm_disable\\": false, \\"power_min\\": 8, \\"power_max\\": 18, \\"power\\": null, \\"preamble\\": \\"long\\", \\"channels\\": [1, 10], \\"bandwidth\\": 20}}}\",\"id\":\"737909a2-04ff-4aeb-b9da-cc924e74a4dd\",\"message\":\"Update Site Settings\",\"org_id\":\"fc7e2967-e7ef-41e6-b007-1217713de05a\",\"site_id\":\"256c3a35-9cb7-436e-bc6d-314972645d95\",\"site_name\":\"Test Site\",\"src_ip\":\"1.2.3.4\",\"timestamp\":1685956576.923601,\"user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36\"}]}'
+        req_url:
+          type: string
+          description: Destination URL used for the webhook delivery request
+          examples:
+          - https://example.com
+        resp_body:
+          type: string
+          description: Response body returned by the webhook destination
+          examples:
+          - Ok
+        resp_headers:
+          type: string
+          description: Response headers returned by the webhook destination
+        site_id:
+          type: string
+          description: Site associated with the webhook delivery attempt, when applicable
+          contentEncoding: uuid
+          readOnly: true
+          examples:
+          - 441a1214-6928-442a-8e92-e1d34b8ec6a6
+        status:
+          allOf:
+          - $ref: '#/components/schemas/webhook_delivery_status2'
+          - description: 'Delivery result for the webhook request. enum: `failure`, `success`.'
+            examples:
+            - failure
+        status_code:
+          type: integer
+          description: HTTP status code returned by the webhook destination
+          contentEncoding: int32
+          examples:
+          - 200
+        timestamp:
+          type: number
+          description: Time when the webhook delivery attempt occurred, in epoch seconds
+          readOnly: true
+        topic:
+          allOf:
+          - $ref: '#/components/schemas/webhook_delivery_topic2'
+          - description: 'Webhook topic delivered in this request. enum: `alarms`, `audits`, `device-updowns`, `occupancy-alerts`, `ping`.'
+            examples:
+            - audits
+        webhook_id:
+          type: string
+          description: Unique identifier of the configured webhook used for this delivery attempt
+          contentEncoding: uuid
+          examples:
+          - 7a11b901-f719-4c91-8aef-deb8699a6364
+      description: Record of a webhook delivery attempt and the destination response
+    webhook_delivery_topic2:
+      title: webhook_delivery_topic2
+      enum:
+      - alarms
+      - audits
+      - device-updowns
+      - occupancy-alerts
+      - ping
+      type: string
+      description: 'Webhook topic delivered in this request. enum: `alarms`, `audits`, `device-updowns`, `occupancy-alerts`, `ping`.'
+      examples:
+      - audits
+    count_result:
+      title: count_result
+      required:
+      - count
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of matching items for the distinct value or values in this result
+          contentEncoding: int32
+      additionalProperties:
+        type: string
+      description: Count result row with the matching distinct field values
+    webhook_delivery_topic:
+      title: webhook_delivery_topic
+      enum:
+      - alarms
+      - audits
+      - device-updowns
+      - occupancy-alerts
+      - ping
+      type: string
+      description: 'webhook topic. enum: `alarms`, `audits`, `device-updowns`, `occupancy-alerts`, `ping`'
+      examples:
+      - audits
+    webhook_rule:
+      title: webhook_rule
+      required:
+      - topic
+      type: object
+      properties:
+        action:
+          allOf:
+          - $ref: '#/components/schemas/webhook_action1'
+          - description: 'Action applied when the rule matches the incoming event. enum: `permit`, `block`.'
+        matching:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+            description: Optional event payload matching criteria. Property key is the event field name and the value is the list of accepted values
+            example:
+              type:
+              - AP_DISCONNECTED
+          description: Optional event payload matching criteria. Property key is the event field name and the value is the list of accepted values
+          examples:
+          - type:
+            - AP_DISCONNECTED
+        topic:
+          type: string
+          description: Webhook topic this rule applies to
+      description: Filtering rule that permits or blocks webhook events for a topic
+    webhook_action3:
+      title: webhook_action3
+      enum:
+      - permit
+      - block
+      type: string
+      description: 'Default action applied when none of the `rules` match the incoming event. enum: `permit`, `block`.'
+    response_http404:
+      title: response_http404
+      type: object
+      properties:
+        id:
+          type: string
+          description: Missing resource identifier, when the API includes one
+      description: Standard HTTP 404 not found error response
     response_http400_webhook:
       title: response_http400_webhook
       type: object
@@ -2400,62 +2498,6 @@ components:
           examples:
           - contains duplicate uuids
       description: Webhook-specific HTTP 400 bad request error response
-    count_result:
-      title: count_result
-      required:
-      - count
-      type: object
-      properties:
-        count:
-          type: integer
-          description: Number of matching items for the distinct value or values in this result
-          contentEncoding: int32
-      additionalProperties:
-        type: string
-      description: Count result row with the matching distinct field values
-    webhook_delivery_status:
-      title: webhook_delivery_status
-      enum:
-      - failure
-      - success
-      type: string
-      description: 'webhook delivery status. enum: `failure`, `success`'
-      examples:
-      - failure
-    response_http401:
-      title: response_http401
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the authentication error
-          examples:
-          - Authentication credentials were not provided.
-      description: Standard HTTP 401 authentication error response
-    response_http429:
-      title: response_http429
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the rate limit error
-          examples:
-          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
-      description: Standard HTTP 429 rate limit error response
-    webhook_oauth2_grant_type2:
-      title: webhook_oauth2_grant_type2
-      enum:
-      - client_credentials
-      - password
-      type: string
-      description: 'OAuth2 grant type used when `type`==`oauth2`. enum: `client_credentials`, `password`.'
-    webhook_action1:
-      title: webhook_action1
-      enum:
-      - permit
-      - block
-      type: string
-      description: 'Action applied when the rule matches the incoming event. enum: `permit`, `block`.'
     response_count:
       title: response_count
       required:
@@ -2493,65 +2535,23 @@ components:
           description: Number of distinct result buckets returned
           contentEncoding: int32
       description: Distinct count response for time-bounded search results
-    webhook_action3:
-      title: webhook_action3
-      enum:
-      - permit
-      - block
-      type: string
-      description: 'Default action applied when none of the `rules` match the incoming event. enum: `permit`, `block`.'
-    response_http403:
-      title: response_http403
+    response_http429:
+      title: response_http429
       type: object
       properties:
         detail:
           type: string
-          description: Human-readable explanation of the permission error
+          description: Human-readable explanation of the rate limit error
           examples:
-          - You do not have permission to perform this action.
-      description: Standard HTTP 403 permission error response
-    webhook_delivery_status2:
-      title: webhook_delivery_status2
+          - Too Many Request. The API Token used for the request reached the 5000 API Calls per hour threshold
+      description: Standard HTTP 429 rate limit error response
+    webhook_oauth2_grant_type2:
+      title: webhook_oauth2_grant_type2
       enum:
-      - failure
-      - success
+      - client_credentials
+      - password
       type: string
-      description: 'Delivery result for the webhook request. enum: `failure`, `success`.'
-      examples:
-      - failure
-    webhook_delivery_topic:
-      title: webhook_delivery_topic
-      enum:
-      - alarms
-      - audits
-      - device-updowns
-      - occupancy-alerts
-      - ping
-      type: string
-      description: 'webhook topic. enum: `alarms`, `audits`, `device-updowns`, `occupancy-alerts`, `ping`'
-      examples:
-      - audits
-    webhook_delivery_distinct:
-      title: webhook_delivery_distinct
-      enum:
-      - status
-      - status_code
-      - topic
-      - webhook_id
-      type: string
-      description: 'webhook topic. enum: `status`, `status_code`, `topic`, `webhook_id`'
-      examples:
-      - webhook_id
-    response_http400:
-      title: response_http400
-      type: object
-      properties:
-        detail:
-          type: string
-          description: Human-readable explanation of the bad request error
-          examples:
-          - 'JSON parse error - Expecting value: line 5 column 8 (char 56)'
-      description: Standard HTTP 400 bad request error response
+      description: 'OAuth2 grant type used when `type`==`oauth2`. enum: `client_credentials`, `password`.'
   securitySchemes:
     apiToken:
       type: apiKey
